@@ -132,7 +132,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     invulnMs: 0,
     input: { x: 0, y: 0, dest: null, pendingInteract: null },
     ui: { panel: 'none', npcId: null, nodeId: null },
-    log: ['The gate of Hoffender is north. Wolves are already on the road.'],
+    log: ['The gate of Hoffender is north. The Frostmere Wilds, and the wolves on their road, wait beyond it.'],
     bind: { ...map.bind },
     dead: false,
     deathMs: 0,

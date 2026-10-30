@@ -15,9 +15,10 @@
       "hilda": 2,
       "torvald": 3,
       "soren": 4,
-      "young_wolf": 5,
-      "wolf": 6,
-      "frost_wolf": 7
+      "freya": 5,
+      "young_wolf": 6,
+      "wolf": 7,
+      "frost_wolf": 8
     }
   },
   "props": {
@@ -117,23 +118,23 @@
       "anchorX": 8,
       "anchorY": 23
     },
-    "stump": {
+    "sign_hall": {
       "x": 0,
       "y": 72,
       "w": 16,
-      "h": 16,
+      "h": 24,
       "anchorX": 8,
-      "anchorY": 15
+      "anchorY": 23
     },
-    "bush": {
+    "sign_wilds": {
       "x": 16,
       "y": 72,
       "w": 16,
-      "h": 16,
+      "h": 24,
       "anchorX": 8,
-      "anchorY": 15
+      "anchorY": 23
     },
-    "pouch": {
+    "stump": {
       "x": 32,
       "y": 72,
       "w": 16,
@@ -141,8 +142,24 @@
       "anchorX": 8,
       "anchorY": 15
     },
-    "coins": {
+    "bush": {
       "x": 48,
+      "y": 72,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "pouch": {
+      "x": 64,
+      "y": 72,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "coins": {
+      "x": 80,
       "y": 72,
       "w": 16,
       "h": 16,

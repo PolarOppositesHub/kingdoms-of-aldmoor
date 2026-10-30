@@ -34,12 +34,13 @@ Pages is not enabled on the repo yet.
 
 ## What M1 includes
 
-One map, Hoffender, drawn as a snowy fjord hold. That look is provisional until Josh picks the town's identity (see open questions).
+One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its north gate. The town's look is still provisional (see open questions). Who rules it is not: Jarl Freya Halvarddottir.
 
 - Touch movement: virtual pad, tap or drag the ground, and WASD or arrows on a keyboard.
-- Tap a person to walk up and talk. Soren keeps the gate, Hilda runs the Frosthearth Inn, Torvald has a word about the north, Brenna buys and sells.
+- Tap a person to walk up and talk. Jarl Freya Halvarddottir stands outside the mead hall. Soren keeps the gate and answers to her word. Hilda runs the Frosthearth Inn, Torvald has a word about the north, and Brenna buys and sells.
+- The place name follows you. Inside the palisade it reads Hoffender. Step through the gate and it reads Frostmere Wilds. Those names are also painted on the map.
 - One merchant. Sell pelts and teeth. Buy bandages, trail rations, and a faster handaxe, then equip it from the pack.
-- Young wolves on the road, wolves in the pines, and frost wolves farther north. Wolves assist nearby kin. The palisade is safe; they will not chase you inside.
+- Young wolves on the Frostmere Wilds road, wolves in the pines, and frost wolves farther north. Wolves assist nearby kin. The palisade is safe; they will not chase you inside.
 - Warrior combat: real-time auto-attack on a weapon delay, plus Kick on a cooldown. Tap a wolf, then ATK. The ATK button fills between swings.
 - Loot and coin. Copper, silver, gold, and platinum, at 10 to 1. Drops land on the snow and are picked up when you step close.
 - If you fall, you wake in the inn yard. Experience loss follows the locked table (none below level 5). Gear stays with you. A corpse you have to run back to is Milestone 2.
@@ -81,8 +82,9 @@ Quests, the full equipment paper-doll, corpse runs, local saves, leveling to 10 
 
 These do not block M1. The build uses a provisional answer so there is something to feel.
 
-1. Hoffender's look. This build is a snowy fjord village: log houses, a palisade, and ice along the east shore. The other options were a mountain longhouse hold or a frozen coastal port. Who rules it? Dialogue currently says the gathered families speak for the hold when they sit, and names four people: Brenna Holm (merchant), Hilda Venn (Frosthearth Inn), Torvald Keel (elder), and Soren Bram (gate warden).
-2. A name for the wilds outside the gate. The script avoids locking one. Candidates from the design doc: the Frostmere Wilds, Hoffender Tundra, the Grey Barrens.
-3. The camp boss, for a later milestone: bandit chief, alpha frost wolf, or something else.
-4. Which class comes second, and whether a barbarian can be that class.
-5. Coin is 10 copper = 1 silver, 10 silver = 1 gold, 10 gold = 1 platinum. Say if that rate should change.
+1. Hoffender's look. This build is a snowy fjord village: log houses, a palisade, and ice along the east shore. The other options were a mountain longhouse hold or a frozen coastal port.
+2. The camp boss, for a later milestone: bandit chief, alpha frost wolf, or something else.
+3. Which class comes second, and whether a barbarian can be that class.
+4. Coin is 10 copper = 1 silver, 10 silver = 1 gold, 10 gold = 1 platinum. Say if that rate should change.
+
+Settled for this slice: the wilds outside the gate are the Frostmere Wilds. Jarl Freya Halvarddottir rules Hoffender from the mead hall. The town guards answer to her word. She cares more about trade and alliances than war.

@@ -59,6 +59,7 @@ export class WorldScene extends Phaser.Scene {
   private views = new Map<string, ActorView>();
   private groundViews = new Map<string, Phaser.GameObjects.Sprite>();
   private propSprites: Phaser.GameObjects.Sprite[] = [];
+  private placeLabels: Phaser.GameObjects.Text[] = [];
   private floaters: Floater[] = [];
   private bracket!: Phaser.GameObjects.Graphics;
   private snow!: Phaser.GameObjects.Graphics;
@@ -128,6 +129,20 @@ export class WorldScene extends Phaser.Scene {
     this.cam = this.cameras.main;
     this.cam.setBounds(0, 0, tiled.widthInPixels, tiled.heightInPixels);
     this.cam.roundPixels = true;
+    for (const spawn of this.mapData.spawns) {
+      if (spawn.kind !== 'label') continue;
+      const text = this.add.text(spawn.x, spawn.y - 10, spawn.name, {
+        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+        fontSize: '20px',
+        color: '#e6c15a',
+        stroke: '#1c1418',
+        strokeThickness: 4,
+        resolution: 2,
+      });
+      text.setOrigin(0.5, 1);
+      text.setDepth(5500);
+      this.placeLabels.push(text);
+    }
     this.applyZoom();
     const player = this.state.actors[0];
     this.cam.centerOn(player.x, player.y);
@@ -167,6 +182,8 @@ export class WorldScene extends Phaser.Scene {
     // 3× keeps a 16px tile at 48 CSS pixels, which is the readable size on a phone.
     const zoom = this.scale.width >= 320 ? 3 : 2;
     this.cam.setZoom(zoom);
+    const inv = 1 / zoom;
+    for (const label of this.placeLabels) label.setScale(inv);
   }
 
   private drawCollision(): void {

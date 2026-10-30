@@ -26,7 +26,8 @@ export default function App() {
         <Properties items={[
           { label: "Game / world", value: "Kingdoms of Aldmoor / Aldmoor" },
           { label: "Races", value: "Human, Dwarf, High Elf, Barbarian; each gets its own starting zone later" },
-          { label: "v1 starter town", value: "Hoffender, the Barbarian town" },
+          { label: "v1 starter town", value: "Hoffender, the Barbarian town, ruled by Jarl Freya Halvarddottir" },
+          { label: "Frostmere Wilds", value: "The country outside Hoffender's north gate" },
           { label: "First class", value: "Warrior" },
           { label: "Combat", value: "Real-time auto-attack, EverQuest-style" },
           { label: "Art", value: "16-bit SNES-style pixel art" },
@@ -74,8 +75,8 @@ export default function App() {
       </Section>
       <Section heading="Starter zone: Hoffender">
         <Rows rows={[
-          { title: "Hoffender (Barbarian town)", detail: "Warriors' guild (trainer, guildmaster quests), blacksmith, tailor, general merchant, bank, inn bind point, 3–4 quest givers" },
-          { title: "Wilds outside Hoffender", detail: "Rats, snakes, young wolves, then gnolls or bandits deeper in; gray-to-blue spread for levels 1–8" },
+          { title: "Hoffender (Barbarian town)", detail: "Jarl Freya Halvarddottir rules from the mead hall; the town guards answer to her word. She favors trade and alliances over war. Planned services: warriors' guild (trainer, guildmaster quests), blacksmith, tailor, general merchant, bank, inn bind point, 3–4 quest givers" },
+          { title: "Frostmere Wilds", detail: "The country outside Hoffender's gate. Rats, snakes, young wolves, then gnolls or bandits deeper in; gray-to-blue spread for levels 1–8" },
           { title: "Camp boss", detail: "A named bandit chief or alpha wolf at a small camp, level 9–10, rare drop" },
           { title: "Starter quests", detail: "10 wolf teeth for the tailor, rat whiskers for the general merchant, deliver a letter, clear the snake den, then defeat the camp boss" },
         ]} />
@@ -94,7 +95,7 @@ export default function App() {
       <Section heading="Milestone roadmap">
         <Steps steps={[
           { title: "M1 Core feel", detail: "One Hoffender map, movement, NPC talk, one merchant, wolves, auto-attack, loot, coin. Josh judges the feel." },
-          { title: "M2 First zone", detail: "Full Hoffender and its wilds, quests, leveling to 10, inventory and equipment, death and corpse runs, local saves." },
+          { title: "M2 First zone", detail: "Full Hoffender and the Frostmere Wilds, quests, leveling to 10, inventory and equipment, death and corpse runs, local saves." },
           { title: "M3 Second class", detail: "A caster with a spell vendor in its guild, mana and spell casting." },
           { title: "M4 First dungeon", detail: "Multi-level dungeon, a boss, and a quest chain leading to it." },
           { title: "M5 World growth", detail: "Other races' starting zones (Eldenmoor and more), iOS app wrap, co-op with cloud saves." },
@@ -112,8 +113,7 @@ export default function App() {
       </Section>
       <Section heading="Open questions for Josh">
         <NumberedList items={[
-          "Hoffender's look and lore: snowy fjord village, mountain longhouse hold, or frozen coastal port? Who rules it?",
-          "Name for the wilds outside Hoffender. Ideas: the Frostmere Wilds, Hoffender Tundra, the Grey Barrens.",
+          "Hoffender's look: snowy fjord village, mountain longhouse hold, or frozen coastal port? M1 ships the fjord village.",
           "Camp boss flavor: bandit chief, alpha frost wolf, or gnoll warlord?",
           "Which class comes second in M3, and should it be one Barbarians can play (like a Shaman)?",
         ]} />

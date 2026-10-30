@@ -304,4 +304,6 @@ export interface MapData {
   spawns: Spawn[];
   bind: { x: number; y: number };
   zoneId: string;
+  townName: string;
+  wildsName: string;
 }

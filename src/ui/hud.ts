@@ -1,7 +1,7 @@
 import type { GameApi } from '../game/api';
 import { controls, pushIntent } from '../game/controls';
 import { conColor, conLabel, formatCoin } from '../sim/formulas';
-import { isSafe } from '../sim/map';
+import { isSafe, placeName } from '../sim/map';
 import type { GameState } from '../sim/types';
 
 export function mountHud(api: GameApi): void {
@@ -16,6 +16,7 @@ export function mountHud(api: GameApi): void {
         <span id="who">Lv 1 Warrior</span>
         <span id="coin">0c</span>
       </div>
+      <div id="place" class="place">Hoffender</div>
       <div class="bar hp" aria-label="Health"><span id="hp-fill"></span></div>
       <div class="vitals-top tiny"><span id="hp-num"></span><span id="weapon"></span></div>
       <div class="bar xp" aria-label="Experience"><span id="xp-fill"></span></div>
@@ -96,7 +97,7 @@ export function mountHud(api: GameApi): void {
       if (toast.textContent === text) toast.hidden = true;
     }, 4600);
   };
-  showToast('Tap the ground to walk, or use the pad. The gate is north.');
+  showToast('Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.');
 
   const tick = () => {
     const state = api.getState();
@@ -170,6 +171,7 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const player = state.actors.find((actor) => actor.id === state.playerId);
   if (!player) return;
   const who = root.querySelector('#who');
+  const place = root.querySelector('#place');
   const coin = root.querySelector('#coin');
   const hpNum = root.querySelector('#hp-num');
   const hpFill = root.querySelector<HTMLElement>('#hp-fill');
@@ -182,9 +184,10 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const targetName = root.querySelector<HTMLElement>('#target-name');
   const targetFill = root.querySelector<HTMLElement>('#target-fill');
   const death = root.querySelector<HTMLElement>('#death');
-  if (!who || !coin || !hpNum || !hpFill || !xpFill || !weapon || !log || !atk || !kick || !item || !targetName || !targetFill || !death) return;
+  if (!who || !place || !coin || !hpNum || !hpFill || !xpFill || !weapon || !log || !atk || !kick || !item || !targetName || !targetFill || !death) return;
 
   who.textContent = `Lv ${state.level} Warrior`;
+  place.textContent = placeName(api.map, player.x, player.y);
   coin.textContent = formatCoin(state.copper, api.content.economy);
   hpNum.textContent = `${Math.max(0, player.hp)}/${player.maxHp}`;
   hpFill.style.width = `${Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100))}%`;
@@ -336,8 +339,8 @@ function helpHtml(): string {
       <li>Pad, or tap the ground, walks. WASD works on a keyboard.</li>
       <li>Tap a wolf to mark it, then ATK. Swings land on their own timer.</li>
       <li>Kick is immediate, then it needs a breath.</li>
-      <li>Tap a person, or Talk, to speak. Brenna buys and sells.</li>
-      <li>The palisade is safe. Fall outside it and you wake in Hilda's yard.</li>
+      <li>Tap a person, or Talk, to speak. Jarl Freya stands outside the mead hall. Brenna buys and sells.</li>
+      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall out there and you wake in Hilda's yard.</li>
     </ul>
     <button type="button" data-action="reload">Start a new warrior</button>
     <button type="button" class="close" data-action="close">Close</button>

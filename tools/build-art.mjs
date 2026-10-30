@@ -857,6 +857,22 @@ function sorenOverlay(dir) {
   };
 }
 
+// Circlet, cloak, and round shield. Original shield-maiden, not a copied crest.
+function freyaOverlay(dir, frame) {
+  return (img) => {
+    if (dir === 's' || dir === 'n') paintOver(img, 5, 2, ['KYYYYK']);
+    if (dir === 'e') paintOver(img, 6, 2, ['KYYY']);
+    if (dir === 's' || dir === 'n') paintOver(img, 4, 8, ['RRRRRRRR']);
+    if (dir === 'e') paintOver(img, 5, 9, ['RRRR']);
+    if (dir === 's') paintOver(img, 11, 10, ['.QQ', 'QYQ', '.QQ']);
+    if (dir === 'e') paintOver(img, 10, 10, ['QQ', 'YQ', 'QQ']);
+    if (dir === 'n') {
+      paintOver(img, 1, 10, ['QQ', 'QY', 'QQ']);
+      paintOver(img, 7, 5, ['A', 'a', 'A', frame ? 'A' : 'a']);
+    }
+  };
+}
+
 const WOLF_E = sprite([
   '................',
   '................',
@@ -1202,6 +1218,35 @@ function drawSign(kind) {
     img.set(8, 7, hex('#e07030'));
     img.set(6, 8, hex('#a83820'));
     img.set(9, 8, hex('#a83820'));
+  } else if (kind === 'hall') {
+    // A drinking horn over a red band: the mead hall's mark.
+    img.set(5, 5, YELLOW());
+    img.set(6, 6, YELLOW());
+    img.set(7, 7, YELLOW());
+    img.set(8, 7, hex('#f4f0e6'));
+    img.set(9, 6, WOOD_DARK);
+    img.set(10, 5, WOOD_DARK);
+    img.set(6, 8, RED);
+    img.set(7, 8, RED);
+    img.set(8, 8, RED);
+  } else if (kind === 'wilds') {
+    // Pine and a north chevron: the trail mark for the Frostmere Wilds.
+    img.set(8, 4, PINE_HI);
+    img.set(7, 5, PINE);
+    img.set(8, 5, PINE_HI);
+    img.set(9, 5, PINE);
+    img.set(6, 6, PINE_DEEP);
+    img.set(7, 6, PINE);
+    img.set(8, 6, PINE);
+    img.set(9, 6, PINE);
+    img.set(10, 6, PINE_DEEP);
+    img.set(8, 7, WOOD_DARK);
+    img.set(8, 8, WOOD);
+    img.set(6, 9, SNOW_HI);
+    img.set(7, 9, SNOW_HI);
+    img.set(8, 9, SNOW_HI);
+    img.set(9, 9, SNOW_HI);
+    img.set(10, 9, SNOW_HI);
   } else {
     img.set(6, 6, YELLOW());
     img.set(7, 6, YELLOW());
@@ -1292,9 +1337,10 @@ function buildActors() {
     hilda: 2,
     torvald: 3,
     soren: 4,
-    young_wolf: 5,
-    wolf: 6,
-    frost_wolf: 7,
+    freya: 5,
+    young_wolf: 6,
+    wolf: 7,
+    frost_wolf: 8,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1343,6 +1389,11 @@ function buildActors() {
       tint: clothTint(hex('#3d5e78'), hex('#6e96b4'), hex('#2a4254'), hex('#3a241c'), hex('#6b4030')),
       overlay: (dir) => sorenOverlay(dir),
     },
+    {
+      row: 5,
+      tint: clothTint(hex('#7a2430'), hex('#c45058'), hex('#4a1420'), hex('#c6a56a'), hex('#f0d9a0')),
+      overlay: (dir, frame) => freyaOverlay(dir, frame),
+    },
   ];
 
   for (const person of people) {
@@ -1360,9 +1411,9 @@ function buildActors() {
   }
 
   const wolves = [
-    { row: 5, tint: wolfTint(WOLF, WOLF_HI, BELLY) },
-    { row: 6, tint: wolfTint(hex('#5c534c'), hex('#8a8178'), hex('#c8c0b6')) },
-    { row: 7, tint: wolfTint(hex('#8aa4b4'), hex('#d5e4ee'), hex('#f7fbfe')) },
+    { row: 6, tint: wolfTint(WOLF, WOLF_HI, BELLY) },
+    { row: 7, tint: wolfTint(hex('#5c534c'), hex('#8a8178'), hex('#c8c0b6')) },
+    { row: 8, tint: wolfTint(hex('#8aa4b4'), hex('#d5e4ee'), hex('#f7fbfe')) },
   ];
   const wolfDirs = [
     [WOLF_S, WOLF_S2],
@@ -1404,6 +1455,8 @@ function buildProps() {
     banner: drawBanner(),
     sign_inn: drawSign('inn'),
     sign_shop: drawSign('shop'),
+    sign_hall: drawSign('hall'),
+    sign_wilds: drawSign('wilds'),
     stump: drawStump(),
     bush: drawBush(),
     pouch: drawPouch(),
@@ -1562,7 +1615,8 @@ function buildMap(tiles) {
 
   const inn = building(16, 26, 10, 8, { chimney: true });
   const shop = building(34, 26, 10, 8, { shop: true });
-  building(16, 40, 14, 8, { chimney: true });
+  // Mead hall: the largest house, door facing the south yard. Interiors are not enterable.
+  const meadHall = building(16, 40, 14, 8, { chimney: true });
   building(36, 40, 8, 7, {});
 
   // Safe yard: inside the walls, not the wall tiles themselves, not the gate.
@@ -1586,6 +1640,8 @@ function buildMap(tiles) {
   add('npc', 'hilda', 21, 34, { defId: 'hilda', sprite: 'hilda' });
   add('npc', 'torvald', 24, 39, { defId: 'torvald', sprite: 'torvald' });
   add('npc', 'soren', 33, 26, { defId: 'soren', sprite: 'soren' });
+  // Just outside the mead-hall door. The door tile itself is solid.
+  add('npc', 'freya', meadHall.doorX, meadHall.doorY + 1, { defId: 'freya', sprite: 'freya' });
 
   const mobs = [
     ['young_wolf', 24, 16],
@@ -1609,6 +1665,8 @@ function buildMap(tiles) {
     { sprite: 'banner', tx: 33, ty: 30 },
     { sprite: 'sign_inn', tx: 18, ty: 34 },
     { sprite: 'sign_shop', tx: 36, ty: 34 },
+    { sprite: 'sign_hall', tx: meadHall.doorX - 3, ty: meadHall.doorY + 1 },
+    { sprite: 'sign_wilds', tx: 26, ty: 22 },
     { sprite: 'barrel', tx: 41, ty: 34, solid: true },
     { sprite: 'barrel', tx: 53, ty: 31, solid: true },
     { sprite: 'crate', tx: 17, ty: 34, solid: true },
@@ -1694,6 +1752,11 @@ function buildMap(tiles) {
     if (prop.solid) solid[prop.ty][prop.tx] = 1;
   }
 
+  // Place names drawn over the map. Labels are not feet, so they may sit on a roof.
+  add('label', 'Frostmere Wilds', 30, 20);
+  add('label', 'Hoffender', 30, 33);
+  add('label', 'Mead Hall', meadHall.doorX, meadHall.doorY - 3);
+
   // Border
   for (let x = 0; x < MAP_W; x++) {
     solid[0][x] = 1;
@@ -1706,7 +1769,7 @@ function buildMap(tiles) {
 
   // Spawns must stand on open ground.
   for (const o of objects) {
-    if (o.kind === 'prop') continue;
+    if (o.kind === 'prop' || o.kind === 'label') continue;
     const tx = Math.floor(o.x / TILE);
     const ty = Math.floor(o.y / TILE);
     if (solid[ty][tx]) {
@@ -1777,7 +1840,11 @@ function buildTmj(map, tileset) {
     version: '1.10',
     nextlayerid: 5,
     nextobjectid: oid,
-    properties: [{ name: 'zoneId', type: 'string', value: 'hoffender' }],
+    properties: [
+      { name: 'zoneId', type: 'string', value: 'hoffender' },
+      { name: 'townName', type: 'string', value: 'Hoffender' },
+      { name: 'wildsName', type: 'string', value: 'Frostmere Wilds' },
+    ],
     tilesets: [
       {
         columns: tileset.columns,
@@ -1842,6 +1909,8 @@ function renderPreview(map, tileset, props, actors) {
     banner: drawBanner(),
     sign_inn: drawSign('inn'),
     sign_shop: drawSign('shop'),
+    sign_hall: drawSign('hall'),
+    sign_wilds: drawSign('wilds'),
     stump: drawStump(),
     bush: drawBush(),
   };

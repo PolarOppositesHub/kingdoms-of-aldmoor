@@ -22,5 +22,11 @@
     "name": "Soren Bram",
     "title": "gate warden",
     "dialogue": "soren"
+  },
+  {
+    "id": "freya",
+    "name": "Jarl Freya Halvarddottir",
+    "title": "ruler of Hoffender",
+    "dialogue": "freya"
   }
 ]
