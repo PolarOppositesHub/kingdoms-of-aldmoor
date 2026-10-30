@@ -1,0 +1,249 @@
+import type { ContentDb, GameState, Intent, MapData } from './types';
+import { collect } from './events';
+import { dist } from './formulas';
+import { isSafe } from './map';
+import { findActor, getPlayer } from './state';
+import { addItem, nearestMob, openDialogue, resolveStrike, weaponProfile } from './systems';
+
+function clampAxis(value: number): number {
+  if (value > 0.4) return 1;
+  if (value < -0.4) return -1;
+  return 0;
+}
+
+export function applyIntent(state: GameState, intent: Intent, content: ContentDb, map: MapData) {
+  return collect(state, (emit) => {
+    const player = getPlayer(state);
+    const busy = state.ui.panel !== 'none';
+
+    switch (intent.type) {
+      case 'move': {
+        if (state.dead || busy) return;
+        state.input.x = clampAxis(intent.x);
+        state.input.y = clampAxis(intent.y);
+        if (state.input.x !== 0 || state.input.y !== 0) {
+          state.input.dest = null;
+          state.input.pendingInteract = null;
+        }
+        return;
+      }
+      case 'moveTo': {
+        if (state.dead || busy) return;
+        state.input.dest = { x: intent.x, y: intent.y };
+        state.input.pendingInteract = null;
+        player.pathTx = -999;
+        return;
+      }
+      case 'target': {
+        const actor = findActor(state, intent.id);
+        if (!actor || !actor.alive || actor.kind === 'player') return;
+        state.targetId = actor.id;
+        return;
+      }
+      case 'clearTarget':
+        state.targetId = null;
+        return;
+      case 'cycleTarget': {
+        const nearby = state.actors
+          .filter((actor) => actor.kind === 'mob' && actor.alive && dist(actor, player) < 320)
+          .sort((a, b) => dist(a, player) - dist(b, player));
+        if (!nearby.length) {
+          state.targetId = null;
+          emit({ type: 'log', text: 'Nothing nearby to fight.' });
+          return;
+        }
+        const index = nearby.findIndex((actor) => actor.id === state.targetId);
+        state.targetId = nearby[(index + 1) % nearby.length].id;
+        return;
+      }
+      case 'toggleAutoAttack': {
+        if (state.dead || busy) return;
+        state.autoAttack = !state.autoAttack;
+        if (!state.autoAttack) return;
+        const current = findActor(state, state.targetId);
+        if (!current || !current.alive || current.kind !== 'mob') {
+          const near = nearestMob(state, player.x, player.y, 240, null);
+          state.targetId = near?.id ?? null;
+          if (!near) emit({ type: 'log', text: 'Nothing nearby to fight.' });
+        }
+        if (player.attackMs <= 0) player.attackMs = content.tuning.swingWindupMs;
+        return;
+      }
+      case 'ability': {
+        if (state.dead || busy) return;
+        const ability = content.abilities[intent.id];
+        const known = content.classes[state.classId]?.abilities.includes(intent.id);
+        if (!ability || !known || state.level < ability.level) return;
+        if ((state.cooldowns[ability.id] ?? 0) > 0) return;
+        const target = findActor(state, state.targetId);
+        if (!target || !target.alive || target.kind !== 'mob') {
+          emit({ type: 'log', text: 'You have nothing in your sights.' });
+          return;
+        }
+        if (isSafe(map, player.x, player.y)) {
+          emit({ type: 'log', text: "You can't start a fight inside the palisade." });
+          return;
+        }
+        if (dist(player, target) > ability.range) {
+          emit({ type: 'log', text: 'You are too far away.' });
+          return;
+        }
+        player.facing = target.x < player.x ? 'w' : target.x > player.x ? 'e' : player.facing;
+        const profile = weaponProfile(state, content);
+        resolveStrike(state, content, map, player, target, ability.damage, profile.attack, true, 'kick', emit);
+        if (target.alive && target.kind === 'mob') {
+          const hate = target.hate.find((entry) => entry.id === player.id);
+          if (hate) hate.amount += ability.hate;
+        }
+        state.cooldowns[ability.id] = ability.cooldownMs;
+        return;
+      }
+      case 'talkTo': {
+        if (state.dead) return;
+        const npc = findActor(state, intent.id);
+        if (!npc || npc.kind !== 'npc') return;
+        if (dist(player, npc) <= content.tuning.interactRange) openDialogue(state, content, npc, emit);
+        else {
+          state.input.pendingInteract = npc.id;
+          state.input.dest = { x: npc.x, y: npc.y };
+          player.pathTx = -999;
+        }
+        return;
+      }
+      case 'interact': {
+        if (state.dead || busy) return;
+        let closest: { id: string; d: number } | null = null;
+        let walk: { id: string; d: number; x: number; y: number } | null = null;
+        for (const actor of state.actors) {
+          if (actor.kind !== 'npc') continue;
+          const gap = dist(player, actor);
+          if (gap <= content.tuning.interactRange && (!closest || gap < closest.d)) closest = { id: actor.id, d: gap };
+          if (gap <= 180 && (!walk || gap < walk.d)) walk = { id: actor.id, d: gap, x: actor.x, y: actor.y };
+        }
+        if (closest) {
+          const npc = findActor(state, closest.id);
+          if (npc) openDialogue(state, content, npc, emit);
+          return;
+        }
+        if (walk) {
+          state.input.pendingInteract = walk.id;
+          state.input.dest = { x: walk.x, y: walk.y };
+          player.pathTx = -999;
+          return;
+        }
+        emit({ type: 'log', text: 'Nobody is close enough to hear you.' });
+        return;
+      }
+      case 'choice': {
+        if (state.ui.panel !== 'dialogue' || !state.ui.npcId || !state.ui.nodeId) return;
+        const npc = findActor(state, state.ui.npcId);
+        if (!npc) return;
+        const def = content.npcs[npc.defId];
+        const node = def ? content.dialogue[def.dialogue]?.[state.ui.nodeId] : undefined;
+        const choice = node?.choices[intent.index];
+        if (!choice) return;
+        if (choice.action === 'merchant' && def?.id === content.merchant.npcId) {
+          state.ui.panel = 'merchant';
+          return;
+        }
+        if (choice.action === 'close' || !choice.next) {
+          state.ui = { panel: 'none', npcId: null, nodeId: null };
+          return;
+        }
+        state.ui.nodeId = choice.next;
+        return;
+      }
+      case 'buy': {
+        if (state.ui.panel !== 'merchant' || !state.ui.npcId) return;
+        const npc = findActor(state, state.ui.npcId);
+        if (!npc || content.npcs[npc.defId]?.id !== content.merchant.npcId) return;
+        const stock = content.merchant.stock.find((row) => row.itemId === intent.itemId);
+        const item = content.items[intent.itemId];
+        if (!stock || !item) return;
+        if (state.copper < stock.price) {
+          emit({ type: 'log', text: "You don't have the coin." });
+          return;
+        }
+        const left = addItem(state, content, item.id, 1);
+        if (left > 0) {
+          emit({ type: 'log', text: 'Your pack is full.' });
+          return;
+        }
+        state.copper -= stock.price;
+        emit({ type: 'log', text: `You buy a ${item.name} for ${stock.price} copper.` });
+        return;
+      }
+      case 'sell': {
+        if (state.ui.panel !== 'merchant') return;
+        const stack = state.inventory[intent.slot];
+        if (!stack) return;
+        const item = content.items[stack.itemId];
+        if (!item) return;
+        stack.qty -= 1;
+        if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
+        state.copper += item.value;
+        emit({ type: 'log', text: `You sell a ${item.name} for ${item.value} copper.` });
+        return;
+      }
+      case 'use': {
+        if (state.itemLockMs > 0 || state.dead) return;
+        const stack = state.inventory[intent.slot];
+        if (!stack) return;
+        const item = content.items[stack.itemId];
+        if (!item || item.kind !== 'consumable' || !item.heal) return;
+        if (player.hp >= player.maxHp) {
+          emit({ type: 'log', text: 'You are already at full health.' });
+          return;
+        }
+        const healed = Math.min(item.heal, player.maxHp - player.hp);
+        player.hp += healed;
+        stack.qty -= 1;
+        if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
+        state.itemLockMs = content.tuning.itemLockMs;
+        emit({ type: 'heal', targetId: player.id, amount: healed });
+        emit({ type: 'log', text: `The ${item.name} restores ${healed} health.` });
+        return;
+      }
+      case 'equip': {
+        const stack = state.inventory[intent.slot];
+        if (!stack) return;
+        const item = content.items[stack.itemId];
+        if (!item || item.kind !== 'weapon') return;
+        const previous = state.equipment.primary;
+        stack.qty -= 1;
+        if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
+        state.equipment.primary = item.id;
+        if (previous) addItem(state, content, previous, 1);
+        if (player.attackMs > (item.delayMs ?? player.attackMs)) player.attackMs = item.delayMs ?? player.attackMs;
+        emit({ type: 'log', text: `You equip the ${item.name}.` });
+        return;
+      }
+      case 'openPack':
+        if (state.dead) return;
+        state.ui = { panel: 'pack', npcId: null, nodeId: null };
+        state.input.x = 0;
+        state.input.y = 0;
+        state.input.dest = null;
+        return;
+      case 'openHelp':
+        state.ui = { panel: 'help', npcId: null, nodeId: null };
+        state.input.x = 0;
+        state.input.y = 0;
+        return;
+      case 'close':
+        state.ui = { panel: 'none', npcId: null, nodeId: null };
+        return;
+      case 'debugTeleport': {
+        if (!state.debug) return;
+        player.x = intent.x;
+        player.y = intent.y;
+        player.path = [];
+        player.pathTx = -999;
+        state.input.dest = null;
+        return;
+      }
+      default:
+        return;
+    }
+  });
+}

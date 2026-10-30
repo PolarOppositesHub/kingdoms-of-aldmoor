@@ -1,0 +1,11 @@
+[
+  {
+    "id": "kick",
+    "name": "Kick",
+    "level": 1,
+    "cooldownMs": 8000,
+    "range": 24,
+    "damage": { "n": 1, "sides": 4, "bonus": 3 },
+    "hate": 6
+  }
+]

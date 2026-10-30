@@ -1,0 +1,14 @@
+[
+  {
+    "id": "warrior",
+    "name": "Warrior",
+    "race": "barbarian",
+    "stats": { "str": 14, "sta": 12, "agi": 10, "dex": 10, "wis": 8, "int": 6, "cha": 8 },
+    "ac": 6,
+    "baseHp": 28,
+    "hpPerLevel": 8,
+    "hpPerSta": 1,
+    "weapon": "worn_axe",
+    "abilities": ["kick"]
+  }
+]

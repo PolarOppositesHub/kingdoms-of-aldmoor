@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="theme-color" content="#1c1418" />
+    <meta name="description" content="Kingdoms of Aldmoor — a 16-bit world on a small screen. Hoffender is the first hold." />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Aldmoor" />
+    <title>Kingdoms of Aldmoor</title>
+    <link rel="icon" href="./favicon.png" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+  </head>
+  <body>
+    <div id="app" data-layout="portrait">
+      <div id="map-slot"></div>
+      <div id="hud"></div>
+      <p id="toast" hidden></p>
+      <div id="panel" hidden></div>
+      <div id="gate">
+        <div class="gate-card">
+          <p class="eyebrow">Kingdoms of Aldmoor</p>
+          <h1>Hoffender</h1>
+          <p class="lede">A barbarian hold on a frozen fjord. The wolves are already on the road.</p>
+          <button id="enter" type="button">Enter the town</button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

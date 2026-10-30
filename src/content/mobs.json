@@ -1,0 +1,83 @@
+[
+  {
+    "id": "young_wolf",
+    "name": "young wolf",
+    "level": 1,
+    "hp": 18,
+    "ac": 3,
+    "attack": 8,
+    "damage": { "n": 1, "sides": 4, "bonus": 1 },
+    "delayMs": 2400,
+    "aggroRange": 72,
+    "assistRange": 96,
+    "leash": 160,
+    "social": "wolf",
+    "xp": 24,
+    "speed": 58,
+    "wanderSpeed": 30,
+    "crit": 0.03,
+    "verb": "bites",
+    "loot": [
+      { "itemId": "wolf_pelt", "chance": 0.7, "min": 1, "max": 1 },
+      { "itemId": "wolf_tooth", "chance": 0.45, "min": 1, "max": 1 },
+      { "itemId": "stringy_meat", "chance": 0.35, "min": 1, "max": 1 },
+      { "itemId": "cracked_fang", "chance": 0.05, "min": 1, "max": 1 }
+    ],
+    "coinMin": 0,
+    "coinMax": 4
+  },
+  {
+    "id": "wolf",
+    "name": "wolf",
+    "level": 2,
+    "hp": 28,
+    "ac": 5,
+    "attack": 11,
+    "damage": { "n": 1, "sides": 4, "bonus": 2 },
+    "delayMs": 2300,
+    "aggroRange": 84,
+    "assistRange": 104,
+    "leash": 170,
+    "social": "wolf",
+    "xp": 38,
+    "speed": 66,
+    "wanderSpeed": 32,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      { "itemId": "wolf_pelt", "chance": 0.85, "min": 1, "max": 1 },
+      { "itemId": "wolf_tooth", "chance": 0.55, "min": 1, "max": 2 },
+      { "itemId": "stringy_meat", "chance": 0.4, "min": 1, "max": 1 },
+      { "itemId": "cracked_fang", "chance": 0.12, "min": 1, "max": 1 }
+    ],
+    "coinMin": 1,
+    "coinMax": 6
+  },
+  {
+    "id": "frost_wolf",
+    "name": "frost wolf",
+    "level": 3,
+    "hp": 38,
+    "ac": 8,
+    "attack": 14,
+    "damage": { "n": 1, "sides": 6, "bonus": 1 },
+    "delayMs": 2200,
+    "aggroRange": 96,
+    "assistRange": 110,
+    "leash": 180,
+    "social": "wolf",
+    "xp": 60,
+    "speed": 72,
+    "wanderSpeed": 34,
+    "crit": 0.06,
+    "verb": "bites",
+    "loot": [
+      { "itemId": "wolf_pelt", "chance": 0.9, "min": 1, "max": 1 },
+      { "itemId": "wolf_pelt", "chance": 0.35, "min": 1, "max": 1 },
+      { "itemId": "wolf_tooth", "chance": 0.6, "min": 1, "max": 2 },
+      { "itemId": "cracked_fang", "chance": 0.28, "min": 1, "max": 1 }
+    ],
+    "coinMin": 2,
+    "coinMax": 8
+  }
+]

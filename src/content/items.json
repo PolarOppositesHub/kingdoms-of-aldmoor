@@ -1,0 +1,74 @@
+[
+  {
+    "id": "wolf_pelt",
+    "name": "wolf pelt",
+    "kind": "junk",
+    "value": 8,
+    "stack": 20,
+    "blurb": "A rough northern pelt. The merchant pays coin for these."
+  },
+  {
+    "id": "wolf_tooth",
+    "name": "wolf tooth",
+    "kind": "junk",
+    "value": 3,
+    "stack": 20,
+    "blurb": "Whole enough to keep. Not much else to say for it."
+  },
+  {
+    "id": "cracked_fang",
+    "name": "cracked fang",
+    "kind": "junk",
+    "value": 22,
+    "stack": 10,
+    "blurb": "Longer than a tooth has any right to be."
+  },
+  {
+    "id": "stringy_meat",
+    "name": "stringy meat",
+    "kind": "junk",
+    "value": 2,
+    "stack": 20,
+    "blurb": "Edible only in the sense that it is not a rock."
+  },
+  {
+    "id": "wool_bandage",
+    "name": "wool bandage",
+    "kind": "consumable",
+    "value": 3,
+    "stack": 10,
+    "heal": 10,
+    "blurb": "Clean enough. Restores a little health."
+  },
+  {
+    "id": "trail_ration",
+    "name": "trail ration",
+    "kind": "consumable",
+    "value": 6,
+    "stack": 10,
+    "heal": 18,
+    "blurb": "Salt, fat, and a hard biscuit. Restores more health."
+  },
+  {
+    "id": "worn_axe",
+    "name": "worn woodsman's axe",
+    "kind": "weapon",
+    "value": 4,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2600,
+    "damage": { "n": 1, "sides": 6, "bonus": 1 },
+    "blurb": "The edge is honest, if tired."
+  },
+  {
+    "id": "bearded_handaxe",
+    "name": "bearded handaxe",
+    "kind": "weapon",
+    "value": 16,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2100,
+    "damage": { "n": 1, "sides": 6, "bonus": 3 },
+    "blurb": "Shorter haft, keener bite, quicker back to the guard."
+  }
+]

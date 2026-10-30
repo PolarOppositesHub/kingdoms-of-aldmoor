@@ -1,0 +1,6 @@
+{
+  "name": "Warrior",
+  "classId": "warrior",
+  "copper": 14,
+  "items": [{ "itemId": "wool_bandage", "qty": 1 }]
+}

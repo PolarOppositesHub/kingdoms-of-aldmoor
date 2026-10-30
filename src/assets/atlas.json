@@ -1,0 +1,153 @@
+{
+  "actors": {
+    "frameW": 16,
+    "frameH": 24,
+    "dirs": [
+      "s",
+      "e",
+      "n",
+      "w"
+    ],
+    "framesPerDir": 2,
+    "rows": {
+      "warrior": 0,
+      "brenna": 1,
+      "hilda": 2,
+      "torvald": 3,
+      "soren": 4,
+      "young_wolf": 5,
+      "wolf": 6,
+      "frost_wolf": 7
+    }
+  },
+  "props": {
+    "tree": {
+      "x": 0,
+      "y": 0,
+      "w": 32,
+      "h": 40,
+      "anchorX": 16,
+      "anchorY": 39
+    },
+    "tree_b": {
+      "x": 32,
+      "y": 0,
+      "w": 32,
+      "h": 40,
+      "anchorX": 16,
+      "anchorY": 39
+    },
+    "rock": {
+      "x": 64,
+      "y": 0,
+      "w": 24,
+      "h": 18,
+      "anchorX": 12,
+      "anchorY": 17
+    },
+    "rock_small": {
+      "x": 88,
+      "y": 0,
+      "w": 16,
+      "h": 14,
+      "anchorX": 8,
+      "anchorY": 13
+    },
+    "barrel": {
+      "x": 104,
+      "y": 0,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "crate": {
+      "x": 0,
+      "y": 40,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "well": {
+      "x": 16,
+      "y": 40,
+      "w": 32,
+      "h": 32,
+      "anchorX": 16,
+      "anchorY": 31
+    },
+    "firepit": {
+      "x": 48,
+      "y": 40,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "firepit_b": {
+      "x": 64,
+      "y": 40,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "banner": {
+      "x": 80,
+      "y": 40,
+      "w": 16,
+      "h": 32,
+      "anchorX": 8,
+      "anchorY": 31
+    },
+    "sign_inn": {
+      "x": 96,
+      "y": 40,
+      "w": 16,
+      "h": 24,
+      "anchorX": 8,
+      "anchorY": 23
+    },
+    "sign_shop": {
+      "x": 112,
+      "y": 40,
+      "w": 16,
+      "h": 24,
+      "anchorX": 8,
+      "anchorY": 23
+    },
+    "stump": {
+      "x": 0,
+      "y": 72,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "bush": {
+      "x": 16,
+      "y": 72,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "pouch": {
+      "x": 32,
+      "y": 72,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "coins": {
+      "x": 48,
+      "y": 72,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    }
+  }
+}
