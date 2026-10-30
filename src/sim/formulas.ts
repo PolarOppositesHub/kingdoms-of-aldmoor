@@ -60,6 +60,12 @@ export function maxHp(content: ContentDb, classId: string, level: number, stats:
   return cls.baseHp + stats.sta * cls.hpPerSta + (level - 1) * cls.hpPerLevel;
 }
 
+export function maxMana(content: ContentDb, classId: string, level: number, stats: Stats): number {
+  const cls = content.classes[classId];
+  if (!cls || cls.baseMana <= 0) return 0;
+  return cls.baseMana + stats.int * cls.manaPerInt + (level - 1) * cls.manaPerLevel;
+}
+
 export function formatCoin(copper: number, economy = { copperPerSilver: 10, silverPerGold: 10, goldPerPlatinum: 10 }): string {
   const silverUnit = economy.copperPerSilver;
   const goldUnit = silverUnit * economy.silverPerGold;

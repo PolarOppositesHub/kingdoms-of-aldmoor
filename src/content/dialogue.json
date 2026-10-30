@@ -17,7 +17,7 @@
       ]
     },
     "advice": {
-      "text": "Buy a bandage before you buy a bigger axe. The road wolves are young. The pale ones by the northern rocks are not. Pride is expensive.",
+      "text": "Buy a bandage before you buy a bigger axe. On the Frostmere Wilds road the wolves are young. The pale ones by the northern rocks are not. Pride is expensive.",
       "choices": [
         { "label": "Show me the stock.", "action": "merchant" },
         { "label": "I'll remember.", "action": "close" }
@@ -28,13 +28,13 @@
     "start": {
       "text": "Frosthearth Inn. Stew's on, the beds complain, and the fire doesn't ask questions.",
       "choices": [
-        { "label": "If I fall out there?", "next": "fall" },
+        { "label": "What if I fall in combat out there?", "next": "fall" },
         { "label": "What's in the stew?", "next": "stew" },
         { "label": "Warm hands, then.", "action": "close" }
       ]
     },
     "fall": {
-      "text": "You'll wake in my yard. I'll have words about the mud and none about how you got there. Try to come back walking.",
+      "text": "You die, and you wake in my yard. Your gear stays on you. Below the fifth winter you lose no experience. The Frostmere Wilds will still be there. Try to come back walking.",
       "choices": [
         { "label": "Good to know.", "next": "start" },
         { "label": "I'll try.", "action": "close" }
@@ -55,17 +55,17 @@
       ]
     },
     "north": {
-      "text": "Wolves, not sailors. The young ones linger by the packed road. Further into the pines they run in pairs. The pale ones near the rocks can take a warrior apart.",
+      "text": "Wolves, not sailors. The young ones linger on the Frostmere Wilds road. Further into the pines they run in pairs. The pale ones near the rocks can take a warrior apart.",
       "choices": [{ "label": "Back.", "next": "start" }]
     },
     "hall": {
-      "text": "The hall is still a stack of timber and an argument. No trainer waits inside. Until the gathered families pick a master, the wilds will have to do the teaching.",
+      "text": "The warriors' hall is still a stack of timber and an argument. No trainer waits inside. Jarl Freya has not named a master — she would rather seal a trade pact than raise a war-band. Until she does, the Frostmere Wilds will have to do the teaching.",
       "choices": [{ "label": "Then I'll learn outside.", "action": "close" }]
     }
   },
   "soren": {
     "start": {
-      "text": "Gate's open. Don't take that for a welcome from the wilds. Wolves have been crossing the packed road.",
+      "text": "Gate's open. Don't take that for a welcome from the Frostmere Wilds. Wolves have been crossing the packed road.",
       "choices": [
         { "label": "Where should I start?", "next": "startTip" },
         { "label": "Who speaks for the hold?", "next": "rule" },
@@ -73,12 +73,62 @@
       ]
     },
     "startTip": {
-      "text": "North, on the road, the young ones are bold and not very wise. If two of them look at you at once, walk back through my gate. The palisade is the end of their courage.",
+      "text": "North, on the Frostmere Wilds road, the young ones are bold and not very wise. If two of them look at you at once, walk back through my gate. The palisade is the end of their courage.",
       "choices": [{ "label": "Back.", "next": "start" }]
     },
     "rule": {
-      "text": "The gathered families speak for Hoffender when they sit together. Between sittings I keep the gate, Hilda keeps the fire, and Brenna keeps the scales.",
+      "text": "Jarl Freya Halvarddottir speaks for Hoffender. The guards answer to her word. I keep this gate because she says the road stays open. Hilda keeps the fire, and Brenna keeps the scales.",
       "choices": [{ "label": "Understood.", "action": "close" }]
+    }
+  },
+  "freya": {
+    "start": {
+      "text": "I am Freya Halvarddottir. My father held this seat until he fell. I hold it now, and I would rather fill the mead hall with traders than with a war-band.",
+      "choices": [
+        { "label": "What do you ask of the hold?", "next": "rule" },
+        { "label": "And the guards?", "next": "guards" },
+        { "label": "What lies past the gate?", "next": "wilds" },
+        { "label": "Jarl.", "action": "close" }
+      ]
+    },
+    "rule": {
+      "text": "Open roads, and neighbors who would rather trade than raid us. A shield is for the gate, not for a glory-hunt. Bring me alliances. Leave the trophies in the snow.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "guards": {
+      "text": "They answer to my word. Soren keeps the north gate because I told him to keep it open. If a guard tells you otherwise, send them back to this mead hall.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "wilds": {
+      "text": "The Frostmere Wilds. Wolves on the packed road, and worse where the pines thicken. Walk them if you must. Do not start a war I will have to finish.",
+      "choices": [{ "label": "I'll go carefully.", "action": "close" }]
+    }
+  },
+  "eirik": {
+    "start": {
+      "text": "Warrior Guild. I am Eirik Stonehand. The hall is new, the wolves are not, and I am already short of pelts.",
+      "choices": [
+        { "label": "What do you need?", "next": "ask" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "ask": {
+      "text": "Four wolf pelts from the Frostmere Wilds. Bring them here. I will pay, and I have a helm that still smells like the animal.",
+      "choices": [
+        { "label": "I'll bring you pelts.", "action": "acceptQuest", "quest": "wolf_pelts" },
+        { "label": "Not now.", "action": "close" }
+      ]
+    },
+    "active": {
+      "text": "Four pelts. The young ones on the road drop them often enough, if you are the one still standing.",
+      "choices": [
+        { "label": "Here are the pelts.", "action": "turnIn", "quest": "wolf_pelts" },
+        { "label": "I'm still hunting.", "action": "close" }
+      ]
+    },
+    "done": {
+      "text": "The helm suits you. Wear it. The guild will have more work when the hall is finished. Not today.",
+      "choices": [{ "label": "Guildmaster.", "action": "close" }]
     }
   }
 }

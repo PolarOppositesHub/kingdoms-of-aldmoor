@@ -9,6 +9,28 @@
     "hpPerLevel": 8,
     "hpPerSta": 1,
     "weapon": "worn_axe",
+    "sprite": "warrior",
+    "baseMana": 0,
+    "manaPerLevel": 0,
+    "manaPerInt": 0,
+    "blurb": "An axe, a kick, and the nerve to stand in reach.",
     "abilities": ["kick"]
+  },
+  {
+    "id": "wizard",
+    "name": "Wizard",
+    "race": "human",
+    "stats": { "str": 8, "sta": 8, "agi": 9, "dex": 10, "wis": 10, "int": 16, "cha": 8 },
+    "ac": 2,
+    "baseHp": 16,
+    "hpPerLevel": 4,
+    "hpPerSta": 1,
+    "weapon": "ash_staff",
+    "sprite": "wizard",
+    "baseMana": 24,
+    "manaPerLevel": 8,
+    "manaPerInt": 2,
+    "blurb": "A staff and a pool of mana. Shardbolt reaches, Rimefield slows a pack.",
+    "abilities": ["shardbolt", "rimefield"]
   }
 ]

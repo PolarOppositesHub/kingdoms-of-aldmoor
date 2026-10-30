@@ -51,11 +51,15 @@ export function parseTiledMap(raw: TiledJson): MapData {
       y: obj.y,
       defId: typeof props.defId === 'string' ? props.defId : obj.name,
       sprite: typeof props.sprite === 'string' ? props.sprite : obj.name,
+      text: typeof props.text === 'string' ? props.text : undefined,
     };
     if (kind === 'bind') bind = { x: obj.x, y: obj.y };
     spawns.push(spawn);
   }
-  const zone = (raw.properties ?? []).find((prop) => prop.name === 'zoneId');
+  const propValue = (name: string) => (raw.properties ?? []).find((prop) => prop.name === name);
+  const zone = propValue('zoneId');
+  const town = propValue('townName');
+  const wilds = propValue('wildsName');
   return {
     width: raw.width,
     height: raw.height,
@@ -65,7 +69,14 @@ export function parseTiledMap(raw: TiledJson): MapData {
     spawns,
     bind,
     zoneId: typeof zone?.value === 'string' ? zone.value : 'hoffender',
+    townName: typeof town?.value === 'string' ? town.value : 'Hoffender',
+    wildsName: typeof wilds?.value === 'string' ? wilds.value : 'Frostmere Wilds',
   };
+}
+
+/** Inside the palisade the place is Hoffender. Outside the gate it is the Frostmere Wilds. */
+export function placeName(map: MapData, x: number, y: number): string {
+  return isSafe(map, x, y) ? map.townName : map.wildsName;
 }
 
 export function inBounds(map: MapData, tx: number, ty: number): boolean {

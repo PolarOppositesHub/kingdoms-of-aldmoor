@@ -4,7 +4,7 @@ export const TICK_MS = 1000 / 30;
 
 export type Dir = 's' | 'n' | 'e' | 'w';
 export type ConColor = 'gray' | 'green' | 'lightblue' | 'blue' | 'white' | 'yellow' | 'red';
-export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help';
+export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect';
 
 export interface Dice {
   n: number;
@@ -25,12 +25,13 @@ export interface Stats {
 export interface ItemDef {
   id: string;
   name: string;
-  kind: 'junk' | 'consumable' | 'weapon';
+  kind: 'junk' | 'consumable' | 'weapon' | 'armor';
   value: number;
   stack: number;
   blurb: string;
   heal?: number;
-  slot?: 'primary';
+  slot?: 'primary' | 'head';
+  ac?: number;
   delayMs?: number;
   damage?: Dice;
 }
@@ -75,7 +76,8 @@ export interface NpcDef {
 export interface DialogueChoice {
   label: string;
   next?: string;
-  action?: 'close' | 'merchant';
+  action?: 'close' | 'merchant' | 'acceptQuest' | 'turnIn';
+  quest?: string;
 }
 
 export interface DialogueNode {
@@ -86,11 +88,19 @@ export interface DialogueNode {
 export interface AbilityDef {
   id: string;
   name: string;
+  short?: string;
   level: number;
   cooldownMs: number;
   range: number;
   damage: Dice;
   hate: number;
+  kind?: 'strike' | 'bolt' | 'field';
+  verb?: string;
+  mana?: number;
+  radius?: number;
+  slowMs?: number;
+  slowFactor?: number;
+  blurb?: string;
 }
 
 export interface ClassDef {
@@ -103,6 +113,11 @@ export interface ClassDef {
   hpPerLevel: number;
   hpPerSta: number;
   weapon: string;
+  sprite: string;
+  baseMana: number;
+  manaPerLevel: number;
+  manaPerInt: number;
+  blurb: string;
   abilities: string[];
 }
 
@@ -127,6 +142,9 @@ export interface Tuning {
   regenDelayMs: number;
   regenHpPerSec: number;
   townRegenHpPerSec: number;
+  combatManaPerSec: number;
+  restManaPerSec: number;
+  townManaPerSec: number;
   swingWindupMs: number;
   itemLockMs: number;
   respawnDelayMs: number;
@@ -156,6 +174,29 @@ export interface ContentDb {
   merchant: { npcId: string; stock: MerchantStock[] };
   economy: { copperPerSilver: number; silverPerGold: number; goldPerPlatinum: number };
   player: { name: string; classId: string; copper: number; items: { itemId: string; qty: number }[] };
+  roster: Roster;
+}
+
+export interface RaceDef {
+  id: string;
+  name: string;
+  playable: boolean;
+  blurb: string;
+  mods: Stats;
+}
+
+export interface RosterClass {
+  id: string;
+  name: string;
+  playable: boolean;
+  races: string[];
+  blurb: string;
+}
+
+export interface Roster {
+  points: number;
+  races: RaceDef[];
+  classes: RosterClass[];
 }
 
 export interface ItemStack {
@@ -195,6 +236,8 @@ export interface Actor {
   pathTx: number;
   pathTy: number;
   stuck: number;
+  slowMs: number;
+  slowRate: number;
 }
 
 export interface GroundItem {
@@ -221,13 +264,17 @@ export interface GameState {
   actors: Actor[];
   ground: GroundItem[];
   inventory: ItemStack[];
-  equipment: { primary: string };
+  equipment: { primary: string; head: string | null };
   copper: number;
   xp: number;
   level: number;
   stats: Stats;
   ac: number;
   classId: string;
+  raceId: string;
+  mana: number;
+  maxMana: number;
+  manaRegenBank: number;
   autoAttack: boolean;
   targetId: string | null;
   cooldowns: Record<string, number>;
@@ -240,12 +287,16 @@ export interface GameState {
     y: number;
     dest: { x: number; y: number } | null;
     pendingInteract: string | null;
+    pendingSign: string | null;
   };
   ui: {
     panel: Panel;
     npcId: string | null;
     nodeId: string | null;
+    title: string | null;
+    body: string | null;
   };
+  quests: { wolf_pelts: { stage: 'none' | 'active' | 'done'; progress: number } };
   log: string[];
   bind: { x: number; y: number };
   dead: boolean;
@@ -264,7 +315,9 @@ export type SimEvent =
   | { type: 'playerDeath' }
   | { type: 'level'; level: number }
   | { type: 'swing'; actorId: string }
-  | { type: 'aggro'; actorId: string };
+  | { type: 'aggro'; actorId: string }
+  | { type: 'bolt'; fromX: number; fromY: number; toX: number; toY: number }
+  | { type: 'field'; x: number; y: number; radius: number };
 
 export type Intent =
   | { type: 'move'; x: number; y: number }
@@ -274,6 +327,8 @@ export type Intent =
   | { type: 'cycleTarget' }
   | { type: 'toggleAutoAttack' }
   | { type: 'ability'; id: string }
+  | { type: 'selectClass'; classId: string }
+  | { type: 'createHero'; raceId: string; classId: string; bonus: Stats }
   | { type: 'talkTo'; id: string }
   | { type: 'interact' }
   | { type: 'choice'; index: number }
@@ -293,6 +348,7 @@ export interface Spawn {
   y: number;
   defId: string;
   sprite: string;
+  text?: string;
 }
 
 export interface MapData {
@@ -304,4 +360,6 @@ export interface MapData {
   spawns: Spawn[];
   bind: { x: number; y: number };
   zoneId: string;
+  townName: string;
+  wildsName: string;
 }

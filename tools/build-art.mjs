@@ -111,8 +111,8 @@ const PAL = {
 
 const TILE = 16;
 const COLS = 8;
-const MAP_W = 60;
-const MAP_H = 54;
+const MAP_W = 72;
+const MAP_H = 66;
 
 const T = {
   SNOW: 1,
@@ -142,6 +142,11 @@ const T = {
   CHIMNEY: 25,
   AWNING: 26,
   DOOR_SHOP: 27,
+  STONE: 28,
+  STONE_FRONT: 29,
+  STONE_DOOR: 30,
+  STONE_WIN: 31,
+  FENCE: 32,
 };
 
 function tileCanvas() {
@@ -260,6 +265,61 @@ function paintLogs(front) {
   return img;
 }
 
+function paintStone(front) {
+  const img = tileCanvas();
+  const rand = mulberry(front ? 4 : 9);
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      let c = hex('#7d746c');
+      if ((x + y) % 7 === 0) c = hex('#5c564e');
+      else if (rand() > 0.86) c = hex('#b7aa9e');
+      if (y % 5 === 0) c = hex('#4e4640');
+      img.set(x, y, c);
+    }
+  }
+  // A carved chevron, an original hold-mark, not a copied crest.
+  img.set(8, 6, SNOW_HI);
+  img.set(7, 7, SNOW_HI);
+  img.set(9, 7, SNOW_HI);
+  img.set(6, 8, SNOW_HI);
+  img.set(10, 8, SNOW_HI);
+  if (front) {
+    for (let y = 13; y < 16; y++) for (let x = 0; x < 16; x++) img.set(x, y, hex('#3a342e'));
+  }
+  return img;
+}
+
+function paintStoneDoor() {
+  const img = paintStone(true);
+  for (let y = 2; y <= 12; y++) {
+    for (let x = 5; x <= 10; x++) {
+      const edge = x === 5 || x === 10 || y === 2;
+      img.set(x, y, edge ? hex('#3a342e') : y % 3 === 0 ? WOOD_SH : WOOD);
+    }
+  }
+  img.set(9, 8, IRON);
+  return img;
+}
+
+function paintStoneWin() {
+  const img = paintStone(false);
+  for (let y = 6; y <= 10; y++) {
+    for (let x = 5; x <= 10; x++) {
+      const edge = x === 5 || x === 10 || y === 6 || y === 10;
+      img.set(x, y, edge ? hex('#3a342e') : y < 8 ? WINDOW_HI : WINDOW);
+    }
+  }
+  return img;
+}
+
+function paintFence() {
+  const img = tileCanvas();
+  img.fill(SNOW);
+  for (const y of [6, 7, 11, 12]) for (let x = 0; x < 16; x++) img.set(x, y, y % 2 ? WOOD_SH : WOOD);
+  for (const x of [2, 3, 12, 13]) for (let y = 4; y <= 14; y++) img.set(x, y, WOOD_DARK);
+  return img;
+}
+
 function paintWindow() {
   const img = paintLogs(false);
   for (let y = 5; y <= 10; y++) {
@@ -273,9 +333,9 @@ function paintWindow() {
 
 function paintDoor() {
   const img = paintLogs(true);
-  for (let y = 3; y <= 12; y++) {
-    for (let x = 5; x <= 10; x++) {
-      const edge = x === 5 || x === 10 || y === 3;
+  for (let y = 2; y <= 12; y++) {
+    for (let x = 4; x <= 11; x++) {
+      const edge = x === 4 || x === 11 || y === 2;
       img.set(x, y, edge ? WOOD_DARK : y % 3 === 0 ? WOOD_SH : WOOD);
     }
   }
@@ -405,8 +465,13 @@ function buildTileset() {
   tiles.set(T.CHIMNEY, paintChimney());
   tiles.set(T.AWNING, paintAwning(false));
   tiles.set(T.DOOR_SHOP, paintAwning(true));
+  tiles.set(T.STONE, paintStone(false));
+  tiles.set(T.STONE_FRONT, paintStone(true));
+  tiles.set(T.STONE_DOOR, paintStoneDoor());
+  tiles.set(T.STONE_WIN, paintStoneWin());
+  tiles.set(T.FENCE, paintFence());
 
-  const rows = Math.ceil(28 / COLS);
+  const rows = Math.ceil(32 / COLS);
   const margin = 1;
   const spacing = 2;
   const imgW = margin * 2 + COLS * TILE + (COLS - 1) * spacing;
@@ -857,6 +922,90 @@ function sorenOverlay(dir) {
   };
 }
 
+// Circlet, cloak, and round shield. Original shield-maiden, not a copied crest.
+function wizardOverlay(dir) {
+  return (img) => {
+    const robe = hex('#241848');
+    const gem = hex('#b7e3ff');
+    const gemHi = hex('#f4fbff');
+    if (dir === 's' || dir === 'n') {
+      for (let x = 5; x <= 10; x++) img.set(x, 1, robe);
+      img.set(6, 2, gem);
+      img.set(9, 2, gem);
+    } else {
+      for (let x = 6; x <= 10; x++) img.set(x, 1, robe);
+    }
+    const staffX = dir === 'e' ? 12 : 2;
+    for (let y = 4; y <= 20; y++) img.set(staffX, y, WOOD_DARK);
+    img.set(staffX, 3, gem);
+    img.set(staffX, 2, gemHi);
+  };
+}
+
+function eirikOverlay(dir) {
+  return (img) => {
+    const iron = hex('#8b97a3');
+    if (dir === 's' || dir === 'n') {
+      for (let x = 4; x <= 11; x++) img.set(x, 8, iron);
+      img.set(3, 10, iron);
+      img.set(3, 11, WOOD_DARK);
+      img.set(3, 12, iron);
+    } else {
+      img.set(12, 9, iron);
+      img.set(12, 10, WOOD);
+      img.set(12, 11, iron);
+    }
+  };
+}
+
+function drawHelm(dir) {
+  const img = createImage(16, 24);
+  const fur = hex('#8a8178');
+  const light = hex('#d8c8b0');
+  const mouth = hex('#6a3030');
+  if (dir === 's') {
+    for (let x = 4; x <= 11; x++) {
+      img.set(x, 1, fur);
+      img.set(x, 2, light);
+    }
+    img.set(7, 0, fur);
+    img.set(8, 0, fur);
+    for (let y = 3; y <= 7; y++) {
+      img.set(3, y, fur);
+      img.set(12, y, fur);
+    }
+    img.set(5, 6, mouth);
+    img.set(6, 6, mouth);
+    img.set(9, 6, mouth);
+    img.set(10, 6, mouth);
+  } else if (dir === 'n') {
+    for (let x = 4; x <= 11; x++) img.set(x, 1, fur);
+    for (let y = 2; y <= 6; y++) for (let x = 5; x <= 10; x++) img.set(x, y, y < 4 ? light : fur);
+  } else {
+    for (let y = 1; y <= 6; y++) img.set(8, y, fur);
+    img.set(9, 2, light);
+    img.set(10, 3, fur);
+    img.set(11, 4, mouth);
+    img.set(7, 5, fur);
+  }
+  return img;
+}
+
+function freyaOverlay(dir, frame) {
+  return (img) => {
+    if (dir === 's' || dir === 'n') paintOver(img, 5, 2, ['KYYYYK']);
+    if (dir === 'e') paintOver(img, 6, 2, ['KYYY']);
+    if (dir === 's' || dir === 'n') paintOver(img, 4, 8, ['RRRRRRRR']);
+    if (dir === 'e') paintOver(img, 5, 9, ['RRRR']);
+    if (dir === 's') paintOver(img, 11, 10, ['.QQ', 'QYQ', '.QQ']);
+    if (dir === 'e') paintOver(img, 10, 10, ['QQ', 'YQ', 'QQ']);
+    if (dir === 'n') {
+      paintOver(img, 1, 10, ['QQ', 'QY', 'QQ']);
+      paintOver(img, 7, 5, ['A', 'a', 'A', frame ? 'A' : 'a']);
+    }
+  };
+}
+
 const WOLF_E = sprite([
   '................',
   '................',
@@ -1202,6 +1351,35 @@ function drawSign(kind) {
     img.set(8, 7, hex('#e07030'));
     img.set(6, 8, hex('#a83820'));
     img.set(9, 8, hex('#a83820'));
+  } else if (kind === 'hall') {
+    // A drinking horn over a red band: the mead hall's mark.
+    img.set(5, 5, YELLOW());
+    img.set(6, 6, YELLOW());
+    img.set(7, 7, YELLOW());
+    img.set(8, 7, hex('#f4f0e6'));
+    img.set(9, 6, WOOD_DARK);
+    img.set(10, 5, WOOD_DARK);
+    img.set(6, 8, RED);
+    img.set(7, 8, RED);
+    img.set(8, 8, RED);
+  } else if (kind === 'wilds') {
+    // Pine and a north chevron: the trail mark for the Frostmere Wilds.
+    img.set(8, 4, PINE_HI);
+    img.set(7, 5, PINE);
+    img.set(8, 5, PINE_HI);
+    img.set(9, 5, PINE);
+    img.set(6, 6, PINE_DEEP);
+    img.set(7, 6, PINE);
+    img.set(8, 6, PINE);
+    img.set(9, 6, PINE);
+    img.set(10, 6, PINE_DEEP);
+    img.set(8, 7, WOOD_DARK);
+    img.set(8, 8, WOOD);
+    img.set(6, 9, SNOW_HI);
+    img.set(7, 9, SNOW_HI);
+    img.set(8, 9, SNOW_HI);
+    img.set(9, 9, SNOW_HI);
+    img.set(10, 9, SNOW_HI);
   } else {
     img.set(6, 6, YELLOW());
     img.set(7, 6, YELLOW());
@@ -1292,9 +1470,13 @@ function buildActors() {
     hilda: 2,
     torvald: 3,
     soren: 4,
-    young_wolf: 5,
-    wolf: 6,
-    frost_wolf: 7,
+    freya: 5,
+    young_wolf: 6,
+    wolf: 7,
+    frost_wolf: 8,
+    wizard: 9,
+    eirik: 10,
+    wolf_helm: 11,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1343,6 +1525,21 @@ function buildActors() {
       tint: clothTint(hex('#3d5e78'), hex('#6e96b4'), hex('#2a4254'), hex('#3a241c'), hex('#6b4030')),
       overlay: (dir) => sorenOverlay(dir),
     },
+    {
+      row: 5,
+      tint: clothTint(hex('#7a2430'), hex('#c45058'), hex('#4a1420'), hex('#c6a56a'), hex('#f0d9a0')),
+      overlay: (dir, frame) => freyaOverlay(dir, frame),
+    },
+    {
+      row: 9,
+      tint: clothTint(hex('#2c2458'), hex('#5a4c90'), hex('#161228'), hex('#d8d0c4'), hex('#f4f1ea')),
+      overlay: (dir) => wizardOverlay(dir),
+    },
+    {
+      row: 10,
+      tint: clothTint(hex('#5c2424'), hex('#8a4030'), hex('#2a1414'), hex('#3a241c'), hex('#6b4030')),
+      overlay: (dir) => eirikOverlay(dir),
+    },
   ];
 
   for (const person of people) {
@@ -1360,9 +1557,9 @@ function buildActors() {
   }
 
   const wolves = [
-    { row: 5, tint: wolfTint(WOLF, WOLF_HI, BELLY) },
-    { row: 6, tint: wolfTint(hex('#5c534c'), hex('#8a8178'), hex('#c8c0b6')) },
-    { row: 7, tint: wolfTint(hex('#8aa4b4'), hex('#d5e4ee'), hex('#f7fbfe')) },
+    { row: 6, tint: wolfTint(WOLF, WOLF_HI, BELLY) },
+    { row: 7, tint: wolfTint(hex('#5c534c'), hex('#8a8178'), hex('#c8c0b6')) },
+    { row: 8, tint: wolfTint(hex('#8aa4b4'), hex('#d5e4ee'), hex('#f7fbfe')) },
   ];
   const wolfDirs = [
     [WOLF_S, WOLF_S2],
@@ -1377,6 +1574,18 @@ function buildActors() {
     put(wolf.row, 3, 0, tintImage(WOLF_E, wolf.tint), true);
     put(wolf.row, 3, 1, tintImage(WOLF_E2, wolf.tint), true);
   }
+
+  const helmSouth = drawHelm('s');
+  const helmEast = drawHelm('e');
+  const helmNorth = drawHelm('n');
+  put(11, 0, 0, helmSouth);
+  put(11, 0, 1, helmSouth);
+  put(11, 1, 0, helmEast);
+  put(11, 1, 1, helmEast);
+  put(11, 2, 0, helmNorth);
+  put(11, 2, 1, helmNorth);
+  put(11, 3, 0, helmEast, true);
+  put(11, 3, 1, helmEast, true);
 
   return {
     sheet,
@@ -1404,6 +1613,8 @@ function buildProps() {
     banner: drawBanner(),
     sign_inn: drawSign('inn'),
     sign_shop: drawSign('shop'),
+    sign_hall: drawSign('hall'),
+    sign_wilds: drawSign('wilds'),
     stump: drawStump(),
     bush: drawBush(),
     pouch: drawPouch(),
@@ -1458,12 +1669,13 @@ function buildMap(tiles) {
   }
 
   // Fjord along the east.
+  const shore = MAP_W - 7;
   for (let y = 0; y < MAP_H; y++) {
-    for (let x = 55; x < MAP_W; x++) {
+    for (let x = shore + 1; x < MAP_W; x++) {
       g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
       solid[y][x] = 1;
     }
-    g[y][54] = T.ICE;
+    g[y][shore] = T.ICE;
   }
 
   const stamp = (x, y, tile, blocked = false) => {
@@ -1479,7 +1691,7 @@ function buildMap(tiles) {
   };
 
   // Roads. Vertical avenue and the east-west street.
-  fillRect(29, 6, 3, 43, T.PATH);
+  fillRect(29, 6, 3, 56, T.PATH);
   fillRect(16, 35, 29, 3, T.PATH);
   // Porches in front of the north buildings.
   fillRect(18, 34, 8, 1, T.PATH_B);
@@ -1490,22 +1702,18 @@ function buildMap(tiles) {
     stamp(32, y, T.PATH_B);
   }
 
-  // Dock
-  fillRect(52, 30, 3, 4, T.DOCK, false);
-  solid[30][54] = 0;
-  solid[31][54] = 0;
-  solid[32][54] = 0;
-  solid[33][54] = 0;
-  g[30][54] = T.DOCK;
-  g[31][54] = T.DOCK;
-  g[32][54] = T.DOCK;
-  g[33][54] = T.DOCK;
+  // Dock on the new shore.
+  fillRect(shore - 2, 30, 3, 4, T.DOCK, false);
+  for (let y = 30; y <= 33; y++) {
+    solid[y][shore] = 0;
+    g[y][shore] = T.DOCK;
+  }
 
   // Palisade. Gate is a wide opening on the north wall where the road passes.
-  const x0 = 14;
+  const x0 = 8;
   const y0 = 24;
-  const x1 = 46;
-  const y1 = 50;
+  const x1 = 60;
+  const y1 = 62;
   for (let x = x0; x <= x1; x++) {
     const gate = x >= 28 && x <= 32;
     if (!gate) {
@@ -1522,12 +1730,17 @@ function buildMap(tiles) {
   }
 
   function building(x, y, w, h, opts) {
-    const roofH = Math.max(2, Math.round(h * 0.45));
+    const roofH = Math.max(2, Math.round(h * (opts.long ? 0.55 : 0.45)));
     const doorCol = x + Math.floor(w / 2);
+    const wallTile = opts.stone ? T.STONE : T.WALL;
+    const frontTile = opts.stone ? T.STONE_FRONT : T.WALL_FRONT;
+    const doorTile = opts.stone ? T.STONE_DOOR : opts.shop ? T.DOOR_SHOP : T.DOOR;
+    const windowTile = opts.stone ? T.STONE_WIN : T.WINDOW;
     for (let yy = 0; yy < h; yy++) {
       for (let xx = 0; xx < w; xx++) {
         const X = x + xx;
         const Y = y + yy;
+        if (opts.chamfer && yy < 2 && (xx < 2 || xx >= w - 2)) continue;
         solid[Y][X] = 1;
         if (yy < roofH) {
           const north = yy === 0;
@@ -1543,12 +1756,12 @@ function buildMap(tiles) {
           else if (east) tile = T.ROOF_E;
           g[Y][X] = tile;
         } else if (yy === h - 1) {
-          if (X === doorCol) g[Y][X] = opts.shop ? T.DOOR_SHOP : T.DOOR;
-          else g[Y][X] = opts.shop ? T.AWNING : T.WALL_FRONT;
+          if (X === doorCol) g[Y][X] = doorTile;
+          else g[Y][X] = opts.shop ? T.AWNING : frontTile;
         } else {
           const mid = yy === roofH;
-          const win = mid && (xx === 1 || xx === w - 2);
-          g[Y][X] = win ? T.WINDOW : T.WALL;
+          const win = mid && (xx === 2 || xx === w - 3);
+          g[Y][X] = win ? windowTile : wallTile;
         }
       }
     }
@@ -1560,10 +1773,19 @@ function buildMap(tiles) {
     return { doorX: doorCol, doorY: y + h - 1 };
   }
 
-  const inn = building(16, 26, 10, 8, { chimney: true });
-  const shop = building(34, 26, 10, 8, { shop: true });
-  building(16, 40, 14, 8, { chimney: true });
-  building(36, 40, 8, 7, {});
+  const inn = building(16, 26, 12, 8, { chimney: true, chamfer: true, long: true });
+  const shop = building(36, 26, 12, 8, { shop: true, chamfer: true });
+  // Mead hall: stone, not a castle. Door faces the south yard. Interiors are not enterable.
+  const meadHall = building(14, 40, 16, 8, { chimney: true, stone: true, chamfer: true, long: true });
+  building(40, 40, 10, 7, { chamfer: true });
+  const guild = building(38, 51, 16, 8, { chimney: true, chamfer: true, long: true });
+  building(10, 51, 12, 8, { chamfer: true, long: true });
+  fillRect(12, 49, 46, 2, T.PATH);
+  // Wooden fences on the outskirts, with the road left open.
+  for (let x = 6; x <= 26; x++) stamp(x, 18, T.FENCE, true);
+  for (let x = 34; x <= 56; x++) stamp(x, 18, T.FENCE, true);
+  // A short stone wall beside the mead hall. Not a castle.
+  for (let y = 48; y <= 50; y++) stamp(12, y, T.STONE, true);
 
   // Safe yard: inside the walls, not the wall tiles themselves, not the gate.
   for (let y = y0 + 1; y < y1; y++) {
@@ -1586,6 +1808,9 @@ function buildMap(tiles) {
   add('npc', 'hilda', 21, 34, { defId: 'hilda', sprite: 'hilda' });
   add('npc', 'torvald', 24, 39, { defId: 'torvald', sprite: 'torvald' });
   add('npc', 'soren', 33, 26, { defId: 'soren', sprite: 'soren' });
+  // Just outside the mead-hall door. The door tile itself is solid.
+  add('npc', 'freya', meadHall.doorX, meadHall.doorY + 1, { defId: 'freya', sprite: 'freya' });
+  add('npc', 'eirik', guild.doorX, guild.doorY + 1, { defId: 'eirik', sprite: 'eirik' });
 
   const mobs = [
     ['young_wolf', 24, 16],
@@ -1607,13 +1832,11 @@ function buildMap(tiles) {
     { sprite: 'well', tx: 33, ty: 43, solid: true },
     { sprite: 'firepit', tx: 33, ty: 39 },
     { sprite: 'banner', tx: 33, ty: 30 },
-    { sprite: 'sign_inn', tx: 18, ty: 34 },
-    { sprite: 'sign_shop', tx: 36, ty: 34 },
     { sprite: 'barrel', tx: 41, ty: 34, solid: true },
     { sprite: 'barrel', tx: 53, ty: 31, solid: true },
     { sprite: 'crate', tx: 17, ty: 34, solid: true },
     { sprite: 'crate', tx: 40, ty: 47, solid: true },
-    { sprite: 'stump', tx: 26, ty: 18, solid: true },
+    { sprite: 'stump', tx: 26, ty: 16, solid: true },
     { sprite: 'stump', tx: 34, ty: 14, solid: true },
   ];
 
@@ -1685,14 +1908,45 @@ function buildMap(tiles) {
     props.push({ sprite: i % 2 ? 'bush' : 'rock_small', tx: x, ty: y, solid: i % 2 === 0 });
   }
 
-  // A couple of bushes inside the green, not on the road.
-  props.push({ sprite: 'bush', tx: 20, ty: 46 });
-  props.push({ sprite: 'bush', tx: 42, ty: 38 });
+  // Bushes only on open ground. Never inside a wall.
+  for (const [tx, ty] of [[20, 46], [48, 48], [22, 60]]) {
+    if (!solid[ty][tx] && !safe[ty]?.[tx]) props.push({ sprite: 'bush', tx, ty });
+    else if (!solid[ty][tx]) props.push({ sprite: 'bush', tx, ty });
+  }
 
   for (const prop of props) {
     add('prop', prop.sprite, prop.tx, prop.ty, { sprite: prop.sprite });
     if (prop.solid) solid[prop.ty][prop.tx] = 1;
   }
+
+  // Place names drawn over the map. Labels are not feet, so they may sit on a roof.
+  add('label', 'Frostmere Wilds', 30, 20);
+  add('label', 'Hoffender', 30, 33);
+  add('label', 'Mead Hall', meadHall.doorX, meadHall.doorY - 3);
+  add('sign', 'Mead Hall', meadHall.doorX - 2, meadHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: "Jarl Freya's mead hall. Stone, not a castle. She would rather fill it with traders than with a war-band.",
+  });
+  add('sign', 'Frosthearth Inn', inn.doorX - 2, inn.doorY + 1, {
+    sprite: 'sign_inn',
+    text: 'Frosthearth Inn. Hilda Venn keeps the fire. If you fall in combat, you wake in her yard.',
+  });
+  add('sign', "Brenna's Goods", shop.doorX - 2, shop.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Brenna's Goods. Pelts, bandages, and a draught that costs more than bread.",
+  });
+  add('sign', 'Warrior Guild', guild.doorX + 2, guild.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Warrior Guild. Eirik Stonehand is guildmaster. The hall is still new.',
+  });
+  add('sign', 'Frostmere Wilds this way', 26, 22, {
+    sprite: 'sign_wilds',
+    text: 'Frostmere Wilds this way. North, through the gate. Wolves are on the road.',
+  });
+  add('sign', 'Hoffender this way', 34, 22, {
+    sprite: 'sign_inn',
+    text: 'Hoffender this way. The gate is south. Jarl Freya keeps the mead hall.',
+  });
 
   // Border
   for (let x = 0; x < MAP_W; x++) {
@@ -1706,7 +1960,7 @@ function buildMap(tiles) {
 
   // Spawns must stand on open ground.
   for (const o of objects) {
-    if (o.kind === 'prop') continue;
+    if (o.kind === 'prop' || o.kind === 'label' || o.kind === 'sign') continue;
     const tx = Math.floor(o.x / TILE);
     const ty = Math.floor(o.y / TILE);
     if (solid[ty][tx]) {
@@ -1740,6 +1994,7 @@ function buildTmj(map, tileset) {
     const properties = [];
     if (o.defId) properties.push({ name: 'defId', type: 'string', value: o.defId });
     if (o.sprite) properties.push({ name: 'sprite', type: 'string', value: o.sprite });
+    if (o.text) properties.push({ name: 'text', type: 'string', value: o.text });
     return {
       id: oid++,
       name: o.name,
@@ -1756,7 +2011,7 @@ function buildTmj(map, tileset) {
   });
 
   const tileProps = [];
-  for (const id of [T.WALL, T.WALL_FRONT, T.WINDOW, T.DOOR, T.ROOF, T.ROOF_B, T.ROOF_N, T.ROOF_W, T.ROOF_E, T.ROOF_NW, T.ROOF_NE, T.ROOF_EAVES, T.ROOF_SHOP, T.PALISADE, T.POST, T.CHIMNEY, T.AWNING, T.DOOR_SHOP, T.WATER, T.WATER_B]) {
+  for (const id of [T.WALL, T.WALL_FRONT, T.WINDOW, T.DOOR, T.ROOF, T.ROOF_B, T.ROOF_N, T.ROOF_W, T.ROOF_E, T.ROOF_NW, T.ROOF_NE, T.ROOF_EAVES, T.ROOF_SHOP, T.PALISADE, T.POST, T.CHIMNEY, T.AWNING, T.DOOR_SHOP, T.WATER, T.WATER_B, T.STONE, T.STONE_FRONT, T.STONE_DOOR, T.STONE_WIN, T.FENCE]) {
     tileProps.push({
       id: id - 1,
       properties: [{ name: 'collide', type: 'bool', value: true }],
@@ -1777,7 +2032,11 @@ function buildTmj(map, tileset) {
     version: '1.10',
     nextlayerid: 5,
     nextobjectid: oid,
-    properties: [{ name: 'zoneId', type: 'string', value: 'hoffender' }],
+    properties: [
+      { name: 'zoneId', type: 'string', value: 'hoffender' },
+      { name: 'townName', type: 'string', value: 'Hoffender' },
+      { name: 'wildsName', type: 'string', value: 'Frostmere Wilds' },
+    ],
     tilesets: [
       {
         columns: tileset.columns,
@@ -1842,6 +2101,8 @@ function renderPreview(map, tileset, props, actors) {
     banner: drawBanner(),
     sign_inn: drawSign('inn'),
     sign_shop: drawSign('shop'),
+    sign_hall: drawSign('hall'),
+    sign_wilds: drawSign('wilds'),
     stump: drawStump(),
     bush: drawBush(),
   };

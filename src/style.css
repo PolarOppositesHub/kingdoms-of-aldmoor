@@ -87,6 +87,15 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   align-content: end;
 }
 .vitals-top { display: flex; justify-content: space-between; gap: 8px; font-size: 14px; font-weight: 700; }
+.place {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 .vitals-top.tiny { font-size: 12px; font-weight: 500; color: var(--muted); }
 #weapon { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar { height: 12px; background: #140e10; border: 2px solid #3a2424; }
@@ -147,6 +156,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 }
 .mute { right: 52px; }
 .help-btn { right: 8px; width: 36px; }
+.scheme-btn { right: 150px; width: auto; min-width: 52px; }
 .actions button { font-size: 14px; line-height: 1.15; min-height: 40px; }
 .trade button { white-space: nowrap; }
 
@@ -218,15 +228,61 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   inset: 0;
   z-index: 7;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding: 16px;
-  padding-bottom: calc(16px + env(safe-area-inset-bottom));
-  background: linear-gradient(to top, rgba(28, 20, 24, 0.94) 0 28%, rgba(28, 20, 24, 0.25) 52%, transparent 72%);
+  padding: 12px;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+  background: rgba(12, 8, 10, 0.72);
   pointer-events: none;
 }
 #gate[hidden] { display: none; }
-.gate-card { pointer-events: auto; width: min(420px, 100%); }
+.gate-card { pointer-events: auto; width: min(440px, 100%); }
+.create-card {
+  max-height: min(92vh, 760px);
+  overflow: auto;
+  background: var(--panel);
+  border: 3px solid var(--line);
+  padding: 14px;
+  touch-action: pan-y;
+}
+.create-card h2 { margin: 12px 0 6px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pick-grid button { text-align: left; }
+.pick-grid button small { display: block; color: var(--muted); font-size: 11px; font-weight: 500; }
+.pick-grid button[aria-pressed="true"] { border-color: var(--gold); background: #3a3020; }
+.pick-grid button:disabled { opacity: 0.45; cursor: default; }
+.points { margin: 0 0 8px; color: var(--muted); }
+.stat-list { list-style: none; margin: 0 0 12px; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.stat-list li { display: grid; grid-template-columns: 1fr auto auto auto; gap: 6px; align-items: center; }
+.stat-list button { min-height: 40px; min-width: 44px; padding: 4px 8px; }
+.pad[data-scheme="dpad"] {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.pad[data-scheme="dpad"] .pad-cap { display: none; }
+.dir {
+  min-height: 0;
+  padding: 0;
+  font-size: 16px;
+  background: #6b4e3a;
+  border-color: #8a6850;
+}
+.dir.up { grid-column: 2; grid-row: 1; }
+.dir.left { grid-column: 1; grid-row: 2; }
+.dir.right { grid-column: 3; grid-row: 2; }
+.dir.down { grid-column: 2; grid-row: 3; }
+.pad[data-scheme="stick"] .dir { display: none; }
+.bar.mana { border-color: #1c3048; }
+.bar.mana > span { display: block; height: 100%; width: 0; background: #3c86c8; }
+.mana-line { display: flex; align-items: center; gap: 6px; }
+.mana-line .bar { flex: 1; }
+#mana-num { font-size: 12px; color: #7eb6e0; min-width: 48px; text-align: right; }
+.actions[data-spells="2"] { grid-template-columns: 1fr 1fr 1fr; }
+.actions[data-spells="2"] button { min-height: 36px; font-size: 13px; padding: 4px 2px; }
 .eyebrow { margin: 0; letter-spacing: 0.14em; text-transform: uppercase; font-size: 12px; color: var(--gold); }
 .gate-card h1 { margin: 4px 0 8px; font-size: 40px; line-height: 0.95; }
 .lede { margin: 0 0 14px; font-size: 16px; }
@@ -266,7 +322,8 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 }
 #app[data-layout="wide"] .actions { align-content: start; }
 #app[data-layout="wide"] .mute { left: 8px; right: auto; top: auto; bottom: 8px; }
-#app[data-layout="wide"] .help-btn { left: 84px; right: auto; top: auto; bottom: 8px; }
+#app[data-layout="wide"] .help-btn:not(.scheme-btn) { left: 84px; right: auto; top: auto; bottom: 8px; }
+#app[data-layout="wide"] .scheme-btn { left: 132px; right: auto; top: auto; bottom: 8px; }
 
 @media (max-height: 700px) {
   :root { --hud: 236px; }
