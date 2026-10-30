@@ -1,0 +1,26 @@
+[
+  {
+    "id": "brenna",
+    "name": "Brenna Holm",
+    "title": "merchant",
+    "dialogue": "brenna"
+  },
+  {
+    "id": "hilda",
+    "name": "Hilda Venn",
+    "title": "innkeeper",
+    "dialogue": "hilda"
+  },
+  {
+    "id": "torvald",
+    "name": "Torvald Keel",
+    "title": "elder",
+    "dialogue": "torvald"
+  },
+  {
+    "id": "soren",
+    "name": "Soren Bram",
+    "title": "gate warden",
+    "dialogue": "soren"
+  }
+]

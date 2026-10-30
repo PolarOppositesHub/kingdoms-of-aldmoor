@@ -1,0 +1,84 @@
+{
+  "brenna": {
+    "start": {
+      "text": "Brenna's Goods. If it once had fur, teeth, or a pulse, put it on the counter and I'll name a fair price.",
+      "choices": [
+        { "label": "Show me your stock.", "action": "merchant" },
+        { "label": "What are you buying?", "next": "buying" },
+        { "label": "Any advice before I go out?", "next": "advice" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "buying": {
+      "text": "Pelts, mostly. Teeth if they're whole. Meat if you must — I'll salt it, I won't praise it.",
+      "choices": [
+        { "label": "Let me see the stock.", "action": "merchant" },
+        { "label": "Back.", "next": "start" }
+      ]
+    },
+    "advice": {
+      "text": "Buy a bandage before you buy a bigger axe. The road wolves are young. The pale ones by the northern rocks are not. Pride is expensive.",
+      "choices": [
+        { "label": "Show me the stock.", "action": "merchant" },
+        { "label": "I'll remember.", "action": "close" }
+      ]
+    }
+  },
+  "hilda": {
+    "start": {
+      "text": "Frosthearth Inn. Stew's on, the beds complain, and the fire doesn't ask questions.",
+      "choices": [
+        { "label": "If I fall out there?", "next": "fall" },
+        { "label": "What's in the stew?", "next": "stew" },
+        { "label": "Warm hands, then.", "action": "close" }
+      ]
+    },
+    "fall": {
+      "text": "You'll wake in my yard. I'll have words about the mud and none about how you got there. Try to come back walking.",
+      "choices": [
+        { "label": "Good to know.", "next": "start" },
+        { "label": "I'll try.", "action": "close" }
+      ]
+    },
+    "stew": {
+      "text": "Turnips, salt, and a hope of mutton. It stays down. That's the whole recipe.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    }
+  },
+  "torvald": {
+    "start": {
+      "text": "The fjord used to freeze clear to the skerries. A child could walk it. These days the ice argues back.",
+      "choices": [
+        { "label": "What hunts up north?", "next": "north" },
+        { "label": "Is there a warriors' hall?", "next": "hall" },
+        { "label": "I'll remember that.", "action": "close" }
+      ]
+    },
+    "north": {
+      "text": "Wolves, not sailors. The young ones linger by the packed road. Further into the pines they run in pairs. The pale ones near the rocks can take a warrior apart.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "hall": {
+      "text": "The hall is still a stack of timber and an argument. No trainer waits inside. Until the gathered families pick a master, the wilds will have to do the teaching.",
+      "choices": [{ "label": "Then I'll learn outside.", "action": "close" }]
+    }
+  },
+  "soren": {
+    "start": {
+      "text": "Gate's open. Don't take that for a welcome from the wilds. Wolves have been crossing the packed road.",
+      "choices": [
+        { "label": "Where should I start?", "next": "startTip" },
+        { "label": "Who speaks for the hold?", "next": "rule" },
+        { "label": "I'll watch the tree line.", "action": "close" }
+      ]
+    },
+    "startTip": {
+      "text": "North, on the road, the young ones are bold and not very wise. If two of them look at you at once, walk back through my gate. The palisade is the end of their courage.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "rule": {
+      "text": "The gathered families speak for Hoffender when they sit together. Between sittings I keep the gate, Hilda keeps the fire, and Brenna keeps the scales.",
+      "choices": [{ "label": "Understood.", "action": "close" }]
+    }
+  }
+}
