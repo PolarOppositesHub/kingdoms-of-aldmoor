@@ -1,0 +1,98 @@
+{
+  "points": 6,
+  "races": [
+    {
+      "id": "barbarian",
+      "name": "Barbarian",
+      "playable": true,
+      "blurb": "Hoffender's own. Strong and stubborn, at home in the cold.",
+      "mods": { "str": 2, "sta": 2, "agi": 0, "dex": 0, "wis": -1, "int": -2, "cha": -1 }
+    },
+    {
+      "id": "human",
+      "name": "Human",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": 0, "sta": 0, "agi": 0, "dex": 0, "wis": 0, "int": 0, "cha": 1 }
+    },
+    {
+      "id": "dwarf",
+      "name": "Dwarf",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": 1, "sta": 2, "agi": -1, "dex": 0, "wis": 1, "int": 0, "cha": -1 }
+    },
+    {
+      "id": "high_elf",
+      "name": "High Elf",
+      "playable": false,
+      "blurb": "Coming soon. Eldenmoor's people.",
+      "mods": { "str": -1, "sta": -1, "agi": 1, "dex": 1, "wis": 1, "int": 2, "cha": 0 }
+    },
+    {
+      "id": "wood_elf",
+      "name": "Wood Elf",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": 0, "sta": -1, "agi": 2, "dex": 1, "wis": 1, "int": 0, "cha": 0 }
+    },
+    {
+      "id": "dark_elf",
+      "name": "Dark Elf",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": 0, "sta": -1, "agi": 1, "dex": 2, "wis": 0, "int": 1, "cha": 0 }
+    },
+    {
+      "id": "troll",
+      "name": "Troll",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": 2, "sta": 3, "agi": -1, "dex": -1, "wis": -1, "int": -2, "cha": -2 }
+    },
+    {
+      "id": "ogre",
+      "name": "Ogre",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": 3, "sta": 2, "agi": -1, "dex": -1, "wis": -1, "int": -2, "cha": -2 }
+    },
+    {
+      "id": "halfling",
+      "name": "Halfling",
+      "playable": false,
+      "blurb": "Coming soon.",
+      "mods": { "str": -2, "sta": 0, "agi": 2, "dex": 2, "wis": 0, "int": 0, "cha": 1 }
+    }
+  ],
+  "classes": [
+    {
+      "id": "warrior",
+      "name": "Warrior",
+      "playable": true,
+      "races": ["barbarian"],
+      "blurb": "An axe, a kick, and the nerve to stand in reach."
+    },
+    {
+      "id": "wizard",
+      "name": "Wizard",
+      "playable": true,
+      "races": ["barbarian"],
+      "blurb": "A staff and a pool of mana. Shardbolt reaches. Rimefield slows a pack."
+    },
+    {
+      "id": "shaman",
+      "name": "Shaman",
+      "playable": false,
+      "races": ["barbarian"],
+      "blurb": "Coming soon. A spirit-caller."
+    },
+    {
+      "id": "warden",
+      "name": "Warden",
+      "playable": false,
+      "races": ["barbarian", "wood_elf"],
+      "blurb": "Coming soon. A beast-pet class."
+    }
+  ]
+}

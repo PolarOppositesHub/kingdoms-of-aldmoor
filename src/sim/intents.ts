@@ -1,9 +1,19 @@
 import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
-import { isSafe } from './map';
-import { findActor, getPlayer } from './state';
-import { addItem, nearestMob, openDialogue, resolveStrike, weaponProfile } from './systems';
+import { findActor, getPlayer, applyHero, armorAc } from './state';
+import { acceptQuest, addItem, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+
+function nearestSign(map: MapData, x: number, y: number, maxDist: number) {
+  let best: { name: string; text?: string; x: number; y: number; d: number } | null = null;
+  for (const spawn of map.spawns) {
+    if (spawn.kind !== 'sign') continue;
+    const gap = Math.hypot(spawn.x - x, spawn.y - y);
+    if (gap > maxDist) continue;
+    if (!best || gap < best.d) best = { name: spawn.name, text: spawn.text, x: spawn.x, y: spawn.y, d: gap };
+  }
+  return best;
+}
 
 function clampAxis(value: number): number {
   if (value > 0.4) return 1;
@@ -24,6 +34,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (state.input.x !== 0 || state.input.y !== 0) {
           state.input.dest = null;
           state.input.pendingInteract = null;
+          state.input.pendingSign = null;
         }
         return;
       }
@@ -31,6 +42,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (state.dead || busy) return;
         state.input.dest = { x: intent.x, y: intent.y };
         state.input.pendingInteract = null;
+        state.input.pendingSign = null;
         player.pathTx = -999;
         return;
       }
@@ -71,31 +83,11 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       }
       case 'ability': {
         if (state.dead || busy) return;
-        const ability = content.abilities[intent.id];
-        const known = content.classes[state.classId]?.abilities.includes(intent.id);
-        if (!ability || !known || state.level < ability.level) return;
-        if ((state.cooldowns[ability.id] ?? 0) > 0) return;
-        const target = findActor(state, state.targetId);
-        if (!target || !target.alive || target.kind !== 'mob') {
-          emit({ type: 'log', text: 'You have nothing in your sights.' });
-          return;
-        }
-        if (isSafe(map, player.x, player.y)) {
-          emit({ type: 'log', text: "You can't start a fight inside the palisade." });
-          return;
-        }
-        if (dist(player, target) > ability.range) {
-          emit({ type: 'log', text: 'You are too far away.' });
-          return;
-        }
-        player.facing = target.x < player.x ? 'w' : target.x > player.x ? 'e' : player.facing;
-        const profile = weaponProfile(state, content);
-        resolveStrike(state, content, map, player, target, ability.damage, profile.attack, true, 'kick', emit);
-        if (target.alive && target.kind === 'mob') {
-          const hate = target.hate.find((entry) => entry.id === player.id);
-          if (hate) hate.amount += ability.hate;
-        }
-        state.cooldowns[ability.id] = ability.cooldownMs;
+        performAbility(state, content, map, intent.id, emit);
+        return;
+      }
+      case 'createHero': {
+        applyHero(state, content, intent.raceId, intent.classId, intent.bonus);
         return;
       }
       case 'talkTo': {
@@ -125,13 +117,27 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           if (npc) openDialogue(state, content, npc, emit);
           return;
         }
+        const sign = nearestSign(map, player.x, player.y, 36);
+        if (sign) {
+          openInspect(state, sign.name, sign.text ?? sign.name);
+          return;
+        }
         if (walk) {
           state.input.pendingInteract = walk.id;
+          state.input.pendingSign = null;
           state.input.dest = { x: walk.x, y: walk.y };
           player.pathTx = -999;
           return;
         }
-        emit({ type: 'log', text: 'Nobody is close enough to hear you.' });
+        const farSign = nearestSign(map, player.x, player.y, 160);
+        if (farSign) {
+          state.input.pendingSign = farSign.name;
+          state.input.pendingInteract = null;
+          state.input.dest = { x: farSign.x, y: farSign.y };
+          player.pathTx = -999;
+          return;
+        }
+        emit({ type: 'log', text: 'Nothing here to look at.' });
         return;
       }
       case 'choice': {
@@ -146,8 +152,18 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           state.ui.panel = 'merchant';
           return;
         }
+        if (choice.action === 'acceptQuest' && choice.quest) {
+          acceptQuest(state, choice.quest, emit);
+          state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
+          return;
+        }
+        if (choice.action === 'turnIn' && choice.quest === 'wolf_pelts') {
+          turnInPelts(state, content, emit);
+          state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
+          return;
+        }
         if (choice.action === 'close' || !choice.next) {
-          state.ui = { panel: 'none', npcId: null, nodeId: null };
+          state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
           return;
         }
         state.ui.nodeId = choice.next;
@@ -208,7 +224,17 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const stack = state.inventory[intent.slot];
         if (!stack) return;
         const item = content.items[stack.itemId];
-        if (!item || item.kind !== 'weapon') return;
+        if (!item || (item.kind !== 'weapon' && item.kind !== 'armor')) return;
+        if (item.kind === 'armor') {
+          const previous = state.equipment.head;
+          stack.qty -= 1;
+          if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
+          state.equipment.head = item.id;
+          if (previous) addItem(state, content, previous, 1);
+          state.ac = armorAc(content, state);
+          emit({ type: 'log', text: `You equip the ${item.name}.` });
+          return;
+        }
         const previous = state.equipment.primary;
         stack.qty -= 1;
         if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
@@ -220,18 +246,18 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       }
       case 'openPack':
         if (state.dead) return;
-        state.ui = { panel: 'pack', npcId: null, nodeId: null };
+        state.ui = { panel: 'pack', npcId: null, nodeId: null, title: null, body: null };
         state.input.x = 0;
         state.input.y = 0;
         state.input.dest = null;
         return;
       case 'openHelp':
-        state.ui = { panel: 'help', npcId: null, nodeId: null };
+        state.ui = { panel: 'help', npcId: null, nodeId: null, title: null, body: null };
         state.input.x = 0;
         state.input.y = 0;
         return;
       case 'close':
-        state.ui = { panel: 'none', npcId: null, nodeId: null };
+        state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
         return;
       case 'debugTeleport': {
         if (!state.debug) return;

@@ -51,6 +51,7 @@ export function parseTiledMap(raw: TiledJson): MapData {
       y: obj.y,
       defId: typeof props.defId === 'string' ? props.defId : obj.name,
       sprite: typeof props.sprite === 'string' ? props.sprite : obj.name,
+      text: typeof props.text === 'string' ? props.text : undefined,
     };
     if (kind === 'bind') bind = { x: obj.x, y: obj.y };
     spawns.push(spawn);

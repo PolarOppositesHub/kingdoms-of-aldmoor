@@ -28,5 +28,11 @@
     "name": "Jarl Freya Halvarddottir",
     "title": "ruler of Hoffender",
     "dialogue": "freya"
+  },
+  {
+    "id": "eirik",
+    "name": "Eirik Stonehand",
+    "title": "guildmaster",
+    "dialogue": "eirik"
   }
 ]

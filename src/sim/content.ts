@@ -5,6 +5,7 @@ import type {
   ItemDef,
   MobDef,
   NpcDef,
+  Roster,
 } from './types';
 import itemsJson from '../content/items.json';
 import mobsJson from '../content/mobs.json';
@@ -16,6 +17,7 @@ import tuningJson from '../content/tuning.json';
 import merchantJson from '../content/merchant.json';
 import economyJson from '../content/economy.json';
 import playerJson from '../content/player.json';
+import rosterJson from '../content/roster.json';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -48,5 +50,6 @@ export function loadContent(): ContentDb {
     merchant: merchantJson,
     economy: economyJson,
     player: playerJson,
+    roster: rosterJson as Roster,
   };
 }

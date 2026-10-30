@@ -28,6 +28,10 @@ interface Atlas {
 
 const atlas = atlasJson as Atlas;
 
+function clampZoom(value: number): number {
+  return Math.round(Math.max(1.75, Math.min(4.5, value)) * 4) / 4;
+}
+
 interface ActorView {
   sprite: Phaser.GameObjects.Sprite;
   shadow: Phaser.GameObjects.Ellipse;
@@ -36,6 +40,7 @@ interface ActorView {
   prevY: number;
   flash: number;
   lunge: number;
+  helm?: Phaser.GameObjects.Sprite;
 }
 
 interface Floater {
@@ -60,6 +65,11 @@ export class WorldScene extends Phaser.Scene {
   private groundViews = new Map<string, Phaser.GameObjects.Sprite>();
   private propSprites: Phaser.GameObjects.Sprite[] = [];
   private placeLabels: Phaser.GameObjects.Text[] = [];
+  private zoom = 3;
+  private zoomTouched = false;
+  private pinch: { dist: number; zoom: number } | null = null;
+  private bolts: { dot: Phaser.GameObjects.Arc; x: number; y: number; tx: number; ty: number; t: number }[] = [];
+  private fields: { g: Phaser.GameObjects.Graphics; life: number }[] = [];
   private floaters: Floater[] = [];
   private bracket!: Phaser.GameObjects.Graphics;
   private snow!: Phaser.GameObjects.Graphics;
@@ -106,7 +116,7 @@ export class WorldScene extends Phaser.Scene {
     });
 
     for (const spawn of this.mapData.spawns) {
-      if (spawn.kind !== 'prop') continue;
+      if (spawn.kind !== 'prop' && spawn.kind !== 'sign') continue;
       const frame = atlas.props[spawn.sprite];
       if (!frame) continue;
       const sprite = this.add.sprite(spawn.x, spawn.y, 'props', spawn.sprite);
@@ -130,7 +140,7 @@ export class WorldScene extends Phaser.Scene {
     this.cam.setBounds(0, 0, tiled.widthInPixels, tiled.heightInPixels);
     this.cam.roundPixels = true;
     for (const spawn of this.mapData.spawns) {
-      if (spawn.kind !== 'label') continue;
+      if (spawn.kind !== 'label' && spawn.kind !== 'sign') continue;
       const text = this.add.text(spawn.x, spawn.y - 10, spawn.name, {
         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
         fontSize: '20px',
@@ -153,12 +163,33 @@ export class WorldScene extends Phaser.Scene {
       this.drawCollision();
     }
 
-    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => this.onPointer(pointer, true));
+    this.input.addPointer(2);
+    this.input.on('pointerdown', (pointer: Phaser.Input.Pointer) => {
+      if (this.bothPointers()) {
+        this.dragging = false;
+        this.pinch = { dist: Math.max(12, this.pointerSpan()), zoom: this.zoom };
+        return;
+      }
+      this.onPointer(pointer, true);
+    });
     this.input.on('pointermove', (pointer: Phaser.Input.Pointer) => {
+      if (this.pinch && this.bothPointers()) {
+        const span = this.pointerSpan();
+        this.zoomTouched = true;
+        this.zoom = clampZoom(this.pinch.zoom * (span / this.pinch.dist));
+        this.applyZoom();
+        return;
+      }
       if (pointer.isDown && this.dragging) this.onPointer(pointer, false);
     });
     this.input.on('pointerup', () => {
+      this.pinch = null;
       this.dragging = false;
+    });
+    this.input.on('wheel', (_pointer: Phaser.Input.Pointer, _objects: unknown, _dx: number, dy: number) => {
+      this.zoomTouched = true;
+      this.zoom = clampZoom(this.zoom * (dy > 0 ? 0.9 : 1.12));
+      this.applyZoom();
     });
 
     const api: GameApi = {
@@ -171,18 +202,30 @@ export class WorldScene extends Phaser.Scene {
       },
       audio: this.audio,
     };
-    if (debug) (window as unknown as { __ALDMOOR__?: GameApi }).__ALDMOOR__ = api;
+    if (debug) {
+      const hook = window as unknown as { __ALDMOOR__?: GameApi; __ZOOM__?: () => number };
+      hook.__ALDMOOR__ = api;
+      hook.__ZOOM__ = () => this.zoom;
+    }
     ready?.(api);
     this.syncActors(1);
   }
 
   private dragging = false;
 
+  private bothPointers(): boolean {
+    return this.input.pointer1.isDown && this.input.pointer2.isDown;
+  }
+
+  private pointerSpan(): number {
+    return Phaser.Math.Distance.Between(this.input.pointer1.x, this.input.pointer1.y, this.input.pointer2.x, this.input.pointer2.y);
+  }
+
   private applyZoom(): void {
-    // 3× keeps a 16px tile at 48 CSS pixels, which is the readable size on a phone.
-    const zoom = this.scale.width >= 320 ? 3 : 2;
-    this.cam.setZoom(zoom);
-    const inv = 1 / zoom;
+    // 3× keeps a 16px tile at 48 CSS pixels. Pinch and the wheel snap to quarter steps so the pixels stay crisp.
+    if (!this.zoomTouched) this.zoom = this.scale.width >= 320 ? 3 : 2;
+    this.cam.setZoom(this.zoom);
+    const inv = 1 / this.zoom;
     for (const label of this.placeLabels) label.setScale(inv);
   }
 
@@ -269,6 +312,7 @@ export class WorldScene extends Phaser.Scene {
     this.animateWater(delta);
     this.animateSnow(delta);
     this.animateFloaters(delta);
+    this.animateBolts(delta);
   }
 
   private playEvents(events: SimEvent[]): void {
@@ -292,6 +336,16 @@ export class WorldScene extends Phaser.Scene {
         this.audio.play('aggro');
       } else if (event.type === 'playerDeath') {
         this.audio.play('death');
+      } else if (event.type === 'bolt') {
+        this.audio.play('cast');
+        const dot = this.add.circle(event.fromX, event.fromY, 3, 0xb7e3ff).setDepth(5000);
+        this.bolts.push({ dot, x: event.fromX, y: event.fromY, tx: event.toX, ty: event.toY, t: 0 });
+      } else if (event.type === 'field') {
+        this.audio.play('snare');
+        const g = this.add.graphics().setDepth(4500);
+        g.lineStyle(2, 0xb7e3ff, 0.9);
+        g.strokeCircle(event.x, event.y, event.radius);
+        this.fields.push({ g, life: 520 });
       } else if (event.type === 'swing') {
         const view = this.views.get(event.actorId);
         if (view) view.lunge = 1;
@@ -313,6 +367,28 @@ export class WorldScene extends Phaser.Scene {
     label.setOrigin(0.5, 1);
     label.setDepth(6000);
     this.floaters.push({ text: label, life: 700, vy: -18 });
+  }
+
+  private animateBolts(delta: number): void {
+    for (const bolt of this.bolts) {
+      bolt.t += delta / 180;
+      const k = Math.min(1, bolt.t);
+      bolt.dot.setPosition(bolt.x + (bolt.tx - bolt.x) * k, bolt.y + (bolt.ty - bolt.y) * k);
+    }
+    this.bolts = this.bolts.filter((bolt) => {
+      if (bolt.t < 1) return true;
+      bolt.dot.destroy();
+      return false;
+    });
+    for (const field of this.fields) {
+      field.life -= delta;
+      field.g.setAlpha(Math.max(0, field.life / 520));
+    }
+    this.fields = this.fields.filter((field) => {
+      if (field.life > 0) return true;
+      field.g.destroy();
+      return false;
+    });
   }
 
   private animateFloaters(delta: number): void {
@@ -379,6 +455,12 @@ export class WorldScene extends Phaser.Scene {
         const shadow = this.add.ellipse(actor.x, actor.y, wolf ? 14 : 12, 5, 0x1a1614, 0.35);
         const sprite = this.add.sprite(actor.x, actor.y, 'actors', 0);
         sprite.setOrigin(0.5, wolf ? 18 / 24 : 22 / 24);
+        let helm: Phaser.GameObjects.Sprite | undefined;
+        if (actor.kind === 'player') {
+          helm = this.add.sprite(actor.x, actor.y, 'actors', 0);
+          helm.setOrigin(0.5, 22 / 24);
+          helm.setVisible(false);
+        }
         const label = this.add.text(actor.x, actor.y, actor.kind === 'player' ? '' : actor.name, {
           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
           fontSize: '14px',
@@ -388,7 +470,7 @@ export class WorldScene extends Phaser.Scene {
           resolution: 2,
         });
         label.setOrigin(0.5, 1);
-        view = { sprite, shadow, label, prevX: actor.x, prevY: actor.y, flash: 0, lunge: 0 };
+        view = { sprite, shadow, label, prevX: actor.x, prevY: actor.y, flash: 0, lunge: 0, helm };
         this.views.set(actor.id, view);
       }
       const snapped = Math.hypot(actor.x - view.prevX, actor.y - view.prevY) > 48;
@@ -419,8 +501,20 @@ export class WorldScene extends Phaser.Scene {
       if (view.flash > 0) {
         view.sprite.setTintFill(0xfff4ea);
         view.flash = Math.max(0, view.flash - 0.15);
+      } else if (actor.slowMs > 0) {
+        view.sprite.setTint(0x9fd4ff);
       } else {
         view.sprite.clearTint();
+      }
+      if (view.helm) {
+        const showHelm = actor.kind === 'player' && this.state.equipment.head === 'wolf_helm';
+        view.helm.setVisible(showHelm && view.sprite.visible);
+        if (showHelm) {
+          const helmRow = atlas.actors.rows.wolf_helm ?? 0;
+          view.helm.setFrame(helmRow * (atlas.actors.dirs.length * atlas.actors.framesPerDir) + dirIndex * 2 + frame);
+          view.helm.setPosition(view.sprite.x, view.sprite.y);
+          view.helm.setDepth(y + 1);
+        }
       }
       const showLabel =
         actor.kind === 'npc' ||

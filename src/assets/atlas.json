@@ -18,7 +18,10 @@
       "freya": 5,
       "young_wolf": 6,
       "wolf": 7,
-      "frost_wolf": 8
+      "frost_wolf": 8,
+      "wizard": 9,
+      "eirik": 10,
+      "wolf_helm": 11
     }
   },
   "props": {

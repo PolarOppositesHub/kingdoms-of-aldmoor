@@ -4,8 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from './content';
 import { conColor, formatCoin, xpLossFraction } from './formulas';
 import { applyIntent } from './intents';
+import { turnInPelts } from './systems';
 import { bodyBlocked, placeName } from './map';
-import { createWorld, getPlayer } from './state';
+import { applyHero, createWorld, getPlayer } from './state';
 import { step } from './step';
 import type { MapData } from './types';
 import hoffenderRaw from '../assets/hoffender.tmj?raw';
@@ -99,9 +100,9 @@ describe('simulation', () => {
     state.copper = 100;
     const brenna = state.actors.find((actor) => actor.defId === 'brenna');
     expect(brenna).toBeTruthy();
-    state.ui = { panel: 'merchant', npcId: brenna!.id, nodeId: null };
+    state.ui = { panel: 'merchant', npcId: brenna!.id, nodeId: null, title: null, body: null };
     applyIntent(state, { type: 'buy', itemId: 'bearded_handaxe' }, content, map);
-    expect(state.copper).toBe(50);
+    expect(state.copper).toBe(57);
     const slot = state.inventory.findIndex((stack) => stack.itemId === 'bearded_handaxe');
     applyIntent(state, { type: 'equip', slot }, content, map);
     expect(state.equipment.primary).toBe('bearded_handaxe');
@@ -193,7 +194,7 @@ describe('simulation', () => {
     const state = createWorld(content, map, 7);
     const player = getPlayer(state);
     expect(bodyBlocked(map, player.x, player.y, 5, 3, false)).toBe(false);
-    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(5);
+    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(6);
     expect(state.actors.filter((actor) => actor.kind === 'mob').length).toBeGreaterThanOrEqual(8);
     expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(true);
     for (let i = 0; i < 30; i++) step(state, content, map);
@@ -243,6 +244,61 @@ describe('Hoffender and the Frostmere Wilds', () => {
       const text = readFileSync(join(process.cwd(), file), 'utf8');
       expect(text, file).not.toMatch(/Hoffender Tundra|Grey Barrens|gathered families/);
     }
+  });
+});
+
+describe('wizard and the pelt quest', () => {
+  it('lets a barbarian wizard spend mana on a bolt and slow a pack', () => {
+    const map = arena();
+    map.spawns.push(
+      { kind: 'mob', name: 'a', x: 16 * 16 + 8, y: 12 * 16 + 8, defId: 'young_wolf', sprite: 'young_wolf' },
+      { kind: 'mob', name: 'b', x: 18 * 16 + 8, y: 12 * 16 + 8, defId: 'young_wolf', sprite: 'young_wolf' },
+      { kind: 'mob', name: 'c', x: 40, y: 40, defId: 'young_wolf', sprite: 'young_wolf' },
+    );
+    const state = createWorld(content, map, 9);
+    const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 2, cha: 0 };
+    expect(applyHero(state, content, 'barbarian', 'wizard', bonus)).toBe(true);
+    expect(applyHero(state, content, 'human', 'wizard', bonus)).toBe(false);
+    const player = getPlayer(state);
+    expect(player.sprite).toBe('wizard');
+    expect(state.maxMana).toBeGreaterThan(20);
+    expect(state.stats.int).toBe(content.classes.wizard.stats.int + content.roster.races[0].mods.int + 2);
+    const mana = state.mana;
+    const near = state.actors.filter((actor) => actor.kind === 'mob' && actor.x > 100);
+    player.x = 14 * 16 + 8;
+    player.y = near[0].y;
+    state.targetId = near[0].id;
+    const before = near[0].hp;
+    applyIntent(state, { type: 'ability', id: 'shardbolt' }, content, map);
+    expect(state.mana).toBe(mana - 6);
+    expect(near[0].hp).toBeLessThan(before);
+    state.targetId = near[0].id;
+    applyIntent(state, { type: 'ability', id: 'rimefield' }, content, map);
+    expect(near[0].slowMs).toBeGreaterThan(0);
+    expect(near[1].slowMs).toBeGreaterThan(0);
+    expect(state.actors.find((actor) => actor.x === 40)?.slowMs).toBe(0);
+    const blocked = state.mana;
+    player.x = 8 * 16;
+    player.y = 12 * 16;
+    const far = near[0];
+    far.x = 16 * 16;
+    far.y = 12 * 16;
+    state.targetId = far.id;
+    applyIntent(state, { type: 'ability', id: 'shardbolt' }, content, map);
+    expect(state.mana).toBe(blocked);
+  });
+
+  it('turns four pelts into a wolf helm', () => {
+    const map = arena();
+    const state = createWorld(content, map, 4);
+    state.quests.wolf_pelts.stage = 'active';
+    state.inventory.push({ itemId: 'wolf_pelt', qty: 4 });
+    const xp = state.xp;
+    turnInPelts(state, content, () => undefined);
+    expect(state.quests.wolf_pelts.stage).toBe('done');
+    expect(state.equipment.head).toBe('wolf_helm');
+    expect(state.xp).toBeGreaterThan(xp);
+    expect(state.inventory.some((stack) => stack.itemId === 'wolf_pelt')).toBe(false);
   });
 });
 

@@ -21,11 +21,19 @@
       <p id="toast" hidden></p>
       <div id="panel" hidden></div>
       <div id="gate">
-        <div class="gate-card">
+        <div class="gate-card create-card">
           <p class="eyebrow">Kingdoms of Aldmoor</p>
-          <h1>Hoffender</h1>
-          <p class="lede">A barbarian hold on a frozen fjord. Jarl Freya keeps the mead hall. The Frostmere Wilds, and the wolves on their road, wait beyond the gate.</p>
-          <button id="enter" type="button">Enter the town</button>
+          <h1>Create</h1>
+          <p class="lede">Only a Barbarian can walk out of Hoffender today. Warrior and Wizard are ready. The rest of the roster is still being made.</p>
+          <h2>Race</h2>
+          <div id="race-pick" class="pick-grid" role="radiogroup" aria-label="Race"></div>
+          <h2>Class</h2>
+          <div id="class-pick" class="pick-grid" role="radiogroup" aria-label="Class"></div>
+          <p id="class-blurb"></p>
+          <h2>Stats</h2>
+          <p id="points" class="points">Bonus points left: 6</p>
+          <ul id="stat-list" class="stat-list"></ul>
+          <button id="enter" type="button">Enter Hoffender</button>
         </div>
       </div>
     </div>

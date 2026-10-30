@@ -1,8 +1,9 @@
 {
   "npcId": "brenna",
   "stock": [
-    { "itemId": "wool_bandage", "price": 8 },
-    { "itemId": "trail_ration", "price": 18 },
-    { "itemId": "bearded_handaxe", "price": 50 }
+    { "itemId": "trail_ration", "price": 2 },
+    { "itemId": "wool_bandage", "price": 9 },
+    { "itemId": "yarrow_draught", "price": 37 },
+    { "itemId": "bearded_handaxe", "price": 43 }
   ]
 }

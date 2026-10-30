@@ -28,13 +28,13 @@
     "start": {
       "text": "Frosthearth Inn. Stew's on, the beds complain, and the fire doesn't ask questions.",
       "choices": [
-        { "label": "If I fall in the Frostmere Wilds?", "next": "fall" },
+        { "label": "What if I fall in combat out there?", "next": "fall" },
         { "label": "What's in the stew?", "next": "stew" },
         { "label": "Warm hands, then.", "action": "close" }
       ]
     },
     "fall": {
-      "text": "You'll wake in my yard. I'll have words about the mud and none about how you got there. Try to come back walking.",
+      "text": "You die, and you wake in my yard. Your gear stays on you. Below the fifth winter you lose no experience. The Frostmere Wilds will still be there. Try to come back walking.",
       "choices": [
         { "label": "Good to know.", "next": "start" },
         { "label": "I'll try.", "action": "close" }
@@ -102,6 +102,33 @@
     "wilds": {
       "text": "The Frostmere Wilds. Wolves on the packed road, and worse where the pines thicken. Walk them if you must. Do not start a war I will have to finish.",
       "choices": [{ "label": "I'll go carefully.", "action": "close" }]
+    }
+  },
+  "eirik": {
+    "start": {
+      "text": "Warrior Guild. I am Eirik Stonehand. The hall is new, the wolves are not, and I am already short of pelts.",
+      "choices": [
+        { "label": "What do you need?", "next": "ask" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "ask": {
+      "text": "Four wolf pelts from the Frostmere Wilds. Bring them here. I will pay, and I have a helm that still smells like the animal.",
+      "choices": [
+        { "label": "I'll bring you pelts.", "action": "acceptQuest", "quest": "wolf_pelts" },
+        { "label": "Not now.", "action": "close" }
+      ]
+    },
+    "active": {
+      "text": "Four pelts. The young ones on the road drop them often enough, if you are the one still standing.",
+      "choices": [
+        { "label": "Here are the pelts.", "action": "turnIn", "quest": "wolf_pelts" },
+        { "label": "I'm still hunting.", "action": "close" }
+      ]
+    },
+    "done": {
+      "text": "The helm suits you. Wear it. The guild will have more work when the hall is finished. Not today.",
+      "choices": [{ "label": "Guildmaster.", "action": "close" }]
     }
   }
 }

@@ -3,7 +3,7 @@
     "id": "wolf_pelt",
     "name": "wolf pelt",
     "kind": "junk",
-    "value": 8,
+    "value": 5,
     "stack": 20,
     "blurb": "A rough northern pelt. The merchant pays coin for these."
   },
@@ -11,7 +11,7 @@
     "id": "wolf_tooth",
     "name": "wolf tooth",
     "kind": "junk",
-    "value": 3,
+    "value": 2,
     "stack": 20,
     "blurb": "Whole enough to keep. Not much else to say for it."
   },
@@ -19,7 +19,7 @@
     "id": "cracked_fang",
     "name": "cracked fang",
     "kind": "junk",
-    "value": 22,
+    "value": 13,
     "stack": 10,
     "blurb": "Longer than a tooth has any right to be."
   },
@@ -27,7 +27,7 @@
     "id": "stringy_meat",
     "name": "stringy meat",
     "kind": "junk",
-    "value": 2,
+    "value": 1,
     "stack": 20,
     "blurb": "Edible only in the sense that it is not a rock."
   },
@@ -35,7 +35,7 @@
     "id": "wool_bandage",
     "name": "wool bandage",
     "kind": "consumable",
-    "value": 3,
+    "value": 4,
     "stack": 10,
     "heal": 10,
     "blurb": "Clean enough. Restores a little health."
@@ -44,7 +44,7 @@
     "id": "trail_ration",
     "name": "trail ration",
     "kind": "consumable",
-    "value": 6,
+    "value": 1,
     "stack": 10,
     "heal": 18,
     "blurb": "Salt, fat, and a hard biscuit. Restores more health."
@@ -53,7 +53,7 @@
     "id": "worn_axe",
     "name": "worn woodsman's axe",
     "kind": "weapon",
-    "value": 4,
+    "value": 6,
     "stack": 1,
     "slot": "primary",
     "delayMs": 2600,
@@ -64,11 +64,41 @@
     "id": "bearded_handaxe",
     "name": "bearded handaxe",
     "kind": "weapon",
-    "value": 16,
+    "value": 17,
     "stack": 1,
     "slot": "primary",
     "delayMs": 2100,
     "damage": { "n": 1, "sides": 6, "bonus": 3 },
     "blurb": "Shorter haft, keener bite, quicker back to the guard."
+  },
+  {
+    "id": "ash_staff",
+    "name": "ash staff",
+    "kind": "weapon",
+    "value": 7,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 3200,
+    "damage": { "n": 1, "sides": 4, "bonus": 0 },
+    "blurb": "A walking staff with an iron-shod tip. A poor axe, and a fair focus."
+  },
+  {
+    "id": "yarrow_draught",
+    "name": "yarrow draught",
+    "kind": "consumable",
+    "value": 11,
+    "stack": 10,
+    "heal": 36,
+    "blurb": "A bitter green drink. It costs. It also puts you back on your feet."
+  },
+  {
+    "id": "wolf_helm",
+    "name": "wolf helm",
+    "kind": "armor",
+    "slot": "head",
+    "value": 9,
+    "stack": 1,
+    "ac": 2,
+    "blurb": "The wolf's snout sits on your brow. Its open mouth frames your face."
   }
 ]

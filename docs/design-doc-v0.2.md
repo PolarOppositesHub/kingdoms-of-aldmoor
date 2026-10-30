@@ -29,6 +29,7 @@ export default function App() {
           { label: "v1 starter town", value: "Hoffender, the Barbarian town, ruled by Jarl Freya Halvarddottir" },
           { label: "Frostmere Wilds", value: "The country outside Hoffender's north gate" },
           { label: "First class", value: "Warrior" },
+          { label: "Second class", value: "Wizard, playable as a Barbarian from the Hoffender gate, with mana, Shardbolt, and Rimefield" },
           { label: "Combat", value: "Real-time auto-attack, EverQuest-style" },
           { label: "Art", value: "16-bit SNES-style pixel art" },
           { label: "Level cap", value: "10 for v1; 50 eventually" },
@@ -115,7 +116,7 @@ export default function App() {
         <NumberedList items={[
           "Hoffender's look: snowy fjord village, mountain longhouse hold, or frozen coastal port? M1 ships the fjord village.",
           "Camp boss flavor: bandit chief, alpha frost wolf, or gnoll warlord?",
-          "Which class comes second in M3, and should it be one Barbarians can play (like a Shaman)?",
+          "Which grayed-out race or class opens next? Warden is the planned beast-pet class. Shaman is still only a name.",
         ]} />
         <Callout lead="Next step">Coding can start M1 now; these answers shape M2.</Callout>
       </Section>

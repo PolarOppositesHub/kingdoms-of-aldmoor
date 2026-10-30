@@ -6,6 +6,40 @@
     "cooldownMs": 8000,
     "range": 24,
     "damage": { "n": 1, "sides": 4, "bonus": 3 },
-    "hate": 6
+    "hate": 6,
+    "kind": "strike",
+    "verb": "kick",
+    "short": "Kick"
+  },
+  {
+    "id": "shardbolt",
+    "name": "Shardbolt",
+    "short": "Shard",
+    "level": 1,
+    "cooldownMs": 1600,
+    "range": 200,
+    "damage": { "n": 1, "sides": 8, "bonus": 4 },
+    "hate": 4,
+    "kind": "bolt",
+    "verb": "pierce",
+    "mana": 6,
+    "blurb": "A splinter of ice. Costs mana and strikes one wolf at a distance."
+  },
+  {
+    "id": "rimefield",
+    "name": "Rimefield",
+    "short": "Rime",
+    "level": 1,
+    "cooldownMs": 9000,
+    "range": 180,
+    "radius": 64,
+    "damage": { "n": 1, "sides": 3, "bonus": 0 },
+    "hate": 6,
+    "kind": "field",
+    "verb": "chill",
+    "mana": 14,
+    "slowMs": 5000,
+    "slowFactor": 0.45,
+    "blurb": "Cold that clings. Slows every wolf near your target."
   }
 ]

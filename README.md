@@ -41,7 +41,11 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 - The place name follows you. Inside the palisade it reads Hoffender. Step through the gate and it reads Frostmere Wilds. Those names are also painted on the map.
 - One merchant. Sell pelts and teeth. Buy bandages, trail rations, and a faster handaxe, then equip it from the pack.
 - Young wolves on the Frostmere Wilds road, wolves in the pines, and frost wolves farther north. Wolves assist nearby kin. The palisade is safe; they will not chase you inside.
-- Warrior combat: real-time auto-attack on a weapon delay, plus Kick on a cooldown. Tap a wolf, then ATK. The ATK button fills between swings.
+- Character creation at the gate. The roster lists every planned race and class. Only Barbarian, Warrior, and Wizard can be chosen. Six bonus points go into the stats. The choice is remembered on this device.
+- Warrior combat: real-time auto-attack on a weapon delay, plus Kick on a cooldown. Tap a wolf, then ATK.
+- Wizard combat: a mana bar, Shardbolt at range, and Rimefield, which slows every wolf near your target. The staff still swings if a wolf gets close.
+- Pinch the map, or use the mouse wheel, to zoom. The Pad button swaps the stick for a D-pad. Look talks to someone or reads a sign.
+- Eirik Stonehand at the warrior guild will trade four wolf pelts for coin, a little experience, and a wolf helm you can see on your head.
 - Loot and coin. Copper, silver, gold, and platinum, at 10 to 1. Drops land on the snow and are picked up when you step close.
 - If you fall, you wake in the inn yard. Experience loss follows the locked table (none below level 5). Gear stays with you. A corpse you have to run back to is Milestone 2.
 - Layout refits when the window changes: a tall phone keeps the controls under the map; a wide or near-square window puts them in side panels.
@@ -53,8 +57,10 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 | Move | Pad, or tap/drag the ground | WASD or arrows |
 | Target | Tap a creature, or Next | Tab |
 | Auto-attack | ATK | F |
-| Kick | Kick | 1 |
-| Talk | Tap a person, or Talk | E |
+| First ability | Kick, or Shard | 1 |
+| Second ability | Rime, for a wizard | 2 |
+| Look | Look, a person, or a sign | E |
+| Zoom | Pinch the map | Mouse wheel |
 | Pack | Pack | I |
 | Use a ration | The food button | — |
 | Close a panel | Close | Esc |
@@ -76,7 +82,7 @@ Every sprite, tile, line of dialogue, and sound in the game is original. Sounds 
 
 ## Not in this milestone
 
-Quests, the full equipment paper-doll, corpse runs, local saves, leveling to 10 as a designed climb, other classes, other zones, and co-op. The simulation is shaped so those can land later without a rewrite. A refresh starts a new warrior on purpose.
+The full equipment paper-doll, corpse runs, a broader inventory, leveling to 10 as a designed climb, the grayed-out races and classes, other zones, and co-op. One pelt quest is in this slice. A refresh keeps the hero you created.
 
 ## Open questions for Josh
 
@@ -84,7 +90,7 @@ These do not block M1. The build uses a provisional answer so there is something
 
 1. Hoffender's look. This build is a snowy fjord village: log houses, a palisade, and ice along the east shore. The other options were a mountain longhouse hold or a frozen coastal port.
 2. The camp boss, for a later milestone: bandit chief, alpha frost wolf, or something else.
-3. Which class comes second, and whether a barbarian can be that class.
+3. Which of the grayed-out races and classes should open next. A barbarian can already be a wizard. Warden is the beast-pet class, still unbuilt.
 4. Coin is 10 copper = 1 silver, 10 silver = 1 gold, 10 gold = 1 platinum. Say if that rate should change.
 
 Settled for this slice: the wilds outside the gate are the Frostmere Wilds. Jarl Freya Halvarddottir rules Hoffender from the mead hall. The town guards answer to her word. She cares more about trade and alliances than war.

@@ -1,4 +1,4 @@
-export type SoundName = 'hit' | 'hurt' | 'miss' | 'coin' | 'level' | 'aggro' | 'death' | 'ui';
+export type SoundName = 'hit' | 'hurt' | 'miss' | 'coin' | 'level' | 'aggro' | 'death' | 'ui' | 'cast' | 'snare';
 
 export interface AudioBus {
   unlock(): void;
@@ -106,6 +106,11 @@ export function createAudio(): AudioBus {
         tone(220, 0.3, 'triangle', 0.06, -160);
       } else if (name === 'ui') {
         tone(660, 0.04, 'square', 0.03);
+      } else if (name === 'cast') {
+        tone(740, 0.09, 'sine', 0.05, 420);
+      } else if (name === 'snare') {
+        tone(220, 0.18, 'triangle', 0.05, -80);
+        noise(0.12, 0.06, 900);
       }
     },
   };

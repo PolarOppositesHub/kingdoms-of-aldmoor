@@ -1,5 +1,5 @@
-import type { Actor, ContentDb, GameState, MapData } from './types';
-import { maxHp } from './formulas';
+import type { Actor, ContentDb, GameState, MapData, Stats } from './types';
+import { maxHp, maxMana } from './formulas';
 
 export function getPlayer(state: GameState): Actor {
   const player = state.actors.find((actor) => actor.id === state.playerId);
@@ -33,16 +33,90 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     pathTx: -999,
     pathTy: -999,
     stuck: 0,
+    slowMs: 0,
+    slowRate: 1,
     ...partial,
   };
+}
+
+/** Starting loadout. Used at world creation and by the gate's class choice, before the first tick. */
+export function configurePlayer(state: GameState, content: ContentDb, classId: string): void {
+  const cls = content.classes[classId];
+  if (!cls) return;
+  const player = getPlayer(state);
+  const level = 1;
+  state.classId = cls.id;
+  state.stats = { ...cls.stats };
+  state.ac = cls.ac;
+  state.level = level;
+  state.xp = 0;
+  state.equipment = { primary: cls.weapon, head: null };
+  state.ac = cls.ac;
+  state.inventory = content.player.items.map((stack) => ({ ...stack }));
+  state.copper = content.player.copper;
+  state.autoAttack = false;
+  state.targetId = null;
+  player.defId = cls.id;
+  player.sprite = cls.sprite;
+  player.level = level;
+  player.maxHp = maxHp(content, cls.id, level, state.stats);
+  player.hp = player.maxHp;
+  player.attackMs = content.tuning.swingWindupMs;
+  state.maxMana = maxMana(content, cls.id, level, state.stats);
+  state.mana = state.maxMana;
+  state.manaRegenBank = 0;
+  state.cooldowns = {};
+  for (const abilityId of cls.abilities) state.cooldowns[abilityId] = 0;
+  state.ac = armorAc(content, state);
+}
+
+const STAT_KEYS = ['str', 'sta', 'agi', 'dex', 'wis', 'int', 'cha'] as const;
+
+export function armorAc(content: ContentDb, state: GameState): number {
+  const base = content.classes[state.classId]?.ac ?? 0;
+  const head = state.equipment.head ? content.items[state.equipment.head] : undefined;
+  return base + (head?.ac ?? 0);
+}
+
+/** Gate creation. Only before the first tick. Race mods and bonus points land on the class base. */
+export function applyHero(
+  state: GameState,
+  content: ContentDb,
+  raceId: string,
+  classId: string,
+  bonus: Stats,
+): boolean {
+  if (state.tick > 0) return false;
+  const race = content.roster.races.find((entry) => entry.id === raceId);
+  const rosterClass = content.roster.classes.find((entry) => entry.id === classId);
+  const cls = content.classes[classId];
+  if (!race?.playable || !rosterClass?.playable || !cls) return false;
+  if (!rosterClass.races.includes(race.id)) return false;
+  let spent = 0;
+  for (const key of STAT_KEYS) {
+    const add = bonus[key] ?? 0;
+    if (add < 0 || !Number.isInteger(add)) return false;
+    spent += add;
+  }
+  if (spent > content.roster.points) return false;
+  configurePlayer(state, content, classId);
+  const stats = { ...cls.stats };
+  for (const key of STAT_KEYS) {
+    stats[key] = Math.max(1, cls.stats[key] + (race.mods[key] ?? 0) + (bonus[key] ?? 0));
+  }
+  state.stats = stats;
+  state.raceId = race.id;
+  const player = getPlayer(state);
+  player.maxHp = maxHp(content, classId, 1, stats);
+  player.hp = player.maxHp;
+  state.maxMana = maxMana(content, classId, 1, stats);
+  state.mana = state.maxMana;
+  return true;
 }
 
 export function createWorld(content: ContentDb, map: MapData, seed: number, debug = false): GameState {
   const cls = content.classes[content.player.classId];
   if (!cls) throw new Error(`missing class ${content.player.classId}`);
-  const stats = { ...cls.stats };
-  const level = 1;
-  const hp = maxHp(content, cls.id, level, stats);
   const playerSpawn = map.spawns.find((spawn) => spawn.kind === 'spawn');
   const origin = playerSpawn ?? { x: map.bind.x, y: map.bind.y };
   const player = blankActor({
@@ -50,13 +124,9 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     kind: 'player',
     defId: cls.id,
     name: content.player.name,
-    sprite: 'warrior',
+    sprite: cls.sprite,
     x: origin.x,
     y: origin.y,
-    hp,
-    maxHp: hp,
-    level,
-    attackMs: content.tuning.swingWindupMs,
   });
 
   const actors: Actor[] = [player];
@@ -100,10 +170,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     }
   }
 
-  const cooldowns: Record<string, number> = {};
-  for (const abilityId of cls.abilities) cooldowns[abilityId] = 0;
-
-  return {
+  const world: GameState = {
     version: 1,
     seed: seed >>> 0,
     rng: seed >>> 0,
@@ -115,29 +182,36 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     playerId: player.id,
     actors,
     ground: [],
-    inventory: content.player.items.map((stack) => ({ ...stack })),
-    equipment: { primary: cls.weapon },
-    copper: content.player.copper,
+    inventory: [],
+    equipment: { primary: cls.weapon, head: null },
+    copper: 0,
     xp: 0,
-    level,
-    stats,
+    level: 1,
+    stats: { ...cls.stats },
     ac: cls.ac,
     classId: cls.id,
+    raceId: 'barbarian',
+    mana: 0,
+    maxMana: 0,
+    manaRegenBank: 0,
     autoAttack: false,
     targetId: null,
-    cooldowns,
+    cooldowns: {},
     itemLockMs: 0,
     outOfCombatMs: 0,
     regenBank: 0,
     invulnMs: 0,
-    input: { x: 0, y: 0, dest: null, pendingInteract: null },
-    ui: { panel: 'none', npcId: null, nodeId: null },
+    input: { x: 0, y: 0, dest: null, pendingInteract: null, pendingSign: null },
+    ui: { panel: 'none', npcId: null, nodeId: null, title: null, body: null },
+    quests: { wolf_pelts: { stage: 'none', progress: 0 } },
     log: ['The gate of Hoffender is north. The Frostmere Wilds, and the wolves on their road, wait beyond it.'],
     bind: { ...map.bind },
     dead: false,
     deathMs: 0,
     events: [],
   };
+  configurePlayer(world, content, cls.id);
+  return world;
 }
 
 export function nextEntityId(state: GameState, prefix: string): string {

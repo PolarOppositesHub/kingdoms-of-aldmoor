@@ -18,6 +18,10 @@ export function mountHud(api: GameApi): void {
       </div>
       <div id="place" class="place">Hoffender</div>
       <div class="bar hp" aria-label="Health"><span id="hp-fill"></span></div>
+      <div class="mana-line" id="mana-line" hidden>
+        <div class="bar mana" aria-label="Mana"><span id="mana-fill"></span></div>
+        <span id="mana-num"></span>
+      </div>
       <div class="vitals-top tiny"><span id="hp-num"></span><span id="weapon"></span></div>
       <div class="bar xp" aria-label="Experience"><span id="xp-fill"></span></div>
     </section>
@@ -26,31 +30,64 @@ export function mountHud(api: GameApi): void {
       <div class="bar hp thin"><span id="target-fill"></span></div>
     </section>
     <p id="log" aria-live="polite"></p>
-    <div class="pad" id="pad" role="group" aria-label="Move">
+    <div class="pad" id="pad" data-scheme="stick" role="group" aria-label="Move">
       <span class="pad-arm up"></span>
       <span class="pad-arm down"></span>
       <span class="pad-arm left"></span>
       <span class="pad-arm right"></span>
       <span class="pad-cap"></span>
+      <button type="button" class="dir up" data-dir="n" aria-label="Up">▲</button>
+      <button type="button" class="dir left" data-dir="w" aria-label="Left">◀</button>
+      <button type="button" class="dir right" data-dir="e" aria-label="Right">▶</button>
+      <button type="button" class="dir down" data-dir="s" aria-label="Down">▼</button>
     </div>
-    <div class="actions">
+    <div class="actions" data-spells="1">
       <button type="button" id="atk" class="atk" aria-pressed="false">ATK</button>
-      <button type="button" id="kick">Kick</button>
+      <button type="button" id="spell-a">Kick</button>
+      <button type="button" id="spell-b" hidden>Spell</button>
       <button type="button" id="next">Next</button>
-      <button type="button" id="talk">Talk</button>
+      <button type="button" id="talk">Look</button>
       <button type="button" id="pack">Pack</button>
       <button type="button" id="item">Item</button>
     </div>
     <button type="button" id="mute" class="mute" aria-label="Mute">Sound</button>
+    <button type="button" id="scheme" class="help-btn scheme-btn" aria-label="Movement scheme">Pad</button>
     <button type="button" id="help" class="help-btn" aria-label="Help">?</button>
     <div id="death" class="death" hidden>The cold takes you.</div>
   `;
 
   const pad = root.querySelector<HTMLElement>('#pad')!;
   bindPad(pad);
+  bindDpad(pad);
+  const scheme = root.querySelector<HTMLButtonElement>('#scheme')!;
+  const applyScheme = (next: 'stick' | 'dpad') => {
+    pad.dataset.scheme = next;
+    controls.padX = 0;
+    controls.padY = 0;
+    scheme.textContent = next === 'dpad' ? 'D-pad' : 'Stick';
+    try {
+      localStorage.setItem('aldmoor-move', next);
+    } catch {
+      /* private mode */
+    }
+  };
+  let stored: 'stick' | 'dpad' = 'stick';
+  try {
+    stored = localStorage.getItem('aldmoor-move') === 'dpad' ? 'dpad' : 'stick';
+  } catch {
+    stored = 'stick';
+  }
+  applyScheme(stored);
+  scheme.addEventListener('click', () => applyScheme(pad.dataset.scheme === 'dpad' ? 'stick' : 'dpad'));
 
+  const cast = (slot: 'a' | 'b') => {
+    const button = root.querySelector<HTMLButtonElement>(slot === 'a' ? '#spell-a' : '#spell-b');
+    const id = button?.dataset.ability;
+    if (id) pushIntent({ type: 'ability', id });
+  };
   root.querySelector('#atk')!.addEventListener('click', () => pushIntent({ type: 'toggleAutoAttack' }));
-  root.querySelector('#kick')!.addEventListener('click', () => pushIntent({ type: 'ability', id: 'kick' }));
+  root.querySelector('#spell-a')!.addEventListener('click', () => cast('a'));
+  root.querySelector('#spell-b')!.addEventListener('click', () => cast('b'));
   root.querySelector('#next')!.addEventListener('click', () => pushIntent({ type: 'cycleTarget' }));
   root.querySelector('#talk')!.addEventListener('click', () => pushIntent({ type: 'interact' }));
   root.querySelector('#pack')!.addEventListener('click', () => pushIntent({ type: 'openPack' }));
@@ -109,7 +146,8 @@ export function mountHud(api: GameApi): void {
     }
     if (!hintedFight && state.ui.panel === 'none' && !isSafe(api.map, getXY(state).x, getXY(state).y)) {
       hintedFight = true;
-      showToast('Tap a wolf, then ATK. The button fills between swings.');
+      if (state.maxMana > 0) showToast('Tap a wolf, then Shard. Rime slows a pack. The blue bar is mana.');
+      else showToast('Tap a wolf, then ATK. The button fills between swings.');
     }
     const items = state.inventory.reduce((sum, stack) => sum + stack.qty, 0);
     if (!hintedSell && items > startItems) {
@@ -130,8 +168,59 @@ function getXY(state: GameState): { x: number; y: number } {
   return player ?? { x: 0, y: 0 };
 }
 
+function paintSpell(button: HTMLButtonElement, id: string | undefined, state: GameState, api: GameApi): void {
+  if (!id) return;
+  const ability = api.content.abilities[id];
+  if (!ability) return;
+  button.dataset.ability = id;
+  const cd = state.cooldowns[id] ?? 0;
+  const cost = ability.mana ?? 0;
+  const short = ability.short ?? ability.name;
+  button.disabled = cd > 0 || (cost > 0 && state.mana < cost);
+  button.textContent = cd > 0 ? `${short} ${Math.ceil(cd / 1000)}` : cost > 0 ? `${short} ${cost}` : short;
+  button.setAttribute('aria-label', cost > 0 ? `${ability.name}, ${cost} mana` : ability.name);
+}
+
+function bindDpad(pad: HTMLElement): void {
+  const held = new Set<string>();
+  const sync = () => {
+    if (pad.dataset.scheme !== 'dpad') {
+      held.clear();
+      return;
+    }
+    let x = 0;
+    let y = 0;
+    if (held.has('e')) x += 1;
+    if (held.has('w')) x -= 1;
+    if (held.has('s')) y += 1;
+    if (held.has('n')) y -= 1;
+    controls.padX = Math.max(-1, Math.min(1, x));
+    controls.padY = Math.max(-1, Math.min(1, y));
+    pad.dataset.x = String(controls.padX);
+    pad.dataset.y = String(controls.padY);
+  };
+  for (const button of pad.querySelectorAll<HTMLButtonElement>('.dir')) {
+    const dir = button.dataset.dir ?? '';
+    const down = (event: PointerEvent) => {
+      event.preventDefault();
+      event.stopPropagation();
+      button.setPointerCapture(event.pointerId);
+      held.add(dir);
+      sync();
+    };
+    const up = (event: PointerEvent) => {
+      held.delete(dir);
+      sync();
+    };
+    button.addEventListener('pointerdown', down);
+    button.addEventListener('pointerup', up);
+    button.addEventListener('pointercancel', up);
+  }
+}
+
 function bindPad(pad: HTMLElement): void {
   const point = (event: PointerEvent) => {
+    if (pad.dataset.scheme === 'dpad') return;
     const rect = pad.getBoundingClientRect();
     const dx = event.clientX - (rect.left + rect.width / 2);
     const dy = event.clientY - (rect.top + rect.height / 2);
@@ -179,18 +268,32 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const weapon = root.querySelector('#weapon');
   const log = root.querySelector('#log');
   const atk = root.querySelector<HTMLButtonElement>('#atk');
-  const kick = root.querySelector<HTMLButtonElement>('#kick');
+  const spellA = root.querySelector<HTMLButtonElement>('#spell-a');
+  const spellB = root.querySelector<HTMLButtonElement>('#spell-b');
+  const actions = root.querySelector<HTMLElement>('.actions');
+  const manaLine = root.querySelector<HTMLElement>('#mana-line');
+  const manaFill = root.querySelector<HTMLElement>('#mana-fill');
+  const manaNum = root.querySelector('#mana-num');
   const item = root.querySelector<HTMLButtonElement>('#item');
   const targetName = root.querySelector<HTMLElement>('#target-name');
   const targetFill = root.querySelector<HTMLElement>('#target-fill');
   const death = root.querySelector<HTMLElement>('#death');
-  if (!who || !place || !coin || !hpNum || !hpFill || !xpFill || !weapon || !log || !atk || !kick || !item || !targetName || !targetFill || !death) return;
+  if (!who || !place || !coin || !hpNum || !hpFill || !xpFill || !weapon || !log || !atk || !spellA || !spellB || !actions || !item || !targetName || !targetFill || !death) return;
 
-  who.textContent = `Lv ${state.level} Warrior`;
+  const className = api.content.classes[state.classId]?.name ?? 'Warrior';
+  who.textContent = `Lv ${state.level} ${className}`;
   place.textContent = placeName(api.map, player.x, player.y);
   coin.textContent = formatCoin(state.copper, api.content.economy);
   hpNum.textContent = `${Math.max(0, player.hp)}/${player.maxHp}`;
   hpFill.style.width = `${Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100))}%`;
+  if (manaLine && manaFill && manaNum) {
+    const showMana = state.maxMana > 0;
+    manaLine.hidden = !showMana;
+    if (showMana) {
+      manaFill.style.width = `${Math.max(0, Math.min(100, (state.mana / state.maxMana) * 100))}%`;
+      manaNum.textContent = `${Math.max(0, state.mana)}/${state.maxMana}`;
+    }
+  }
   const need = api.content.tuning.xpTable[state.level] ?? api.content.tuning.xpTable.at(-1) ?? 1;
   xpFill.style.width = `${Math.max(0, Math.min(100, (state.xp / need) * 100))}%`;
   weapon.textContent = api.content.items[state.equipment.primary]?.name ?? '';
@@ -202,9 +305,11 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   atk.setAttribute('aria-pressed', state.autoAttack ? 'true' : 'false');
   atk.textContent = state.autoAttack ? 'ATK' : 'ATK';
 
-  const kickCd = state.cooldowns.kick ?? 0;
-  kick.textContent = kickCd > 0 ? `Kick ${Math.ceil(kickCd / 1000)}` : 'Kick';
-  kick.disabled = kickCd > 0;
+  const known = api.content.classes[state.classId]?.abilities ?? [];
+  paintSpell(spellA, known[0], state, api);
+  paintSpell(spellB, known[1], state, api);
+  actions.dataset.spells = known.length > 1 ? '2' : '1';
+  spellB.hidden = known.length < 2;
 
   const slot = state.inventory.findIndex((stack) => api.content.items[stack.itemId]?.kind === 'consumable');
   if (slot < 0) {
@@ -270,7 +375,8 @@ function paintPanel(panel: HTMLElement, state: GameState, api: GameApi): void {
   if (state.ui.panel === 'dialogue') panel.innerHTML = dialogueHtml(state, api);
   else if (state.ui.panel === 'merchant') panel.innerHTML = merchantHtml(state, api);
   else if (state.ui.panel === 'pack') panel.innerHTML = packHtml(state, api, false);
-  else panel.innerHTML = helpHtml();
+  else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
+  else panel.innerHTML = helpHtml(state, api);
 }
 
 function dialogueHtml(state: GameState, api: GameApi): string {
@@ -323,7 +429,7 @@ function bagRows(state: GameState, api: GameApi, selling: boolean): string {
       if (!item) return '';
       const buttons = [
         item.kind === 'consumable' ? `<button type="button" data-action="use" data-slot="${index}">Use</button>` : '',
-        item.kind === 'weapon' ? `<button type="button" data-action="equip" data-slot="${index}">Equip</button>` : '',
+        item.kind === 'weapon' || item.kind === 'armor' ? `<button type="button" data-action="equip" data-slot="${index}">Equip</button>` : '',
         selling ? `<button type="button" data-action="sell" data-slot="${index}">Sell ${formatCoin(item.value, api.content.economy)}</button>` : '',
       ].join('');
       return `<li><span><strong>${escapeHtml(item.name)} ×${stack.qty}</strong><small>${escapeHtml(item.blurb)}</small></span><span class="row-actions">${buttons}</span></li>`;
@@ -332,15 +438,29 @@ function bagRows(state: GameState, api: GameApi, selling: boolean): string {
   return `<ul class="trade">${rows}</ul>`;
 }
 
-function helpHtml(): string {
+function inspectHtml(state: GameState): string {
+  return `<div class="sheet">
+    <header><h2>${escapeHtml(state.ui.title ?? 'Sign')}</h2></header>
+    <p class="speech">${escapeHtml(state.ui.body ?? '')}</p>
+    <button type="button" class="close" data-action="close">Close</button>
+  </div>`;
+}
+
+function helpHtml(state: GameState, api: GameApi): string {
+  const caster = state.maxMana > 0;
+  const spells = (api.content.classes[state.classId]?.abilities ?? [])
+    .map((id) => api.content.abilities[id])
+    .filter((ability) => ability?.blurb)
+    .map((ability) => `<li>${escapeHtml(ability!.name)}. ${escapeHtml(ability!.blurb!)}</li>`)
+    .join('');
   return `<div class="sheet">
     <header><h2>How to move through Hoffender</h2></header>
     <ul class="help-list">
-      <li>Pad, or tap the ground, walks. WASD works on a keyboard.</li>
+      <li>Stick or D-pad, or tap the ground, walks. The Pad button swaps them. WASD works on a keyboard. Pinch the map, or use the mouse wheel, to zoom.</li>
       <li>Tap a wolf to mark it, then ATK. Swings land on their own timer.</li>
-      <li>Kick is immediate, then it needs a breath.</li>
-      <li>Tap a person, or Talk, to speak. Jarl Freya stands outside the mead hall. Brenna buys and sells.</li>
-      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall out there and you wake in Hilda's yard.</li>
+      ${caster ? spells : '<li>Kick is immediate, then it needs a breath.</li>'}
+      <li>Look talks to a person or reads a sign. Jarl Freya stands outside the mead hall. Eirik keeps the warrior guild. Brenna buys and sells.</li>
+      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall in combat and you wake in Hilda's yard.</li>
     </ul>
     <button type="button" data-action="reload">Start a new warrior</button>
     <button type="button" class="close" data-action="close">Close</button>

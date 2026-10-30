@@ -2,6 +2,7 @@ import './style.css';
 import { createGame } from './game/createGame';
 import { controls } from './game/controls';
 import { onGameReady } from './game/WorldScene';
+import { mountCreate } from './ui/create';
 import { mountHud } from './ui/hud';
 
 const app = document.querySelector<HTMLElement>('#app');
@@ -39,7 +40,11 @@ window.addEventListener('keydown', (event) => {
   if (event.repeat) return;
   if (key === 'f') controls.queue.push({ type: 'toggleAutoAttack' });
   else if (key === 'e') controls.queue.push({ type: 'interact' });
-  else if (key === '1') controls.queue.push({ type: 'ability', id: 'kick' });
+  else if (key === '1' || key === '2') {
+    const abilities = apiRef ? apiRef.content.classes[apiRef.getState().classId]?.abilities ?? [] : [];
+    const id = abilities[Number(key) - 1];
+    if (id) controls.queue.push({ type: 'ability', id });
+  }
   else if (key === 'i') controls.queue.push({ type: 'openPack' });
   else if (key === 'tab') {
     event.preventDefault();
@@ -59,12 +64,18 @@ window.addEventListener('blur', () => {
 });
 
 let started = false;
+let apiRef: import('./game/api').GameApi | null = null;
 onGameReady((api) => {
+  apiRef = api;
   mountHud(api);
+  const creator = mountCreate(api);
   enter.disabled = false;
   enter.addEventListener('click', () => {
     if (started) return;
     started = true;
+    const hero = creator.read();
+    creator.save();
+    api.push({ type: 'createHero', raceId: hero.raceId, classId: hero.classId, bonus: hero.bonus });
     api.audio.unlock();
     api.audio.play('ui');
     api.setRunning(true);

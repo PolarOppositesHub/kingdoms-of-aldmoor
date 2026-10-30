@@ -1,8 +1,8 @@
-import type { Actor, ContentDb, Dice, GameState, MapData } from './types';
+import type { AbilityDef, Actor, ContentDb, Dice, GameState, MapData } from './types';
 import type { Emit } from './events';
-import { dist, facingOf, hitChance, maxHp, roll, rollDice, xpLossFraction, xpToNext } from './formulas';
+import { dist, facingOf, hitChance, maxHp, maxMana, roll, rollDice, xpLossFraction, xpToNext } from './formulas';
 import { findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
-import { findActor, getPlayer, nextEntityId } from './state';
+import { armorAc, findActor, getPlayer, nextEntityId } from './state';
 import { TICK_MS } from './types';
 
 export function subject(actor: Actor): string {
@@ -26,6 +26,134 @@ export function weaponProfile(state: GameState, content: ContentDb): { dice: Dic
     delayMs: item?.delayMs ?? 2800,
     attack: 8 + state.level * 2 + Math.floor(state.stats.str / 2),
   };
+}
+
+function spellDice(state: GameState, ability: AbilityDef): Dice {
+  const intellect = Math.floor((state.stats.int - 10) / 4);
+  return { n: ability.damage.n, sides: ability.damage.sides, bonus: ability.damage.bonus + intellect };
+}
+
+function spellAttack(state: GameState): number {
+  return 8 + state.level * 2 + Math.floor(state.stats.int / 2);
+}
+
+export function performAbility(state: GameState, content: ContentDb, map: MapData, abilityId: string, emit: Emit): void {
+  const ability = content.abilities[abilityId];
+  const known = content.classes[state.classId]?.abilities.includes(abilityId);
+  if (!ability || !known || state.level < ability.level) return;
+  if ((state.cooldowns[ability.id] ?? 0) > 0) return;
+  const player = getPlayer(state);
+  if (isSafe(map, player.x, player.y)) {
+    emit({ type: 'log', text: "You can't start a fight inside the palisade." });
+    return;
+  }
+  const cost = ability.mana ?? 0;
+  if (cost > state.mana) {
+    emit({ type: 'log', text: "You don't have the mana." });
+    return;
+  }
+  const target = findActor(state, state.targetId);
+  if (!target || !target.alive || target.kind !== 'mob') {
+    emit({ type: 'log', text: 'You have nothing in your sights.' });
+    return;
+  }
+  if (dist(player, target) > ability.range) {
+    emit({ type: 'log', text: 'You are too far away.' });
+    return;
+  }
+  const kind = ability.kind ?? 'strike';
+  if ((kind === 'bolt' || kind === 'field') && !lineOfSight(map, player.x, player.y, target.x, target.y)) {
+    emit({ type: 'log', text: 'You have no clear line.' });
+    return;
+  }
+  player.facing = target.x < player.x ? 'w' : target.x > player.x ? 'e' : player.facing;
+  if (kind === 'field') {
+    const radius = ability.radius ?? 48;
+    const victims = state.actors.filter(
+      (actor) =>
+        actor.kind === 'mob' &&
+        actor.alive &&
+        dist(actor, target) <= radius &&
+        lineOfSight(map, player.x, player.y, actor.x, actor.y),
+    );
+    if (!victims.length) {
+      emit({ type: 'log', text: 'The rime finds nothing to cling to.' });
+      return;
+    }
+    state.mana -= cost;
+    state.cooldowns[ability.id] = ability.cooldownMs;
+    emit({ type: 'field', x: target.x, y: target.y, radius });
+    for (const mob of victims) {
+      if (ability.slowMs) {
+        mob.slowMs = Math.max(mob.slowMs, ability.slowMs);
+        mob.slowRate = ability.slowFactor ?? 0.5;
+      }
+      resolveStrike(state, content, map, player, mob, spellDice(state, ability), spellAttack(state), false, ability.verb ?? 'chill', emit);
+      if (mob.alive) addHate(state, content, map, mob, player.id, ability.hate, emit);
+    }
+    emit({ type: 'log', text: `Rimefield slows ${victims.length === 1 ? 'a wolf' : `${victims.length} wolves`}.` });
+    return;
+  }
+  state.mana -= cost;
+  state.cooldowns[ability.id] = ability.cooldownMs;
+  if (kind === 'bolt') {
+    emit({ type: 'bolt', fromX: player.x, fromY: player.y - 12, toX: target.x, toY: target.y - 8 });
+    resolveStrike(state, content, map, player, target, spellDice(state, ability), spellAttack(state), false, ability.verb ?? 'pierce', emit);
+  } else {
+    const profile = weaponProfile(state, content);
+    resolveStrike(state, content, map, player, target, ability.damage, profile.attack, true, ability.verb ?? 'kick', emit);
+  }
+  if (target.alive && target.kind === 'mob') {
+    const hate = target.hate.find((entry) => entry.id === player.id);
+    if (hate) hate.amount += ability.hate;
+  }
+}
+
+export function acceptQuest(state: GameState, questId: string, emit: Emit): void {
+  if (questId !== 'wolf_pelts') return;
+  const quest = state.quests.wolf_pelts;
+  if (quest.stage === 'done') return;
+  quest.stage = 'active';
+  emit({ type: 'log', text: 'Eirik wants four wolf pelts from the Frostmere Wilds.' });
+}
+
+export function turnInPelts(state: GameState, content: ContentDb, emit: Emit): void {
+  const quest = state.quests.wolf_pelts;
+  if (quest.stage !== 'active') return;
+  const need = 4;
+  let have = 0;
+  for (const stack of state.inventory) if (stack.itemId === 'wolf_pelt') have += stack.qty;
+  if (have < need) {
+    emit({ type: 'log', text: `You have ${have} wolf pelts. Eirik asked for ${need}.` });
+    return;
+  }
+  let left = need;
+  for (let i = state.inventory.length - 1; i >= 0 && left > 0; i--) {
+    const stack = state.inventory[i];
+    if (!stack || stack.itemId !== 'wolf_pelt') continue;
+    const take = Math.min(stack.qty, left);
+    stack.qty -= take;
+    left -= take;
+    if (stack.qty <= 0) state.inventory.splice(i, 1);
+  }
+  quest.stage = 'done';
+  quest.progress = need;
+  state.copper += 15;
+  emit({ type: 'coin', copper: 15 });
+  grantXp(state, content, 40, emit);
+  state.equipment.head = 'wolf_helm';
+  state.ac = armorAc(content, state);
+  emit({ type: 'log', text: 'Eirik pays you and sets a wolf helm on your brow. The snout sits over your forehead.' });
+}
+
+export function openInspect(state: GameState, title: string, body: string): void {
+  state.ui = { panel: 'inspect', npcId: null, nodeId: null, title, body };
+  state.input.dest = null;
+  state.input.pendingInteract = null;
+  state.input.pendingSign = null;
+  state.input.x = 0;
+  state.input.y = 0;
+  getPlayer(state).path = [];
 }
 
 function defenseOf(state: GameState, content: ContentDb, actor: Actor): number {
@@ -166,6 +294,8 @@ function grantXp(state: GameState, content: ContentDb, amount: number, emit: Emi
     player.level = state.level;
     player.maxHp = maxHp(content, state.classId, state.level, state.stats);
     player.hp = player.maxHp;
+    state.maxMana = maxMana(content, state.classId, state.level, state.stats);
+    state.mana = state.maxMana;
     emit({ type: 'level', level: state.level });
     emit({ type: 'log', text: `You reach level ${state.level}. The cold feels a little thinner.` });
   }
@@ -330,6 +460,13 @@ export function movement(state: GameState, content: ContentDb, map: MapData, emi
       return;
     }
   }
+  if (state.input.pendingSign) {
+    const sign = map.spawns.find((spawn) => spawn.kind === 'sign' && spawn.name === state.input.pendingSign);
+    if (sign && dist(player, sign) <= 36) {
+      openInspect(state, sign.name, sign.text ?? sign.name);
+      return;
+    }
+  }
 
   if (!state.input.dest) return;
   followPath(map, player, state.input.dest, speed, false, tuning.footRx, tuning.footRy);
@@ -342,7 +479,13 @@ export function movement(state: GameState, content: ContentDb, map: MapData, emi
 export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _emit: Emit): void {
   const def = content.npcs[npc.defId];
   if (!def) return;
-  state.ui = { panel: 'dialogue', npcId: npc.id, nodeId: 'start' };
+  let nodeId = 'start';
+  if (npc.defId === 'eirik') {
+    const quest = state.quests.wolf_pelts;
+    if (quest.stage === 'done') nodeId = 'done';
+    else if (quest.stage === 'active') nodeId = 'active';
+  }
+  state.ui = { panel: 'dialogue', npcId: npc.id, nodeId, title: null, body: null };
   state.input.dest = null;
   state.input.pendingInteract = null;
   state.input.x = 0;
@@ -374,6 +517,8 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       mob.respawnMs -= TICK_MS;
       continue;
     }
+    if (mob.slowMs > 0) mob.slowMs = Math.max(0, mob.slowMs - TICK_MS);
+    const pace = mob.slowMs > 0 ? mob.slowRate : 1;
     const home = { x: mob.homeX, y: mob.homeY };
     const target = topHateTarget(state, mob);
     if (target && dist(mob, home) > def.leash) {
@@ -385,7 +530,7 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       mob.ai = 'chase';
       const gap = dist(mob, liveTarget);
       if (gap > tuning.meleeRange * 0.9) {
-        followPath(map, mob, liveTarget, def.speed * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
+        followPath(map, mob, liveTarget, def.speed * pace * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
       } else {
         mob.path = [];
         mob.facing = facingOf(liveTarget.x - mob.x, liveTarget.y - mob.y, mob.facing);
@@ -394,7 +539,7 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
     }
     if (mob.ai === 'return') {
       if (dist(mob, home) > 6) {
-        followPath(map, mob, home, def.wanderSpeed * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
+        followPath(map, mob, home, def.wanderSpeed * pace * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
         continue;
       }
       mob.ai = 'idle';
@@ -417,7 +562,7 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
     }
     if (mob.wander) {
       mob.ai = 'wander';
-      followPath(map, mob, mob.wander, def.wanderSpeed * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
+      followPath(map, mob, mob.wander, def.wanderSpeed * pace * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
     } else {
       mob.ai = 'idle';
     }
@@ -504,6 +649,7 @@ export function regen(state: GameState, content: ContentDb, map: MapData): void 
   const fighting = state.actors.some(
     (actor) => actor.kind === 'mob' && actor.alive && actor.hate.some((hate) => hate.id === player.id),
   );
+  regenMana(state, content, map, fighting);
   if (fighting) {
     state.outOfCombatMs = 0;
     return;
@@ -516,6 +662,22 @@ export function regen(state: GameState, content: ContentDb, map: MapData): void 
     const heal = Math.floor(state.regenBank);
     state.regenBank -= heal;
     player.hp = Math.min(player.maxHp, player.hp + heal);
+  }
+}
+
+function regenMana(state: GameState, content: ContentDb, map: MapData, fighting: boolean): void {
+  if (state.maxMana <= 0 || state.mana >= state.maxMana) return;
+  const player = getPlayer(state);
+  const rate = isSafe(map, player.x, player.y)
+    ? content.tuning.townManaPerSec
+    : fighting
+      ? content.tuning.combatManaPerSec
+      : content.tuning.restManaPerSec;
+  state.manaRegenBank += (rate * TICK_MS) / 1000;
+  if (state.manaRegenBank >= 1) {
+    const gain = Math.floor(state.manaRegenBank);
+    state.manaRegenBank -= gain;
+    state.mana = Math.min(state.maxMana, state.mana + gain);
   }
 }
 
@@ -540,6 +702,8 @@ export function respawnMobs(state: GameState, content: ContentDb): void {
     mob.wander = null;
     mob.corpseMs = 0;
     mob.attackMs = def?.delayMs ?? 2000;
+    mob.slowMs = 0;
+    mob.slowRate = 1;
   }
 }
 
@@ -555,6 +719,7 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
   }
   player.alive = true;
   player.hp = player.maxHp;
+  state.mana = state.maxMana;
   player.x = state.bind.x;
   player.y = state.bind.y;
   player.path = [];
@@ -564,7 +729,7 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
   state.deathMs = 0;
   state.autoAttack = false;
   state.targetId = null;
-  state.input = { x: 0, y: 0, dest: null, pendingInteract: null };
+  state.input = { x: 0, y: 0, dest: null, pendingInteract: null, pendingSign: null };
   state.invulnMs = content.tuning.invulnMs;
   state.outOfCombatMs = content.tuning.regenDelayMs;
   for (const mob of state.actors) {
