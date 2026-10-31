@@ -3,6 +3,7 @@ import { controls, pushIntent } from '../game/controls';
 import { conColor, conLabel, formatCoin } from '../sim/formulas';
 import { isSafe, placeName } from '../sim/map';
 import { EQUIP_SLOTS, type EquipSlot, type GameState, type ItemDef } from '../sim/types';
+import { armorLabel, classLabel } from '../sim/wear';
 import iconsUrl from '../assets/icons.png?url';
 import iconMeta from '../assets/icons.json';
 import actorsUrl from '../assets/actors.png?url';
@@ -435,18 +436,23 @@ function dialogueHtml(state: GameState, api: GameApi): string {
 }
 
 function merchantHtml(state: GameState, api: GameApi): string {
-  const stock = api.content.merchant.stock
-    .map((row) => {
-      const item = api.content.items[row.itemId];
-      if (!item) return '';
-      return `<li><span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.blurb)}</small></span>
+  const npc = state.actors.find((actor) => actor.id === state.ui.npcId);
+  const vendor = api.content.merchant.vendors.find((entry) => entry.npcId === npc?.defId);
+  const groups = new Map<string, string[]>();
+  for (const row of vendor?.stock ?? []) {
+    const item = api.content.items[row.itemId];
+    if (!item) continue;
+    const key = item.armorType ? armorLabel(item.armorType) : 'Goods';
+    const line = `<li><span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.slot ? SLOT_LABEL[item.slot] : item.blurb)}</small></span>
         <button type="button" data-action="buy" data-item="${item.id}">${formatCoin(row.price, api.content.economy)}</button></li>`;
-    })
-    .join('');
+    const list = groups.get(key) ?? [];
+    list.push(line);
+    groups.set(key, list);
+  }
+  const stock = [...groups.entries()].map(([name, rows]) => `<h3>${escapeHtml(name)}</h3><ul class="trade">${rows.join('')}</ul>`).join('');
   return `<div class="sheet">
-    <header><h2>Brenna's Goods</h2><p>Your coin: ${formatCoin(state.copper, api.content.economy)}</p></header>
-    <h3>For sale</h3>
-    <ul class="trade">${stock}</ul>
+    <header><h2>${escapeHtml(vendor?.title ?? 'Goods')}</h2><p>Your coin: ${formatCoin(state.copper, api.content.economy)}</p></header>
+    ${stock}
     <h3>Your pack</h3>
     ${bagRows(state, api, true)}
     <button type="button" class="close" data-action="close">Close</button>
@@ -557,6 +563,10 @@ function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string }
 function itemCard(item: ItemDef, api: GameApi, wornSlot: EquipSlot | null, bagIndex: number): string {
   const lines: string[] = [];
   lines.push(`<p><strong>Type.</strong> ${escapeHtml(item.kind)}${item.slot ? `, ${SLOT_LABEL[item.slot]}` : ', bag only'}</p>`);
+  if (item.armorType) lines.push(`<p><strong>Material.</strong> ${escapeHtml(armorLabel(item.armorType))}</p>`);
+  if (item.wearers?.length) lines.push(`<p><strong>Fits.</strong> ${escapeHtml(item.wearers.map(classLabel).join(', '))}</p>`);
+  if (item.faction) lines.push(`<p><strong>Standing.</strong> ${escapeHtml(item.faction.id)} ${item.faction.rank}</p>`);
+  if (item.craftedBy) lines.push(`<p><strong>Craft.</strong> ${escapeHtml(item.craftedBy)}</p>`);
   if (item.damage) lines.push(`<p><strong>Damage.</strong> ${item.damage.n}d${item.damage.sides}${item.damage.bonus ? `+${item.damage.bonus}` : ''}${item.delayMs ? ` every ${(item.delayMs / 1000).toFixed(1)}s` : ''}</p>`);
   if (item.ac) lines.push(`<p><strong>Armor.</strong> ${item.ac}</p>`);
   const bonus = item.bonuses;

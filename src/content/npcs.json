@@ -34,5 +34,17 @@
     "name": "Eirik Stonehand",
     "title": "guildmaster",
     "dialogue": "eirik"
+  },
+  {
+    "id": "ivar",
+    "name": "Ivar Holt",
+    "title": "blacksmith",
+    "dialogue": "ivar"
+  },
+  {
+    "id": "signe",
+    "name": "Signe Vale",
+    "title": "tailor and leatherworker",
+    "dialogue": "signe"
   }
 ]

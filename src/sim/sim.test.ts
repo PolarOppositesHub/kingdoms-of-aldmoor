@@ -194,7 +194,7 @@ describe('simulation', () => {
     const state = createWorld(content, map, 7);
     const player = getPlayer(state);
     expect(bodyBlocked(map, player.x, player.y, 5, 3, false)).toBe(false);
-    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(6);
+    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(8);
     expect(state.actors.filter((actor) => actor.kind === 'mob').length).toBeGreaterThanOrEqual(8);
     expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(true);
     for (let i = 0; i < 30; i++) step(state, content, map);
@@ -325,6 +325,89 @@ describe('gear and quests', () => {
     expect(state.quests.wolf_pelts.stage).toBe('none');
     expect(state.inventory.some((stack) => stack.itemId === 'wolf_pelt' && stack.qty === 2)).toBe(true);
     expect(content.quests[0]?.reward).toMatch(/wolf helm/);
+  });
+});
+
+describe('armor shops', () => {
+  const armor = Object.values(content.items).filter((item) => item.armorType);
+  const slots = ['head', 'chest', 'hands', 'legs', 'feet', 'secondary'];
+
+  it('stocks three tiers of plate, chain, leather, and cloth, and no scale yet', () => {
+    expect(armor.some((item) => item.armorType === 'scale')).toBe(false);
+    for (const type of ['plate', 'chain', 'leather', 'cloth'] as const) {
+      for (const slot of slots) {
+        const line = armor.filter((item) => item.armorType === type && item.slot === slot).sort((a, b) => (a.tier ?? 0) - (b.tier ?? 0));
+        expect(line.map((item) => item.tier)).toEqual([1, 2, 3]);
+        for (let i = 1; i < line.length; i++) {
+          expect(line[i].ac ?? 0).toBeGreaterThanOrEqual(line[i - 1].ac ?? 0);
+          expect(line[i].weight).toBeGreaterThan(line[i - 1].weight);
+          expect(line[i].value).toBeGreaterThan(line[i - 1].value);
+        }
+      }
+    }
+    const ivar = content.merchant.vendors.find((vendor) => vendor.npcId === 'ivar');
+    const signe = content.merchant.vendors.find((vendor) => vendor.npcId === 'signe');
+    expect(ivar?.stock).toHaveLength(36);
+    expect(signe?.stock).toHaveLength(36);
+    for (const row of ivar?.stock ?? []) {
+      const item = content.items[row.itemId];
+      expect(['plate', 'chain']).toContain(item.armorType);
+      expect(row.price).toBe(item.value);
+    }
+    for (const row of signe?.stock ?? []) {
+      const item = content.items[row.itemId];
+      expect(['cloth', 'leather']).toContain(item.armorType);
+      expect(row.price).toBe(item.value);
+    }
+    expect(content.items.bronze_breastplate.value).toBeGreaterThan(content.items.bronze_chain_hauberk.value);
+    expect(content.items.tattered_gloves.value).toBeLessThan(content.items.wool_robe.value);
+  });
+
+  it('lets a warrior wear plate and refuses it on a wizard', () => {
+    const map = arena();
+    const warrior = createWorld(content, map, 3);
+    warrior.inventory.push({ itemId: 'iron_helm', qty: 1 });
+    applyIntent(warrior, { type: 'equip', slot: warrior.inventory.length - 1 }, content, map);
+    expect(warrior.equipment.head).toBe('iron_helm');
+
+    const wizard = createWorld(content, map, 4);
+    expect(applyHero(wizard, content, 'barbarian', 'wizard', { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 })).toBe(true);
+    wizard.inventory.push({ itemId: 'iron_helm', qty: 1 });
+    applyIntent(wizard, { type: 'equip', slot: wizard.inventory.length - 1 }, content, map);
+    expect(wizard.equipment.head).toBeNull();
+    expect(wizard.log.at(-1)).toMatch(/Wizard cannot wear plate/);
+    expect(wizard.inventory.some((stack) => stack.itemId === 'iron_helm')).toBe(true);
+  });
+
+  it('gates a scale piece behind faction standing', () => {
+    const map = arena();
+    const state = createWorld(content, map, 5);
+    content.items.scale_test = {
+      id: 'scale_test',
+      name: 'scale test',
+      kind: 'armor',
+      value: 10,
+      stack: 1,
+      blurb: 'test',
+      weight: 1,
+      slot: 'chest',
+      ac: 18,
+      armorType: 'scale',
+      wearers: ['warrior', 'berserker'],
+      faction: { id: 'zasariz', rank: 2 },
+    };
+    try {
+      state.inventory.push({ itemId: 'scale_test', qty: 1 });
+      const slot = state.inventory.length - 1;
+      applyIntent(state, { type: 'equip', slot }, content, map);
+      expect(state.equipment.chest).toBeNull();
+      expect(state.log.at(-1)).toMatch(/zasariz standing 2/);
+      state.factions.zasariz = 2;
+      applyIntent(state, { type: 'equip', slot }, content, map);
+      expect(state.equipment.chest).toBe('scale_test');
+    } finally {
+      delete content.items.scale_test;
+    }
   });
 });
 

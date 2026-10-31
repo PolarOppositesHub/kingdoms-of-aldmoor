@@ -228,6 +228,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     equipment: emptyEquipment(cls.weapon),
     baseStats: { ...cls.stats },
     copper: 0,
+    factions: {},
     xp: 0,
     level: 1,
     stats: { ...cls.stats },

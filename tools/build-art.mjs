@@ -7,7 +7,7 @@
  */
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import {
   blit,
   createImage,
@@ -903,6 +903,32 @@ function withOverlay(base, tintMap, overlay) {
 }
 
 // Apron and braid for Brenna. Drawn into the south/east/north frames.
+function ivarOverlay(dir) {
+  return (img) => {
+    if (dir === 's') {
+      paintOver(img, 5, 11, ['bb', 'bb', 'bb']);
+      paintOver(img, 11, 12, ['oQ', 'oQ']);
+    } else if (dir === 'e') {
+      paintOver(img, 7, 12, ['Q', 'o']);
+    } else if (dir === 'n') {
+      paintOver(img, 6, 12, ['bb', 'bb']);
+    }
+  };
+}
+
+function signeOverlay(dir) {
+  return (img) => {
+    if (dir === 's') {
+      paintOver(img, 5, 10, ['.CC.', 'CCCC', '.cc.']);
+      paintOver(img, 11, 8, ['Y', 'K']);
+    } else if (dir === 'e') {
+      paintOver(img, 6, 11, ['CC', 'cc']);
+    } else if (dir === 'n') {
+      paintOver(img, 6, 11, ['CC', 'cc']);
+    }
+  };
+}
+
 function brennaOverlay(dir, frame) {
   return (img) => {
     if (dir === 's') {
@@ -1512,6 +1538,8 @@ function buildActors() {
     wizard: 9,
     eirik: 10,
     wolf_helm: 11,
+    ivar: 12,
+    signe: 13,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1574,6 +1602,16 @@ function buildActors() {
       row: 10,
       tint: clothTint(hex('#5c2424'), hex('#8a4030'), hex('#2a1414'), hex('#3a241c'), hex('#6b4030')),
       overlay: (dir) => eirikOverlay(dir),
+    },
+    {
+      row: 12,
+      tint: clothTint(hex('#3a241c'), hex('#6b4030'), hex('#241610'), hex('#2a2428'), hex('#5c534c')),
+      overlay: (dir) => ivarOverlay(dir),
+    },
+    {
+      row: 13,
+      tint: clothTint(hex('#2e4a38'), hex('#5e8a62'), hex('#1c3024'), hex('#6b4030'), hex('#c48462')),
+      overlay: (dir) => signeOverlay(dir),
     },
   ];
 
@@ -1840,6 +1878,8 @@ function buildMap(tiles) {
   building(40, 40, 10, 7, { chamfer: true });
   const guild = building(38, 51, 16, 8, { chimney: true, chamfer: true, long: true });
   building(10, 51, 12, 8, { chamfer: true, long: true });
+  const forge = building(49, 26, 10, 8, { chimney: true, chamfer: true });
+  const needles = building(50, 40, 9, 8, { shop: true, chamfer: true });
   fillRect(12, 49, 46, 2, T.PATH);
   // Wooden fences on the outskirts, with the road left open.
   for (let x = 6; x <= 26; x++) stamp(x, 18, T.FENCE, true);
@@ -1871,6 +1911,8 @@ function buildMap(tiles) {
   // Just outside the mead-hall door. The door tile itself is solid.
   add('npc', 'freya', meadHall.doorX, meadHall.doorY + 1, { defId: 'freya', sprite: 'freya' });
   add('npc', 'eirik', guild.doorX, guild.doorY + 1, { defId: 'eirik', sprite: 'eirik' });
+  add('npc', 'ivar', forge.doorX, forge.doorY + 1, { defId: 'ivar', sprite: 'ivar' });
+  add('npc', 'signe', needles.doorX, needles.doorY + 1, { defId: 'signe', sprite: 'signe' });
 
   const mobs = [
     ['young_wolf', 24, 16],
@@ -1994,6 +2036,14 @@ function buildMap(tiles) {
   add('sign', "Brenna's Goods", shop.doorX - 2, shop.doorY + 1, {
     sprite: 'sign_shop',
     text: "Brenna's Goods. Pelts, bandages, and a draught that costs more than bread.",
+  });
+  add('sign', "Ivar's Forge", forge.doorX - 2, forge.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Ivar's Forge. Plate and chain. The smith stands at the door.",
+  });
+  add('sign', "Signe's Needles", needles.doorX - 2, needles.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Signe's Needles. Cloth and leather, cut and stitched.",
   });
   add('sign', 'Warrior Guild', guild.doorX + 2, guild.doorY + 1, {
     sprite: 'sign_hall',
@@ -2227,6 +2277,52 @@ function iconCanvas() {
   return createImage(16, 16);
 }
 
+function drawArmorIcons() {
+  const armor = JSON.parse(readFileSync(join(root, 'src', 'content', 'armor.json'), 'utf8'));
+  const colors = {
+    plate: ['#5c4a32', '#8d7a58', '#d4b46a'],
+    chain: ['#4e585e', '#8b97a3', '#d5dee6'],
+    leather: ['#4a2c22', '#8a5438', '#c48462'],
+    cloth: ['#6a3840', '#b8a48c', '#e4d8c8'],
+  };
+  const frames = {};
+  for (const item of armor) {
+    const img = iconCanvas();
+    const fill = hex(colors[item.armorType][item.tier - 1]);
+    const edge = hex('#1c1418');
+    const put = (x, y, c) => img.set(x, y, c);
+    const box = (x, y, w, h, c) => {
+      for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) put(x + xx, y + yy, yy === 0 || xx === 0 || yy === h - 1 || xx === w - 1 ? edge : c);
+    };
+    if (item.slot === 'head') {
+      box(4, 3, 8, 7, fill);
+      put(6, 6, edge);
+      put(9, 6, edge);
+    } else if (item.slot === 'chest') {
+      box(4, 3, 8, 9, fill);
+      put(7, 5, edge);
+      put(8, 5, edge);
+    } else if (item.slot === 'hands') {
+      box(2, 6, 5, 5, fill);
+      box(9, 6, 5, 5, fill);
+    } else if (item.slot === 'legs') {
+      box(4, 3, 3, 10, fill);
+      box(9, 3, 3, 10, fill);
+    } else if (item.slot === 'feet') {
+      box(3, 8, 4, 4, fill);
+      box(9, 8, 4, 4, fill);
+    } else if (item.armorType === 'cloth') {
+      box(3, 5, 10, 6, fill);
+    } else {
+      box(4, 2, 8, 11, fill);
+      put(8, 6, hex('#e6c15a'));
+    }
+    for (let i = 0; i < item.tier; i++) put(13, 12 + i, hex('#e6c15a'));
+    frames[item.id] = img;
+  }
+  return frames;
+}
+
 function drawItemIcons() {
   const frames = {
     wolf_pelt: (() => {
@@ -2331,6 +2427,7 @@ function drawItemIcons() {
       return img;
     })(),
   };
+  Object.assign(frames, drawArmorIcons());
   const order = Object.keys(frames);
   const sheet = createImage(order.length * 16, 16);
   const meta = {};

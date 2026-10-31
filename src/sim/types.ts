@@ -48,6 +48,14 @@ export interface Stats {
   cha: number;
 }
 
+export type ArmorType = 'plate' | 'chain' | 'leather' | 'cloth' | 'scale';
+
+/** Standing required before a piece can be equipped. Scale armor will use this. */
+export interface FactionNeed {
+  id: string;
+  rank: number;
+}
+
 export interface ItemDef {
   id: string;
   name: string;
@@ -63,6 +71,16 @@ export interface ItemDef {
   effects?: string;
   delayMs?: number;
   damage?: Dice;
+  /** Plate, chain, leather, cloth, or scale. Scale is in the schema and not stocked yet. */
+  armorType?: ArmorType;
+  /** 1 rusty/tattered, 2 worked, 3 bronze/hardened/wool. */
+  tier?: 1 | 2 | 3;
+  /** Class ids allowed to equip this. Omitted means no class limit. */
+  wearers?: string[];
+  /** Faction standing required to equip. No current item sets this. */
+  faction?: FactionNeed;
+  /** Race id of a later, better craft (dwarf, high_elf, human). Hoffender stock leaves this unset. */
+  craftedBy?: string;
 }
 
 export interface QuestDef {
@@ -203,6 +221,12 @@ export interface MerchantStock {
   price: number;
 }
 
+export interface VendorDef {
+  npcId: string;
+  title: string;
+  stock: MerchantStock[];
+}
+
 export interface ContentDb {
   items: Record<string, ItemDef>;
   mobs: Record<string, MobDef>;
@@ -211,7 +235,7 @@ export interface ContentDb {
   abilities: Record<string, AbilityDef>;
   classes: Record<string, ClassDef>;
   tuning: Tuning;
-  merchant: { npcId: string; stock: MerchantStock[] };
+  merchant: { vendors: VendorDef[] };
   economy: { copperPerSilver: number; silverPerGold: number; goldPerPlatinum: number };
   player: { name: string; classId: string; copper: number; items: { itemId: string; qty: number }[] };
   roster: Roster;
@@ -308,6 +332,8 @@ export interface GameState {
   equipment: Equipment;
   baseStats: Stats;
   copper: number;
+  /** Faction id to standing. Empty until a later story grants it. Scale armor will read this. */
+  factions: Record<string, number>;
   xp: number;
   level: number;
   stats: Stats;

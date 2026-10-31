@@ -1,9 +1,326 @@
 {
-  "npcId": "brenna",
-  "stock": [
-    { "itemId": "trail_ration", "price": 2 },
-    { "itemId": "wool_bandage", "price": 9 },
-    { "itemId": "yarrow_draught", "price": 37 },
-    { "itemId": "bearded_handaxe", "price": 43 }
+  "vendors": [
+    {
+      "npcId": "brenna",
+      "title": "Brenna's Goods",
+      "stock": [
+        {
+          "itemId": "trail_ration",
+          "price": 2
+        },
+        {
+          "itemId": "wool_bandage",
+          "price": 9
+        },
+        {
+          "itemId": "yarrow_draught",
+          "price": 37
+        },
+        {
+          "itemId": "bearded_handaxe",
+          "price": 43
+        }
+      ]
+    },
+    {
+      "npcId": "ivar",
+      "title": "Ivar's Forge",
+      "stock": [
+        {
+          "itemId": "rusty_iron_helm",
+          "price": 58
+        },
+        {
+          "itemId": "iron_helm",
+          "price": 164
+        },
+        {
+          "itemId": "bronze_helm",
+          "price": 355
+        },
+        {
+          "itemId": "rusty_iron_breastplate",
+          "price": 112
+        },
+        {
+          "itemId": "iron_breastplate",
+          "price": 318
+        },
+        {
+          "itemId": "bronze_breastplate",
+          "price": 690
+        },
+        {
+          "itemId": "rusty_iron_gauntlets",
+          "price": 34
+        },
+        {
+          "itemId": "iron_gauntlets",
+          "price": 96
+        },
+        {
+          "itemId": "bronze_gauntlets",
+          "price": 214
+        },
+        {
+          "itemId": "rusty_iron_greaves",
+          "price": 73
+        },
+        {
+          "itemId": "iron_greaves",
+          "price": 207
+        },
+        {
+          "itemId": "bronze_greaves",
+          "price": 448
+        },
+        {
+          "itemId": "rusty_iron_sabatons",
+          "price": 41
+        },
+        {
+          "itemId": "iron_sabatons",
+          "price": 118
+        },
+        {
+          "itemId": "bronze_sabatons",
+          "price": 262
+        },
+        {
+          "itemId": "rusty_iron_shield",
+          "price": 66
+        },
+        {
+          "itemId": "iron_shield",
+          "price": 186
+        },
+        {
+          "itemId": "bronze_shield",
+          "price": 402
+        },
+        {
+          "itemId": "rusty_chain_coif",
+          "price": 24
+        },
+        {
+          "itemId": "iron_chain_coif",
+          "price": 71
+        },
+        {
+          "itemId": "bronze_chain_coif",
+          "price": 163
+        },
+        {
+          "itemId": "rusty_chain_hauberk",
+          "price": 46
+        },
+        {
+          "itemId": "iron_chain_hauberk",
+          "price": 138
+        },
+        {
+          "itemId": "bronze_chain_hauberk",
+          "price": 312
+        },
+        {
+          "itemId": "rusty_chain_mittens",
+          "price": 15
+        },
+        {
+          "itemId": "iron_chain_mittens",
+          "price": 44
+        },
+        {
+          "itemId": "bronze_chain_mittens",
+          "price": 102
+        },
+        {
+          "itemId": "rusty_chain_leggings",
+          "price": 29
+        },
+        {
+          "itemId": "iron_chain_leggings",
+          "price": 88
+        },
+        {
+          "itemId": "bronze_chain_leggings",
+          "price": 198
+        },
+        {
+          "itemId": "rusty_chain_boots",
+          "price": 18
+        },
+        {
+          "itemId": "iron_chain_boots",
+          "price": 52
+        },
+        {
+          "itemId": "bronze_chain_boots",
+          "price": 121
+        },
+        {
+          "itemId": "rusty_chain_buckler",
+          "price": 27
+        },
+        {
+          "itemId": "iron_chain_buckler",
+          "price": 79
+        },
+        {
+          "itemId": "bronze_chain_buckler",
+          "price": 184
+        }
+      ]
+    },
+    {
+      "npcId": "signe",
+      "title": "Signe's Needles",
+      "stock": [
+        {
+          "itemId": "cracked_leather_cap",
+          "price": 9
+        },
+        {
+          "itemId": "leather_cap",
+          "price": 28
+        },
+        {
+          "itemId": "hardened_leather_cap",
+          "price": 67
+        },
+        {
+          "itemId": "cracked_leather_tunic",
+          "price": 18
+        },
+        {
+          "itemId": "leather_tunic",
+          "price": 54
+        },
+        {
+          "itemId": "hardened_leather_tunic",
+          "price": 124
+        },
+        {
+          "itemId": "cracked_leather_gloves",
+          "price": 6
+        },
+        {
+          "itemId": "leather_gloves",
+          "price": 17
+        },
+        {
+          "itemId": "hardened_leather_gloves",
+          "price": 41
+        },
+        {
+          "itemId": "cracked_leather_pants",
+          "price": 12
+        },
+        {
+          "itemId": "leather_pants",
+          "price": 36
+        },
+        {
+          "itemId": "hardened_leather_pants",
+          "price": 86
+        },
+        {
+          "itemId": "cracked_leather_boots",
+          "price": 7
+        },
+        {
+          "itemId": "leather_boots",
+          "price": 19
+        },
+        {
+          "itemId": "hardened_leather_boots",
+          "price": 46
+        },
+        {
+          "itemId": "cracked_leather_buckler",
+          "price": 11
+        },
+        {
+          "itemId": "leather_buckler",
+          "price": 31
+        },
+        {
+          "itemId": "hardened_leather_buckler",
+          "price": 74
+        },
+        {
+          "itemId": "tattered_hood",
+          "price": 3
+        },
+        {
+          "itemId": "linen_hood",
+          "price": 11
+        },
+        {
+          "itemId": "wool_hood",
+          "price": 26
+        },
+        {
+          "itemId": "tattered_robe",
+          "price": 6
+        },
+        {
+          "itemId": "linen_robe",
+          "price": 22
+        },
+        {
+          "itemId": "wool_robe",
+          "price": 48
+        },
+        {
+          "itemId": "tattered_gloves",
+          "price": 2
+        },
+        {
+          "itemId": "linen_gloves",
+          "price": 7
+        },
+        {
+          "itemId": "wool_gloves",
+          "price": 16
+        },
+        {
+          "itemId": "tattered_trousers",
+          "price": 4
+        },
+        {
+          "itemId": "linen_trousers",
+          "price": 14
+        },
+        {
+          "itemId": "wool_trousers",
+          "price": 33
+        },
+        {
+          "itemId": "tattered_shoes",
+          "price": 2
+        },
+        {
+          "itemId": "linen_shoes",
+          "price": 8
+        },
+        {
+          "itemId": "wool_shoes",
+          "price": 18
+        },
+        {
+          "itemId": "tattered_sash",
+          "price": 3
+        },
+        {
+          "itemId": "linen_sash",
+          "price": 9
+        },
+        {
+          "itemId": "wool_sash",
+          "price": 21
+        }
+      ]
+    }
   ]
 }

@@ -21,7 +21,9 @@
       "frost_wolf": 8,
       "wizard": 9,
       "eirik": 10,
-      "wolf_helm": 11
+      "wolf_helm": 11,
+      "ivar": 12,
+      "signe": 13
     }
   },
   "props": {

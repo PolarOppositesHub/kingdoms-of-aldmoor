@@ -130,5 +130,39 @@
       "text": "The helm suits you. Wear it. The guild will have more work when the hall is finished. Not today.",
       "choices": [{ "label": "Guildmaster.", "action": "close" }]
     }
+  },
+  "ivar": {
+    "start": {
+      "text": "Ivar Holt. I forge plate and chain. Plate is a warrior's shell. Chain fits a warrior or a berserker. I do not sew cloth, and scale is not my alloy.",
+      "choices": [
+        { "label": "Show me the armor.", "action": "merchant" },
+        { "label": "What should I buy first?", "next": "first" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "first": {
+      "text": "If your coin is thin, take the rusty pieces. They are ugly and they still stop a tooth. Bronze is for when the wolves owe you.",
+      "choices": [
+        { "label": "Let me see the stock.", "action": "merchant" },
+        { "label": "Back.", "next": "start" }
+      ]
+    }
+  },
+  "signe": {
+    "start": {
+      "text": "Signe Vale. Cloth and leather. Shamans, rogues, wardens, and wizards live in the cloth. Leather also fits a warrior or a berserker who means to move.",
+      "choices": [
+        { "label": "Show me what you have.", "action": "merchant" },
+        { "label": "What lasts in the wet?", "next": "wet" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "wet": {
+      "text": "Wool, if you can pay. Linen if you cannot. Tattered cloth is a mend with a price, and I will not pretend otherwise.",
+      "choices": [
+        { "label": "Show me the stock.", "action": "merchant" },
+        { "label": "Back.", "next": "start" }
+      ]
+    }
   }
 }

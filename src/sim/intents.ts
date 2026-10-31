@@ -3,6 +3,7 @@ import { collect } from './events';
 import { dist } from './formulas';
 import { findActor, getPlayer, applyHero, refreshGear } from './state';
 import { abandonQuest, acceptQuest, addItem, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+import { wearRefusal } from './wear';
 
 function nearestSign(map: MapData, x: number, y: number, maxDist: number) {
   let best: { name: string; text?: string; x: number; y: number; d: number } | null = null;
@@ -148,7 +149,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const node = def ? content.dialogue[def.dialogue]?.[state.ui.nodeId] : undefined;
         const choice = node?.choices[intent.index];
         if (!choice) return;
-        if (choice.action === 'merchant' && def?.id === content.merchant.npcId) {
+        if (choice.action === 'merchant' && def && content.merchant.vendors.some((vendor) => vendor.npcId === def.id)) {
           state.ui.panel = 'merchant';
           return;
         }
@@ -172,8 +173,9 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       case 'buy': {
         if (state.ui.panel !== 'merchant' || !state.ui.npcId) return;
         const npc = findActor(state, state.ui.npcId);
-        if (!npc || content.npcs[npc.defId]?.id !== content.merchant.npcId) return;
-        const stock = content.merchant.stock.find((row) => row.itemId === intent.itemId);
+        const vendor = npc ? content.merchant.vendors.find((entry) => entry.npcId === npc.defId) : undefined;
+        if (!npc || !vendor) return;
+        const stock = vendor.stock.find((row) => row.itemId === intent.itemId);
         const item = content.items[intent.itemId];
         if (!stock || !item) return;
         if (state.copper < stock.price) {
@@ -225,6 +227,11 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (!stack) return;
         const item = content.items[stack.itemId];
         if (!item?.slot) return;
+        const refusal = wearRefusal(state, item);
+        if (refusal) {
+          emit({ type: 'log', text: refusal });
+          return;
+        }
         const slot = item.slot;
         const previous = state.equipment[slot];
         const snapshot = stack.qty;
