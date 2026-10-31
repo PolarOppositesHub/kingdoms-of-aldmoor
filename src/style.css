@@ -211,19 +211,101 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   flex-direction: column;
   gap: 10px;
 }
-.doll { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-.doll-slot, .bag-cell {
-  min-height: 64px;
+#panel[data-kind="paper"] {
+  align-items: center;
+  padding-top: calc(8px + env(safe-area-inset-top));
+}
+.sheet.paper {
+  width: min(400px, 100%);
+  max-height: min(94vh, 860px);
+  gap: 8px;
+}
+.paper-doll {
+  display: grid;
+  grid-template-columns: 72px minmax(96px, 1fr) 72px;
+  grid-template-rows: 72px 72px 72px 72px;
+  gap: 8px;
+  justify-items: center;
+  align-items: center;
+  width: min(100%, 320px);
+  margin: 0 auto;
+}
+.slot-head { grid-column: 2; grid-row: 1; }
+.slot-chest { grid-column: 1; grid-row: 2; }
+.slot-hands { grid-column: 3; grid-row: 2; }
+.slot-legs { grid-column: 1; grid-row: 3; }
+.slot-feet { grid-column: 3; grid-row: 3; }
+.slot-primary { grid-column: 1; grid-row: 4; }
+.slot-secondary { grid-column: 3; grid-row: 4; }
+.doll-stage {
+  grid-column: 2;
+  grid-row: 2 / span 2;
+  width: 96px;
+  height: 144px;
+  position: relative;
+  align-self: end;
+  justify-self: center;
+}
+.doll-shadow {
+  position: absolute;
+  left: 28px;
+  bottom: 2px;
+  width: 40px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.38);
+}
+.doll-layer {
+  position: absolute;
+  left: 0;
+  top: 0;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background-repeat: no-repeat;
+  background-position: 0 var(--frame-y);
+  animation: doll-idle 0.72s steps(2, end) infinite;
+  pointer-events: none;
+}
+@keyframes doll-idle {
+  to { background-position: calc(var(--step) * -2) var(--frame-y); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .doll-layer { animation: none; }
+}
+.slot-frame {
+  width: 72px;
+  height: 72px;
+  min-height: 72px;
+  padding: 4px 2px 3px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  gap: 2px;
-  padding: 4px;
+  justify-content: space-between;
+  gap: 0;
+  background: #1c1614;
+  border-radius: 4px;
 }
-.doll-slot small, .bag-cell em { font-size: 11px; color: var(--muted); font-style: normal; }
-.slot-name { font-size: 11px; color: var(--muted); }
-.bag-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.slot-frame.is-on { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+.slot-art {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+}
+.slot-frame small {
+  font-size: 10px;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-style: normal;
+}
+.bag-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 72px);
+  gap: 8px;
+  justify-content: center;
+}
 .icon {
   display: block;
   width: 32px;

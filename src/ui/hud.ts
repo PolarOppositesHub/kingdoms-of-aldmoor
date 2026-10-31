@@ -5,6 +5,8 @@ import { isSafe, placeName } from '../sim/map';
 import { EQUIP_SLOTS, type EquipSlot, type GameState, type ItemDef } from '../sim/types';
 import iconsUrl from '../assets/icons.png?url';
 import iconMeta from '../assets/icons.json';
+import actorsUrl from '../assets/actors.png?url';
+import atlas from '../assets/atlas.json';
 
 export function mountHud(api: GameApi): void {
   const root = document.getElementById('hud');
@@ -404,9 +406,11 @@ function paintPanel(
   if (state.ui.panel === 'none') {
     panel.hidden = true;
     panel.innerHTML = '';
+    delete panel.dataset.kind;
     return;
   }
   panel.hidden = false;
+  panel.dataset.kind = state.ui.panel === 'pack' ? 'paper' : '';
   if (state.ui.panel === 'dialogue') panel.innerHTML = dialogueHtml(state, api);
   else if (state.ui.panel === 'merchant') panel.innerHTML = merchantHtml(state, api);
   else if (state.ui.panel === 'pack') panel.innerHTML = inventoryHtml(state, api, focus);
@@ -467,34 +471,85 @@ function iconHtml(itemId: string, className = 'icon'): string {
   return `<span class="${className}" style="${style}"></span>`;
 }
 
+const DOLL_SCALE = 6;
+const ACTOR_COLS = atlas.actors.dirs.length * atlas.actors.framesPerDir;
+
+function actorLayerStyle(rowName: string): string {
+  const row = atlas.actors.rows[rowName as keyof typeof atlas.actors.rows] ?? 0;
+  const frameW = atlas.actors.frameW * DOLL_SCALE;
+  const frameH = atlas.actors.frameH * DOLL_SCALE;
+  const sheetW = ACTOR_COLS * frameW;
+  const sheetH = Object.keys(atlas.actors.rows).length * frameH;
+  const frameY = row * frameH;
+  return `--frame-y:-${frameY}px;--step:${frameW}px;width:${frameW}px;height:${frameH}px;background-image:url(${actorsUrl});background-size:${sheetW}px ${sheetH}px;`;
+}
+
+function dollFigure(state: GameState): string {
+  const player = state.actors.find((actor) => actor.id === state.playerId);
+  const body = player?.sprite && player.sprite in atlas.actors.rows ? player.sprite : 'warrior';
+  const layers = EQUIP_SLOTS.map((slot) => state.equipment[slot])
+    .filter((id): id is string => Boolean(id && id in atlas.actors.rows))
+    .map((id) => `<span class="doll-layer" style="${actorLayerStyle(id)}"></span>`)
+    .join('');
+  return `<div class="doll-stage">
+    <span class="doll-shadow"></span>
+    <span class="doll-layer doll-body" style="${actorLayerStyle(body)}"></span>
+    ${layers}
+  </div>`;
+}
+
+function slotButton(
+  state: GameState,
+  api: GameApi,
+  slot: EquipSlot,
+  focus: { itemId: string } | { emptySlot: EquipSlot } | null,
+): string {
+  const id = state.equipment[slot];
+  const item = id ? api.content.items[id] : undefined;
+  const selected =
+    (focus && 'itemId' in focus && Boolean(id) && focus.itemId === id) ||
+    (focus && 'emptySlot' in focus && !id && focus.emptySlot === slot);
+  return `<button type="button" class="slot-frame slot-${slot}${selected ? ' is-on' : ''}" data-action="focus-slot" data-equip-slot="${slot}" data-item="${id ?? ''}" aria-pressed="${selected ? 'true' : 'false'}" aria-label="${SLOT_LABEL[slot]}${item ? `, ${item.name}` : ', empty'}">
+    <span class="slot-art">${item ? iconHtml(item.id) : ''}</span>
+    <small>${SLOT_LABEL[slot]}</small>
+  </button>`;
+}
+
 function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string } | { emptySlot: EquipSlot } | null): string {
-  const doll = EQUIP_SLOTS.map((slot) => {
-    const id = state.equipment[slot];
-    const item = id ? api.content.items[id] : undefined;
-    return `<button type="button" class="doll-slot" data-action="focus-slot" data-equip-slot="${slot}" data-item="${id ?? ''}">
-      ${item ? iconHtml(item.id) : `<span class="slot-name">${SLOT_LABEL[slot]}</span>`}
-      <small>${SLOT_LABEL[slot]}</small>
-    </button>`;
-  }).join('');
   const cells = state.inventory
     .map((stack, index) => {
       const item = api.content.items[stack.itemId];
       if (!item) return '';
-      return `<button type="button" class="bag-cell" data-action="focus-item" data-item="${item.id}" data-slot="${index}">
-        ${iconHtml(item.id)}
-        <em>×${stack.qty}</em>
+      const selected = focus && 'itemId' in focus && focus.itemId === item.id;
+      return `<button type="button" class="slot-frame bag-cell${selected ? ' is-on' : ''}" data-action="focus-item" data-item="${item.id}" data-slot="${index}" aria-pressed="${selected ? 'true' : 'false'}" aria-label="${item.name}, ${stack.qty}">
+        <span class="slot-art">${iconHtml(item.id)}</span>
+        <small>×${stack.qty}</small>
       </button>`;
     })
     .join('');
   const focused = focus && 'itemId' in focus ? api.content.items[focus.itemId] : undefined;
   const wornSlot = focused?.slot && state.equipment[focused.slot] === focused.id ? focused.slot : null;
   const bagIndex = focused ? state.inventory.findIndex((stack) => stack.itemId === focused.id) : -1;
-  return `<div class="sheet">
+  const detail = focused
+    ? itemCard(focused, api, wornSlot, bagIndex)
+    : focus && 'emptySlot' in focus
+      ? `<article class="item-card"><h3>${SLOT_LABEL[focus.emptySlot]}</h3><p>Nothing is worn here.</p></article>`
+      : '';
+  return `<div class="sheet paper">
     <header><h2>Inventory</h2><p>${formatCoin(state.copper, api.content.economy)}</p></header>
-    <div class="doll">${doll}</div>
+    <div class="paper-doll">
+      ${slotButton(state, api, 'head', focus)}
+      ${slotButton(state, api, 'chest', focus)}
+      ${dollFigure(state)}
+      ${slotButton(state, api, 'hands', focus)}
+      ${slotButton(state, api, 'legs', focus)}
+      ${slotButton(state, api, 'feet', focus)}
+      ${slotButton(state, api, 'primary', focus)}
+      ${slotButton(state, api, 'secondary', focus)}
+    </div>
     <h3>Bag</h3>
     <div class="bag-grid">${cells || '<p class="empty">Nothing in the bag.</p>'}</div>
-    ${focused ? itemCard(focused, api, wornSlot, bagIndex) : focus && 'emptySlot' in focus ? `<article class="item-card"><h3>${SLOT_LABEL[focus.emptySlot]}</h3><p>Nothing is worn here.</p></article>` : '<p class="empty">Tap a slot or a bag icon.</p>'}
+    ${detail}
     <button type="button" class="close" data-action="close">Close</button>
   </div>`;
 }
