@@ -6,7 +6,7 @@ import { conColor, formatCoin, xpLossFraction } from './formulas';
 import { applyIntent } from './intents';
 import { turnInPelts } from './systems';
 import { bodyBlocked, placeName } from './map';
-import { applyHero, createWorld, getPlayer } from './state';
+import { applyHero, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
 import { step } from './step';
 import type { MapData } from './types';
 import hoffenderRaw from '../assets/hoffender.tmj?raw';
@@ -194,7 +194,7 @@ describe('simulation', () => {
     const state = createWorld(content, map, 7);
     const player = getPlayer(state);
     expect(bodyBlocked(map, player.x, player.y, 5, 3, false)).toBe(false);
-    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(8);
+    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(14);
     expect(state.actors.filter((actor) => actor.kind === 'mob').length).toBeGreaterThanOrEqual(8);
     expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(true);
     for (let i = 0; i < 30; i++) step(state, content, map);
@@ -257,10 +257,14 @@ describe('wizard and the pelt quest', () => {
     );
     const state = createWorld(content, map, 9);
     const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 2, cha: 0 };
-    expect(applyHero(state, content, 'barbarian', 'wizard', bonus)).toBe(true);
+    expect(applyHero(state, content, 'barbarian', 'wizard', bonus)).toBe(false);
     expect(applyHero(state, content, 'human', 'wizard', bonus)).toBe(false);
+    configurePlayer(state, content, 'wizard');
+    state.baseStats.int += bonus.int + (content.roster.races.find((race) => race.id === 'barbarian')?.mods.int ?? 0);
+    state.stats = { ...state.baseStats };
+    refreshGear(state, content);
     const player = getPlayer(state);
-    expect(player.sprite).toBe('wizard');
+    expect(player.sprite).toBe('body_m');
     expect(state.maxMana).toBeGreaterThan(20);
     expect(state.stats.int).toBe(content.classes.wizard.stats.int + content.roster.races[0].mods.int + 2 + (content.items.ash_staff.bonuses?.int ?? 0));
     const mana = state.mana;
@@ -371,7 +375,8 @@ describe('armor shops', () => {
     expect(warrior.equipment.head).toBe('iron_helm');
 
     const wizard = createWorld(content, map, 4);
-    expect(applyHero(wizard, content, 'barbarian', 'wizard', { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 })).toBe(true);
+    expect(applyHero(wizard, content, 'barbarian', 'wizard', { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 })).toBe(false);
+    configurePlayer(wizard, content, 'wizard');
     wizard.inventory.push({ itemId: 'iron_helm', qty: 1 });
     applyIntent(wizard, { type: 'equip', slot: wizard.inventory.length - 1 }, content, map);
     expect(wizard.equipment.head).toBeNull();
@@ -400,7 +405,7 @@ describe('armor shops', () => {
       state.inventory.push({ itemId: 'scale_test', qty: 1 });
       const slot = state.inventory.length - 1;
       applyIntent(state, { type: 'equip', slot }, content, map);
-      expect(state.equipment.chest).toBeNull();
+      expect(state.equipment.chest).toBe('cracked_leather_tunic');
       expect(state.log.at(-1)).toMatch(/zasariz standing 2/);
       state.factions.zasariz = 2;
       applyIntent(state, { type: 'equip', slot }, content, map);
@@ -408,6 +413,28 @@ describe('armor shops', () => {
     } finally {
       delete content.items.scale_test;
     }
+  });
+});
+
+describe('save and classes', () => {
+  it('rejects a barbarian wizard and migrates that save to a warrior', async () => {
+    const { captureSave, migrateSave, applySave } = await import('./save');
+    const map = arena();
+    const state = createWorld(content, map, 11);
+    expect(applyHero(state, content, 'barbarian', 'shaman', { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 })).toBe(true);
+    expect(getPlayer(state).sprite).toBe('body_m');
+    expect(state.maxMana).toBeGreaterThan(0);
+    const raw = captureSave(state);
+    raw.classId = 'wizard';
+    raw.raceId = 'barbarian';
+    raw.learned = ['shardbolt'];
+    const migrated = migrateSave(raw);
+    expect(migrated?.classId).toBe('warrior');
+    expect(migrated?.learned).toEqual([]);
+    expect(migrated?.note).toMatch(/Warrior/);
+    const next = createWorld(content, map, 12);
+    applySave(next, content, map, migrated);
+    expect(next.classId).toBe('warrior');
   });
 });
 

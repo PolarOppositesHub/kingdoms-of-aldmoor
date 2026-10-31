@@ -2,7 +2,7 @@ import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
 import { findActor, getPlayer, applyHero, refreshGear } from './state';
-import { abandonQuest, acceptQuest, addItem, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+import { abandonQuest, acceptQuest, addItem, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
 import { wearRefusal } from './wear';
 
 function nearestSign(map: MapData, x: number, y: number, maxDist: number) {
@@ -49,7 +49,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       }
       case 'target': {
         const actor = findActor(state, intent.id);
-        if (!actor || !actor.alive || actor.kind === 'player') return;
+        if (!actor || !actor.alive || actor.kind === 'player' || actor.pet) return;
         state.targetId = actor.id;
         return;
       }
@@ -88,7 +88,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         return;
       }
       case 'createHero': {
-        applyHero(state, content, intent.raceId, intent.classId, intent.bonus);
+        applyHero(state, content, intent.raceId, intent.classId, intent.bonus, intent.sex ?? state.sex);
         return;
       }
       case 'talkTo': {
@@ -178,6 +178,16 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const stock = vendor.stock.find((row) => row.itemId === intent.itemId);
         const item = content.items[intent.itemId];
         if (!stock || !item) return;
+        if (item.teaches) {
+          if (state.copper < stock.price) {
+            emit({ type: 'log', text: "You don't have the coin." });
+            return;
+          }
+          if (!learnAbility(state, content, item.teaches, emit)) return;
+          state.copper -= stock.price;
+          emit({ type: 'log', text: `You pay ${stock.price} copper.` });
+          return;
+        }
         if (state.copper < stock.price) {
           emit({ type: 'log', text: "You don't have the coin." });
           return;
@@ -232,6 +242,10 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           emit({ type: 'log', text: refusal });
           return;
         }
+        if (state.classId === 'warden' && item.slot === 'primary' && item.grip !== 'fist' && item.grip !== 'staff') {
+          emit({ type: 'log', text: 'A warden fights with fists, hand-wraps, or a staff.' });
+          return;
+        }
         const slot = item.slot;
         const previous = state.equipment[slot];
         const snapshot = stack.qty;
@@ -265,6 +279,20 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         refreshGear(state, content);
         const name = content.items[worn]?.name ?? 'item';
         emit({ type: 'log', text: `You take off the ${name}.` });
+        return;
+      }
+      case 'openBook':
+        if (state.dead) return;
+        state.ui = { panel: 'book', npcId: null, nodeId: null, title: null, body: null };
+        state.input.x = 0;
+        state.input.y = 0;
+        state.input.dest = null;
+        return;
+      case 'setLoadout': {
+        const known = knownAbilities(state, content);
+        const slots = intent.slots.filter((id) => known.includes(id)).slice(0, 2);
+        if (!slots.length) return;
+        state.loadout = slots;
         return;
       }
       case 'openJournal':

@@ -35,6 +35,10 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     stuck: 0,
     slowMs: 0,
     slowRate: 1,
+    dotMs: 0,
+    dotAmount: 0,
+    dotBank: 0,
+    pet: false,
     ...partial,
   };
 }
@@ -67,7 +71,47 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.manaRegenBank = 0;
   state.cooldowns = {};
   for (const abilityId of cls.abilities) state.cooldowns[abilityId] = 0;
+  state.learned = [];
+  state.loadout = cls.abilities.slice(0, 2);
+  state.sneakMs = 0;
+  state.evadeMs = 0;
+  state.powerMs = 0;
+  const focusMax = cls.resource === 'guile' || cls.resource === 'rage' ? cls.baseFocus + cls.focusPerLevel : 0;
+  state.focusMax = focusMax;
+  state.focus = cls.resource === 'rage' ? 0 : focusMax;
+  if (cls.kit) {
+    for (const slot of ['head', 'chest', 'hands', 'legs', 'feet', 'secondary'] as const) {
+      const piece = cls.kit[slot];
+      if (piece) state.equipment[slot] = piece;
+    }
+  }
+  player.sprite = state.sex === 'female' ? 'body_f' : 'body_m';
   refreshGear(state, content);
+  syncCompanion(state, content);
+}
+
+export function syncCompanion(state: GameState, content: ContentDb): void {
+  state.actors = state.actors.filter((actor) => !actor.pet);
+  if (state.classId !== 'warden') return;
+  const player = getPlayer(state);
+  const def = content.mobs.warden_wolf;
+  state.actors.push(
+    blankActor({
+      id: 'pet_wolf',
+      kind: 'mob',
+      defId: 'warden_wolf',
+      name: def?.name ?? 'snow wolf',
+      sprite: 'frost_wolf',
+      x: player.x - 18,
+      y: player.y + 8,
+      hp: def?.hp ?? 36,
+      maxHp: def?.hp ?? 36,
+      level: Math.max(1, state.level),
+      social: '',
+      pet: true,
+      attackMs: def?.delayMs ?? 1800,
+    }),
+  );
 }
 
 export function emptyEquipment(primary: string | null): Equipment {
@@ -127,6 +171,7 @@ export function applyHero(
   raceId: string,
   classId: string,
   bonus: Stats,
+  sex: 'male' | 'female' = 'male',
 ): boolean {
   if (state.tick > 0) return false;
   const race = content.roster.races.find((entry) => entry.id === raceId);
@@ -141,6 +186,7 @@ export function applyHero(
     spent += add;
   }
   if (spent > content.roster.points) return false;
+  state.sex = sex;
   configurePlayer(state, content, classId);
   const stats = { ...cls.stats };
   for (const key of STAT_KEYS) {
@@ -149,6 +195,7 @@ export function applyHero(
   state.baseStats = { ...stats };
   state.stats = { ...stats };
   state.raceId = race.id;
+  state.sex = state.sex === 'female' ? 'female' : 'male';
   refreshGear(state, content);
   const player = getPlayer(state);
   player.hp = player.maxHp;
@@ -238,6 +285,14 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     mana: 0,
     maxMana: 0,
     manaRegenBank: 0,
+    focus: 0,
+    focusMax: 0,
+    learned: [],
+    loadout: [],
+    sneakMs: 0,
+    evadeMs: 0,
+    powerMs: 0,
+    sex: 'male',
     autoAttack: false,
     targetId: null,
     cooldowns: {},

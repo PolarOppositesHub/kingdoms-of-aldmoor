@@ -4,9 +4,11 @@ import { conColor, conLabel, formatCoin } from '../sim/formulas';
 import { isSafe, placeName } from '../sim/map';
 import { EQUIP_SLOTS, type EquipSlot, type GameState, type ItemDef } from '../sim/types';
 import { armorLabel, classLabel } from '../sim/wear';
+import { knownAbilities } from '../sim/systems';
 import iconsUrl from '../assets/icons.png?url';
 import iconMeta from '../assets/icons.json';
 import actorsUrl from '../assets/actors.png?url';
+import portraitUrl from '../assets/portrait.png?url';
 import atlas from '../assets/atlas.json';
 
 export function mountHud(api: GameApi): void {
@@ -53,6 +55,7 @@ export function mountHud(api: GameApi): void {
       <button type="button" id="next">Next</button>
       <button type="button" id="talk">Look</button>
       <button type="button" id="pack">Inv</button>
+      <button type="button" id="book">Book</button>
       <button type="button" id="quest">Quest</button>
       <button type="button" id="item">Item</button>
     </div>
@@ -100,6 +103,7 @@ export function mountHud(api: GameApi): void {
     detail = null;
     pushIntent({ type: 'openPack' });
   });
+  root.querySelector('#book')!.addEventListener('click', () => pushIntent({ type: 'openBook' }));
   root.querySelector('#quest')!.addEventListener('click', () => {
     abandonArmed = false;
     pushIntent({ type: 'openJournal' });
@@ -123,6 +127,7 @@ export function mountHud(api: GameApi): void {
 
   let detail: { itemId: string } | { emptySlot: EquipSlot } | null = null;
   let abandonArmed = false;
+  let bookSlot = 0;
 
   panel.addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest('button');
@@ -142,6 +147,12 @@ export function mountHud(api: GameApi): void {
     else if (action === 'focus-slot') {
       const worn = button.dataset.item;
       detail = worn ? { itemId: worn } : { emptySlot: (button.dataset.equipSlot ?? 'head') as EquipSlot };
+    } else if (action === 'book-slot') bookSlot = Number(button.dataset.slot);
+    else if (action === 'learn') {
+      const live = api.getState();
+      const next = [live.loadout[0] ?? '', live.loadout[1] ?? ''];
+      next[bookSlot] = button.dataset.ability ?? '';
+      pushIntent({ type: 'setLoadout', slots: next.filter((id) => id.length > 0) });
     } else if (action === 'abandon-ask') abandonArmed = true;
     else if (action === 'abandon-no') abandonArmed = false;
     else if (action === 'abandon-yes') {
@@ -169,10 +180,10 @@ export function mountHud(api: GameApi): void {
   const tick = () => {
     const state = api.getState();
     paintVitals(root, state, api);
-    const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}`;
+    const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}|${bookSlot}`;
     if (key !== panelKey) {
       panelKey = key;
-      paintPanel(panel, state, api, detail, abandonArmed);
+      paintPanel(panel, state, api, detail, abandonArmed, bookSlot);
     }
     if (!hintedFight && state.ui.panel === 'none' && !isSafe(api.map, getXY(state).x, getXY(state).y)) {
       hintedFight = true;
@@ -317,11 +328,18 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   hpNum.textContent = `${Math.max(0, player.hp)}/${player.maxHp}`;
   hpFill.style.width = `${Math.max(0, Math.min(100, (player.hp / player.maxHp) * 100))}%`;
   if (manaLine && manaFill && manaNum) {
+    const resource = api.content.classes[state.classId]?.resource ?? 'none';
     const showMana = state.maxMana > 0;
-    manaLine.hidden = !showMana;
+    const showFocus = !showMana && state.focusMax > 0;
+    manaLine.hidden = !(showMana || showFocus);
+    manaLine.dataset.resource = showMana ? 'mana' : resource;
     if (showMana) {
       manaFill.style.width = `${Math.max(0, Math.min(100, (state.mana / state.maxMana) * 100))}%`;
-      manaNum.textContent = `${Math.max(0, state.mana)}/${state.maxMana}`;
+      manaNum.textContent = `Mana ${Math.max(0, state.mana)}/${state.maxMana}`;
+    } else if (showFocus) {
+      manaFill.style.width = `${Math.max(0, Math.min(100, (state.focus / state.focusMax) * 100))}%`;
+      const label = resource === 'rage' ? 'Rage' : 'Guile';
+      manaNum.textContent = `${label} ${Math.max(0, state.focus)}/${state.focusMax}`;
     }
   }
   const need = api.content.tuning.xpTable[state.level] ?? api.content.tuning.xpTable.at(-1) ?? 1;
@@ -335,11 +353,10 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   atk.setAttribute('aria-pressed', state.autoAttack ? 'true' : 'false');
   atk.textContent = state.autoAttack ? 'ATK' : 'ATK';
 
-  const known = api.content.classes[state.classId]?.abilities ?? [];
-  paintSpell(spellA, known[0], state, api);
-  paintSpell(spellB, known[1], state, api);
-  actions.dataset.spells = known.length > 1 ? '2' : '1';
-  spellB.hidden = known.length < 2;
+  paintSpell(spellA, state.loadout[0], state, api);
+  paintSpell(spellB, state.loadout[1], state, api);
+  actions.dataset.spells = state.loadout.length > 1 ? '2' : '1';
+  spellB.hidden = !state.loadout[1];
 
   const slot = state.inventory.findIndex((stack) => api.content.items[stack.itemId]?.kind === 'consumable');
   if (slot < 0) {
@@ -394,7 +411,7 @@ function panelSignature(state: GameState): string {
   const bag = state.inventory.map((stack) => `${stack.itemId}:${stack.qty}`).join(',');
   const worn = EQUIP_SLOTS.map((slot) => state.equipment[slot] ?? '').join(',');
   const quest = `${state.quests.wolf_pelts.stage}:${state.quests.wolf_pelts.progress}`;
-  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.dead ? 1 : 0}`;
+  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.dead ? 1 : 0}`;
 }
 
 function paintPanel(
@@ -403,6 +420,7 @@ function paintPanel(
   api: GameApi,
   focus: { itemId: string } | { emptySlot: EquipSlot } | null,
   confirmAbandon: boolean,
+  bookSlot: number,
 ): void {
   if (state.ui.panel === 'none') {
     panel.hidden = true;
@@ -416,8 +434,35 @@ function paintPanel(
   else if (state.ui.panel === 'merchant') panel.innerHTML = merchantHtml(state, api);
   else if (state.ui.panel === 'pack') panel.innerHTML = inventoryHtml(state, api, focus);
   else if (state.ui.panel === 'journal') panel.innerHTML = journalHtml(state, api, confirmAbandon);
+  else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookSlot);
   else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
   else panel.innerHTML = helpHtml(state, api);
+}
+
+function bookHtml(state: GameState, api: GameApi, armed: number): string {
+  const known = knownAbilities(state, api.content);
+  const slots = [0, 1]
+    .map((index) => {
+      const id = state.loadout[index];
+      const ability = id ? api.content.abilities[id] : undefined;
+      return `<button type="button" class="slot-frame${armed === index ? ' is-on' : ''}" data-action="book-slot" data-slot="${index}">${escapeHtml(ability?.short ?? ability?.name ?? 'Empty')}</button>`;
+    })
+    .join('');
+  const rows = known
+    .map((id) => {
+      const ability = api.content.abilities[id];
+      if (!ability) return '';
+      const cost = ability.mana ? `${ability.mana} ${api.content.classes[state.classId]?.resource === 'rage' ? 'rage' : api.content.classes[state.classId]?.resource === 'guile' ? 'guile' : 'mana'}` : 'no cost';
+      const on = state.loadout.includes(id) ? 'Slotted' : 'Tap to slot';
+      return `<li><span><strong>${escapeHtml(ability.name)}</strong><small>${cost} · ${(ability.cooldownMs / 1000).toFixed(0)}s · ${escapeHtml(ability.blurb ?? '')}</small></span><button type="button" data-action="learn" data-ability="${ability.id}">${on}</button></li>`;
+    })
+    .join('');
+  return `<div class="sheet">
+    <header><h2>Book</h2><p>Tap a slot, then the spell that should sit there.</p></header>
+    <div class="book-slots">${slots}</div>
+    <ul class="trade">${rows}</ul>
+    <button type="button" class="close" data-action="close">Close</button>
+  </div>`;
 }
 
 function dialogueHtml(state: GameState, api: GameApi): string {
@@ -477,26 +522,26 @@ function iconHtml(itemId: string, className = 'icon'): string {
   return `<span class="${className}" style="${style}"></span>`;
 }
 
-const DOLL_SCALE = 6;
-const ACTOR_COLS = atlas.actors.dirs.length * atlas.actors.framesPerDir;
+const DOLL_SCALE = 2;
+const portrait = (atlas as { portrait?: { frameW: number; frameH: number; dirs: string[]; framesPerDir: number; rows: Record<string, number> } }).portrait;
 
 function actorLayerStyle(rowName: string): string {
-  const row = atlas.actors.rows[rowName as keyof typeof atlas.actors.rows] ?? 0;
-  const frameW = atlas.actors.frameW * DOLL_SCALE;
-  const frameH = atlas.actors.frameH * DOLL_SCALE;
-  const sheetW = ACTOR_COLS * frameW;
-  const sheetH = Object.keys(atlas.actors.rows).length * frameH;
+  const sheet = portrait ?? { ...atlas.actors, rows: atlas.actors.rows as Record<string, number> };
+  const row = sheet.rows[rowName] ?? 0;
+  const frameW = sheet.frameW * DOLL_SCALE;
+  const frameH = sheet.frameH * DOLL_SCALE;
+  const cols = sheet.dirs.length * sheet.framesPerDir;
+  const sheetW = cols * frameW;
+  const sheetH = Object.keys(sheet.rows).length * frameH;
   const frameY = row * frameH;
-  return `--frame-y:-${frameY}px;--step:${frameW}px;width:${frameW}px;height:${frameH}px;background-image:url(${actorsUrl});background-size:${sheetW}px ${sheetH}px;`;
+  const url = portrait ? portraitUrl : actorsUrl;
+  return `--frame-y:-${frameY}px;--step:${frameW}px;width:${frameW}px;height:${frameH}px;background-image:url(${url});background-size:${sheetW}px ${sheetH}px;`;
 }
 
 function dollFigure(state: GameState): string {
-  const player = state.actors.find((actor) => actor.id === state.playerId);
-  const body = player?.sprite && player.sprite in atlas.actors.rows ? player.sprite : 'warrior';
-  const layers = EQUIP_SLOTS.map((slot) => state.equipment[slot])
-    .filter((id): id is string => Boolean(id && id in atlas.actors.rows))
-    .map((id) => `<span class="doll-layer" style="${actorLayerStyle(id)}"></span>`)
-    .join('');
+  const body = state.sex === 'female' ? 'body_f' : 'body_m';
+  const helm = state.equipment.head === 'wolf_helm' ? (state.sex === 'female' ? 'wolf_helm_f' : 'wolf_helm_m') : '';
+  const layers = helm ? `<span class="doll-layer" style="${actorLayerStyle(helm)}"></span>` : '';
   return `<div class="doll-stage">
     <span class="doll-shadow"></span>
     <span class="doll-layer doll-body" style="${actorLayerStyle(body)}"></span>

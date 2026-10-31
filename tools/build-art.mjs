@@ -18,6 +18,7 @@ import {
   silhouette,
   writePng,
 } from './pixel.mjs';
+import { buildHeroArt } from './hero-art.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetDir = join(root, 'src', 'assets');
@@ -112,7 +113,7 @@ const PAL = {
 const TILE = 16;
 const COLS = 8;
 const MAP_W = 72;
-const MAP_H = 66;
+const MAP_H = 90;
 
 const T = {
   SNOW: 1,
@@ -1540,6 +1541,21 @@ function buildActors() {
     wolf_helm: 11,
     ivar: 12,
     signe: 13,
+    ysolde: 14,
+    torunn: 15,
+    sable: 16,
+    hroth: 17,
+    bjorn: 18,
+    sigrid: 19,
+    hare: 20,
+    fox: 21,
+    beetle: 22,
+    spider: 23,
+    bear: 24,
+    bones: 25,
+    bandit: 26,
+    archer: 27,
+    leader: 28,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1613,6 +1629,12 @@ function buildActors() {
       tint: clothTint(hex('#2e4a38'), hex('#5e8a62'), hex('#1c3024'), hex('#6b4030'), hex('#c48462')),
       overlay: (dir) => signeOverlay(dir),
     },
+    { row: 14, tint: clothTint(hex('#2c2458'), hex('#5a4c90'), hex('#161228'), hex('#d8d0c4'), hex('#f4f1ea')), overlay: () => (img) => img },
+    { row: 15, tint: clothTint(hex('#3e5a34'), hex('#6e8f5a'), hex('#24361e'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
+    { row: 16, tint: clothTint(hex('#241c28'), hex('#4a3a48'), hex('#120e14'), hex('#1c1418'), hex('#3a241c')), overlay: () => (img) => img },
+    { row: 17, tint: clothTint(hex('#6a2420'), hex('#a33b32'), hex('#3a1410'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
+    { row: 18, tint: clothTint(hex('#2a4038'), hex('#4e7a68'), hex('#1a2822'), hex('#c8c0b6'), hex('#f4f1ea')), overlay: () => (img) => img },
+    { row: 19, tint: clothTint(hex('#3a3230'), hex('#6a5a50'), hex('#241c1a'), hex('#5c4030'), hex('#a86840')), overlay: () => (img) => img },
   ];
 
   for (const person of people) {
@@ -1659,6 +1681,76 @@ function buildActors() {
   put(11, 2, 1, helmNorth);
   put(11, 3, 0, helmEast, true);
   put(11, 3, 1, helmEast, true);
+
+  const critter = (kind) => {
+    const img = createImage(16, 24);
+    const blob = (x, y, w, h, c) => {
+      for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) img.set(x + xx, y + yy, c);
+    };
+    if (kind === 'hare') {
+      blob(6, 4, 2, 6, hex('#e8eef2'));
+      blob(9, 4, 2, 6, hex('#e8eef2'));
+      blob(5, 10, 6, 5, hex('#f4f7fb'));
+      blob(4, 14, 3, 4, hex('#d5dee6'));
+      blob(9, 14, 3, 4, hex('#d5dee6'));
+    } else if (kind === 'fox') {
+      blob(3, 8, 10, 6, hex('#c46a28'));
+      blob(10, 10, 4, 3, hex('#e8a060'));
+      blob(2, 12, 4, 2, hex('#f4f0e6'));
+      blob(5, 14, 2, 5, hex('#a05020'));
+      blob(9, 14, 2, 5, hex('#a05020'));
+    } else if (kind === 'beetle') {
+      blob(4, 8, 8, 8, hex('#1c4a44'));
+      blob(5, 9, 6, 3, hex('#3e8a78'));
+      blob(3, 12, 2, 4, hex('#163832'));
+      blob(11, 12, 2, 4, hex('#163832'));
+    } else if (kind === 'spider') {
+      blob(6, 10, 4, 4, hex('#2a2428'));
+      blob(2, 8, 3, 2, hex('#1c1418'));
+      blob(11, 8, 3, 2, hex('#1c1418'));
+      blob(2, 14, 3, 2, hex('#1c1418'));
+      blob(11, 14, 3, 2, hex('#1c1418'));
+    } else if (kind === 'bear') {
+      blob(3, 6, 10, 10, hex('#4a3428'));
+      blob(2, 4, 3, 3, hex('#3a241c'));
+      blob(11, 4, 3, 3, hex('#3a241c'));
+      blob(4, 16, 3, 5, hex('#3a241c'));
+      blob(9, 16, 3, 5, hex('#3a241c'));
+      img.set(6, 10, hex('#1c1418'));
+      img.set(9, 10, hex('#1c1418'));
+    } else if (kind === 'bones') {
+      blob(6, 4, 4, 4, hex('#e6e0d4'));
+      blob(5, 9, 6, 6, hex('#d8d0c4'));
+      blob(6, 16, 1, 6, hex('#f4f1ea'));
+      blob(9, 16, 1, 6, hex('#f4f1ea'));
+      img.set(7, 6, hex('#1c1418'));
+      img.set(9, 6, hex('#1c1418'));
+    } else {
+      blob(5, 4, 6, 5, hex('#3a241c'));
+      blob(4, 9, 8, 7, kind === 'leader' ? hex('#6a2420') : kind === 'archer' ? hex('#2e4a38') : hex('#4a3428'));
+      blob(5, 16, 2, 6, hex('#2a2018'));
+      blob(9, 16, 2, 6, hex('#2a2018'));
+    }
+    silhouette(img, INK);
+    return img;
+  };
+  for (const [name, row] of [
+    ['hare', 20],
+    ['fox', 21],
+    ['beetle', 22],
+    ['spider', 23],
+    ['bear', 24],
+    ['bones', 25],
+    ['bandit', 26],
+    ['archer', 27],
+    ['leader', 28],
+  ]) {
+    const img = critter(name);
+    for (let dir = 0; dir < 4; dir++) {
+      put(row, dir, 0, img, dir === 3);
+      put(row, dir, 1, img, dir === 3);
+    }
+  }
 
   return {
     sheet,
@@ -1752,7 +1844,7 @@ function buildMap(tiles) {
   }
 
   const stamp = (x, y, tile, blocked = false) => {
-    if (x < 0 || y < 0 || x >= MAP_W || y >= MAP_H) return;
+    if (x < 0 || y < 0 || x >= MAP_W || y >= g.length) return;
     g[y][x] = tile;
     if (blocked) solid[y][x] = 1;
   };
@@ -1786,7 +1878,7 @@ function buildMap(tiles) {
   const x0 = 8;
   const y0 = 24;
   const x1 = 60;
-  const y1 = 62;
+  const y1 = 84;
   for (let x = x0; x <= x1; x++) {
     const gate = x >= 28 && x <= 32;
     if (!gate) {
@@ -1880,6 +1972,16 @@ function buildMap(tiles) {
   building(10, 51, 12, 8, { chamfer: true, long: true });
   const forge = building(49, 26, 10, 8, { chimney: true, chamfer: true });
   const needles = building(50, 40, 9, 8, { shop: true, chamfer: true });
+  const wizHall = building(10, 64, 14, 8, { chimney: true, chamfer: true, long: true });
+  const shaHall = building(26, 64, 14, 8, { chamfer: true, long: true });
+  const rogHall = building(42, 64, 14, 8, { chamfer: true, long: true });
+  const berHall = building(10, 74, 14, 8, { chimney: true, chamfer: true, long: true });
+  const wdHall = building(26, 74, 14, 8, { chamfer: true, long: true });
+  const smithy = building(42, 74, 14, 8, { chimney: true, chamfer: true });
+  // Alley between the halls, plus the streets their doors open onto.
+  fillRect(24, 50, 2, 34, T.PATH);
+  fillRect(12, 72, 46, 2, T.PATH);
+  fillRect(12, 82, 46, 2, T.PATH);
   fillRect(12, 49, 46, 2, T.PATH);
   // Wooden fences on the outskirts, with the road left open.
   for (let x = 6; x <= 26; x++) stamp(x, 18, T.FENCE, true);
@@ -1913,6 +2015,12 @@ function buildMap(tiles) {
   add('npc', 'eirik', guild.doorX, guild.doorY + 1, { defId: 'eirik', sprite: 'eirik' });
   add('npc', 'ivar', forge.doorX, forge.doorY + 1, { defId: 'ivar', sprite: 'ivar' });
   add('npc', 'signe', needles.doorX, needles.doorY + 1, { defId: 'signe', sprite: 'signe' });
+  add('npc', 'ysolde', wizHall.doorX, wizHall.doorY + 1, { defId: 'ysolde', sprite: 'ysolde' });
+  add('npc', 'torunn', shaHall.doorX, shaHall.doorY + 1, { defId: 'torunn', sprite: 'torunn' });
+  add('npc', 'sable', rogHall.doorX, rogHall.doorY + 1, { defId: 'sable', sprite: 'sable' });
+  add('npc', 'hroth', berHall.doorX, berHall.doorY + 1, { defId: 'hroth', sprite: 'hroth' });
+  add('npc', 'bjorn', wdHall.doorX, wdHall.doorY + 1, { defId: 'bjorn', sprite: 'bjorn' });
+  add('npc', 'sigrid', smithy.doorX, smithy.doorY + 1, { defId: 'sigrid', sprite: 'sigrid' });
 
   const mobs = [
     ['young_wolf', 24, 16],
@@ -2049,6 +2157,30 @@ function buildMap(tiles) {
     sprite: 'sign_hall',
     text: 'Warrior Guild. Eirik Stonehand is guildmaster. The hall is still new.',
   });
+  add('sign', 'Wizard Hall', wizHall.doorX - 2, wizHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Wizard Hall. Ysolde Mire keeps the pages. Barbarians are not taught here.',
+  });
+  add('sign', 'Shaman Hall', shaHall.doorX - 2, shaHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Shaman Hall. Torunn Ash. Slows, mends, and the burn that stays.',
+  });
+  add('sign', 'Rogue Hall', rogHall.doorX - 2, rogHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Rogue Hall. Sable Venn. Speak quietly.',
+  });
+  add('sign', 'Berserker Hall', berHall.doorX - 2, berHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Berserker Hall. Hroth Keld. Rage is a tool, not a mood.',
+  });
+  add('sign', 'Warden Hall', wdHall.doorX - 2, wdHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Warden Hall. Bjorn Pale. Fists, a staff, and a snow wolf.',
+  });
+  add('sign', "Sigrid's Steel", smithy.doorX + 2, smithy.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Sigrid's Steel. Weapons. Armor is Ivar's forge, north of here.",
+  });
   add('sign', 'Frostmere Wilds this way', 26, 22, {
     sprite: 'sign_wilds',
     text: 'Frostmere Wilds this way. North, through the gate. Wolves are on the road.',
@@ -2067,6 +2199,82 @@ function buildMap(tiles) {
     solid[y][0] = 1;
     solid[y][MAP_W - 1] = 1;
   }
+
+  const WILD = 72;
+  const prependRows = (grid2d, fill) => {
+    for (let i = 0; i < WILD; i++) grid2d.unshift(Array(MAP_W).fill(fill));
+  };
+  prependRows(g, T.SNOW);
+  prependRows(solid, 0);
+  prependRows(safe, 0);
+  for (const obj of objects) obj.y += WILD * TILE;
+  for (let x = 1; x < MAP_W - 1; x++) solid[WILD][x] = 0;
+  for (let y = 0; y < WILD; y++) {
+    solid[y][0] = 1;
+    solid[y][MAP_W - 1] = 1;
+    g[y][0] = T.SNOW_C;
+    g[y][MAP_W - 1] = T.SNOW_C;
+  }
+  for (let x = 0; x < MAP_W; x++) solid[0][x] = 1;
+  for (let y = 2; y < WILD - 1; y++) {
+    for (let x = 1; x < MAP_W - 1; x++) {
+      const n = Math.floor(mulberry(y * 50 + x)() * 5);
+      g[y][x] = n === 0 ? T.SNOW_B : n === 1 ? T.SNOW_C : T.SNOW;
+    }
+  }
+  // Frozen stream and the road north from the gate.
+  for (let y = 3; y < WILD - 2; y++) {
+    const x = 12 + Math.round(Math.sin(y / 5) * 3);
+    g[y][x] = T.ICE;
+    g[y][x + 1] = T.ICE;
+  }
+  fillRect(29, 2, 3, WILD + 8, T.PATH);
+  const treeAt = (tx, ty) => {
+    add('prop', 'pine', tx, ty, { sprite: (tx + ty) % 2 === 0 ? 'tree' : 'tree_b' });
+  };
+  const rockAt = (tx, ty, big = true) => {
+    add('prop', 'boulder', tx, ty, { sprite: big ? 'rock' : 'rock_small' });
+    solid[ty][tx] = 1;
+  };
+  for (let i = 0; i < 70; i++) {
+    const tx = 2 + Math.floor(mulberry(8000 + i)() * (MAP_W - 4));
+    const ty = 3 + Math.floor(mulberry(9000 + i)() * (WILD - 8));
+    if (tx >= 28 && tx <= 32) continue;
+    if (i % 5 === 0) rockAt(tx, ty, i % 10 === 0);
+    else treeAt(tx, ty);
+  }
+  // Three camps, deeper as the level climbs. A barrow in the far north.
+  const camp = (cx, cy, name) => {
+    rockAt(cx - 2, cy - 1, true);
+    rockAt(cx + 2, cy - 1, true);
+    rockAt(cx - 2, cy + 1, false);
+    rockAt(cx + 2, cy + 1, false);
+    add('prop', 'fire', cx, cy, { sprite: 'firepit' });
+    add('sign', name, cx + 1, cy + 2, { sprite: 'sign_wilds', text: name });
+  };
+  camp(18, WILD - 16, 'Road camp. Thugs of the near wilds, about the fifth winter.');
+  camp(46, 40, 'Pine camp. Archers in the middle wilds, about the seventh winter.');
+  camp(22, 12, 'Deep camp. A leader of the tenth winter waits with the last fire.');
+  add('sign', 'The Barrow', 40, 8, {
+    sprite: 'sign_wilds',
+    text: 'The Barrow. Bones that did not stay down. Mira Palehand is said to walk here.',
+  });
+  const spawnMob = (defId, tx, ty, sprite) => add('mob', defId, tx, ty, { defId, sprite });
+  [[24, WILD - 8], [34, WILD - 12], [16, WILD - 6], [40, WILD - 10]].forEach(([tx, ty]) => spawnMob('snow_hare', tx, ty, 'hare'));
+  [[20, WILD - 22], [38, WILD - 26], [50, 58]].forEach(([tx, ty]) => spawnMob('red_fox', tx, ty, 'fox'));
+  [[14, 50], [52, 48], [18, 36]].forEach(([tx, ty]) => spawnMob('ice_beetle', tx, ty, 'beetle'));
+  [[44, 30], [16, 28], [36, 22]].forEach(([tx, ty]) => spawnMob('frost_spider', tx, ty, 'spider'));
+  spawnMob('wolf_alpha', 48, WILD - 20, 'frost_wolf');
+  spawnMob('wolf_alpha', 12, 44, 'frost_wolf');
+  spawnMob('cave_bear', 54, 24, 'bear');
+  spawnMob('old_bramble', 8, 18, 'bear');
+  spawnMob('barrow_bones', 38, 10, 'bones');
+  spawnMob('barrow_bones', 44, 9, 'bones');
+  [[17, WILD - 16], [19, WILD - 17], [18, WILD - 19]].forEach(([tx, ty]) => spawnMob('bandit_thug', tx, ty, 'bandit'));
+  [[45, 40], [47, 42], [46, 38]].forEach(([tx, ty], i) => spawnMob(i === 2 ? 'bandit_archer' : 'bandit_thug', tx, ty, i === 2 ? 'archer' : 'bandit'));
+  spawnMob('bandit_thug', 21, 14, 'bandit');
+  spawnMob('bandit_archer', 23, 15, 'archer');
+  spawnMob('camp_leader', 22, 16, 'leader');
 
   // Spawns must stand on open ground.
   for (const o of objects) {
@@ -2131,7 +2339,7 @@ function buildTmj(map, tileset) {
   return {
     compressionlevel: -1,
     width: MAP_W,
-    height: MAP_H,
+    height: map.ground.length,
     tilewidth: TILE,
     tileheight: TILE,
     infinite: false,
@@ -2166,18 +2374,18 @@ function buildTmj(map, tileset) {
     layers: [
       layer(1, 'ground', 'tilelayer', {
         width: MAP_W,
-        height: MAP_H,
+        height: map.ground.length,
         data: flatten(map.ground),
       }),
       layer(2, 'collision', 'tilelayer', {
         width: MAP_W,
-        height: MAP_H,
+        height: map.ground.length,
         visible: false,
         data: flatten(map.solid),
       }),
       layer(3, 'safe', 'tilelayer', {
         width: MAP_W,
-        height: MAP_H,
+        height: map.ground.length,
         visible: false,
         data: flatten(map.safe),
       }),
@@ -2191,8 +2399,9 @@ function buildTmj(map, tileset) {
 
 function renderPreview(map, tileset, props, actors) {
   const scaleN = 2;
-  const world = createImage(MAP_W * TILE, MAP_H * TILE);
-  for (let y = 0; y < MAP_H; y++) {
+  const worldH = map.ground.length;
+  const world = createImage(MAP_W * TILE, worldH * TILE);
+  for (let y = 0; y < worldH; y++) {
     for (let x = 0; x < MAP_W; x++) {
       const id = map.ground[y][x];
       const tile = tileset.tiles.get(id);
@@ -2275,6 +2484,38 @@ function drawIcon(size) {
 
 function iconCanvas() {
   return createImage(16, 16);
+}
+
+function drawGearIcons() {
+  const items = JSON.parse(readFileSync(join(root, 'src', 'content', 'items.json'), 'utf8'));
+  const frames = {};
+  for (const item of items) {
+    if (!item.teaches && !['bone_staff', 'skinning_knife', 'paired_hatchets', 'hand_wraps'].includes(item.id)) continue;
+    const img = iconCanvas();
+    if (item.teaches) {
+      for (let y = 2; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex('#e7d3a4'));
+      for (let y = 4; y <= 11; y++) img.set(6, y, hex('#6b4428'));
+      img.set(8, 3, hex('#a33b32'));
+    } else if (item.grip === 'staff' || item.id === 'bone_staff') {
+      for (let y = 1; y <= 14; y++) img.set(8, y, hex('#e6dcc8'));
+      img.set(7, 2, hex('#8d97a3'));
+      img.set(9, 2, hex('#8d97a3'));
+    } else if (item.id === 'skinning_knife') {
+      for (let i = 0; i < 10; i++) img.set(3 + i, 12 - i, hex('#d7dee6'));
+      img.set(4, 13, hex('#8d5a38'));
+    } else if (item.id === 'paired_hatchets') {
+      for (let i = 0; i < 8; i++) img.set(3 + i, 4 + i, hex('#8d5a38'));
+      for (let i = 0; i < 8; i++) img.set(12 - i, 4 + i, hex('#8d5a38'));
+      img.set(3, 3, hex('#c5ced6'));
+      img.set(12, 3, hex('#c5ced6'));
+    } else {
+      for (let y = 6; y <= 10; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d7cbb8'));
+      img.set(5, 8, hex('#8d5340'));
+      img.set(10, 8, hex('#8d5340'));
+    }
+    frames[item.id] = img;
+  }
+  return frames;
 }
 
 function drawArmorIcons() {
@@ -2427,7 +2668,7 @@ function drawItemIcons() {
       return img;
     })(),
   };
-  Object.assign(frames, drawArmorIcons());
+  Object.assign(frames, drawArmorIcons(), drawGearIcons());
   const order = Object.keys(frames);
   const sheet = createImage(order.length * 16, 16);
   const meta = {};
@@ -2443,16 +2684,19 @@ async function main() {
   mkdirSync(join(publicDir, 'icons'), { recursive: true });
   const tileset = buildTileset();
   const actors = buildActors();
+  const hero = buildHeroArt();
   const props = buildProps();
   const map = buildMap(tileset);
   const tmj = buildTmj(map, tileset);
-  const atlas = { actors: actors.meta, props: props.meta };
+  const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta };
   const itemIcons = drawItemIcons();
 
   await writePng(join(assetDir, 'tiles.png'), tileset.sheet);
   await writePng(join(assetDir, 'icons.png'), itemIcons.sheet);
   writeFileSync(join(assetDir, 'icons.json'), JSON.stringify(itemIcons.meta, null, 2));
   await writePng(join(assetDir, 'actors.png'), actors.sheet);
+  await writePng(join(assetDir, 'hero.png'), hero.field.sheet);
+  await writePng(join(assetDir, 'portrait.png'), hero.portrait.sheet);
   await writePng(join(assetDir, 'props.png'), props.sheet);
   writeFileSync(join(assetDir, 'hoffender.tmj'), JSON.stringify(tmj));
   writeFileSync(join(assetDir, 'atlas.json'), JSON.stringify(atlas, null, 2));

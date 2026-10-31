@@ -223,7 +223,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .paper-doll {
   display: grid;
   grid-template-columns: 72px minmax(96px, 1fr) 72px;
-  grid-template-rows: 72px 72px 72px 72px;
+  grid-template-rows: 68px 84px 84px 68px;
   gap: 8px;
   justify-items: center;
   align-items: center;
@@ -241,7 +241,7 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   grid-column: 2;
   grid-row: 2 / span 2;
   width: 96px;
-  height: 144px;
+  height: 160px;
   position: relative;
   align-self: end;
   justify-self: center;
@@ -300,6 +300,8 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   color: var(--muted);
   font-style: normal;
 }
+.book-slots { display: flex; gap: 8px; justify-content: center; }
+.book-slots .slot-frame { width: 120px; }
 .bag-grid {
   display: grid;
   grid-template-columns: repeat(4, 72px);

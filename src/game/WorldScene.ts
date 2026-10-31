@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 import atlasJson from '../assets/atlas.json';
 import actorsUrl from '../assets/actors.png?url';
+import heroUrl from '../assets/hero.png?url';
 import propsUrl from '../assets/props.png?url';
 import tilesUrl from '../assets/tiles.png?url';
 import mapUrl from '../assets/hoffender.tmj?url';
@@ -24,6 +25,13 @@ interface Atlas {
     rows: Record<string, number>;
   };
   props: Record<string, { x: number; y: number; w: number; h: number; anchorX: number; anchorY: number }>;
+  hero?: {
+    frameW: number;
+    frameH: number;
+    dirs: string[];
+    framesPerDir: number;
+    rows: Record<string, number>;
+  };
 }
 
 const atlas = atlasJson as Atlas;
@@ -91,6 +99,12 @@ export class WorldScene extends Phaser.Scene {
       frameWidth: atlas.actors.frameW,
       frameHeight: atlas.actors.frameH,
     });
+    if (atlas.hero) {
+      this.load.spritesheet('hero', heroUrl, {
+        frameWidth: atlas.hero.frameW,
+        frameHeight: atlas.hero.frameH,
+      });
+    }
     this.load.image('props', propsUrl);
   }
 
@@ -452,13 +466,14 @@ export class WorldScene extends Phaser.Scene {
       let view = this.views.get(actor.id);
       if (!view) {
         const wolf = actor.kind === 'mob';
+        const hero = actor.kind === 'player' && !!atlas.hero;
         const shadow = this.add.ellipse(actor.x, actor.y, wolf ? 14 : 12, 5, 0x1a1614, 0.35);
-        const sprite = this.add.sprite(actor.x, actor.y, 'actors', 0);
-        sprite.setOrigin(0.5, wolf ? 18 / 24 : 22 / 24);
+        const sprite = this.add.sprite(actor.x, actor.y, hero ? 'hero' : 'actors', 0);
+        sprite.setOrigin(0.5, hero ? 36 / 40 : wolf ? 18 / 24 : 22 / 24);
         let helm: Phaser.GameObjects.Sprite | undefined;
         if (actor.kind === 'player') {
-          helm = this.add.sprite(actor.x, actor.y, 'actors', 0);
-          helm.setOrigin(0.5, 22 / 24);
+          helm = this.add.sprite(actor.x, actor.y, hero ? 'hero' : 'actors', 0);
+          helm.setOrigin(0.5, hero ? 36 / 40 : 22 / 24);
           helm.setVisible(false);
         }
         const label = this.add.text(actor.x, actor.y, actor.kind === 'player' ? '' : actor.name, {
@@ -489,11 +504,19 @@ export class WorldScene extends Phaser.Scene {
       view.shadow.setPosition(Math.round(x), Math.round(y));
       view.sprite.setDepth(y);
       view.shadow.setDepth(y - 0.2);
-      const row = atlas.actors.rows[actor.sprite] ?? 0;
-      const dirIndex = Math.max(0, atlas.actors.dirs.indexOf(facing));
       const moving = Math.hypot(actor.x - view.prevX, actor.y - view.prevY) > 0.15;
-      const frame = moving ? Math.floor(state.timeMs / 160) % 2 : 0;
-      view.sprite.setFrame(row * (atlas.actors.dirs.length * atlas.actors.framesPerDir) + dirIndex * 2 + frame);
+      const heroSheet = actor.kind === 'player' ? atlas.hero : undefined;
+      const dirIndex = Math.max(0, (heroSheet ?? atlas.actors).dirs.indexOf(facing));
+      const pose = heroSheet
+        ? moving
+          ? 2 + (Math.floor(state.timeMs / 180) % 2)
+          : Math.floor(state.timeMs / 700) % 2
+        : 0;
+      const frame = heroSheet ? pose : moving ? Math.floor(state.timeMs / 160) % 2 : 0;
+      const sheet = heroSheet ?? atlas.actors;
+      const row = sheet.rows[actor.sprite] ?? 0;
+      const cols = sheet.dirs.length * sheet.framesPerDir;
+      view.sprite.setFrame(row * cols + dirIndex * sheet.framesPerDir + frame);
       const corpse = !actor.alive && actor.kind === 'mob';
       view.sprite.setVisible(!corpse || actor.corpseMs > 0);
       view.shadow.setVisible(view.sprite.visible);
@@ -510,8 +533,11 @@ export class WorldScene extends Phaser.Scene {
         const showHelm = actor.kind === 'player' && this.state.equipment.head === 'wolf_helm';
         view.helm.setVisible(showHelm && view.sprite.visible);
         if (showHelm) {
-          const helmRow = atlas.actors.rows.wolf_helm ?? 0;
-          view.helm.setFrame(helmRow * (atlas.actors.dirs.length * atlas.actors.framesPerDir) + dirIndex * 2 + frame);
+          const helmKey = state.sex === 'female' ? 'wolf_helm_f' : 'wolf_helm_m';
+          const helmSheet = atlas.hero ?? atlas.actors;
+          const helmRow = helmSheet.rows[helmKey] ?? helmSheet.rows.wolf_helm ?? 0;
+          const helmCols = helmSheet.dirs.length * helmSheet.framesPerDir;
+          view.helm.setFrame(helmRow * helmCols + dirIndex * helmSheet.framesPerDir + frame);
           view.helm.setPosition(view.sprite.x, view.sprite.y);
           view.helm.setDepth(y + 1);
         }

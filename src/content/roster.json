@@ -71,28 +71,42 @@
       "name": "Warrior",
       "playable": true,
       "races": ["barbarian"],
-      "blurb": "An axe, a kick, and the nerve to stand in reach."
+      "blurb": "An axe, a kick, and a heavy swing."
+    },
+    {
+      "id": "shaman",
+      "name": "Shaman",
+      "playable": true,
+      "races": ["barbarian"],
+      "blurb": "Mana. A slow, a mend, and a burn that stays."
+    },
+    {
+      "id": "rogue",
+      "name": "Rogue",
+      "playable": true,
+      "races": ["barbarian"],
+      "blurb": "Guile. Sneak, a knife in the back, and a step aside."
+    },
+    {
+      "id": "berserker",
+      "name": "Berserker",
+      "playable": true,
+      "races": ["barbarian"],
+      "blurb": "Rage from the blows you land. Two hatchets. A kill feeds you."
+    },
+    {
+      "id": "warden",
+      "name": "Warden",
+      "playable": true,
+      "races": ["barbarian"],
+      "blurb": "Fists, wraps, or a staff, a snow wolf, and a light mend."
     },
     {
       "id": "wizard",
       "name": "Wizard",
       "playable": true,
-      "races": ["barbarian"],
-      "blurb": "A staff and a pool of mana. Shardbolt reaches. Rimefield slows a pack."
-    },
-    {
-      "id": "shaman",
-      "name": "Shaman",
-      "playable": false,
-      "races": ["barbarian"],
-      "blurb": "Coming soon. A spirit-caller."
-    },
-    {
-      "id": "warden",
-      "name": "Warden",
-      "playable": false,
-      "races": ["barbarian", "wood_elf"],
-      "blurb": "Coming soon. A beast-pet class."
+      "races": [],
+      "blurb": "A staff and a pool of mana. Not a path a Barbarian can walk."
     }
   ]
 }

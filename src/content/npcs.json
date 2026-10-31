@@ -46,5 +46,41 @@
     "name": "Signe Vale",
     "title": "tailor and leatherworker",
     "dialogue": "signe"
+  },
+  {
+    "id": "ysolde",
+    "name": "Ysolde Mire",
+    "title": "wizard guildmaster",
+    "dialogue": "ysolde"
+  },
+  {
+    "id": "torunn",
+    "name": "Torunn Ash",
+    "title": "shaman guildmaster",
+    "dialogue": "torunn"
+  },
+  {
+    "id": "sable",
+    "name": "Sable Venn",
+    "title": "rogue guildmaster",
+    "dialogue": "sable"
+  },
+  {
+    "id": "hroth",
+    "name": "Hroth Keld",
+    "title": "berserker guildmaster",
+    "dialogue": "hroth"
+  },
+  {
+    "id": "bjorn",
+    "name": "Bjorn Pale",
+    "title": "warden guildmaster",
+    "dialogue": "bjorn"
+  },
+  {
+    "id": "sigrid",
+    "name": "Sigrid Holt",
+    "title": "weaponsmith",
+    "dialogue": "sigrid"
   }
 ]

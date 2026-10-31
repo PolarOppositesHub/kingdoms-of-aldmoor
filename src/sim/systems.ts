@@ -37,23 +37,103 @@ function spellAttack(state: GameState): number {
   return 8 + state.level * 2 + Math.floor(state.stats.int / 2);
 }
 
+export function knownAbilities(state: GameState, content: ContentDb): string[] {
+  const starters = content.classes[state.classId]?.abilities ?? [];
+  const extra = state.learned.filter((id) => content.abilities[id] && !starters.includes(id));
+  return [...starters, ...extra];
+}
+
+export function learnAbility(state: GameState, content: ContentDb, abilityId: string, emit: Emit): boolean {
+  const ability = content.abilities[abilityId];
+  if (!ability) return false;
+  if (ability.classId && ability.classId !== state.classId) {
+    emit({ type: 'log', text: 'That is not your training.' });
+    return false;
+  }
+  if (state.level < ability.level) {
+    emit({ type: 'log', text: `${ability.name} asks for level ${ability.level}.` });
+    return false;
+  }
+  if (knownAbilities(state, content).includes(abilityId)) {
+    emit({ type: 'log', text: `You already know ${ability.name}.` });
+    return false;
+  }
+  state.learned.push(abilityId);
+  emit({ type: 'log', text: `You learn ${ability.name}.` });
+  return true;
+}
+
+function resourceKind(content: ContentDb, state: GameState): 'none' | 'mana' | 'guile' | 'rage' {
+  return content.classes[state.classId]?.resource ?? 'none';
+}
+
+function payCost(state: GameState, content: ContentDb, cost: number, emit: Emit): boolean {
+  const kind = resourceKind(content, state);
+  if (cost <= 0 || kind === 'none') return true;
+  if (kind === 'mana') {
+    if (state.mana < cost) {
+      emit({ type: 'log', text: "You don't have the mana." });
+      return false;
+    }
+    state.mana -= cost;
+    return true;
+  }
+  if (state.focus < cost) {
+    emit({ type: 'log', text: kind === 'rage' ? "You don't have the rage." : "You don't have the guile." });
+    return false;
+  }
+  state.focus -= cost;
+  return true;
+}
+
+function fromBehind(player: Actor, mob: Actor): boolean {
+  if (mob.facing === 's') return player.y + 6 < mob.y;
+  if (mob.facing === 'n') return player.y - 6 > mob.y;
+  if (mob.facing === 'e') return player.x + 6 < mob.x;
+  return player.x - 6 > mob.x;
+}
+
 export function performAbility(state: GameState, content: ContentDb, map: MapData, abilityId: string, emit: Emit): void {
   const ability = content.abilities[abilityId];
-  const known = content.classes[state.classId]?.abilities.includes(abilityId);
+  const known = knownAbilities(state, content).includes(abilityId) && state.loadout.includes(abilityId);
   if (!ability || !known || state.level < ability.level) return;
   if ((state.cooldowns[ability.id] ?? 0) > 0) return;
   const player = getPlayer(state);
-  if (isSafe(map, player.x, player.y)) {
+  const kind = ability.kind ?? 'strike';
+  const self = kind === 'heal' || kind === 'ward';
+  if (!self && isSafe(map, player.x, player.y)) {
     emit({ type: 'log', text: "You can't start a fight inside the palisade." });
     return;
   }
   const cost = ability.mana ?? 0;
-  if (cost > state.mana) {
-    emit({ type: 'log', text: "You don't have the mana." });
+  if (self) {
+    if (!payCost(state, content, cost, emit)) return;
+    state.cooldowns[ability.id] = ability.cooldownMs;
+    if (kind === 'heal') {
+      const amount = Math.min(ability.heal ?? 8, player.maxHp - player.hp);
+      player.hp += Math.max(0, amount);
+      emit({ type: 'heal', targetId: player.id, amount: Math.max(0, amount) });
+      emit({ type: 'log', text: `${ability.name} restores ${Math.max(0, amount)} health.` });
+      return;
+    }
+    const ms = ability.buffMs ?? 6000;
+    if (ability.buff === 'sneak') {
+      state.sneakMs = ms;
+      for (const actor of state.actors) {
+        if (actor.kind === 'mob') actor.hate = actor.hate.filter((hate) => hate.id !== player.id);
+      }
+      emit({ type: 'log', text: 'You drop into the snow and go quiet.' });
+    } else if (ability.buff === 'evade') {
+      state.evadeMs = ms;
+      emit({ type: 'log', text: 'You loosen your stance and watch the next blow.' });
+    } else {
+      state.powerMs = ms;
+      emit({ type: 'log', text: 'A hard warmth sits in your arms.' });
+    }
     return;
   }
   const target = findActor(state, state.targetId);
-  if (!target || !target.alive || target.kind !== 'mob') {
+  if (!target || !target.alive || target.kind !== 'mob' || target.pet) {
     emit({ type: 'log', text: 'You have nothing in your sights.' });
     return;
   }
@@ -61,27 +141,32 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
     emit({ type: 'log', text: 'You are too far away.' });
     return;
   }
-  const kind = ability.kind ?? 'strike';
   if ((kind === 'bolt' || kind === 'field') && !lineOfSight(map, player.x, player.y, target.x, target.y)) {
     emit({ type: 'log', text: 'You have no clear line.' });
     return;
   }
+  if (kind === 'backstab' && !fromBehind(player, target)) {
+    emit({ type: 'log', text: 'They are not turned away.' });
+    return;
+  }
+  if (!payCost(state, content, cost, emit)) return;
+  state.cooldowns[ability.id] = ability.cooldownMs;
+  state.sneakMs = 0;
   player.facing = target.x < player.x ? 'w' : target.x > player.x ? 'e' : player.facing;
   if (kind === 'field') {
     const radius = ability.radius ?? 48;
     const victims = state.actors.filter(
       (actor) =>
         actor.kind === 'mob' &&
+        !actor.pet &&
         actor.alive &&
         dist(actor, target) <= radius &&
         lineOfSight(map, player.x, player.y, actor.x, actor.y),
     );
     if (!victims.length) {
-      emit({ type: 'log', text: 'The rime finds nothing to cling to.' });
+      emit({ type: 'log', text: 'The spell finds nothing to cling to.' });
       return;
     }
-    state.mana -= cost;
-    state.cooldowns[ability.id] = ability.cooldownMs;
     emit({ type: 'field', x: target.x, y: target.y, radius });
     for (const mob of victims) {
       if (ability.slowMs) {
@@ -91,17 +176,24 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
       resolveStrike(state, content, map, player, mob, spellDice(state, ability), spellAttack(state), false, ability.verb ?? 'chill', emit);
       if (mob.alive) addHate(state, content, map, mob, player.id, ability.hate, emit);
     }
-    emit({ type: 'log', text: `Rimefield slows ${victims.length === 1 ? 'a wolf' : `${victims.length} wolves`}.` });
+    emit({ type: 'log', text: `${ability.name} catches ${victims.length === 1 ? 'one foe' : `${victims.length} foes`}.` });
     return;
   }
-  state.mana -= cost;
-  state.cooldowns[ability.id] = ability.cooldownMs;
   if (kind === 'bolt') {
     emit({ type: 'bolt', fromX: player.x, fromY: player.y - 12, toX: target.x, toY: target.y - 8 });
+    if (ability.slowMs) {
+      target.slowMs = Math.max(target.slowMs, ability.slowMs);
+      target.slowRate = ability.slowFactor ?? 0.5;
+    }
     resolveStrike(state, content, map, player, target, spellDice(state, ability), spellAttack(state), false, ability.verb ?? 'pierce', emit);
+  } else if (kind === 'dot') {
+    target.dotMs = Math.max(target.dotMs, ability.dotMs ?? 5000);
+    target.dotAmount = ability.dotAmount ?? 2;
+    resolveStrike(state, content, map, player, target, ability.damage, spellAttack(state), false, ability.verb ?? 'burns', emit);
   } else {
     const profile = weaponProfile(state, content);
-    resolveStrike(state, content, map, player, target, ability.damage, profile.attack, true, ability.verb ?? 'kick', emit);
+    const dice = kind === 'backstab' ? ability.damage : ability.damage.bonus || ability.damage.sides > 4 ? ability.damage : ability.damage;
+    resolveStrike(state, content, map, player, target, dice, profile.attack, true, ability.verb ?? 'strike', emit);
   }
   if (target.alive && target.kind === 'mob') {
     const hate = target.hate.find((entry) => entry.id === player.id);
@@ -227,6 +319,11 @@ export function resolveStrike(
   const chance = alwaysHit
     ? 1
     : hitChance(attack, source.level, defenseOf(state, content, target), target.level, content.tuning);
+  if (target.kind === 'player' && state.evadeMs > 0 && roll(state) < 0.45) {
+    emit({ type: 'miss', targetId: target.id, sourceId: source.id });
+    emit({ type: 'log', text: 'You slip the blow.' });
+    return;
+  }
   if (roll(state) > chance) {
     emit({ type: 'miss', targetId: target.id, sourceId: source.id });
     const line =
@@ -237,6 +334,7 @@ export function resolveStrike(
     return;
   }
   let damage = rollDice(state, dice) - Math.floor(acOf(state, content, target) / content.tuning.acMitigate);
+  if (source.kind === 'player' && state.powerMs > 0) damage += 3;
   if (damage < 1) damage = 1;
   const critChance =
     source.kind === 'player'
@@ -253,6 +351,9 @@ export function resolveStrike(
       : `${cap(subject(source))} ${verb} ${objectName(target)}${how} for ${damage}.`;
   emit({ type: 'log', text: line });
   state.outOfCombatMs = 0;
+  if (source.kind === 'player' && content.classes[state.classId]?.resource === 'rage') {
+    state.focus = Math.min(state.focusMax, state.focus + Math.max(1, Math.floor(damage / 2)));
+  }
   if (target.kind === 'mob') addHate(state, content, map, target, source.id, damage, emit);
   if (target.hp <= 0) finishKill(state, content, map, source, target, emit);
 }
@@ -285,6 +386,15 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
     if (actor.kind === 'mob') actor.hate = actor.hate.filter((hate) => hate.id !== target.id);
   }
   if (source.kind !== 'player') return;
+  if (content.classes[state.classId]?.resource === 'rage') {
+    const player = getPlayer(state);
+    const healed = Math.min(4 + state.level, player.maxHp - player.hp);
+    if (healed > 0) {
+      player.hp += healed;
+      emit({ type: 'heal', targetId: player.id, amount: healed });
+      emit({ type: 'log', text: `The kill puts ${healed} health back in you.` });
+    }
+  }
   const def = content.mobs[target.defId];
   if (!def) return;
   grantXp(state, content, def.xp, emit);
@@ -525,6 +635,23 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       mob.respawnMs -= TICK_MS;
       continue;
     }
+    if (mob.pet) {
+      const foe = findActor(state, state.targetId);
+      const goal = foe && foe.alive && foe.kind === 'mob' && !foe.pet && !isSafe(map, player.x, player.y) ? foe : player;
+      mob.homeX = player.x;
+      mob.homeY = player.y;
+      if (dist(mob, goal) > (goal === player ? 22 : 16)) {
+        followPath(map, mob, goal, (def.speed ?? 60) * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
+      } else if (goal !== player) {
+        mob.attackMs -= TICK_MS;
+        mob.facing = facingOf(goal.x - mob.x, goal.y - mob.y, mob.facing);
+        if (mob.attackMs <= 0) {
+          mob.attackMs = def.delayMs;
+          resolveStrike(state, content, map, mob, goal, def.damage, def.attack, false, def.verb, emit);
+        }
+      }
+      continue;
+    }
     if (mob.slowMs > 0) mob.slowMs = Math.max(0, mob.slowMs - TICK_MS);
     const pace = mob.slowMs > 0 ? mob.slowRate : 1;
     const home = { x: mob.homeX, y: mob.homeY };
@@ -553,7 +680,8 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       mob.ai = 'idle';
       mob.path = [];
     }
-    if (!playerHidden && dist(mob, player) <= def.aggroRange && lineOfSight(map, mob.x, mob.y, player.x, player.y)) {
+    const unseen = state.sneakMs > 0 && dist(mob, player) > 32;
+    if (!playerHidden && !unseen && dist(mob, player) <= def.aggroRange && lineOfSight(map, mob.x, mob.y, player.x, player.y)) {
       addHate(state, content, map, mob, player.id, 1, emit);
       continue;
     }
@@ -654,6 +782,8 @@ export function pickups(state: GameState, content: ContentDb, emit: Emit): void 
 export function regen(state: GameState, content: ContentDb, map: MapData): void {
   if (state.dead) return;
   const player = getPlayer(state);
+  const fightingNow = state.actors.some((actor) => actor.kind === 'mob' && !actor.pet && actor.alive && actor.hate.some((hate) => hate.id === player.id));
+  tickResources(state, content, map, fightingNow);
   const fighting = state.actors.some(
     (actor) => actor.kind === 'mob' && actor.alive && actor.hate.some((hate) => hate.id === player.id),
   );
@@ -671,6 +801,53 @@ export function regen(state: GameState, content: ContentDb, map: MapData): void 
     state.regenBank -= heal;
     player.hp = Math.min(player.maxHp, player.hp + heal);
   }
+}
+
+function tickResources(state: GameState, content: ContentDb, map: MapData, fighting: boolean): void {
+  const player = getPlayer(state);
+  if (state.sneakMs > 0) state.sneakMs = Math.max(0, state.sneakMs - TICK_MS);
+  if (state.evadeMs > 0) state.evadeMs = Math.max(0, state.evadeMs - TICK_MS);
+  if (state.powerMs > 0) state.powerMs = Math.max(0, state.powerMs - TICK_MS);
+  const kind = content.classes[state.classId]?.resource;
+  if (kind === 'guile' && state.focus < state.focusMax) {
+    const rate = isSafe(map, player.x, player.y) ? content.tuning.townManaPerSec : fighting ? content.tuning.combatManaPerSec : content.tuning.restManaPerSec;
+    state.manaRegenBank += (rate * TICK_MS) / 1000;
+    if (state.manaRegenBank >= 1) {
+      const gain = Math.floor(state.manaRegenBank);
+      state.manaRegenBank -= gain;
+      state.focus = Math.min(state.focusMax, state.focus + gain);
+    }
+  } else if (kind === 'rage' && !fighting && state.focus > 0) {
+    state.manaRegenBank += (6 * TICK_MS) / 1000;
+    if (state.manaRegenBank >= 1) {
+      const loss = Math.floor(state.manaRegenBank);
+      state.manaRegenBank -= loss;
+      state.focus = Math.max(0, state.focus - loss);
+    }
+  }
+  for (const actor of state.actors) {
+    if (!actor.alive || actor.dotMs <= 0) continue;
+    actor.dotBank += TICK_MS;
+    if (actor.dotBank < 1000) continue;
+    actor.dotBank -= 1000;
+    actor.dotMs = Math.max(0, actor.dotMs - 1000);
+    const amount = actor.dotAmount;
+    actor.hp -= amount;
+    emitDot(state, actor, amount);
+    if (actor.hp <= 0) {
+      finishKill(state, content, map, player, actor, (event) => {
+        if (event.type === 'log') {
+          state.log.push(event.text);
+          if (state.log.length > 12) state.log.shift();
+        }
+      });
+    }
+  }
+}
+
+function emitDot(state: GameState, actor: Actor, amount: number): void {
+  state.log.push(`The burn takes ${amount} from ${actor.kind === 'player' ? 'you' : actor.name}.`);
+  if (state.log.length > 12) state.log.shift();
 }
 
 function regenMana(state: GameState, content: ContentDb, map: MapData, fighting: boolean): void {
@@ -752,7 +929,7 @@ export function nearestMob(state: GameState, x: number, y: number, maxDist: numb
   let best: Actor | null = null;
   let bestDist = maxDist;
   for (const actor of state.actors) {
-    if (actor.kind !== 'mob' || !actor.alive || actor.id === exclude) continue;
+    if (actor.kind !== 'mob' || !actor.alive || actor.pet || actor.id === exclude) continue;
     const gap = Math.hypot(actor.x - x, actor.y - y);
     if (gap < bestDist) {
       best = actor;

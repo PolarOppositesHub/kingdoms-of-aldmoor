@@ -23,7 +23,22 @@
       "eirik": 10,
       "wolf_helm": 11,
       "ivar": 12,
-      "signe": 13
+      "signe": 13,
+      "ysolde": 14,
+      "torunn": 15,
+      "sable": 16,
+      "hroth": 17,
+      "bjorn": 18,
+      "sigrid": 19,
+      "hare": 20,
+      "fox": 21,
+      "beetle": 22,
+      "spider": 23,
+      "bear": 24,
+      "bones": 25,
+      "bandit": 26,
+      "archer": 27,
+      "leader": 28
     }
   },
   "props": {
@@ -170,6 +185,47 @@
       "h": 16,
       "anchorX": 8,
       "anchorY": 15
+    }
+  },
+  "hero": {
+    "frameW": 24,
+    "frameH": 40,
+    "dirs": [
+      "s",
+      "e",
+      "n",
+      "w"
+    ],
+    "poses": [
+      "idle0",
+      "idle1",
+      "walk0",
+      "walk1"
+    ],
+    "framesPerDir": 4,
+    "rows": {
+      "body_m": 0,
+      "wolf_helm_m": 1,
+      "body_f": 2,
+      "wolf_helm_f": 3
+    }
+  },
+  "portrait": {
+    "frameW": 48,
+    "frameH": 80,
+    "dirs": [
+      "s"
+    ],
+    "poses": [
+      "idle0",
+      "idle1"
+    ],
+    "framesPerDir": 2,
+    "rows": {
+      "body_m": 0,
+      "wolf_helm_m": 1,
+      "body_f": 2,
+      "wolf_helm_f": 3
     }
   }
 }

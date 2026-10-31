@@ -321,6 +321,124 @@
           "price": 21
         }
       ]
+    },
+    {
+      "npcId": "sigrid",
+      "title": "Sigrid's Steel",
+      "stock": [
+        {
+          "itemId": "worn_axe",
+          "price": 14
+        },
+        {
+          "itemId": "bearded_handaxe",
+          "price": 43
+        },
+        {
+          "itemId": "skinning_knife",
+          "price": 19
+        },
+        {
+          "itemId": "paired_hatchets",
+          "price": 36
+        },
+        {
+          "itemId": "bone_staff",
+          "price": 22
+        },
+        {
+          "itemId": "hand_wraps",
+          "price": 8
+        },
+        {
+          "itemId": "ash_staff",
+          "price": 16
+        }
+      ]
+    },
+    {
+      "npcId": "eirik",
+      "title": "Warrior Drills",
+      "stock": [
+        {
+          "itemId": "scroll_sunder",
+          "price": 64
+        },
+        {
+          "itemId": "scroll_breaker",
+          "price": 140
+        }
+      ]
+    },
+    {
+      "npcId": "ysolde",
+      "title": "Wizard Pages",
+      "stock": [
+        {
+          "itemId": "scroll_spike",
+          "price": 72
+        },
+        {
+          "itemId": "scroll_white",
+          "price": 148
+        }
+      ]
+    },
+    {
+      "npcId": "torunn",
+      "title": "Shaman Rites",
+      "stock": [
+        {
+          "itemId": "scroll_gale",
+          "price": 58
+        },
+        {
+          "itemId": "scroll_ward",
+          "price": 132
+        }
+      ]
+    },
+    {
+      "npcId": "sable",
+      "title": "Quiet Lessons",
+      "stock": [
+        {
+          "itemId": "scroll_poison",
+          "price": 61
+        },
+        {
+          "itemId": "scroll_vanish",
+          "price": 128
+        }
+      ]
+    },
+    {
+      "npcId": "hroth",
+      "title": "Rage Drills",
+      "stock": [
+        {
+          "itemId": "scroll_execute",
+          "price": 88
+        },
+        {
+          "itemId": "scroll_feast",
+          "price": 155
+        }
+      ]
+    },
+    {
+      "npcId": "bjorn",
+      "title": "Warden Teaching",
+      "stock": [
+        {
+          "itemId": "scroll_heart",
+          "price": 70
+        },
+        {
+          "itemId": "scroll_deep",
+          "price": 136
+        }
+      ]
     }
   ]
 }
