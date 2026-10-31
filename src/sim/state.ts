@@ -1,4 +1,4 @@
-import type { Actor, ContentDb, GameState, MapData, Stats } from './types';
+import type { Actor, ContentDb, Equipment, GameState, MapData, Stats } from './types';
 import { maxHp, maxMana } from './formulas';
 
 export function getPlayer(state: GameState): Actor {
@@ -46,12 +46,12 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   const player = getPlayer(state);
   const level = 1;
   state.classId = cls.id;
+  state.baseStats = { ...cls.stats };
   state.stats = { ...cls.stats };
   state.ac = cls.ac;
   state.level = level;
   state.xp = 0;
-  state.equipment = { primary: cls.weapon, head: null };
-  state.ac = cls.ac;
+  state.equipment = emptyEquipment(cls.weapon);
   state.inventory = content.player.items.map((stack) => ({ ...stack }));
   state.copper = content.player.copper;
   state.autoAttack = false;
@@ -67,15 +67,57 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.manaRegenBank = 0;
   state.cooldowns = {};
   for (const abilityId of cls.abilities) state.cooldowns[abilityId] = 0;
-  state.ac = armorAc(content, state);
+  refreshGear(state, content);
+}
+
+export function emptyEquipment(primary: string | null): Equipment {
+  return {
+    head: null,
+    chest: null,
+    hands: null,
+    legs: null,
+    feet: null,
+    primary,
+    secondary: null,
+  };
 }
 
 const STAT_KEYS = ['str', 'sta', 'agi', 'dex', 'wis', 'int', 'cha'] as const;
 
 export function armorAc(content: ContentDb, state: GameState): number {
-  const base = content.classes[state.classId]?.ac ?? 0;
-  const head = state.equipment.head ? content.items[state.equipment.head] : undefined;
-  return base + (head?.ac ?? 0);
+  let ac = content.classes[state.classId]?.ac ?? 0;
+  for (const id of Object.values(state.equipment)) {
+    if (!id) continue;
+    ac += content.items[id]?.ac ?? 0;
+  }
+  return ac;
+}
+
+/** Worn items add their bonuses on top of the hero chosen at the gate. */
+export function refreshGear(state: GameState, content: ContentDb): void {
+  const stats = { ...state.baseStats };
+  let bonusHp = 0;
+  let bonusMana = 0;
+  for (const id of Object.values(state.equipment)) {
+    const bonus = id ? content.items[id]?.bonuses : undefined;
+    if (!bonus) continue;
+    stats.str += bonus.str ?? 0;
+    stats.sta += bonus.sta ?? 0;
+    stats.agi += bonus.agi ?? 0;
+    stats.dex += bonus.dex ?? 0;
+    stats.wis += bonus.wis ?? 0;
+    stats.int += bonus.int ?? 0;
+    stats.cha += bonus.cha ?? 0;
+    bonusHp += bonus.hp ?? 0;
+    bonusMana += bonus.mana ?? 0;
+  }
+  state.stats = stats;
+  state.ac = armorAc(content, state);
+  const player = getPlayer(state);
+  player.maxHp = maxHp(content, state.classId, state.level, stats) + bonusHp;
+  if (player.hp > player.maxHp) player.hp = player.maxHp;
+  state.maxMana = maxMana(content, state.classId, state.level, stats) + bonusMana;
+  if (state.mana > state.maxMana) state.mana = state.maxMana;
 }
 
 /** Gate creation. Only before the first tick. Race mods and bonus points land on the class base. */
@@ -104,12 +146,12 @@ export function applyHero(
   for (const key of STAT_KEYS) {
     stats[key] = Math.max(1, cls.stats[key] + (race.mods[key] ?? 0) + (bonus[key] ?? 0));
   }
-  state.stats = stats;
+  state.baseStats = { ...stats };
+  state.stats = { ...stats };
   state.raceId = race.id;
+  refreshGear(state, content);
   const player = getPlayer(state);
-  player.maxHp = maxHp(content, classId, 1, stats);
   player.hp = player.maxHp;
-  state.maxMana = maxMana(content, classId, 1, stats);
   state.mana = state.maxMana;
   return true;
 }
@@ -183,7 +225,8 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     actors,
     ground: [],
     inventory: [],
-    equipment: { primary: cls.weapon, head: null },
+    equipment: emptyEquipment(cls.weapon),
+    baseStats: { ...cls.stats },
     copper: 0,
     xp: 0,
     level: 1,

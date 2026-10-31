@@ -4,92 +4,114 @@
     "name": "wolf pelt",
     "kind": "junk",
     "value": 5,
+    "weight": 1.2,
     "stack": 20,
-    "blurb": "A rough northern pelt. The merchant pays coin for these."
+    "blurb": "A rough northern pelt, still cold from the Frostmere Wilds. The guild will take these.",
+    "effects": "Trade goods. Eirik counts them toward his pelt task."
   },
   {
     "id": "wolf_tooth",
     "name": "wolf tooth",
     "kind": "junk",
     "value": 2,
+    "weight": 0.1,
     "stack": 20,
-    "blurb": "Whole enough to keep. Not much else to say for it."
+    "blurb": "A small whole tooth. Brenna will pay a little and no more.",
+    "effects": "Trade goods."
   },
   {
     "id": "cracked_fang",
     "name": "cracked fang",
     "kind": "junk",
     "value": 13,
+    "weight": 0.3,
     "stack": 10,
-    "blurb": "Longer than a tooth has any right to be."
+    "blurb": "Longer than a tooth has any right to be, split near the root.",
+    "effects": "Trade goods. Worth more than a common tooth."
   },
   {
     "id": "stringy_meat",
     "name": "stringy meat",
     "kind": "junk",
     "value": 1,
+    "weight": 0.4,
     "stack": 20,
-    "blurb": "Edible only in the sense that it is not a rock."
+    "blurb": "A strip of wolf. Edible only in the sense that it is not a rock.",
+    "effects": "Not fit to eat. Sell it."
   },
   {
     "id": "wool_bandage",
     "name": "wool bandage",
     "kind": "consumable",
     "value": 4,
+    "weight": 0.2,
     "stack": 10,
     "heal": 10,
-    "blurb": "Clean enough. Restores a little health."
+    "blurb": "Clean wool, folded tight. It stays on if you do not fuss with it.",
+    "effects": "Restores 10 health."
   },
   {
     "id": "trail_ration",
     "name": "trail ration",
     "kind": "consumable",
     "value": 1,
+    "weight": 0.5,
     "stack": 10,
     "heal": 18,
-    "blurb": "Salt, fat, and a hard biscuit. Restores more health."
+    "blurb": "Salt, fat, and a hard biscuit. The cheapest meal that still counts as food.",
+    "effects": "Restores 18 health."
   },
   {
     "id": "worn_axe",
     "name": "worn woodsman's axe",
     "kind": "weapon",
     "value": 6,
+    "weight": 3.4,
     "stack": 1,
     "slot": "primary",
     "delayMs": 2600,
     "damage": { "n": 1, "sides": 6, "bonus": 1 },
-    "blurb": "The edge is honest, if tired."
+    "blurb": "The edge is honest, if tired. It has cut more firewood than wolves.",
+    "effects": "Melee. A slow, heavy chop."
   },
   {
     "id": "bearded_handaxe",
     "name": "bearded handaxe",
     "kind": "weapon",
     "value": 17,
+    "weight": 2.6,
     "stack": 1,
     "slot": "primary",
     "delayMs": 2100,
     "damage": { "n": 1, "sides": 6, "bonus": 3 },
-    "blurb": "Shorter haft, keener bite, quicker back to the guard."
+    "bonuses": { "str": 1 },
+    "blurb": "Shorter haft, keener bite, quicker back to the guard.",
+    "effects": "Melee. The beard of the blade hooks a little harder."
   },
   {
     "id": "ash_staff",
     "name": "ash staff",
     "kind": "weapon",
     "value": 7,
+    "weight": 2.1,
     "stack": 1,
     "slot": "primary",
     "delayMs": 3200,
     "damage": { "n": 1, "sides": 4, "bonus": 0 },
-    "blurb": "A walking staff with an iron-shod tip. A poor axe, and a fair focus."
+    "bonuses": { "int": 1 },
+    "blurb": "A walking staff with an iron-shod tip. A poor axe, and a fair focus.",
+    "effects": "Melee. Also a focus for Shardbolt and Rimefield."
   },
   {
     "id": "yarrow_draught",
     "name": "yarrow draught",
     "kind": "consumable",
     "value": 11,
+    "weight": 0.6,
     "stack": 10,
     "heal": 36,
-    "blurb": "A bitter green drink. It costs. It also puts you back on your feet."
+    "blurb": "A bitter green drink in a clay flask. It costs. It also puts you back on your feet.",
+    "effects": "Restores 36 health."
   },
   {
     "id": "wolf_helm",
@@ -97,8 +119,11 @@
     "kind": "armor",
     "slot": "head",
     "value": 9,
+    "weight": 1.6,
     "stack": 1,
     "ac": 2,
-    "blurb": "The wolf's snout sits on your brow. Its open mouth frames your face."
+    "bonuses": { "sta": 1 },
+    "blurb": "The wolf's snout sits on your brow. Its open mouth frames your face.",
+    "effects": "Worn on the head. The hide turns a light blow."
   }
 ]

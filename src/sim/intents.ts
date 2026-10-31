@@ -1,8 +1,8 @@
 import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
-import { findActor, getPlayer, applyHero, armorAc } from './state';
-import { acceptQuest, addItem, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+import { findActor, getPlayer, applyHero, refreshGear } from './state';
+import { abandonQuest, acceptQuest, addItem, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
 
 function nearestSign(map: MapData, x: number, y: number, maxDist: number) {
   let best: { name: string; text?: string; x: number; y: number; d: number } | null = null;
@@ -224,24 +224,51 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const stack = state.inventory[intent.slot];
         if (!stack) return;
         const item = content.items[stack.itemId];
-        if (!item || (item.kind !== 'weapon' && item.kind !== 'armor')) return;
-        if (item.kind === 'armor') {
-          const previous = state.equipment.head;
-          stack.qty -= 1;
-          if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
-          state.equipment.head = item.id;
-          if (previous) addItem(state, content, previous, 1);
-          state.ac = armorAc(content, state);
-          emit({ type: 'log', text: `You equip the ${item.name}.` });
+        if (!item?.slot) return;
+        const slot = item.slot;
+        const previous = state.equipment[slot];
+        const snapshot = stack.qty;
+        stack.qty -= 1;
+        const removedIndex = stack.qty <= 0;
+        if (removedIndex) state.inventory.splice(intent.slot, 1);
+        if (previous) {
+          const left = addItem(state, content, previous, 1);
+          if (left > 0) {
+            if (removedIndex) addItem(state, content, item.id, 1);
+            else stack.qty = snapshot;
+            emit({ type: 'log', text: 'Your pack is full.' });
+            return;
+          }
+        }
+        state.equipment[slot] = item.id;
+        if (slot === 'primary' && item.delayMs && player.attackMs > item.delayMs) player.attackMs = item.delayMs;
+        refreshGear(state, content);
+        emit({ type: 'log', text: `You equip the ${item.name}.` });
+        return;
+      }
+      case 'unequip': {
+        const worn = state.equipment[intent.slot];
+        if (!worn) return;
+        const left = addItem(state, content, worn, 1);
+        if (left > 0) {
+          emit({ type: 'log', text: 'Your pack is full.' });
           return;
         }
-        const previous = state.equipment.primary;
-        stack.qty -= 1;
-        if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
-        state.equipment.primary = item.id;
-        if (previous) addItem(state, content, previous, 1);
-        if (player.attackMs > (item.delayMs ?? player.attackMs)) player.attackMs = item.delayMs ?? player.attackMs;
-        emit({ type: 'log', text: `You equip the ${item.name}.` });
+        state.equipment[intent.slot] = null;
+        refreshGear(state, content);
+        const name = content.items[worn]?.name ?? 'item';
+        emit({ type: 'log', text: `You take off the ${name}.` });
+        return;
+      }
+      case 'openJournal':
+        if (state.dead) return;
+        state.ui = { panel: 'journal', npcId: null, nodeId: null, title: null, body: null };
+        state.input.x = 0;
+        state.input.y = 0;
+        state.input.dest = null;
+        return;
+      case 'abandonQuest': {
+        abandonQuest(state, intent.id, emit);
         return;
       }
       case 'openPack':

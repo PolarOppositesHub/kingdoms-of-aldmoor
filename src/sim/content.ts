@@ -5,6 +5,7 @@ import type {
   ItemDef,
   MobDef,
   NpcDef,
+  QuestDef,
   Roster,
 } from './types';
 import itemsJson from '../content/items.json';
@@ -18,6 +19,7 @@ import merchantJson from '../content/merchant.json';
 import economyJson from '../content/economy.json';
 import playerJson from '../content/player.json';
 import rosterJson from '../content/roster.json';
+import questsJson from '../content/quests.json';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -51,5 +53,6 @@ export function loadContent(): ContentDb {
     economy: economyJson,
     player: playerJson,
     roster: rosterJson as Roster,
+    quests: questsJson as QuestDef[],
   };
 }

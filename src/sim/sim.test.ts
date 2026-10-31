@@ -262,7 +262,7 @@ describe('wizard and the pelt quest', () => {
     const player = getPlayer(state);
     expect(player.sprite).toBe('wizard');
     expect(state.maxMana).toBeGreaterThan(20);
-    expect(state.stats.int).toBe(content.classes.wizard.stats.int + content.roster.races[0].mods.int + 2);
+    expect(state.stats.int).toBe(content.classes.wizard.stats.int + content.roster.races[0].mods.int + 2 + (content.items.ash_staff.bonuses?.int ?? 0));
     const mana = state.mana;
     const near = state.actors.filter((actor) => actor.kind === 'mob' && actor.x > 100);
     player.x = 14 * 16 + 8;
@@ -299,6 +299,32 @@ describe('wizard and the pelt quest', () => {
     expect(state.equipment.head).toBe('wolf_helm');
     expect(state.xp).toBeGreaterThan(xp);
     expect(state.inventory.some((stack) => stack.itemId === 'wolf_pelt')).toBe(false);
+  });
+});
+
+describe('gear and quests', () => {
+  it('equips, describes, and can abandon the pelt quest without losing pelts', () => {
+    for (const item of Object.values(content.items)) {
+      expect(item.weight).toBeGreaterThan(0);
+      expect(item.blurb.length).toBeGreaterThan(8);
+    }
+    const map = arena();
+    const state = createWorld(content, map, 8);
+    state.inventory.push({ itemId: 'bearded_handaxe', qty: 1 });
+    const slot = state.inventory.findIndex((stack) => stack.itemId === 'bearded_handaxe');
+    applyIntent(state, { type: 'equip', slot }, content, map);
+    expect(state.equipment.primary).toBe('bearded_handaxe');
+    expect(state.stats.str).toBe(state.baseStats.str + 1);
+    applyIntent(state, { type: 'unequip', slot: 'primary' }, content, map);
+    expect(state.equipment.primary).toBeNull();
+    expect(state.inventory.some((stack) => stack.itemId === 'bearded_handaxe')).toBe(true);
+
+    state.quests.wolf_pelts.stage = 'active';
+    state.inventory.push({ itemId: 'wolf_pelt', qty: 2 });
+    applyIntent(state, { type: 'abandonQuest', id: 'wolf_pelts' }, content, map);
+    expect(state.quests.wolf_pelts.stage).toBe('none');
+    expect(state.inventory.some((stack) => stack.itemId === 'wolf_pelt' && stack.qty === 2)).toBe(true);
+    expect(content.quests[0]?.reward).toMatch(/wolf helm/);
   });
 });
 

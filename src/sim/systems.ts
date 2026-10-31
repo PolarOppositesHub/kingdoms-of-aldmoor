@@ -2,7 +2,7 @@ import type { AbilityDef, Actor, ContentDb, Dice, GameState, MapData } from './t
 import type { Emit } from './events';
 import { dist, facingOf, hitChance, maxHp, maxMana, roll, rollDice, xpLossFraction, xpToNext } from './formulas';
 import { findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
-import { armorAc, findActor, getPlayer, nextEntityId } from './state';
+import { findActor, getPlayer, nextEntityId, refreshGear } from './state';
 import { TICK_MS } from './types';
 
 export function subject(actor: Actor): string {
@@ -18,7 +18,7 @@ export function objectName(actor: Actor): string {
 }
 
 export function weaponProfile(state: GameState, content: ContentDb): { dice: Dice; delayMs: number; attack: number } {
-  const item = content.items[state.equipment.primary];
+  const item = state.equipment.primary ? content.items[state.equipment.primary] : undefined;
   const dice = item?.damage ?? { n: 1, sides: 4, bonus: 0 };
   const strBonus = Math.floor((state.stats.str - 10) / content.tuning.strBonusDiv);
   return {
@@ -109,6 +109,14 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
   }
 }
 
+export function abandonQuest(state: GameState, questId: string, emit: Emit): void {
+  if (questId !== 'wolf_pelts') return;
+  const quest = state.quests.wolf_pelts;
+  if (quest.stage !== 'active') return;
+  state.quests.wolf_pelts = { stage: 'none', progress: 0 };
+  emit({ type: 'log', text: 'You set the pelt task aside. The pelts stay in your bag. Eirik will ask again.' });
+}
+
 export function acceptQuest(state: GameState, questId: string, emit: Emit): void {
   if (questId !== 'wolf_pelts') return;
   const quest = state.quests.wolf_pelts;
@@ -142,7 +150,7 @@ export function turnInPelts(state: GameState, content: ContentDb, emit: Emit): v
   emit({ type: 'coin', copper: 15 });
   grantXp(state, content, 40, emit);
   state.equipment.head = 'wolf_helm';
-  state.ac = armorAc(content, state);
+  refreshGear(state, content);
   emit({ type: 'log', text: 'Eirik pays you and sets a wolf helm on your brow. The snout sits over your forehead.' });
 }
 

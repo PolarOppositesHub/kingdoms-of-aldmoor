@@ -147,6 +147,18 @@ const T = {
   STONE_DOOR: 30,
   STONE_WIN: 31,
   FENCE: 32,
+  DOOR_TL: 33,
+  DOOR_TR: 34,
+  DOOR_ML: 35,
+  DOOR_MR: 36,
+  DOOR_BL: 37,
+  DOOR_BR: 38,
+  SDOOR_TL: 39,
+  SDOOR_TR: 40,
+  SDOOR_ML: 41,
+  SDOOR_MR: 42,
+  SDOOR_BL: 43,
+  SDOOR_BR: 44,
 };
 
 function tileCanvas() {
@@ -290,26 +302,11 @@ function paintStone(front) {
 }
 
 function paintStoneDoor() {
-  const img = paintStone(true);
-  for (let y = 2; y <= 12; y++) {
-    for (let x = 5; x <= 10; x++) {
-      const edge = x === 5 || x === 10 || y === 2;
-      img.set(x, y, edge ? hex('#3a342e') : y % 3 === 0 ? WOOD_SH : WOOD);
-    }
-  }
-  img.set(9, 8, IRON);
-  return img;
+  return paintDoorLeaf('bl', true);
 }
 
 function paintStoneWin() {
-  const img = paintStone(false);
-  for (let y = 6; y <= 10; y++) {
-    for (let x = 5; x <= 10; x++) {
-      const edge = x === 5 || x === 10 || y === 6 || y === 10;
-      img.set(x, y, edge ? hex('#3a342e') : y < 8 ? WINDOW_HI : WINDOW);
-    }
-  }
-  return img;
+  return paintBigWindow(true);
 }
 
 function paintFence() {
@@ -320,28 +317,62 @@ function paintFence() {
   return img;
 }
 
-function paintWindow() {
-  const img = paintLogs(false);
-  for (let y = 5; y <= 10; y++) {
-    for (let x = 4; x <= 11; x++) {
-      const edge = x === 4 || x === 11 || y === 5 || y === 10 || x === 7 || x === 8;
-      img.set(x, y, edge ? WOOD_DARK : y < 8 ? WINDOW_HI : WINDOW);
+/** A wall tile that is mostly glass, so a 2×2 block reads as one large window. */
+function paintBigWindow(stone) {
+  const img = stone ? paintStone(false) : paintLogs(false);
+  const frame = stone ? hex('#2e2824') : WOOD_DARK;
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      const border = x <= 1 || x >= 14 || y <= 1 || y >= 14;
+      const mullion = x === 7 || x === 8 || y === 7 || y === 8;
+      if (border || mullion) img.set(x, y, frame);
+      else img.set(x, y, y < 8 ? WINDOW_HI : WINDOW);
     }
   }
   return img;
 }
 
-function paintDoor() {
-  const img = paintLogs(true);
-  for (let y = 2; y <= 12; y++) {
-    for (let x = 4; x <= 11; x++) {
-      const edge = x === 4 || x === 11 || y === 2;
-      img.set(x, y, edge ? WOOD_DARK : y % 3 === 0 ? WOOD_SH : WOOD);
+/**
+ * One leaf of a door that fills the whole tile. Stacked three high and two wide,
+ * the opening is 32×48, about twice a 24px character.
+ * part is tl/tr/ml/mr/bl/br.
+ */
+function paintDoorLeaf(part, stone) {
+  const top = part[0] === 't';
+  const bot = part[0] === 'b';
+  const left = part[1] === 'l';
+  const img = stone ? paintStone(false) : paintLogs(false);
+  const frame = stone ? hex('#3a342e') : hex('#3a2418');
+  const recess = hex('#1a1210');
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      const outer = (left && x <= 2) || (!left && x >= 13) || (top && y <= 2) || (bot && y >= 14);
+      const seam = left ? x >= 14 : x <= 1;
+      if (outer) {
+        img.set(x, y, frame);
+        continue;
+      }
+      if (seam) {
+        img.set(x, y, recess);
+        continue;
+      }
+      const band = (left ? x : 15 - x) % 4;
+      img.set(x, y, band === 0 ? hex('#4a301f') : band === 1 ? hex('#8d5a38') : hex('#6b4030'));
     }
   }
-  img.set(9, 8, IRON);
-  img.set(9, 9, IRON_SH);
+  if (!left && bot) {
+    img.set(4, 8, IRON);
+    img.set(5, 8, IRON_SH);
+  }
   return img;
+}
+
+function paintWindow() {
+  return paintBigWindow(false);
+}
+
+function paintDoor() {
+  return paintDoorLeaf('bl', false);
 }
 
 function paintRoof(kind) {
@@ -470,8 +501,12 @@ function buildTileset() {
   tiles.set(T.STONE_DOOR, paintStoneDoor());
   tiles.set(T.STONE_WIN, paintStoneWin());
   tiles.set(T.FENCE, paintFence());
+  const woodLeaves = { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
+  const stoneLeaves = { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR };
+  for (const [part, id] of Object.entries(woodLeaves)) tiles.set(id, paintDoorLeaf(part, false));
+  for (const [part, id] of Object.entries(stoneLeaves)) tiles.set(id, paintDoorLeaf(part, true));
 
-  const rows = Math.ceil(32 / COLS);
+  const rows = Math.ceil(Math.max(...tiles.keys()) / COLS);
   const margin = 1;
   const spacing = 2;
   const imgW = margin * 2 + COLS * TILE + (COLS - 1) * spacing;
@@ -1731,11 +1766,33 @@ function buildMap(tiles) {
 
   function building(x, y, w, h, opts) {
     const roofH = Math.max(2, Math.round(h * (opts.long ? 0.55 : 0.45)));
-    const doorCol = x + Math.floor(w / 2);
+    // Character sprites are 24px. A door is 2 tiles wide (32px) and 3 tall (48px),
+    // so it stands clearly taller and wider than the person in front of it.
+    const doorW = 2;
+    const doorH = 3;
+    const doorLeft = Math.floor((w - doorW) / 2);
+    const doorTop = h - doorH;
     const wallTile = opts.stone ? T.STONE : T.WALL;
     const frontTile = opts.stone ? T.STONE_FRONT : T.WALL_FRONT;
-    const doorTile = opts.stone ? T.STONE_DOOR : opts.shop ? T.DOOR_SHOP : T.DOOR;
     const windowTile = opts.stone ? T.STONE_WIN : T.WINDOW;
+    const leaves = opts.stone
+      ? { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR }
+      : { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
+    const isDoor = (xx, yy) => xx >= doorLeft && xx < doorLeft + doorW && yy >= doorTop && yy < h;
+    const windows = new Set();
+    const markWindow = (xx, yy) => {
+      if (xx < 0 || yy < roofH || xx >= w || yy >= h || isDoor(xx, yy)) return;
+      windows.add(yy * w + xx);
+    };
+    const bay = (x0) => {
+      for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) markWindow(x0 + dx, roofH + dy);
+    };
+    for (let wx = 1; wx + 2 <= doorLeft; wx += 3) bay(wx);
+    for (let wx = doorLeft + doorW + 1; wx + 2 <= w - 1; wx += 3) bay(wx);
+    for (const yy of [roofH, roofH + 1]) {
+      markWindow(0, yy);
+      markWindow(w - 1, yy);
+    }
     for (let yy = 0; yy < h; yy++) {
       for (let xx = 0; xx < w; xx++) {
         const X = x + xx;
@@ -1755,13 +1812,16 @@ function buildMap(tiles) {
           else if (west) tile = T.ROOF_W;
           else if (east) tile = T.ROOF_E;
           g[Y][X] = tile;
+        } else if (isDoor(xx, yy)) {
+          const band = yy === doorTop ? 't' : yy === h - 1 ? 'b' : 'm';
+          const side = xx === doorLeft ? 'l' : 'r';
+          g[Y][X] = leaves[band + side];
+        } else if (windows.has(yy * w + xx)) {
+          g[Y][X] = windowTile;
         } else if (yy === h - 1) {
-          if (X === doorCol) g[Y][X] = doorTile;
-          else g[Y][X] = opts.shop ? T.AWNING : frontTile;
+          g[Y][X] = opts.shop ? T.AWNING : frontTile;
         } else {
-          const mid = yy === roofH;
-          const win = mid && (xx === 2 || xx === w - 3);
-          g[Y][X] = win ? windowTile : wallTile;
+          g[Y][X] = wallTile;
         }
       }
     }
@@ -1770,7 +1830,7 @@ function buildMap(tiles) {
       const cy = y + 1;
       if (cy < y + roofH - 1) g[cy][cx] = T.CHIMNEY;
     }
-    return { doorX: doorCol, doorY: y + h - 1 };
+    return { doorX: x + doorLeft, doorY: y + h - 1 };
   }
 
   const inn = building(16, 26, 12, 8, { chimney: true, chamfer: true, long: true });
@@ -2011,7 +2071,7 @@ function buildTmj(map, tileset) {
   });
 
   const tileProps = [];
-  for (const id of [T.WALL, T.WALL_FRONT, T.WINDOW, T.DOOR, T.ROOF, T.ROOF_B, T.ROOF_N, T.ROOF_W, T.ROOF_E, T.ROOF_NW, T.ROOF_NE, T.ROOF_EAVES, T.ROOF_SHOP, T.PALISADE, T.POST, T.CHIMNEY, T.AWNING, T.DOOR_SHOP, T.WATER, T.WATER_B, T.STONE, T.STONE_FRONT, T.STONE_DOOR, T.STONE_WIN, T.FENCE]) {
+  for (const id of [T.WALL, T.WALL_FRONT, T.WINDOW, T.DOOR, T.ROOF, T.ROOF_B, T.ROOF_N, T.ROOF_W, T.ROOF_E, T.ROOF_NW, T.ROOF_NE, T.ROOF_EAVES, T.ROOF_SHOP, T.PALISADE, T.POST, T.CHIMNEY, T.AWNING, T.DOOR_SHOP, T.WATER, T.WATER_B, T.STONE, T.STONE_FRONT, T.STONE_DOOR, T.STONE_WIN, T.FENCE, T.DOOR_TL, T.DOOR_TR, T.DOOR_ML, T.DOOR_MR, T.DOOR_BL, T.DOOR_BR, T.SDOOR_TL, T.SDOOR_TR, T.SDOOR_ML, T.SDOOR_MR, T.SDOOR_BL, T.SDOOR_BR]) {
     tileProps.push({
       id: id - 1,
       properties: [{ name: 'collide', type: 'bool', value: true }],
@@ -2163,6 +2223,124 @@ function drawIcon(size) {
   return img;
 }
 
+function iconCanvas() {
+  return createImage(16, 16);
+}
+
+function drawItemIcons() {
+  const frames = {
+    wolf_pelt: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 12; y++) {
+        for (let x = 2; x <= 13; x++) {
+          const dx = (x - 7) / 6;
+          const dy = (y - 8) / 5;
+          if (dx * dx + dy * dy > 1) continue;
+          img.set(x, y, x < 7 ? hex('#8a5a3c') : hex('#5c3a28'));
+        }
+      }
+      img.set(6, 6, hex('#c48a58'));
+      img.set(9, 9, hex('#3a2418'));
+      return img;
+    })(),
+    wolf_tooth: (() => {
+      const img = iconCanvas();
+      for (let i = 0; i < 8; i++) {
+        img.set(5 + i, 3 + i, hex('#f4f7fb'));
+        img.set(6 + i, 3 + i, hex('#d7dee6'));
+      }
+      img.set(12, 11, hex('#8b97a3'));
+      return img;
+    })(),
+    cracked_fang: (() => {
+      const img = iconCanvas();
+      for (let i = 0; i < 10; i++) {
+        img.set(3 + i, 2 + i, hex('#f4f0e6'));
+        img.set(4 + i, 2 + i, hex('#e6c15a'));
+      }
+      img.set(8, 7, hex('#1c1418'));
+      img.set(9, 8, hex('#1c1418'));
+      return img;
+    })(),
+    stringy_meat: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 12; y++) {
+        for (let x = 3; x <= 12; x++) {
+          if ((x + y) % 5 === 0) continue;
+          img.set(x, y, y < 8 ? hex('#a33b32') : hex('#6e2424'));
+        }
+      }
+      img.set(6, 6, hex('#f3eee4'));
+      return img;
+    })(),
+    wool_bandage: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 11; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#f4f7fb'));
+      for (let x = 3; x <= 12; x++) img.set(x, 7, hex('#a33b32'));
+      for (let x = 3; x <= 12; x++) img.set(x, 8, hex('#a33b32'));
+      return img;
+    })(),
+    trail_ration: (() => {
+      const img = iconCanvas();
+      for (let y = 5; y <= 12; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#c48a58'));
+      for (let x = 4; x <= 11; x++) img.set(x, 4, hex('#e6c15a'));
+      img.set(6, 8, hex('#5c3a28'));
+      img.set(9, 9, hex('#5c3a28'));
+      return img;
+    })(),
+    worn_axe: (() => {
+      const img = iconCanvas();
+      for (let i = 2; i <= 13; i++) img.set(i, i, hex('#8d5a38'));
+      for (let y = 2; y <= 7; y++) for (let x = 2; x <= 8; x++) img.set(x, y, y === 4 ? hex('#e6c15a') : hex('#8b97a3'));
+      return img;
+    })(),
+    bearded_handaxe: (() => {
+      const img = iconCanvas();
+      for (let i = 3; i <= 13; i++) img.set(i, 16 - i, hex('#5c3a26'));
+      for (let y = 2; y <= 8; y++) for (let x = 2; x <= 9; x++) img.set(x, y, y > 5 ? hex('#d7dee6') : hex('#8b97a3'));
+      return img;
+    })(),
+    ash_staff: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 14; y++) {
+        img.set(7, y, hex('#8d5a38'));
+        img.set(8, y, hex('#d09a62'));
+      }
+      for (let y = 1; y <= 4; y++) for (let x = 6; x <= 9; x++) img.set(x, y, hex('#b7e3ff'));
+      img.set(7, 2, hex('#f4fbff'));
+      return img;
+    })(),
+    yarrow_draught: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 5; y++) for (let x = 7; x <= 8; x++) img.set(x, y, hex('#6b4e3a'));
+      for (let y = 6; y <= 13; y++) for (let x = 5; x <= 10; x++) img.set(x, y, y < 9 ? hex('#8eae72') : hex('#3e6b40'));
+      img.set(6, 8, hex('#d7f0c0'));
+      return img;
+    })(),
+    wolf_helm: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 12; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#8a8178'));
+      img.set(6, 2, hex('#c8c0b6'));
+      img.set(9, 2, hex('#c8c0b6'));
+      img.set(5, 8, hex('#6a3030'));
+      img.set(6, 8, hex('#6a3030'));
+      img.set(9, 8, hex('#6a3030'));
+      img.set(10, 8, hex('#6a3030'));
+      img.set(7, 6, hex('#1c1418'));
+      img.set(8, 6, hex('#1c1418'));
+      return img;
+    })(),
+  };
+  const order = Object.keys(frames);
+  const sheet = createImage(order.length * 16, 16);
+  const meta = {};
+  order.forEach((id, index) => {
+    blit(sheet, frames[id], index * 16, 0);
+    meta[id] = { x: index * 16, y: 0, w: 16, h: 16 };
+  });
+  return { sheet, meta: { sheetW: sheet.w, sheetH: sheet.h, frames: meta } };
+}
+
 async function main() {
   mkdirSync(assetDir, { recursive: true });
   mkdirSync(join(publicDir, 'icons'), { recursive: true });
@@ -2172,8 +2350,11 @@ async function main() {
   const map = buildMap(tileset);
   const tmj = buildTmj(map, tileset);
   const atlas = { actors: actors.meta, props: props.meta };
+  const itemIcons = drawItemIcons();
 
   await writePng(join(assetDir, 'tiles.png'), tileset.sheet);
+  await writePng(join(assetDir, 'icons.png'), itemIcons.sheet);
+  writeFileSync(join(assetDir, 'icons.json'), JSON.stringify(itemIcons.meta, null, 2));
   await writePng(join(assetDir, 'actors.png'), actors.sheet);
   await writePng(join(assetDir, 'props.png'), props.sheet);
   writeFileSync(join(assetDir, 'hoffender.tmj'), JSON.stringify(tmj));

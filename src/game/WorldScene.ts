@@ -140,7 +140,7 @@ export class WorldScene extends Phaser.Scene {
     this.cam.setBounds(0, 0, tiled.widthInPixels, tiled.heightInPixels);
     this.cam.roundPixels = true;
     for (const spawn of this.mapData.spawns) {
-      if (spawn.kind !== 'label' && spawn.kind !== 'sign') continue;
+      if (spawn.kind !== 'label') continue;
       const text = this.add.text(spawn.x, spawn.y - 10, spawn.name, {
         fontFamily: 'ui-sans-serif, system-ui, sans-serif',
         fontSize: '20px',

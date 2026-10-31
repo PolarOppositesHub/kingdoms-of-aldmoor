@@ -1,0 +1,12 @@
+[
+  {
+    "id": "wolf_pelts",
+    "name": "Pelts for the guild",
+    "giver": "Eirik Stonehand",
+    "description": "The warrior guild's hall is new timber and an empty wall. Eirik Stonehand wants four wolf pelts from the Frostmere Wilds to line it.",
+    "objective": "Wolf pelts from the Frostmere Wilds",
+    "itemId": "wolf_pelt",
+    "need": 4,
+    "reward": "15 copper, 40 experience, and a wolf helm"
+  }
+]

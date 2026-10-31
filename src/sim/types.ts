@@ -4,7 +4,33 @@ export const TICK_MS = 1000 / 30;
 
 export type Dir = 's' | 'n' | 'e' | 'w';
 export type ConColor = 'gray' | 'green' | 'lightblue' | 'blue' | 'white' | 'yellow' | 'red';
-export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect';
+export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect' | 'journal';
+
+export type EquipSlot = 'head' | 'chest' | 'hands' | 'legs' | 'feet' | 'primary' | 'secondary';
+
+export const EQUIP_SLOTS: EquipSlot[] = ['head', 'chest', 'hands', 'legs', 'feet', 'primary', 'secondary'];
+
+export interface Equipment {
+  head: string | null;
+  chest: string | null;
+  hands: string | null;
+  legs: string | null;
+  feet: string | null;
+  primary: string | null;
+  secondary: string | null;
+}
+
+export interface ItemBonus {
+  str?: number;
+  sta?: number;
+  agi?: number;
+  dex?: number;
+  wis?: number;
+  int?: number;
+  cha?: number;
+  hp?: number;
+  mana?: number;
+}
 
 export interface Dice {
   n: number;
@@ -30,10 +56,24 @@ export interface ItemDef {
   stack: number;
   blurb: string;
   heal?: number;
-  slot?: 'primary' | 'head';
+  slot?: EquipSlot;
   ac?: number;
+  weight: number;
+  bonuses?: ItemBonus;
+  effects?: string;
   delayMs?: number;
   damage?: Dice;
+}
+
+export interface QuestDef {
+  id: string;
+  name: string;
+  giver: string;
+  description: string;
+  objective: string;
+  itemId: string;
+  need: number;
+  reward: string;
 }
 
 export interface LootEntry {
@@ -175,6 +215,7 @@ export interface ContentDb {
   economy: { copperPerSilver: number; silverPerGold: number; goldPerPlatinum: number };
   player: { name: string; classId: string; copper: number; items: { itemId: string; qty: number }[] };
   roster: Roster;
+  quests: QuestDef[];
 }
 
 export interface RaceDef {
@@ -264,7 +305,8 @@ export interface GameState {
   actors: Actor[];
   ground: GroundItem[];
   inventory: ItemStack[];
-  equipment: { primary: string; head: string | null };
+  equipment: Equipment;
+  baseStats: Stats;
   copper: number;
   xp: number;
   level: number;
@@ -336,7 +378,10 @@ export type Intent =
   | { type: 'sell'; slot: number }
   | { type: 'use'; slot: number }
   | { type: 'equip'; slot: number }
+  | { type: 'unequip'; slot: EquipSlot }
   | { type: 'openPack' }
+  | { type: 'openJournal' }
+  | { type: 'abandonQuest'; id: string }
   | { type: 'openHelp' }
   | { type: 'close' }
   | { type: 'debugTeleport'; x: number; y: number };
