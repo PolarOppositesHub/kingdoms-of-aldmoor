@@ -1,0 +1,600 @@
+{
+  "sheetW": 1584,
+  "sheetH": 16,
+  "frames": {
+    "wolf_pelt": {
+      "x": 0,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wolf_tooth": {
+      "x": 16,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_fang": {
+      "x": 32,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "stringy_meat": {
+      "x": 48,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_bandage": {
+      "x": 64,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "trail_ration": {
+      "x": 80,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "worn_axe": {
+      "x": 96,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bearded_handaxe": {
+      "x": 112,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "ash_staff": {
+      "x": 128,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "yarrow_draught": {
+      "x": 144,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wolf_helm": {
+      "x": 160,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_iron_helm": {
+      "x": 176,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_helm": {
+      "x": 192,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_helm": {
+      "x": 208,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_iron_breastplate": {
+      "x": 224,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_breastplate": {
+      "x": 240,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_breastplate": {
+      "x": 256,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_iron_gauntlets": {
+      "x": 272,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_gauntlets": {
+      "x": 288,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_gauntlets": {
+      "x": 304,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_iron_greaves": {
+      "x": 320,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_greaves": {
+      "x": 336,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_greaves": {
+      "x": 352,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_iron_sabatons": {
+      "x": 368,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_sabatons": {
+      "x": 384,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_sabatons": {
+      "x": 400,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_iron_shield": {
+      "x": 416,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_shield": {
+      "x": 432,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_shield": {
+      "x": 448,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_chain_coif": {
+      "x": 464,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_chain_coif": {
+      "x": 480,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_chain_coif": {
+      "x": 496,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_chain_hauberk": {
+      "x": 512,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_chain_hauberk": {
+      "x": 528,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_chain_hauberk": {
+      "x": 544,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_chain_mittens": {
+      "x": 560,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_chain_mittens": {
+      "x": 576,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_chain_mittens": {
+      "x": 592,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_chain_leggings": {
+      "x": 608,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_chain_leggings": {
+      "x": 624,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_chain_leggings": {
+      "x": 640,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_chain_boots": {
+      "x": 656,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_chain_boots": {
+      "x": 672,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_chain_boots": {
+      "x": 688,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "rusty_chain_buckler": {
+      "x": 704,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "iron_chain_buckler": {
+      "x": 720,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bronze_chain_buckler": {
+      "x": 736,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_leather_cap": {
+      "x": 752,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "leather_cap": {
+      "x": 768,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hardened_leather_cap": {
+      "x": 784,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_leather_tunic": {
+      "x": 800,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "leather_tunic": {
+      "x": 816,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hardened_leather_tunic": {
+      "x": 832,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_leather_gloves": {
+      "x": 848,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "leather_gloves": {
+      "x": 864,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hardened_leather_gloves": {
+      "x": 880,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_leather_pants": {
+      "x": 896,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "leather_pants": {
+      "x": 912,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hardened_leather_pants": {
+      "x": 928,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_leather_boots": {
+      "x": 944,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "leather_boots": {
+      "x": 960,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hardened_leather_boots": {
+      "x": 976,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cracked_leather_buckler": {
+      "x": 992,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "leather_buckler": {
+      "x": 1008,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hardened_leather_buckler": {
+      "x": 1024,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tattered_hood": {
+      "x": 1040,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "linen_hood": {
+      "x": 1056,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_hood": {
+      "x": 1072,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tattered_robe": {
+      "x": 1088,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "linen_robe": {
+      "x": 1104,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_robe": {
+      "x": 1120,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tattered_gloves": {
+      "x": 1136,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "linen_gloves": {
+      "x": 1152,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_gloves": {
+      "x": 1168,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tattered_trousers": {
+      "x": 1184,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "linen_trousers": {
+      "x": 1200,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_trousers": {
+      "x": 1216,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tattered_shoes": {
+      "x": 1232,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "linen_shoes": {
+      "x": 1248,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_shoes": {
+      "x": 1264,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tattered_sash": {
+      "x": 1280,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "linen_sash": {
+      "x": 1296,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wool_sash": {
+      "x": 1312,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "bone_staff": {
+      "x": 1328,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "skinning_knife": {
+      "x": 1344,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "paired_hatchets": {
+      "x": 1360,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hand_wraps": {
+      "x": 1376,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_sunder": {
+      "x": 1392,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_breaker": {
+      "x": 1408,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_gale": {
+      "x": 1424,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_ward": {
+      "x": 1440,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_poison": {
+      "x": 1456,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_vanish": {
+      "x": 1472,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_execute": {
+      "x": 1488,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_feast": {
+      "x": 1504,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_heart": {
+      "x": 1520,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_deep": {
+      "x": 1536,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_spike": {
+      "x": 1552,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_white": {
+      "x": 1568,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    }
+  }
+}

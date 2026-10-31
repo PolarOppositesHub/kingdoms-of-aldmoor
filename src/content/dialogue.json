@@ -3,24 +3,48 @@
     "start": {
       "text": "Brenna's Goods. If it once had fur, teeth, or a pulse, put it on the counter and I'll name a fair price.",
       "choices": [
-        { "label": "Show me your stock.", "action": "merchant" },
-        { "label": "What are you buying?", "next": "buying" },
-        { "label": "Any advice before I go out?", "next": "advice" },
-        { "label": "Another time.", "action": "close" }
+        {
+          "label": "Show me your stock.",
+          "action": "merchant"
+        },
+        {
+          "label": "What are you buying?",
+          "next": "buying"
+        },
+        {
+          "label": "Any advice before I go out?",
+          "next": "advice"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
       ]
     },
     "buying": {
       "text": "Pelts, mostly. Teeth if they're whole. Meat if you must — I'll salt it, I won't praise it.",
       "choices": [
-        { "label": "Let me see the stock.", "action": "merchant" },
-        { "label": "Back.", "next": "start" }
+        {
+          "label": "Let me see the stock.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
       ]
     },
     "advice": {
       "text": "Buy a bandage before you buy a bigger axe. On the Frostmere Wilds road the wolves are young. The pale ones by the northern rocks are not. Pride is expensive.",
       "choices": [
-        { "label": "Show me the stock.", "action": "merchant" },
-        { "label": "I'll remember.", "action": "close" }
+        {
+          "label": "Show me the stock.",
+          "action": "merchant"
+        },
+        {
+          "label": "I'll remember.",
+          "action": "close"
+        }
       ]
     }
   },
@@ -28,107 +52,460 @@
     "start": {
       "text": "Frosthearth Inn. Stew's on, the beds complain, and the fire doesn't ask questions.",
       "choices": [
-        { "label": "What if I fall in combat out there?", "next": "fall" },
-        { "label": "What's in the stew?", "next": "stew" },
-        { "label": "Warm hands, then.", "action": "close" }
+        {
+          "label": "What if I fall in combat out there?",
+          "next": "fall"
+        },
+        {
+          "label": "What's in the stew?",
+          "next": "stew"
+        },
+        {
+          "label": "Warm hands, then.",
+          "action": "close"
+        }
       ]
     },
     "fall": {
       "text": "You die, and you wake in my yard. Your gear stays on you. Below the fifth winter you lose no experience. The Frostmere Wilds will still be there. Try to come back walking.",
       "choices": [
-        { "label": "Good to know.", "next": "start" },
-        { "label": "I'll try.", "action": "close" }
+        {
+          "label": "Good to know.",
+          "next": "start"
+        },
+        {
+          "label": "I'll try.",
+          "action": "close"
+        }
       ]
     },
     "stew": {
       "text": "Turnips, salt, and a hope of mutton. It stays down. That's the whole recipe.",
-      "choices": [{ "label": "Back.", "next": "start" }]
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
     }
   },
   "torvald": {
     "start": {
       "text": "The fjord used to freeze clear to the skerries. A child could walk it. These days the ice argues back.",
       "choices": [
-        { "label": "What hunts up north?", "next": "north" },
-        { "label": "Is there a warriors' hall?", "next": "hall" },
-        { "label": "I'll remember that.", "action": "close" }
+        {
+          "label": "What hunts up north?",
+          "next": "north"
+        },
+        {
+          "label": "Is there a warriors' hall?",
+          "next": "hall"
+        },
+        {
+          "label": "I'll remember that.",
+          "action": "close"
+        }
       ]
     },
     "north": {
       "text": "Wolves, not sailors. The young ones linger on the Frostmere Wilds road. Further into the pines they run in pairs. The pale ones near the rocks can take a warrior apart.",
-      "choices": [{ "label": "Back.", "next": "start" }]
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
     },
     "hall": {
       "text": "The warriors' hall is still a stack of timber and an argument. No trainer waits inside. Jarl Freya has not named a master — she would rather seal a trade pact than raise a war-band. Until she does, the Frostmere Wilds will have to do the teaching.",
-      "choices": [{ "label": "Then I'll learn outside.", "action": "close" }]
+      "choices": [
+        {
+          "label": "Then I'll learn outside.",
+          "action": "close"
+        }
+      ]
     }
   },
   "soren": {
     "start": {
       "text": "Gate's open. Don't take that for a welcome from the Frostmere Wilds. Wolves have been crossing the packed road.",
       "choices": [
-        { "label": "Where should I start?", "next": "startTip" },
-        { "label": "Who speaks for the hold?", "next": "rule" },
-        { "label": "I'll watch the tree line.", "action": "close" }
+        {
+          "label": "Where should I start?",
+          "next": "startTip"
+        },
+        {
+          "label": "Who speaks for the hold?",
+          "next": "rule"
+        },
+        {
+          "label": "I'll watch the tree line.",
+          "action": "close"
+        }
       ]
     },
     "startTip": {
       "text": "North, on the Frostmere Wilds road, the young ones are bold and not very wise. If two of them look at you at once, walk back through my gate. The palisade is the end of their courage.",
-      "choices": [{ "label": "Back.", "next": "start" }]
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
     },
     "rule": {
       "text": "Jarl Freya Halvarddottir speaks for Hoffender. The guards answer to her word. I keep this gate because she says the road stays open. Hilda keeps the fire, and Brenna keeps the scales.",
-      "choices": [{ "label": "Understood.", "action": "close" }]
+      "choices": [
+        {
+          "label": "Understood.",
+          "action": "close"
+        }
+      ]
     }
   },
   "freya": {
     "start": {
       "text": "I am Freya Halvarddottir. My father held this seat until he fell. I hold it now, and I would rather fill the mead hall with traders than with a war-band.",
       "choices": [
-        { "label": "What do you ask of the hold?", "next": "rule" },
-        { "label": "And the guards?", "next": "guards" },
-        { "label": "What lies past the gate?", "next": "wilds" },
-        { "label": "Jarl.", "action": "close" }
+        {
+          "label": "What do you ask of the hold?",
+          "next": "rule"
+        },
+        {
+          "label": "And the guards?",
+          "next": "guards"
+        },
+        {
+          "label": "What lies past the gate?",
+          "next": "wilds"
+        },
+        {
+          "label": "Jarl.",
+          "action": "close"
+        }
       ]
     },
     "rule": {
       "text": "Open roads, and neighbors who would rather trade than raid us. A shield is for the gate, not for a glory-hunt. Bring me alliances. Leave the trophies in the snow.",
-      "choices": [{ "label": "Back.", "next": "start" }]
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
     },
     "guards": {
       "text": "They answer to my word. Soren keeps the north gate because I told him to keep it open. If a guard tells you otherwise, send them back to this mead hall.",
-      "choices": [{ "label": "Back.", "next": "start" }]
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
     },
     "wilds": {
       "text": "The Frostmere Wilds. Wolves on the packed road, and worse where the pines thicken. Walk them if you must. Do not start a war I will have to finish.",
-      "choices": [{ "label": "I'll go carefully.", "action": "close" }]
+      "choices": [
+        {
+          "label": "I'll go carefully.",
+          "action": "close"
+        }
+      ]
     }
   },
   "eirik": {
     "start": {
       "text": "Warrior Guild. I am Eirik Stonehand. The hall is new, the wolves are not, and I am already short of pelts.",
       "choices": [
-        { "label": "What do you need?", "next": "ask" },
-        { "label": "Another time.", "action": "close" }
+        {
+          "label": "What do you need?",
+          "next": "ask"
+        },
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
       ]
     },
     "ask": {
       "text": "Four wolf pelts from the Frostmere Wilds. Bring them here. I will pay, and I have a helm that still smells like the animal.",
       "choices": [
-        { "label": "I'll bring you pelts.", "action": "acceptQuest", "quest": "wolf_pelts" },
-        { "label": "Not now.", "action": "close" }
+        {
+          "label": "I'll bring you pelts.",
+          "action": "acceptQuest",
+          "quest": "wolf_pelts"
+        },
+        {
+          "label": "Not now.",
+          "action": "close"
+        }
       ]
     },
     "active": {
       "text": "Four pelts. The young ones on the road drop them often enough, if you are the one still standing.",
       "choices": [
-        { "label": "Here are the pelts.", "action": "turnIn", "quest": "wolf_pelts" },
-        { "label": "I'm still hunting.", "action": "close" }
+        {
+          "label": "Here are the pelts.",
+          "action": "turnIn",
+          "quest": "wolf_pelts"
+        },
+        {
+          "label": "I'm still hunting.",
+          "action": "close"
+        }
       ]
     },
     "done": {
       "text": "The helm suits you. Wear it. The guild will have more work when the hall is finished. Not today.",
-      "choices": [{ "label": "Guildmaster.", "action": "close" }]
+      "choices": [
+        {
+          "label": "Guildmaster.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "ivar": {
+    "start": {
+      "text": "Ivar Holt. I forge plate and chain. Plate is a warrior's shell. Chain fits a warrior or a berserker. I do not sew cloth, and scale is not my alloy.",
+      "choices": [
+        {
+          "label": "Show me the armor.",
+          "action": "merchant"
+        },
+        {
+          "label": "What should I buy first?",
+          "next": "first"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "first": {
+      "text": "If your coin is thin, take the rusty pieces. They are ugly and they still stop a tooth. Bronze is for when the wolves owe you.",
+      "choices": [
+        {
+          "label": "Let me see the stock.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "signe": {
+    "start": {
+      "text": "Signe Vale. Cloth and leather. Shamans, rogues, wardens, and wizards live in the cloth. Leather also fits a warrior or a berserker who means to move.",
+      "choices": [
+        {
+          "label": "Show me what you have.",
+          "action": "merchant"
+        },
+        {
+          "label": "What lasts in the wet?",
+          "next": "wet"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "wet": {
+      "text": "Wool, if you can pay. Linen if you cannot. Tattered cloth is a mend with a price, and I will not pretend otherwise.",
+      "choices": [
+        {
+          "label": "Show me the stock.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "ysolde": {
+    "start": {
+      "text": "Ysolde Mire. The wizard hall keeps its pages, even though no Barbarian may walk this path. The door is open for the day a wizard race arrives.",
+      "choices": [
+        {
+          "label": "Show me what you teach.",
+          "action": "merchant"
+        },
+        {
+          "label": "Tell me more.",
+          "next": "more"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "more": {
+      "text": "Shardbolt and Rimefield are the start. Glacier Spike and Whiteout wait for a higher hand. I will not teach a Barbarian.",
+      "choices": [
+        {
+          "label": "Show me the pages.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "torunn": {
+    "start": {
+      "text": "Torunn Ash. Shaman hall. I teach the slow, the mend, and the burn, and I sell the later rites when you are ready.",
+      "choices": [
+        {
+          "label": "Show me what you teach.",
+          "action": "merchant"
+        },
+        {
+          "label": "Tell me more.",
+          "next": "more"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "more": {
+      "text": "Gale Hex is a wind for a pack. Ancestor Ward is the old blood in your arms. Come back when the level asks for them.",
+      "choices": [
+        {
+          "label": "Show me the pages.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "sable": {
+    "start": {
+      "text": "Sable Venn. Keep your voice down. Guile, a knife in the back, and the step that is not there.",
+      "choices": [
+        {
+          "label": "Show me what you teach.",
+          "action": "merchant"
+        },
+        {
+          "label": "Tell me more.",
+          "next": "more"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "more": {
+      "text": "Poison on the blade, and Vanish when the fight has your name. Both cost guile and a higher level.",
+      "choices": [
+        {
+          "label": "Show me the pages.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "hroth": {
+    "start": {
+      "text": "Hroth Keld. Rage is not a mood. It climbs when you hit, and a kill puts blood back in you.",
+      "choices": [
+        {
+          "label": "Show me what you teach.",
+          "action": "merchant"
+        },
+        {
+          "label": "Tell me more.",
+          "next": "more"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "more": {
+      "text": "Execution spends a belly of rage. Blood Feast turns rage into a mend. I do not sell them to children.",
+      "choices": [
+        {
+          "label": "Show me the pages.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "bjorn": {
+    "start": {
+      "text": "Bjorn Pale. Fists, wraps, or a staff. Your snow wolf follows. I do not put an axe in a warden's hand.",
+      "choices": [
+        {
+          "label": "Show me what you teach.",
+          "action": "merchant"
+        },
+        {
+          "label": "Tell me more.",
+          "next": "more"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "more": {
+      "text": "Bear Heart makes the blows heavier. Deep Mend knits more than the first mend. The wolf is yours from the first step.",
+      "choices": [
+        {
+          "label": "Show me the pages.",
+          "action": "merchant"
+        },
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "sigrid": {
+    "start": {
+      "text": "Sigrid Holt. Axes, knives, hatchets, staves, and wraps. Ivar next door keeps the armor. I keep the thing you hit with.",
+      "choices": [
+        {
+          "label": "Show me the weapons.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
     }
   }
 }

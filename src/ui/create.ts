@@ -16,6 +16,7 @@ const LABELS: Record<(typeof STATS)[number], string> = {
 export interface HeroDraft {
   raceId: string;
   classId: string;
+  sex: 'male' | 'female';
   bonus: Stats;
 }
 
@@ -29,6 +30,7 @@ export function loadHero(): HeroDraft | null {
     if (!raw) return null;
     const parsed = JSON.parse(raw) as HeroDraft;
     if (!parsed.raceId || !parsed.classId || !parsed.bonus) return null;
+    if (parsed.sex !== 'female') parsed.sex = 'male';
     return parsed;
   } catch {
     return null;
@@ -37,14 +39,18 @@ export function loadHero(): HeroDraft | null {
 
 export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => void } {
   const races = document.getElementById('race-pick');
+  const sexes = document.getElementById('sex-pick');
   const classes = document.getElementById('class-pick');
+  const wizardNote = document.getElementById('wizard-note');
   const blurb = document.getElementById('class-blurb');
   const points = document.getElementById('points');
   const list = document.getElementById('stat-list');
   const roster = api.content.roster;
   const saved = loadHero();
   let raceId = saved?.raceId && roster.races.some((race) => race.id === saved.raceId && race.playable) ? saved.raceId : 'barbarian';
-  let classId = saved?.classId && roster.classes.some((cls) => cls.id === saved.classId && cls.playable) ? saved.classId : 'warrior';
+  let sex: 'male' | 'female' = saved?.sex === 'female' ? 'female' : 'male';
+  const wizardDraft = saved?.classId === 'wizard';
+  let classId = saved?.classId && roster.classes.some((cls) => cls.id === saved.classId && cls.playable && cls.races.includes(raceId)) ? saved.classId : 'warrior';
   const bonus = emptyBonus();
   if (saved?.bonus) {
     for (const key of STATS) bonus[key] = Math.max(0, Math.floor(saved.bonus[key] ?? 0));
@@ -66,6 +72,17 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
 
   const paint = () => {
     if (!races || !classes || !blurb || !points || !list) return;
+    if (sexes) {
+      sexes.innerHTML = (['male', 'female'] as const)
+        .map((id) => `<button type="button" data-sex="${id}" aria-pressed="${sex === id ? 'true' : 'false'}">${id === 'male' ? 'Male' : 'Female'}<small>${id === 'male' ? 'Beard and a heavier shoulder.' : 'Braids and a leaner shoulder.'}</small></button>`)
+        .join('');
+    }
+    if (wizardNote) {
+      wizardNote.hidden = !wizardDraft;
+      wizardNote.textContent = wizardDraft
+        ? 'A saved Barbarian Wizard cannot continue that path. Pick Warrior, Shaman, Rogue, Berserker, or Warden. A saved game of that kind continues as a Warrior.'
+        : '';
+    }
     races.innerHTML = roster.races
       .map((race) => {
         const pressed = race.id === raceId;
@@ -93,6 +110,13 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
     }).join('');
   };
 
+  sexes?.addEventListener('click', (event) => {
+    const button = (event.target as HTMLElement).closest('button');
+    const id = button?.dataset.sex;
+    if (id !== 'male' && id !== 'female') return;
+    sex = id;
+    paint();
+  });
   races?.addEventListener('click', (event) => {
     const button = (event.target as HTMLElement).closest('button');
     const id = button?.dataset.race;
@@ -123,10 +147,10 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
   paint();
 
   return {
-    read: () => ({ raceId, classId, bonus: { ...bonus } }),
+    read: () => ({ raceId, classId, sex, bonus: { ...bonus } }),
     save: () => {
       try {
-        localStorage.setItem(KEY, JSON.stringify({ raceId, classId, bonus }));
+        localStorage.setItem(KEY, JSON.stringify({ raceId, classId, sex, bonus }));
       } catch {
         /* private mode */
       }

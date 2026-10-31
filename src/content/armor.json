@@ -1,0 +1,1370 @@
+[
+  {
+    "id": "rusty_iron_helm",
+    "name": "rusty iron helm",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 1,
+    "slot": "head",
+    "ac": 5,
+    "weight": 3.4,
+    "value": 58,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Rusty iron helm. The plates are pitted and the straps are newer than the iron.",
+    "effects": "Plate armor, worn on the head."
+  },
+  {
+    "id": "iron_helm",
+    "name": "iron helm",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 2,
+    "slot": "head",
+    "ac": 8,
+    "weight": 4.8,
+    "value": 164,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Iron helm. Hammered iron. You hear yourself walk.",
+    "effects": "Plate armor, worn on the head."
+  },
+  {
+    "id": "bronze_helm",
+    "name": "bronze helm",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 3,
+    "slot": "head",
+    "ac": 11,
+    "weight": 5.6,
+    "value": 355,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Bronze helm. Bronze, fitted and polished. The forge smiled at the price.",
+    "effects": "Plate armor, worn on the head."
+  },
+  {
+    "id": "rusty_iron_breastplate",
+    "name": "rusty iron breastplate",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 1,
+    "slot": "chest",
+    "ac": 9,
+    "weight": 12,
+    "value": 112,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Rusty iron breastplate. The plates are pitted and the straps are newer than the iron.",
+    "effects": "Plate armor, worn on the chest."
+  },
+  {
+    "id": "iron_breastplate",
+    "name": "iron breastplate",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 2,
+    "slot": "chest",
+    "ac": 14,
+    "weight": 16.5,
+    "value": 318,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Iron breastplate. Hammered iron. You hear yourself walk.",
+    "effects": "Plate armor, worn on the chest."
+  },
+  {
+    "id": "bronze_breastplate",
+    "name": "bronze breastplate",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 3,
+    "slot": "chest",
+    "ac": 18,
+    "weight": 19,
+    "value": 690,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Bronze breastplate. Bronze, fitted and polished. The forge smiled at the price.",
+    "effects": "Plate armor, worn on the chest."
+  },
+  {
+    "id": "rusty_iron_gauntlets",
+    "name": "rusty iron gauntlets",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 1,
+    "slot": "hands",
+    "ac": 3,
+    "weight": 2.2,
+    "value": 34,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Rusty iron gauntlets. The plates are pitted and the straps are newer than the iron.",
+    "effects": "Plate armor, worn on the hands."
+  },
+  {
+    "id": "iron_gauntlets",
+    "name": "iron gauntlets",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 2,
+    "slot": "hands",
+    "ac": 5,
+    "weight": 3.1,
+    "value": 96,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Iron gauntlets. Hammered iron. You hear yourself walk.",
+    "effects": "Plate armor, worn on the hands."
+  },
+  {
+    "id": "bronze_gauntlets",
+    "name": "bronze gauntlets",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 3,
+    "slot": "hands",
+    "ac": 8,
+    "weight": 3.8,
+    "value": 214,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Bronze gauntlets. Bronze, fitted and polished. The forge smiled at the price.",
+    "effects": "Plate armor, worn on the hands."
+  },
+  {
+    "id": "rusty_iron_greaves",
+    "name": "rusty iron greaves",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 1,
+    "slot": "legs",
+    "ac": 6,
+    "weight": 7,
+    "value": 73,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Rusty iron greaves. The plates are pitted and the straps are newer than the iron.",
+    "effects": "Plate armor, worn on the legs."
+  },
+  {
+    "id": "iron_greaves",
+    "name": "iron greaves",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 2,
+    "slot": "legs",
+    "ac": 10,
+    "weight": 9.6,
+    "value": 207,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Iron greaves. Hammered iron. You hear yourself walk.",
+    "effects": "Plate armor, worn on the legs."
+  },
+  {
+    "id": "bronze_greaves",
+    "name": "bronze greaves",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 3,
+    "slot": "legs",
+    "ac": 13,
+    "weight": 11.5,
+    "value": 448,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Bronze greaves. Bronze, fitted and polished. The forge smiled at the price.",
+    "effects": "Plate armor, worn on the legs."
+  },
+  {
+    "id": "rusty_iron_sabatons",
+    "name": "rusty iron sabatons",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 1,
+    "slot": "feet",
+    "ac": 3,
+    "weight": 3.6,
+    "value": 41,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Rusty iron sabatons. The plates are pitted and the straps are newer than the iron.",
+    "effects": "Plate armor, worn on the feet."
+  },
+  {
+    "id": "iron_sabatons",
+    "name": "iron sabatons",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 2,
+    "slot": "feet",
+    "ac": 6,
+    "weight": 5,
+    "value": 118,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Iron sabatons. Hammered iron. You hear yourself walk.",
+    "effects": "Plate armor, worn on the feet."
+  },
+  {
+    "id": "bronze_sabatons",
+    "name": "bronze sabatons",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 3,
+    "slot": "feet",
+    "ac": 8,
+    "weight": 5.8,
+    "value": 262,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Bronze sabatons. Bronze, fitted and polished. The forge smiled at the price.",
+    "effects": "Plate armor, worn on the feet."
+  },
+  {
+    "id": "rusty_iron_shield",
+    "name": "rusty iron shield",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 1,
+    "slot": "secondary",
+    "ac": 4,
+    "weight": 4.5,
+    "value": 66,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Rusty iron shield. The plates are pitted and the straps are newer than the iron.",
+    "effects": "Plate armor, worn on the secondary."
+  },
+  {
+    "id": "iron_shield",
+    "name": "iron shield",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 2,
+    "slot": "secondary",
+    "ac": 7,
+    "weight": 6.4,
+    "value": 186,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Iron shield. Hammered iron. You hear yourself walk.",
+    "effects": "Plate armor, worn on the secondary."
+  },
+  {
+    "id": "bronze_shield",
+    "name": "bronze shield",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 3,
+    "slot": "secondary",
+    "ac": 10,
+    "weight": 7.8,
+    "value": 402,
+    "stack": 1,
+    "wearers": [
+      "warrior"
+    ],
+    "blurb": "Bronze shield. Bronze, fitted and polished. The forge smiled at the price.",
+    "effects": "Plate armor, worn on the secondary."
+  },
+  {
+    "id": "rusty_chain_coif",
+    "name": "rusty chain coif",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 1,
+    "slot": "head",
+    "ac": 3,
+    "weight": 1.8,
+    "value": 24,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Rusty chain coif. Rings gone red at the joints. They still lock together.",
+    "effects": "Chain armor, worn on the head."
+  },
+  {
+    "id": "iron_chain_coif",
+    "name": "iron chain coif",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 2,
+    "slot": "head",
+    "ac": 6,
+    "weight": 2.6,
+    "value": 71,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Iron chain coif. Riveted iron rings. A point has to find a gap.",
+    "effects": "Chain armor, worn on the head."
+  },
+  {
+    "id": "bronze_chain_coif",
+    "name": "bronze chain coif",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 3,
+    "slot": "head",
+    "ac": 8,
+    "weight": 3.1,
+    "value": 163,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Bronze chain coif. Bronze rings on a leather backing. Loud, and worth the noise.",
+    "effects": "Chain armor, worn on the head."
+  },
+  {
+    "id": "rusty_chain_hauberk",
+    "name": "rusty chain hauberk",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 1,
+    "slot": "chest",
+    "ac": 6,
+    "weight": 7.5,
+    "value": 46,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Rusty chain hauberk. Rings gone red at the joints. They still lock together.",
+    "effects": "Chain armor, worn on the chest."
+  },
+  {
+    "id": "iron_chain_hauberk",
+    "name": "iron chain hauberk",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 2,
+    "slot": "chest",
+    "ac": 10,
+    "weight": 10,
+    "value": 138,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Iron chain hauberk. Riveted iron rings. A point has to find a gap.",
+    "effects": "Chain armor, worn on the chest."
+  },
+  {
+    "id": "bronze_chain_hauberk",
+    "name": "bronze chain hauberk",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 3,
+    "slot": "chest",
+    "ac": 14,
+    "weight": 12.4,
+    "value": 312,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Bronze chain hauberk. Bronze rings on a leather backing. Loud, and worth the noise.",
+    "effects": "Chain armor, worn on the chest."
+  },
+  {
+    "id": "rusty_chain_mittens",
+    "name": "rusty chain mittens",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 1,
+    "slot": "hands",
+    "ac": 2,
+    "weight": 1.1,
+    "value": 15,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Rusty chain mittens. Rings gone red at the joints. They still lock together.",
+    "effects": "Chain armor, worn on the hands."
+  },
+  {
+    "id": "iron_chain_mittens",
+    "name": "iron chain mittens",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 2,
+    "slot": "hands",
+    "ac": 4,
+    "weight": 1.6,
+    "value": 44,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Iron chain mittens. Riveted iron rings. A point has to find a gap.",
+    "effects": "Chain armor, worn on the hands."
+  },
+  {
+    "id": "bronze_chain_mittens",
+    "name": "bronze chain mittens",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 3,
+    "slot": "hands",
+    "ac": 6,
+    "weight": 2,
+    "value": 102,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Bronze chain mittens. Bronze rings on a leather backing. Loud, and worth the noise.",
+    "effects": "Chain armor, worn on the hands."
+  },
+  {
+    "id": "rusty_chain_leggings",
+    "name": "rusty chain leggings",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 1,
+    "slot": "legs",
+    "ac": 4,
+    "weight": 4.2,
+    "value": 29,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Rusty chain leggings. Rings gone red at the joints. They still lock together.",
+    "effects": "Chain armor, worn on the legs."
+  },
+  {
+    "id": "iron_chain_leggings",
+    "name": "iron chain leggings",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 2,
+    "slot": "legs",
+    "ac": 7,
+    "weight": 6.1,
+    "value": 88,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Iron chain leggings. Riveted iron rings. A point has to find a gap.",
+    "effects": "Chain armor, worn on the legs."
+  },
+  {
+    "id": "bronze_chain_leggings",
+    "name": "bronze chain leggings",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 3,
+    "slot": "legs",
+    "ac": 10,
+    "weight": 7.4,
+    "value": 198,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Bronze chain leggings. Bronze rings on a leather backing. Loud, and worth the noise.",
+    "effects": "Chain armor, worn on the legs."
+  },
+  {
+    "id": "rusty_chain_boots",
+    "name": "rusty chain boots",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 1,
+    "slot": "feet",
+    "ac": 2,
+    "weight": 2,
+    "value": 18,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Rusty chain boots. Rings gone red at the joints. They still lock together.",
+    "effects": "Chain armor, worn on the feet."
+  },
+  {
+    "id": "iron_chain_boots",
+    "name": "iron chain boots",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 2,
+    "slot": "feet",
+    "ac": 4,
+    "weight": 2.8,
+    "value": 52,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Iron chain boots. Riveted iron rings. A point has to find a gap.",
+    "effects": "Chain armor, worn on the feet."
+  },
+  {
+    "id": "bronze_chain_boots",
+    "name": "bronze chain boots",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 3,
+    "slot": "feet",
+    "ac": 6,
+    "weight": 3.3,
+    "value": 121,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Bronze chain boots. Bronze rings on a leather backing. Loud, and worth the noise.",
+    "effects": "Chain armor, worn on the feet."
+  },
+  {
+    "id": "rusty_chain_buckler",
+    "name": "rusty chain buckler",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 1,
+    "slot": "secondary",
+    "ac": 3,
+    "weight": 2.4,
+    "value": 27,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Rusty chain buckler. Rings gone red at the joints. They still lock together.",
+    "effects": "Chain armor, worn on the secondary."
+  },
+  {
+    "id": "iron_chain_buckler",
+    "name": "iron chain buckler",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 2,
+    "slot": "secondary",
+    "ac": 5,
+    "weight": 3.5,
+    "value": 79,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Iron chain buckler. Riveted iron rings. A point has to find a gap.",
+    "effects": "Chain armor, worn on the secondary."
+  },
+  {
+    "id": "bronze_chain_buckler",
+    "name": "bronze chain buckler",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 3,
+    "slot": "secondary",
+    "ac": 7,
+    "weight": 4.2,
+    "value": 184,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "Bronze chain buckler. Bronze rings on a leather backing. Loud, and worth the noise.",
+    "effects": "Chain armor, worn on the secondary."
+  },
+  {
+    "id": "cracked_leather_cap",
+    "name": "cracked leather cap",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 1,
+    "slot": "head",
+    "ac": 2,
+    "weight": 0.8,
+    "value": 9,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Cracked leather cap. The hide split once and was waxed shut.",
+    "effects": "Leather armor, worn on the head."
+  },
+  {
+    "id": "leather_cap",
+    "name": "leather cap",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 2,
+    "slot": "head",
+    "ac": 4,
+    "weight": 1.1,
+    "value": 28,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Leather cap. Oiled hide. It creaks when you kneel.",
+    "effects": "Leather armor, worn on the head."
+  },
+  {
+    "id": "hardened_leather_cap",
+    "name": "hardened leather cap",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 3,
+    "slot": "head",
+    "ac": 6,
+    "weight": 1.5,
+    "value": 67,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Hardened leather cap. Boiled and shaped until it turns a light blade.",
+    "effects": "Leather armor, worn on the head."
+  },
+  {
+    "id": "cracked_leather_tunic",
+    "name": "cracked leather tunic",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 1,
+    "slot": "chest",
+    "ac": 4,
+    "weight": 2.4,
+    "value": 18,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Cracked leather tunic. The hide split once and was waxed shut.",
+    "effects": "Leather armor, worn on the chest."
+  },
+  {
+    "id": "leather_tunic",
+    "name": "leather tunic",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 2,
+    "slot": "chest",
+    "ac": 7,
+    "weight": 3.6,
+    "value": 54,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Leather tunic. Oiled hide. It creaks when you kneel.",
+    "effects": "Leather armor, worn on the chest."
+  },
+  {
+    "id": "hardened_leather_tunic",
+    "name": "hardened leather tunic",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 3,
+    "slot": "chest",
+    "ac": 10,
+    "weight": 4.8,
+    "value": 124,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Hardened leather tunic. Boiled and shaped until it turns a light blade.",
+    "effects": "Leather armor, worn on the chest."
+  },
+  {
+    "id": "cracked_leather_gloves",
+    "name": "cracked leather gloves",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 1,
+    "slot": "hands",
+    "ac": 1,
+    "weight": 0.4,
+    "value": 6,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Cracked leather gloves. The hide split once and was waxed shut.",
+    "effects": "Leather armor, worn on the hands."
+  },
+  {
+    "id": "leather_gloves",
+    "name": "leather gloves",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 2,
+    "slot": "hands",
+    "ac": 2,
+    "weight": 0.6,
+    "value": 17,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Leather gloves. Oiled hide. It creaks when you kneel.",
+    "effects": "Leather armor, worn on the hands."
+  },
+  {
+    "id": "hardened_leather_gloves",
+    "name": "hardened leather gloves",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 3,
+    "slot": "hands",
+    "ac": 4,
+    "weight": 0.9,
+    "value": 41,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Hardened leather gloves. Boiled and shaped until it turns a light blade.",
+    "effects": "Leather armor, worn on the hands."
+  },
+  {
+    "id": "cracked_leather_pants",
+    "name": "cracked leather pants",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 1,
+    "slot": "legs",
+    "ac": 3,
+    "weight": 1.4,
+    "value": 12,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Cracked leather pants. The hide split once and was waxed shut.",
+    "effects": "Leather armor, worn on the legs."
+  },
+  {
+    "id": "leather_pants",
+    "name": "leather pants",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 2,
+    "slot": "legs",
+    "ac": 5,
+    "weight": 2.2,
+    "value": 36,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Leather pants. Oiled hide. It creaks when you kneel.",
+    "effects": "Leather armor, worn on the legs."
+  },
+  {
+    "id": "hardened_leather_pants",
+    "name": "hardened leather pants",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 3,
+    "slot": "legs",
+    "ac": 7,
+    "weight": 3,
+    "value": 86,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Hardened leather pants. Boiled and shaped until it turns a light blade.",
+    "effects": "Leather armor, worn on the legs."
+  },
+  {
+    "id": "cracked_leather_boots",
+    "name": "cracked leather boots",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 1,
+    "slot": "feet",
+    "ac": 1,
+    "weight": 0.7,
+    "value": 7,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Cracked leather boots. The hide split once and was waxed shut.",
+    "effects": "Leather armor, worn on the feet."
+  },
+  {
+    "id": "leather_boots",
+    "name": "leather boots",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 2,
+    "slot": "feet",
+    "ac": 3,
+    "weight": 1.1,
+    "value": 19,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Leather boots. Oiled hide. It creaks when you kneel.",
+    "effects": "Leather armor, worn on the feet."
+  },
+  {
+    "id": "hardened_leather_boots",
+    "name": "hardened leather boots",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 3,
+    "slot": "feet",
+    "ac": 4,
+    "weight": 1.4,
+    "value": 46,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Hardened leather boots. Boiled and shaped until it turns a light blade.",
+    "effects": "Leather armor, worn on the feet."
+  },
+  {
+    "id": "cracked_leather_buckler",
+    "name": "cracked leather buckler",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 1,
+    "slot": "secondary",
+    "ac": 2,
+    "weight": 1.2,
+    "value": 11,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Cracked leather buckler. The hide split once and was waxed shut.",
+    "effects": "Leather armor, worn on the secondary."
+  },
+  {
+    "id": "leather_buckler",
+    "name": "leather buckler",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 2,
+    "slot": "secondary",
+    "ac": 3,
+    "weight": 1.6,
+    "value": 31,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Leather buckler. Oiled hide. It creaks when you kneel.",
+    "effects": "Leather armor, worn on the secondary."
+  },
+  {
+    "id": "hardened_leather_buckler",
+    "name": "hardened leather buckler",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 3,
+    "slot": "secondary",
+    "ac": 5,
+    "weight": 2.1,
+    "value": 74,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "Hardened leather buckler. Boiled and shaped until it turns a light blade.",
+    "effects": "Leather armor, worn on the secondary."
+  },
+  {
+    "id": "tattered_hood",
+    "name": "tattered hood",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 1,
+    "slot": "head",
+    "ac": 1,
+    "weight": 0.3,
+    "value": 3,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Tattered hood. More mend than cloth. It covers you, and that is the claim.",
+    "effects": "Cloth armor, worn on the head."
+  },
+  {
+    "id": "linen_hood",
+    "name": "linen hood",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 2,
+    "slot": "head",
+    "ac": 2,
+    "weight": 0.4,
+    "value": 11,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Linen hood. Washed linen, stitched for a mild day.",
+    "effects": "Cloth armor, worn on the head."
+  },
+  {
+    "id": "wool_hood",
+    "name": "wool hood",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 3,
+    "slot": "head",
+    "ac": 3,
+    "weight": 0.6,
+    "value": 26,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Wool hood. Fulled wool. The wind has to work for it.",
+    "effects": "Cloth armor, worn on the head."
+  },
+  {
+    "id": "tattered_robe",
+    "name": "tattered robe",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 1,
+    "slot": "chest",
+    "ac": 2,
+    "weight": 0.9,
+    "value": 6,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Tattered robe. More mend than cloth. It covers you, and that is the claim.",
+    "effects": "Cloth armor, worn on the chest."
+  },
+  {
+    "id": "linen_robe",
+    "name": "linen robe",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 2,
+    "slot": "chest",
+    "ac": 4,
+    "weight": 1.3,
+    "value": 22,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Linen robe. Washed linen, stitched for a mild day.",
+    "effects": "Cloth armor, worn on the chest."
+  },
+  {
+    "id": "wool_robe",
+    "name": "wool robe",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 3,
+    "slot": "chest",
+    "ac": 6,
+    "weight": 1.8,
+    "value": 48,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Wool robe. Fulled wool. The wind has to work for it.",
+    "effects": "Cloth armor, worn on the chest."
+  },
+  {
+    "id": "tattered_gloves",
+    "name": "tattered gloves",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 1,
+    "slot": "hands",
+    "ac": 1,
+    "weight": 0.2,
+    "value": 2,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Tattered gloves. More mend than cloth. It covers you, and that is the claim.",
+    "effects": "Cloth armor, worn on the hands."
+  },
+  {
+    "id": "linen_gloves",
+    "name": "linen gloves",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 2,
+    "slot": "hands",
+    "ac": 1,
+    "weight": 0.25,
+    "value": 7,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Linen gloves. Washed linen, stitched for a mild day.",
+    "effects": "Cloth armor, worn on the hands."
+  },
+  {
+    "id": "wool_gloves",
+    "name": "wool gloves",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 3,
+    "slot": "hands",
+    "ac": 2,
+    "weight": 0.3,
+    "value": 16,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Wool gloves. Fulled wool. The wind has to work for it.",
+    "effects": "Cloth armor, worn on the hands."
+  },
+  {
+    "id": "tattered_trousers",
+    "name": "tattered trousers",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 1,
+    "slot": "legs",
+    "ac": 1,
+    "weight": 0.5,
+    "value": 4,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Tattered trousers. More mend than cloth. It covers you, and that is the claim.",
+    "effects": "Cloth armor, worn on the legs."
+  },
+  {
+    "id": "linen_trousers",
+    "name": "linen trousers",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 2,
+    "slot": "legs",
+    "ac": 2,
+    "weight": 0.7,
+    "value": 14,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Linen trousers. Washed linen, stitched for a mild day.",
+    "effects": "Cloth armor, worn on the legs."
+  },
+  {
+    "id": "wool_trousers",
+    "name": "wool trousers",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 3,
+    "slot": "legs",
+    "ac": 4,
+    "weight": 1.1,
+    "value": 33,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Wool trousers. Fulled wool. The wind has to work for it.",
+    "effects": "Cloth armor, worn on the legs."
+  },
+  {
+    "id": "tattered_shoes",
+    "name": "tattered shoes",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 1,
+    "slot": "feet",
+    "ac": 1,
+    "weight": 0.3,
+    "value": 2,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Tattered shoes. More mend than cloth. It covers you, and that is the claim.",
+    "effects": "Cloth armor, worn on the feet."
+  },
+  {
+    "id": "linen_shoes",
+    "name": "linen shoes",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 2,
+    "slot": "feet",
+    "ac": 1,
+    "weight": 0.4,
+    "value": 8,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Linen shoes. Washed linen, stitched for a mild day.",
+    "effects": "Cloth armor, worn on the feet."
+  },
+  {
+    "id": "wool_shoes",
+    "name": "wool shoes",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 3,
+    "slot": "feet",
+    "ac": 2,
+    "weight": 0.5,
+    "value": 18,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Wool shoes. Fulled wool. The wind has to work for it.",
+    "effects": "Cloth armor, worn on the feet."
+  },
+  {
+    "id": "tattered_sash",
+    "name": "tattered sash",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 1,
+    "slot": "secondary",
+    "ac": 1,
+    "weight": 0.2,
+    "value": 3,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Tattered sash. More mend than cloth. It covers you, and that is the claim.",
+    "effects": "Cloth armor, worn on the secondary."
+  },
+  {
+    "id": "linen_sash",
+    "name": "linen sash",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 2,
+    "slot": "secondary",
+    "ac": 1,
+    "weight": 0.3,
+    "value": 9,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Linen sash. Washed linen, stitched for a mild day.",
+    "effects": "Cloth armor, worn on the secondary."
+  },
+  {
+    "id": "wool_sash",
+    "name": "wool sash",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 3,
+    "slot": "secondary",
+    "ac": 2,
+    "weight": 0.4,
+    "value": 21,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "blurb": "Wool sash. Fulled wool. The wind has to work for it.",
+    "effects": "Cloth armor, worn on the secondary."
+  }
+]

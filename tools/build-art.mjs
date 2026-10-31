@@ -7,7 +7,7 @@
  */
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import {
   blit,
   createImage,
@@ -18,6 +18,7 @@ import {
   silhouette,
   writePng,
 } from './pixel.mjs';
+import { buildHeroArt } from './hero-art.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetDir = join(root, 'src', 'assets');
@@ -112,7 +113,7 @@ const PAL = {
 const TILE = 16;
 const COLS = 8;
 const MAP_W = 72;
-const MAP_H = 66;
+const MAP_H = 90;
 
 const T = {
   SNOW: 1,
@@ -147,6 +148,18 @@ const T = {
   STONE_DOOR: 30,
   STONE_WIN: 31,
   FENCE: 32,
+  DOOR_TL: 33,
+  DOOR_TR: 34,
+  DOOR_ML: 35,
+  DOOR_MR: 36,
+  DOOR_BL: 37,
+  DOOR_BR: 38,
+  SDOOR_TL: 39,
+  SDOOR_TR: 40,
+  SDOOR_ML: 41,
+  SDOOR_MR: 42,
+  SDOOR_BL: 43,
+  SDOOR_BR: 44,
 };
 
 function tileCanvas() {
@@ -290,26 +303,11 @@ function paintStone(front) {
 }
 
 function paintStoneDoor() {
-  const img = paintStone(true);
-  for (let y = 2; y <= 12; y++) {
-    for (let x = 5; x <= 10; x++) {
-      const edge = x === 5 || x === 10 || y === 2;
-      img.set(x, y, edge ? hex('#3a342e') : y % 3 === 0 ? WOOD_SH : WOOD);
-    }
-  }
-  img.set(9, 8, IRON);
-  return img;
+  return paintDoorLeaf('bl', true);
 }
 
 function paintStoneWin() {
-  const img = paintStone(false);
-  for (let y = 6; y <= 10; y++) {
-    for (let x = 5; x <= 10; x++) {
-      const edge = x === 5 || x === 10 || y === 6 || y === 10;
-      img.set(x, y, edge ? hex('#3a342e') : y < 8 ? WINDOW_HI : WINDOW);
-    }
-  }
-  return img;
+  return paintBigWindow(true);
 }
 
 function paintFence() {
@@ -320,28 +318,62 @@ function paintFence() {
   return img;
 }
 
-function paintWindow() {
-  const img = paintLogs(false);
-  for (let y = 5; y <= 10; y++) {
-    for (let x = 4; x <= 11; x++) {
-      const edge = x === 4 || x === 11 || y === 5 || y === 10 || x === 7 || x === 8;
-      img.set(x, y, edge ? WOOD_DARK : y < 8 ? WINDOW_HI : WINDOW);
+/** A wall tile that is mostly glass, so a 2×2 block reads as one large window. */
+function paintBigWindow(stone) {
+  const img = stone ? paintStone(false) : paintLogs(false);
+  const frame = stone ? hex('#2e2824') : WOOD_DARK;
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      const border = x <= 1 || x >= 14 || y <= 1 || y >= 14;
+      const mullion = x === 7 || x === 8 || y === 7 || y === 8;
+      if (border || mullion) img.set(x, y, frame);
+      else img.set(x, y, y < 8 ? WINDOW_HI : WINDOW);
     }
   }
   return img;
 }
 
-function paintDoor() {
-  const img = paintLogs(true);
-  for (let y = 2; y <= 12; y++) {
-    for (let x = 4; x <= 11; x++) {
-      const edge = x === 4 || x === 11 || y === 2;
-      img.set(x, y, edge ? WOOD_DARK : y % 3 === 0 ? WOOD_SH : WOOD);
+/**
+ * One leaf of a door that fills the whole tile. Stacked three high and two wide,
+ * the opening is 32×48, about twice a 24px character.
+ * part is tl/tr/ml/mr/bl/br.
+ */
+function paintDoorLeaf(part, stone) {
+  const top = part[0] === 't';
+  const bot = part[0] === 'b';
+  const left = part[1] === 'l';
+  const img = stone ? paintStone(false) : paintLogs(false);
+  const frame = stone ? hex('#3a342e') : hex('#3a2418');
+  const recess = hex('#1a1210');
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      const outer = (left && x <= 2) || (!left && x >= 13) || (top && y <= 2) || (bot && y >= 14);
+      const seam = left ? x >= 14 : x <= 1;
+      if (outer) {
+        img.set(x, y, frame);
+        continue;
+      }
+      if (seam) {
+        img.set(x, y, recess);
+        continue;
+      }
+      const band = (left ? x : 15 - x) % 4;
+      img.set(x, y, band === 0 ? hex('#4a301f') : band === 1 ? hex('#8d5a38') : hex('#6b4030'));
     }
   }
-  img.set(9, 8, IRON);
-  img.set(9, 9, IRON_SH);
+  if (!left && bot) {
+    img.set(4, 8, IRON);
+    img.set(5, 8, IRON_SH);
+  }
   return img;
+}
+
+function paintWindow() {
+  return paintBigWindow(false);
+}
+
+function paintDoor() {
+  return paintDoorLeaf('bl', false);
 }
 
 function paintRoof(kind) {
@@ -470,8 +502,12 @@ function buildTileset() {
   tiles.set(T.STONE_DOOR, paintStoneDoor());
   tiles.set(T.STONE_WIN, paintStoneWin());
   tiles.set(T.FENCE, paintFence());
+  const woodLeaves = { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
+  const stoneLeaves = { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR };
+  for (const [part, id] of Object.entries(woodLeaves)) tiles.set(id, paintDoorLeaf(part, false));
+  for (const [part, id] of Object.entries(stoneLeaves)) tiles.set(id, paintDoorLeaf(part, true));
 
-  const rows = Math.ceil(32 / COLS);
+  const rows = Math.ceil(Math.max(...tiles.keys()) / COLS);
   const margin = 1;
   const spacing = 2;
   const imgW = margin * 2 + COLS * TILE + (COLS - 1) * spacing;
@@ -868,6 +904,32 @@ function withOverlay(base, tintMap, overlay) {
 }
 
 // Apron and braid for Brenna. Drawn into the south/east/north frames.
+function ivarOverlay(dir) {
+  return (img) => {
+    if (dir === 's') {
+      paintOver(img, 5, 11, ['bb', 'bb', 'bb']);
+      paintOver(img, 11, 12, ['oQ', 'oQ']);
+    } else if (dir === 'e') {
+      paintOver(img, 7, 12, ['Q', 'o']);
+    } else if (dir === 'n') {
+      paintOver(img, 6, 12, ['bb', 'bb']);
+    }
+  };
+}
+
+function signeOverlay(dir) {
+  return (img) => {
+    if (dir === 's') {
+      paintOver(img, 5, 10, ['.CC.', 'CCCC', '.cc.']);
+      paintOver(img, 11, 8, ['Y', 'K']);
+    } else if (dir === 'e') {
+      paintOver(img, 6, 11, ['CC', 'cc']);
+    } else if (dir === 'n') {
+      paintOver(img, 6, 11, ['CC', 'cc']);
+    }
+  };
+}
+
 function brennaOverlay(dir, frame) {
   return (img) => {
     if (dir === 's') {
@@ -1477,6 +1539,23 @@ function buildActors() {
     wizard: 9,
     eirik: 10,
     wolf_helm: 11,
+    ivar: 12,
+    signe: 13,
+    ysolde: 14,
+    torunn: 15,
+    sable: 16,
+    hroth: 17,
+    bjorn: 18,
+    sigrid: 19,
+    hare: 20,
+    fox: 21,
+    beetle: 22,
+    spider: 23,
+    bear: 24,
+    bones: 25,
+    bandit: 26,
+    archer: 27,
+    leader: 28,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1540,6 +1619,22 @@ function buildActors() {
       tint: clothTint(hex('#5c2424'), hex('#8a4030'), hex('#2a1414'), hex('#3a241c'), hex('#6b4030')),
       overlay: (dir) => eirikOverlay(dir),
     },
+    {
+      row: 12,
+      tint: clothTint(hex('#3a241c'), hex('#6b4030'), hex('#241610'), hex('#2a2428'), hex('#5c534c')),
+      overlay: (dir) => ivarOverlay(dir),
+    },
+    {
+      row: 13,
+      tint: clothTint(hex('#2e4a38'), hex('#5e8a62'), hex('#1c3024'), hex('#6b4030'), hex('#c48462')),
+      overlay: (dir) => signeOverlay(dir),
+    },
+    { row: 14, tint: clothTint(hex('#2c2458'), hex('#5a4c90'), hex('#161228'), hex('#d8d0c4'), hex('#f4f1ea')), overlay: () => (img) => img },
+    { row: 15, tint: clothTint(hex('#3e5a34'), hex('#6e8f5a'), hex('#24361e'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
+    { row: 16, tint: clothTint(hex('#241c28'), hex('#4a3a48'), hex('#120e14'), hex('#1c1418'), hex('#3a241c')), overlay: () => (img) => img },
+    { row: 17, tint: clothTint(hex('#6a2420'), hex('#a33b32'), hex('#3a1410'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
+    { row: 18, tint: clothTint(hex('#2a4038'), hex('#4e7a68'), hex('#1a2822'), hex('#c8c0b6'), hex('#f4f1ea')), overlay: () => (img) => img },
+    { row: 19, tint: clothTint(hex('#3a3230'), hex('#6a5a50'), hex('#241c1a'), hex('#5c4030'), hex('#a86840')), overlay: () => (img) => img },
   ];
 
   for (const person of people) {
@@ -1586,6 +1681,76 @@ function buildActors() {
   put(11, 2, 1, helmNorth);
   put(11, 3, 0, helmEast, true);
   put(11, 3, 1, helmEast, true);
+
+  const critter = (kind) => {
+    const img = createImage(16, 24);
+    const blob = (x, y, w, h, c) => {
+      for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) img.set(x + xx, y + yy, c);
+    };
+    if (kind === 'hare') {
+      blob(6, 4, 2, 6, hex('#e8eef2'));
+      blob(9, 4, 2, 6, hex('#e8eef2'));
+      blob(5, 10, 6, 5, hex('#f4f7fb'));
+      blob(4, 14, 3, 4, hex('#d5dee6'));
+      blob(9, 14, 3, 4, hex('#d5dee6'));
+    } else if (kind === 'fox') {
+      blob(3, 8, 10, 6, hex('#c46a28'));
+      blob(10, 10, 4, 3, hex('#e8a060'));
+      blob(2, 12, 4, 2, hex('#f4f0e6'));
+      blob(5, 14, 2, 5, hex('#a05020'));
+      blob(9, 14, 2, 5, hex('#a05020'));
+    } else if (kind === 'beetle') {
+      blob(4, 8, 8, 8, hex('#1c4a44'));
+      blob(5, 9, 6, 3, hex('#3e8a78'));
+      blob(3, 12, 2, 4, hex('#163832'));
+      blob(11, 12, 2, 4, hex('#163832'));
+    } else if (kind === 'spider') {
+      blob(6, 10, 4, 4, hex('#2a2428'));
+      blob(2, 8, 3, 2, hex('#1c1418'));
+      blob(11, 8, 3, 2, hex('#1c1418'));
+      blob(2, 14, 3, 2, hex('#1c1418'));
+      blob(11, 14, 3, 2, hex('#1c1418'));
+    } else if (kind === 'bear') {
+      blob(3, 6, 10, 10, hex('#4a3428'));
+      blob(2, 4, 3, 3, hex('#3a241c'));
+      blob(11, 4, 3, 3, hex('#3a241c'));
+      blob(4, 16, 3, 5, hex('#3a241c'));
+      blob(9, 16, 3, 5, hex('#3a241c'));
+      img.set(6, 10, hex('#1c1418'));
+      img.set(9, 10, hex('#1c1418'));
+    } else if (kind === 'bones') {
+      blob(6, 4, 4, 4, hex('#e6e0d4'));
+      blob(5, 9, 6, 6, hex('#d8d0c4'));
+      blob(6, 16, 1, 6, hex('#f4f1ea'));
+      blob(9, 16, 1, 6, hex('#f4f1ea'));
+      img.set(7, 6, hex('#1c1418'));
+      img.set(9, 6, hex('#1c1418'));
+    } else {
+      blob(5, 4, 6, 5, hex('#3a241c'));
+      blob(4, 9, 8, 7, kind === 'leader' ? hex('#6a2420') : kind === 'archer' ? hex('#2e4a38') : hex('#4a3428'));
+      blob(5, 16, 2, 6, hex('#2a2018'));
+      blob(9, 16, 2, 6, hex('#2a2018'));
+    }
+    silhouette(img, INK);
+    return img;
+  };
+  for (const [name, row] of [
+    ['hare', 20],
+    ['fox', 21],
+    ['beetle', 22],
+    ['spider', 23],
+    ['bear', 24],
+    ['bones', 25],
+    ['bandit', 26],
+    ['archer', 27],
+    ['leader', 28],
+  ]) {
+    const img = critter(name);
+    for (let dir = 0; dir < 4; dir++) {
+      put(row, dir, 0, img, dir === 3);
+      put(row, dir, 1, img, dir === 3);
+    }
+  }
 
   return {
     sheet,
@@ -1679,7 +1844,7 @@ function buildMap(tiles) {
   }
 
   const stamp = (x, y, tile, blocked = false) => {
-    if (x < 0 || y < 0 || x >= MAP_W || y >= MAP_H) return;
+    if (x < 0 || y < 0 || x >= MAP_W || y >= g.length) return;
     g[y][x] = tile;
     if (blocked) solid[y][x] = 1;
   };
@@ -1713,7 +1878,7 @@ function buildMap(tiles) {
   const x0 = 8;
   const y0 = 24;
   const x1 = 60;
-  const y1 = 62;
+  const y1 = 84;
   for (let x = x0; x <= x1; x++) {
     const gate = x >= 28 && x <= 32;
     if (!gate) {
@@ -1731,11 +1896,33 @@ function buildMap(tiles) {
 
   function building(x, y, w, h, opts) {
     const roofH = Math.max(2, Math.round(h * (opts.long ? 0.55 : 0.45)));
-    const doorCol = x + Math.floor(w / 2);
+    // Character sprites are 24px. A door is 2 tiles wide (32px) and 3 tall (48px),
+    // so it stands clearly taller and wider than the person in front of it.
+    const doorW = 2;
+    const doorH = 3;
+    const doorLeft = Math.floor((w - doorW) / 2);
+    const doorTop = h - doorH;
     const wallTile = opts.stone ? T.STONE : T.WALL;
     const frontTile = opts.stone ? T.STONE_FRONT : T.WALL_FRONT;
-    const doorTile = opts.stone ? T.STONE_DOOR : opts.shop ? T.DOOR_SHOP : T.DOOR;
     const windowTile = opts.stone ? T.STONE_WIN : T.WINDOW;
+    const leaves = opts.stone
+      ? { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR }
+      : { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
+    const isDoor = (xx, yy) => xx >= doorLeft && xx < doorLeft + doorW && yy >= doorTop && yy < h;
+    const windows = new Set();
+    const markWindow = (xx, yy) => {
+      if (xx < 0 || yy < roofH || xx >= w || yy >= h || isDoor(xx, yy)) return;
+      windows.add(yy * w + xx);
+    };
+    const bay = (x0) => {
+      for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) markWindow(x0 + dx, roofH + dy);
+    };
+    for (let wx = 1; wx + 2 <= doorLeft; wx += 3) bay(wx);
+    for (let wx = doorLeft + doorW + 1; wx + 2 <= w - 1; wx += 3) bay(wx);
+    for (const yy of [roofH, roofH + 1]) {
+      markWindow(0, yy);
+      markWindow(w - 1, yy);
+    }
     for (let yy = 0; yy < h; yy++) {
       for (let xx = 0; xx < w; xx++) {
         const X = x + xx;
@@ -1755,13 +1942,16 @@ function buildMap(tiles) {
           else if (west) tile = T.ROOF_W;
           else if (east) tile = T.ROOF_E;
           g[Y][X] = tile;
+        } else if (isDoor(xx, yy)) {
+          const band = yy === doorTop ? 't' : yy === h - 1 ? 'b' : 'm';
+          const side = xx === doorLeft ? 'l' : 'r';
+          g[Y][X] = leaves[band + side];
+        } else if (windows.has(yy * w + xx)) {
+          g[Y][X] = windowTile;
         } else if (yy === h - 1) {
-          if (X === doorCol) g[Y][X] = doorTile;
-          else g[Y][X] = opts.shop ? T.AWNING : frontTile;
+          g[Y][X] = opts.shop ? T.AWNING : frontTile;
         } else {
-          const mid = yy === roofH;
-          const win = mid && (xx === 2 || xx === w - 3);
-          g[Y][X] = win ? windowTile : wallTile;
+          g[Y][X] = wallTile;
         }
       }
     }
@@ -1770,7 +1960,7 @@ function buildMap(tiles) {
       const cy = y + 1;
       if (cy < y + roofH - 1) g[cy][cx] = T.CHIMNEY;
     }
-    return { doorX: doorCol, doorY: y + h - 1 };
+    return { doorX: x + doorLeft, doorY: y + h - 1 };
   }
 
   const inn = building(16, 26, 12, 8, { chimney: true, chamfer: true, long: true });
@@ -1780,6 +1970,18 @@ function buildMap(tiles) {
   building(40, 40, 10, 7, { chamfer: true });
   const guild = building(38, 51, 16, 8, { chimney: true, chamfer: true, long: true });
   building(10, 51, 12, 8, { chamfer: true, long: true });
+  const forge = building(49, 26, 10, 8, { chimney: true, chamfer: true });
+  const needles = building(50, 40, 9, 8, { shop: true, chamfer: true });
+  const wizHall = building(10, 64, 14, 8, { chimney: true, chamfer: true, long: true });
+  const shaHall = building(26, 64, 14, 8, { chamfer: true, long: true });
+  const rogHall = building(42, 64, 14, 8, { chamfer: true, long: true });
+  const berHall = building(10, 74, 14, 8, { chimney: true, chamfer: true, long: true });
+  const wdHall = building(26, 74, 14, 8, { chamfer: true, long: true });
+  const smithy = building(42, 74, 14, 8, { chimney: true, chamfer: true });
+  // Alley between the halls, plus the streets their doors open onto.
+  fillRect(24, 50, 2, 34, T.PATH);
+  fillRect(12, 72, 46, 2, T.PATH);
+  fillRect(12, 82, 46, 2, T.PATH);
   fillRect(12, 49, 46, 2, T.PATH);
   // Wooden fences on the outskirts, with the road left open.
   for (let x = 6; x <= 26; x++) stamp(x, 18, T.FENCE, true);
@@ -1811,6 +2013,14 @@ function buildMap(tiles) {
   // Just outside the mead-hall door. The door tile itself is solid.
   add('npc', 'freya', meadHall.doorX, meadHall.doorY + 1, { defId: 'freya', sprite: 'freya' });
   add('npc', 'eirik', guild.doorX, guild.doorY + 1, { defId: 'eirik', sprite: 'eirik' });
+  add('npc', 'ivar', forge.doorX, forge.doorY + 1, { defId: 'ivar', sprite: 'ivar' });
+  add('npc', 'signe', needles.doorX, needles.doorY + 1, { defId: 'signe', sprite: 'signe' });
+  add('npc', 'ysolde', wizHall.doorX, wizHall.doorY + 1, { defId: 'ysolde', sprite: 'ysolde' });
+  add('npc', 'torunn', shaHall.doorX, shaHall.doorY + 1, { defId: 'torunn', sprite: 'torunn' });
+  add('npc', 'sable', rogHall.doorX, rogHall.doorY + 1, { defId: 'sable', sprite: 'sable' });
+  add('npc', 'hroth', berHall.doorX, berHall.doorY + 1, { defId: 'hroth', sprite: 'hroth' });
+  add('npc', 'bjorn', wdHall.doorX, wdHall.doorY + 1, { defId: 'bjorn', sprite: 'bjorn' });
+  add('npc', 'sigrid', smithy.doorX, smithy.doorY + 1, { defId: 'sigrid', sprite: 'sigrid' });
 
   const mobs = [
     ['young_wolf', 24, 16],
@@ -1935,9 +2145,41 @@ function buildMap(tiles) {
     sprite: 'sign_shop',
     text: "Brenna's Goods. Pelts, bandages, and a draught that costs more than bread.",
   });
+  add('sign', "Ivar's Forge", forge.doorX - 2, forge.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Ivar's Forge. Plate and chain. The smith stands at the door.",
+  });
+  add('sign', "Signe's Needles", needles.doorX - 2, needles.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Signe's Needles. Cloth and leather, cut and stitched.",
+  });
   add('sign', 'Warrior Guild', guild.doorX + 2, guild.doorY + 1, {
     sprite: 'sign_hall',
     text: 'Warrior Guild. Eirik Stonehand is guildmaster. The hall is still new.',
+  });
+  add('sign', 'Wizard Hall', wizHall.doorX - 2, wizHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Wizard Hall. Ysolde Mire keeps the pages. Barbarians are not taught here.',
+  });
+  add('sign', 'Shaman Hall', shaHall.doorX - 2, shaHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Shaman Hall. Torunn Ash. Slows, mends, and the burn that stays.',
+  });
+  add('sign', 'Rogue Hall', rogHall.doorX - 2, rogHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Rogue Hall. Sable Venn. Speak quietly.',
+  });
+  add('sign', 'Berserker Hall', berHall.doorX - 2, berHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Berserker Hall. Hroth Keld. Rage is a tool, not a mood.',
+  });
+  add('sign', 'Warden Hall', wdHall.doorX - 2, wdHall.doorY + 1, {
+    sprite: 'sign_hall',
+    text: 'Warden Hall. Bjorn Pale. Fists, a staff, and a snow wolf.',
+  });
+  add('sign', "Sigrid's Steel", smithy.doorX + 2, smithy.doorY + 1, {
+    sprite: 'sign_shop',
+    text: "Sigrid's Steel. Weapons. Armor is Ivar's forge, north of here.",
   });
   add('sign', 'Frostmere Wilds this way', 26, 22, {
     sprite: 'sign_wilds',
@@ -1957,6 +2199,82 @@ function buildMap(tiles) {
     solid[y][0] = 1;
     solid[y][MAP_W - 1] = 1;
   }
+
+  const WILD = 72;
+  const prependRows = (grid2d, fill) => {
+    for (let i = 0; i < WILD; i++) grid2d.unshift(Array(MAP_W).fill(fill));
+  };
+  prependRows(g, T.SNOW);
+  prependRows(solid, 0);
+  prependRows(safe, 0);
+  for (const obj of objects) obj.y += WILD * TILE;
+  for (let x = 1; x < MAP_W - 1; x++) solid[WILD][x] = 0;
+  for (let y = 0; y < WILD; y++) {
+    solid[y][0] = 1;
+    solid[y][MAP_W - 1] = 1;
+    g[y][0] = T.SNOW_C;
+    g[y][MAP_W - 1] = T.SNOW_C;
+  }
+  for (let x = 0; x < MAP_W; x++) solid[0][x] = 1;
+  for (let y = 2; y < WILD - 1; y++) {
+    for (let x = 1; x < MAP_W - 1; x++) {
+      const n = Math.floor(mulberry(y * 50 + x)() * 5);
+      g[y][x] = n === 0 ? T.SNOW_B : n === 1 ? T.SNOW_C : T.SNOW;
+    }
+  }
+  // Frozen stream and the road north from the gate.
+  for (let y = 3; y < WILD - 2; y++) {
+    const x = 12 + Math.round(Math.sin(y / 5) * 3);
+    g[y][x] = T.ICE;
+    g[y][x + 1] = T.ICE;
+  }
+  fillRect(29, 2, 3, WILD + 8, T.PATH);
+  const treeAt = (tx, ty) => {
+    add('prop', 'pine', tx, ty, { sprite: (tx + ty) % 2 === 0 ? 'tree' : 'tree_b' });
+  };
+  const rockAt = (tx, ty, big = true) => {
+    add('prop', 'boulder', tx, ty, { sprite: big ? 'rock' : 'rock_small' });
+    solid[ty][tx] = 1;
+  };
+  for (let i = 0; i < 70; i++) {
+    const tx = 2 + Math.floor(mulberry(8000 + i)() * (MAP_W - 4));
+    const ty = 3 + Math.floor(mulberry(9000 + i)() * (WILD - 8));
+    if (tx >= 28 && tx <= 32) continue;
+    if (i % 5 === 0) rockAt(tx, ty, i % 10 === 0);
+    else treeAt(tx, ty);
+  }
+  // Three camps, deeper as the level climbs. A barrow in the far north.
+  const camp = (cx, cy, name) => {
+    rockAt(cx - 2, cy - 1, true);
+    rockAt(cx + 2, cy - 1, true);
+    rockAt(cx - 2, cy + 1, false);
+    rockAt(cx + 2, cy + 1, false);
+    add('prop', 'fire', cx, cy, { sprite: 'firepit' });
+    add('sign', name, cx + 1, cy + 2, { sprite: 'sign_wilds', text: name });
+  };
+  camp(18, WILD - 16, 'Road camp. Thugs of the near wilds, about the fifth winter.');
+  camp(46, 40, 'Pine camp. Archers in the middle wilds, about the seventh winter.');
+  camp(22, 12, 'Deep camp. A leader of the tenth winter waits with the last fire.');
+  add('sign', 'The Barrow', 40, 8, {
+    sprite: 'sign_wilds',
+    text: 'The Barrow. Bones that did not stay down. Mira Palehand is said to walk here.',
+  });
+  const spawnMob = (defId, tx, ty, sprite) => add('mob', defId, tx, ty, { defId, sprite });
+  [[24, WILD - 8], [34, WILD - 12], [16, WILD - 6], [40, WILD - 10]].forEach(([tx, ty]) => spawnMob('snow_hare', tx, ty, 'hare'));
+  [[20, WILD - 22], [38, WILD - 26], [50, 58]].forEach(([tx, ty]) => spawnMob('red_fox', tx, ty, 'fox'));
+  [[14, 50], [52, 48], [18, 36]].forEach(([tx, ty]) => spawnMob('ice_beetle', tx, ty, 'beetle'));
+  [[44, 30], [16, 28], [36, 22]].forEach(([tx, ty]) => spawnMob('frost_spider', tx, ty, 'spider'));
+  spawnMob('wolf_alpha', 48, WILD - 20, 'frost_wolf');
+  spawnMob('wolf_alpha', 12, 44, 'frost_wolf');
+  spawnMob('cave_bear', 54, 24, 'bear');
+  spawnMob('old_bramble', 8, 18, 'bear');
+  spawnMob('barrow_bones', 38, 10, 'bones');
+  spawnMob('barrow_bones', 44, 9, 'bones');
+  [[17, WILD - 16], [19, WILD - 17], [18, WILD - 19]].forEach(([tx, ty]) => spawnMob('bandit_thug', tx, ty, 'bandit'));
+  [[45, 40], [47, 42], [46, 38]].forEach(([tx, ty], i) => spawnMob(i === 2 ? 'bandit_archer' : 'bandit_thug', tx, ty, i === 2 ? 'archer' : 'bandit'));
+  spawnMob('bandit_thug', 21, 14, 'bandit');
+  spawnMob('bandit_archer', 23, 15, 'archer');
+  spawnMob('camp_leader', 22, 16, 'leader');
 
   // Spawns must stand on open ground.
   for (const o of objects) {
@@ -2011,7 +2329,7 @@ function buildTmj(map, tileset) {
   });
 
   const tileProps = [];
-  for (const id of [T.WALL, T.WALL_FRONT, T.WINDOW, T.DOOR, T.ROOF, T.ROOF_B, T.ROOF_N, T.ROOF_W, T.ROOF_E, T.ROOF_NW, T.ROOF_NE, T.ROOF_EAVES, T.ROOF_SHOP, T.PALISADE, T.POST, T.CHIMNEY, T.AWNING, T.DOOR_SHOP, T.WATER, T.WATER_B, T.STONE, T.STONE_FRONT, T.STONE_DOOR, T.STONE_WIN, T.FENCE]) {
+  for (const id of [T.WALL, T.WALL_FRONT, T.WINDOW, T.DOOR, T.ROOF, T.ROOF_B, T.ROOF_N, T.ROOF_W, T.ROOF_E, T.ROOF_NW, T.ROOF_NE, T.ROOF_EAVES, T.ROOF_SHOP, T.PALISADE, T.POST, T.CHIMNEY, T.AWNING, T.DOOR_SHOP, T.WATER, T.WATER_B, T.STONE, T.STONE_FRONT, T.STONE_DOOR, T.STONE_WIN, T.FENCE, T.DOOR_TL, T.DOOR_TR, T.DOOR_ML, T.DOOR_MR, T.DOOR_BL, T.DOOR_BR, T.SDOOR_TL, T.SDOOR_TR, T.SDOOR_ML, T.SDOOR_MR, T.SDOOR_BL, T.SDOOR_BR]) {
     tileProps.push({
       id: id - 1,
       properties: [{ name: 'collide', type: 'bool', value: true }],
@@ -2021,7 +2339,7 @@ function buildTmj(map, tileset) {
   return {
     compressionlevel: -1,
     width: MAP_W,
-    height: MAP_H,
+    height: map.ground.length,
     tilewidth: TILE,
     tileheight: TILE,
     infinite: false,
@@ -2056,18 +2374,18 @@ function buildTmj(map, tileset) {
     layers: [
       layer(1, 'ground', 'tilelayer', {
         width: MAP_W,
-        height: MAP_H,
+        height: map.ground.length,
         data: flatten(map.ground),
       }),
       layer(2, 'collision', 'tilelayer', {
         width: MAP_W,
-        height: MAP_H,
+        height: map.ground.length,
         visible: false,
         data: flatten(map.solid),
       }),
       layer(3, 'safe', 'tilelayer', {
         width: MAP_W,
-        height: MAP_H,
+        height: map.ground.length,
         visible: false,
         data: flatten(map.safe),
       }),
@@ -2081,8 +2399,9 @@ function buildTmj(map, tileset) {
 
 function renderPreview(map, tileset, props, actors) {
   const scaleN = 2;
-  const world = createImage(MAP_W * TILE, MAP_H * TILE);
-  for (let y = 0; y < MAP_H; y++) {
+  const worldH = map.ground.length;
+  const world = createImage(MAP_W * TILE, worldH * TILE);
+  for (let y = 0; y < worldH; y++) {
     for (let x = 0; x < MAP_W; x++) {
       const id = map.ground[y][x];
       const tile = tileset.tiles.get(id);
@@ -2163,18 +2482,221 @@ function drawIcon(size) {
   return img;
 }
 
+function iconCanvas() {
+  return createImage(16, 16);
+}
+
+function drawGearIcons() {
+  const items = JSON.parse(readFileSync(join(root, 'src', 'content', 'items.json'), 'utf8'));
+  const frames = {};
+  for (const item of items) {
+    if (!item.teaches && !['bone_staff', 'skinning_knife', 'paired_hatchets', 'hand_wraps'].includes(item.id)) continue;
+    const img = iconCanvas();
+    if (item.teaches) {
+      for (let y = 2; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex('#e7d3a4'));
+      for (let y = 4; y <= 11; y++) img.set(6, y, hex('#6b4428'));
+      img.set(8, 3, hex('#a33b32'));
+    } else if (item.grip === 'staff' || item.id === 'bone_staff') {
+      for (let y = 1; y <= 14; y++) img.set(8, y, hex('#e6dcc8'));
+      img.set(7, 2, hex('#8d97a3'));
+      img.set(9, 2, hex('#8d97a3'));
+    } else if (item.id === 'skinning_knife') {
+      for (let i = 0; i < 10; i++) img.set(3 + i, 12 - i, hex('#d7dee6'));
+      img.set(4, 13, hex('#8d5a38'));
+    } else if (item.id === 'paired_hatchets') {
+      for (let i = 0; i < 8; i++) img.set(3 + i, 4 + i, hex('#8d5a38'));
+      for (let i = 0; i < 8; i++) img.set(12 - i, 4 + i, hex('#8d5a38'));
+      img.set(3, 3, hex('#c5ced6'));
+      img.set(12, 3, hex('#c5ced6'));
+    } else {
+      for (let y = 6; y <= 10; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d7cbb8'));
+      img.set(5, 8, hex('#8d5340'));
+      img.set(10, 8, hex('#8d5340'));
+    }
+    frames[item.id] = img;
+  }
+  return frames;
+}
+
+function drawArmorIcons() {
+  const armor = JSON.parse(readFileSync(join(root, 'src', 'content', 'armor.json'), 'utf8'));
+  const colors = {
+    plate: ['#5c4a32', '#8d7a58', '#d4b46a'],
+    chain: ['#4e585e', '#8b97a3', '#d5dee6'],
+    leather: ['#4a2c22', '#8a5438', '#c48462'],
+    cloth: ['#6a3840', '#b8a48c', '#e4d8c8'],
+  };
+  const frames = {};
+  for (const item of armor) {
+    const img = iconCanvas();
+    const fill = hex(colors[item.armorType][item.tier - 1]);
+    const edge = hex('#1c1418');
+    const put = (x, y, c) => img.set(x, y, c);
+    const box = (x, y, w, h, c) => {
+      for (let yy = 0; yy < h; yy++) for (let xx = 0; xx < w; xx++) put(x + xx, y + yy, yy === 0 || xx === 0 || yy === h - 1 || xx === w - 1 ? edge : c);
+    };
+    if (item.slot === 'head') {
+      box(4, 3, 8, 7, fill);
+      put(6, 6, edge);
+      put(9, 6, edge);
+    } else if (item.slot === 'chest') {
+      box(4, 3, 8, 9, fill);
+      put(7, 5, edge);
+      put(8, 5, edge);
+    } else if (item.slot === 'hands') {
+      box(2, 6, 5, 5, fill);
+      box(9, 6, 5, 5, fill);
+    } else if (item.slot === 'legs') {
+      box(4, 3, 3, 10, fill);
+      box(9, 3, 3, 10, fill);
+    } else if (item.slot === 'feet') {
+      box(3, 8, 4, 4, fill);
+      box(9, 8, 4, 4, fill);
+    } else if (item.armorType === 'cloth') {
+      box(3, 5, 10, 6, fill);
+    } else {
+      box(4, 2, 8, 11, fill);
+      put(8, 6, hex('#e6c15a'));
+    }
+    for (let i = 0; i < item.tier; i++) put(13, 12 + i, hex('#e6c15a'));
+    frames[item.id] = img;
+  }
+  return frames;
+}
+
+function drawItemIcons() {
+  const frames = {
+    wolf_pelt: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 12; y++) {
+        for (let x = 2; x <= 13; x++) {
+          const dx = (x - 7) / 6;
+          const dy = (y - 8) / 5;
+          if (dx * dx + dy * dy > 1) continue;
+          img.set(x, y, x < 7 ? hex('#8a5a3c') : hex('#5c3a28'));
+        }
+      }
+      img.set(6, 6, hex('#c48a58'));
+      img.set(9, 9, hex('#3a2418'));
+      return img;
+    })(),
+    wolf_tooth: (() => {
+      const img = iconCanvas();
+      for (let i = 0; i < 8; i++) {
+        img.set(5 + i, 3 + i, hex('#f4f7fb'));
+        img.set(6 + i, 3 + i, hex('#d7dee6'));
+      }
+      img.set(12, 11, hex('#8b97a3'));
+      return img;
+    })(),
+    cracked_fang: (() => {
+      const img = iconCanvas();
+      for (let i = 0; i < 10; i++) {
+        img.set(3 + i, 2 + i, hex('#f4f0e6'));
+        img.set(4 + i, 2 + i, hex('#e6c15a'));
+      }
+      img.set(8, 7, hex('#1c1418'));
+      img.set(9, 8, hex('#1c1418'));
+      return img;
+    })(),
+    stringy_meat: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 12; y++) {
+        for (let x = 3; x <= 12; x++) {
+          if ((x + y) % 5 === 0) continue;
+          img.set(x, y, y < 8 ? hex('#a33b32') : hex('#6e2424'));
+        }
+      }
+      img.set(6, 6, hex('#f3eee4'));
+      return img;
+    })(),
+    wool_bandage: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 11; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#f4f7fb'));
+      for (let x = 3; x <= 12; x++) img.set(x, 7, hex('#a33b32'));
+      for (let x = 3; x <= 12; x++) img.set(x, 8, hex('#a33b32'));
+      return img;
+    })(),
+    trail_ration: (() => {
+      const img = iconCanvas();
+      for (let y = 5; y <= 12; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#c48a58'));
+      for (let x = 4; x <= 11; x++) img.set(x, 4, hex('#e6c15a'));
+      img.set(6, 8, hex('#5c3a28'));
+      img.set(9, 9, hex('#5c3a28'));
+      return img;
+    })(),
+    worn_axe: (() => {
+      const img = iconCanvas();
+      for (let i = 2; i <= 13; i++) img.set(i, i, hex('#8d5a38'));
+      for (let y = 2; y <= 7; y++) for (let x = 2; x <= 8; x++) img.set(x, y, y === 4 ? hex('#e6c15a') : hex('#8b97a3'));
+      return img;
+    })(),
+    bearded_handaxe: (() => {
+      const img = iconCanvas();
+      for (let i = 3; i <= 13; i++) img.set(i, 16 - i, hex('#5c3a26'));
+      for (let y = 2; y <= 8; y++) for (let x = 2; x <= 9; x++) img.set(x, y, y > 5 ? hex('#d7dee6') : hex('#8b97a3'));
+      return img;
+    })(),
+    ash_staff: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 14; y++) {
+        img.set(7, y, hex('#8d5a38'));
+        img.set(8, y, hex('#d09a62'));
+      }
+      for (let y = 1; y <= 4; y++) for (let x = 6; x <= 9; x++) img.set(x, y, hex('#b7e3ff'));
+      img.set(7, 2, hex('#f4fbff'));
+      return img;
+    })(),
+    yarrow_draught: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 5; y++) for (let x = 7; x <= 8; x++) img.set(x, y, hex('#6b4e3a'));
+      for (let y = 6; y <= 13; y++) for (let x = 5; x <= 10; x++) img.set(x, y, y < 9 ? hex('#8eae72') : hex('#3e6b40'));
+      img.set(6, 8, hex('#d7f0c0'));
+      return img;
+    })(),
+    wolf_helm: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 12; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#8a8178'));
+      img.set(6, 2, hex('#c8c0b6'));
+      img.set(9, 2, hex('#c8c0b6'));
+      img.set(5, 8, hex('#6a3030'));
+      img.set(6, 8, hex('#6a3030'));
+      img.set(9, 8, hex('#6a3030'));
+      img.set(10, 8, hex('#6a3030'));
+      img.set(7, 6, hex('#1c1418'));
+      img.set(8, 6, hex('#1c1418'));
+      return img;
+    })(),
+  };
+  Object.assign(frames, drawArmorIcons(), drawGearIcons());
+  const order = Object.keys(frames);
+  const sheet = createImage(order.length * 16, 16);
+  const meta = {};
+  order.forEach((id, index) => {
+    blit(sheet, frames[id], index * 16, 0);
+    meta[id] = { x: index * 16, y: 0, w: 16, h: 16 };
+  });
+  return { sheet, meta: { sheetW: sheet.w, sheetH: sheet.h, frames: meta } };
+}
+
 async function main() {
   mkdirSync(assetDir, { recursive: true });
   mkdirSync(join(publicDir, 'icons'), { recursive: true });
   const tileset = buildTileset();
   const actors = buildActors();
+  const hero = buildHeroArt();
   const props = buildProps();
   const map = buildMap(tileset);
   const tmj = buildTmj(map, tileset);
-  const atlas = { actors: actors.meta, props: props.meta };
+  const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta };
+  const itemIcons = drawItemIcons();
 
   await writePng(join(assetDir, 'tiles.png'), tileset.sheet);
+  await writePng(join(assetDir, 'icons.png'), itemIcons.sheet);
+  writeFileSync(join(assetDir, 'icons.json'), JSON.stringify(itemIcons.meta, null, 2));
   await writePng(join(assetDir, 'actors.png'), actors.sheet);
+  await writePng(join(assetDir, 'hero.png'), hero.field.sheet);
+  await writePng(join(assetDir, 'portrait.png'), hero.portrait.sheet);
   await writePng(join(assetDir, 'props.png'), props.sheet);
   writeFileSync(join(assetDir, 'hoffender.tmj'), JSON.stringify(tmj));
   writeFileSync(join(assetDir, 'atlas.json'), JSON.stringify(atlas, null, 2));

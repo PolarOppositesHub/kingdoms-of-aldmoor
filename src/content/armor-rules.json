@@ -1,0 +1,46 @@
+{
+  "types": [
+    "plate",
+    "chain",
+    "leather",
+    "cloth",
+    "scale"
+  ],
+  "wearers": {
+    "plate": [
+      "warrior"
+    ],
+    "chain": [
+      "warrior",
+      "berserker"
+    ],
+    "leather": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "cloth": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard"
+    ],
+    "scale": [
+      "warrior",
+      "berserker"
+    ]
+  },
+  "scale": {
+    "wearableBy": "every class that can wear chain",
+    "ac": "plate-level, when pieces exist",
+    "vendors": "Zasarizian only",
+    "faction": {
+      "id": "zasariz",
+      "rank": 1
+    },
+    "stocked": false
+  },
+  "craftedBy": "Unset on Hoffender stock. Later race-made tiers set this to a race id: dwarf for plate, high_elf for chain, human for leather."
+}

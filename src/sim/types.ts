@@ -4,7 +4,33 @@ export const TICK_MS = 1000 / 30;
 
 export type Dir = 's' | 'n' | 'e' | 'w';
 export type ConColor = 'gray' | 'green' | 'lightblue' | 'blue' | 'white' | 'yellow' | 'red';
-export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect';
+export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect' | 'journal' | 'book';
+
+export type EquipSlot = 'head' | 'chest' | 'hands' | 'legs' | 'feet' | 'primary' | 'secondary';
+
+export const EQUIP_SLOTS: EquipSlot[] = ['head', 'chest', 'hands', 'legs', 'feet', 'primary', 'secondary'];
+
+export interface Equipment {
+  head: string | null;
+  chest: string | null;
+  hands: string | null;
+  legs: string | null;
+  feet: string | null;
+  primary: string | null;
+  secondary: string | null;
+}
+
+export interface ItemBonus {
+  str?: number;
+  sta?: number;
+  agi?: number;
+  dex?: number;
+  wis?: number;
+  int?: number;
+  cha?: number;
+  hp?: number;
+  mana?: number;
+}
 
 export interface Dice {
   n: number;
@@ -22,18 +48,54 @@ export interface Stats {
   cha: number;
 }
 
+export type ArmorType = 'plate' | 'chain' | 'leather' | 'cloth' | 'scale';
+
+/** Standing required before a piece can be equipped. Scale armor will use this. */
+export interface FactionNeed {
+  id: string;
+  rank: number;
+}
+
 export interface ItemDef {
   id: string;
   name: string;
-  kind: 'junk' | 'consumable' | 'weapon' | 'armor';
+  kind: 'junk' | 'consumable' | 'weapon' | 'armor' | 'scroll';
   value: number;
   stack: number;
   blurb: string;
   heal?: number;
-  slot?: 'primary' | 'head';
+  slot?: EquipSlot;
   ac?: number;
+  weight: number;
+  bonuses?: ItemBonus;
+  effects?: string;
   delayMs?: number;
   damage?: Dice;
+  /** What a scroll teaches. Buying it spends the coin and adds the ability. */
+  teaches?: string;
+  /** Warden may equip fist or staff only. */
+  grip?: 'axe' | 'blade' | 'staff' | 'fist';
+  /** Plate, chain, leather, cloth, or scale. Scale is in the schema and not stocked yet. */
+  armorType?: ArmorType;
+  /** 1 rusty/tattered, 2 worked, 3 bronze/hardened/wool. */
+  tier?: 1 | 2 | 3;
+  /** Class ids allowed to equip this. Omitted means no class limit. */
+  wearers?: string[];
+  /** Faction standing required to equip. No current item sets this. */
+  faction?: FactionNeed;
+  /** Race id of a later, better craft (dwarf, high_elf, human). Hoffender stock leaves this unset. */
+  craftedBy?: string;
+}
+
+export interface QuestDef {
+  id: string;
+  name: string;
+  giver: string;
+  description: string;
+  objective: string;
+  itemId: string;
+  need: number;
+  reward: string;
 }
 
 export interface LootEntry {
@@ -94,13 +156,19 @@ export interface AbilityDef {
   range: number;
   damage: Dice;
   hate: number;
-  kind?: 'strike' | 'bolt' | 'field';
+  kind?: 'strike' | 'bolt' | 'field' | 'heal' | 'ward' | 'dot' | 'backstab';
   verb?: string;
   mana?: number;
   radius?: number;
   slowMs?: number;
   slowFactor?: number;
+  heal?: number;
+  buff?: 'evade' | 'sneak' | 'power';
+  buffMs?: number;
+  dotMs?: number;
+  dotAmount?: number;
   blurb?: string;
+  classId?: string;
 }
 
 export interface ClassDef {
@@ -119,6 +187,10 @@ export interface ClassDef {
   manaPerInt: number;
   blurb: string;
   abilities: string[];
+  resource: 'none' | 'mana' | 'guile' | 'rage';
+  baseFocus: number;
+  focusPerLevel: number;
+  kit?: Partial<Equipment>;
 }
 
 export interface Tuning {
@@ -163,6 +235,12 @@ export interface MerchantStock {
   price: number;
 }
 
+export interface VendorDef {
+  npcId: string;
+  title: string;
+  stock: MerchantStock[];
+}
+
 export interface ContentDb {
   items: Record<string, ItemDef>;
   mobs: Record<string, MobDef>;
@@ -171,10 +249,11 @@ export interface ContentDb {
   abilities: Record<string, AbilityDef>;
   classes: Record<string, ClassDef>;
   tuning: Tuning;
-  merchant: { npcId: string; stock: MerchantStock[] };
+  merchant: { vendors: VendorDef[] };
   economy: { copperPerSilver: number; silverPerGold: number; goldPerPlatinum: number };
   player: { name: string; classId: string; copper: number; items: { itemId: string; qty: number }[] };
   roster: Roster;
+  quests: QuestDef[];
 }
 
 export interface RaceDef {
@@ -238,6 +317,10 @@ export interface Actor {
   stuck: number;
   slowMs: number;
   slowRate: number;
+  dotMs: number;
+  dotAmount: number;
+  dotBank: number;
+  pet: boolean;
 }
 
 export interface GroundItem {
@@ -264,8 +347,11 @@ export interface GameState {
   actors: Actor[];
   ground: GroundItem[];
   inventory: ItemStack[];
-  equipment: { primary: string; head: string | null };
+  equipment: Equipment;
+  baseStats: Stats;
   copper: number;
+  /** Faction id to standing. Empty until a later story grants it. Scale armor will read this. */
+  factions: Record<string, number>;
   xp: number;
   level: number;
   stats: Stats;
@@ -275,6 +361,14 @@ export interface GameState {
   mana: number;
   maxMana: number;
   manaRegenBank: number;
+  focus: number;
+  focusMax: number;
+  learned: string[];
+  loadout: string[];
+  sneakMs: number;
+  evadeMs: number;
+  powerMs: number;
+  sex: 'male' | 'female';
   autoAttack: boolean;
   targetId: string | null;
   cooldowns: Record<string, number>;
@@ -328,7 +422,9 @@ export type Intent =
   | { type: 'toggleAutoAttack' }
   | { type: 'ability'; id: string }
   | { type: 'selectClass'; classId: string }
-  | { type: 'createHero'; raceId: string; classId: string; bonus: Stats }
+  | { type: 'createHero'; raceId: string; classId: string; bonus: Stats; sex?: 'male' | 'female' }
+  | { type: 'openBook' }
+  | { type: 'setLoadout'; slots: string[] }
   | { type: 'talkTo'; id: string }
   | { type: 'interact' }
   | { type: 'choice'; index: number }
@@ -336,7 +432,10 @@ export type Intent =
   | { type: 'sell'; slot: number }
   | { type: 'use'; slot: number }
   | { type: 'equip'; slot: number }
+  | { type: 'unequip'; slot: EquipSlot }
   | { type: 'openPack' }
+  | { type: 'openJournal' }
+  | { type: 'abandonQuest'; id: string }
   | { type: 'openHelp' }
   | { type: 'close' }
   | { type: 'debugTeleport'; x: number; y: number };

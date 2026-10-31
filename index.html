@@ -24,7 +24,17 @@
         <div class="gate-card create-card">
           <p class="eyebrow">Kingdoms of Aldmoor</p>
           <h1>Create</h1>
-          <p class="lede">Only a Barbarian can walk out of Hoffender today. Warrior and Wizard are ready. The rest of the roster is still being made.</p>
+          <p class="lede">A Barbarian walks out of Hoffender. Warrior, Shaman, Rogue, Berserker, and Warden are ready. Wizard is not a Barbarian path.</p>
+          <div id="save-row" hidden>
+            <p id="save-summary"></p>
+            <button id="continue-btn" type="button">Continue</button>
+            <button id="new-char" type="button">New character</button>
+          </div>
+          <p id="confirm-new" hidden>Erase the saved hero and begin again? <button id="confirm-new-yes" type="button">Erase and begin</button> <button id="confirm-new-no" type="button">Keep the save</button></p>
+          <p id="wizard-note" hidden></p>
+          <div id="create-form">
+          <h2>Body</h2>
+          <div id="sex-pick" class="pick-grid" role="radiogroup" aria-label="Body"></div>
           <h2>Race</h2>
           <div id="race-pick" class="pick-grid" role="radiogroup" aria-label="Race"></div>
           <h2>Class</h2>
@@ -34,6 +44,7 @@
           <p id="points" class="points">Bonus points left: 6</p>
           <ul id="stat-list" class="stat-list"></ul>
           <button id="enter" type="button">Enter Hoffender</button>
+          </div>
         </div>
       </div>
     </div>

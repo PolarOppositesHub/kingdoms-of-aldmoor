@@ -1,4 +1,4 @@
-import type { Actor, ContentDb, GameState, MapData, Stats } from './types';
+import type { Actor, ContentDb, Equipment, GameState, MapData, Stats } from './types';
 import { maxHp, maxMana } from './formulas';
 
 export function getPlayer(state: GameState): Actor {
@@ -35,6 +35,10 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     stuck: 0,
     slowMs: 0,
     slowRate: 1,
+    dotMs: 0,
+    dotAmount: 0,
+    dotBank: 0,
+    pet: false,
     ...partial,
   };
 }
@@ -46,12 +50,12 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   const player = getPlayer(state);
   const level = 1;
   state.classId = cls.id;
+  state.baseStats = { ...cls.stats };
   state.stats = { ...cls.stats };
   state.ac = cls.ac;
   state.level = level;
   state.xp = 0;
-  state.equipment = { primary: cls.weapon, head: null };
-  state.ac = cls.ac;
+  state.equipment = emptyEquipment(cls.weapon);
   state.inventory = content.player.items.map((stack) => ({ ...stack }));
   state.copper = content.player.copper;
   state.autoAttack = false;
@@ -67,15 +71,97 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.manaRegenBank = 0;
   state.cooldowns = {};
   for (const abilityId of cls.abilities) state.cooldowns[abilityId] = 0;
-  state.ac = armorAc(content, state);
+  state.learned = [];
+  state.loadout = cls.abilities.slice(0, 2);
+  state.sneakMs = 0;
+  state.evadeMs = 0;
+  state.powerMs = 0;
+  const focusMax = cls.resource === 'guile' || cls.resource === 'rage' ? cls.baseFocus + cls.focusPerLevel : 0;
+  state.focusMax = focusMax;
+  state.focus = cls.resource === 'rage' ? 0 : focusMax;
+  if (cls.kit) {
+    for (const slot of ['head', 'chest', 'hands', 'legs', 'feet', 'secondary'] as const) {
+      const piece = cls.kit[slot];
+      if (piece) state.equipment[slot] = piece;
+    }
+  }
+  player.sprite = state.sex === 'female' ? 'body_f' : 'body_m';
+  refreshGear(state, content);
+  syncCompanion(state, content);
+}
+
+export function syncCompanion(state: GameState, content: ContentDb): void {
+  state.actors = state.actors.filter((actor) => !actor.pet);
+  if (state.classId !== 'warden') return;
+  const player = getPlayer(state);
+  const def = content.mobs.warden_wolf;
+  state.actors.push(
+    blankActor({
+      id: 'pet_wolf',
+      kind: 'mob',
+      defId: 'warden_wolf',
+      name: def?.name ?? 'snow wolf',
+      sprite: 'frost_wolf',
+      x: player.x - 18,
+      y: player.y + 8,
+      hp: def?.hp ?? 36,
+      maxHp: def?.hp ?? 36,
+      level: Math.max(1, state.level),
+      social: '',
+      pet: true,
+      attackMs: def?.delayMs ?? 1800,
+    }),
+  );
+}
+
+export function emptyEquipment(primary: string | null): Equipment {
+  return {
+    head: null,
+    chest: null,
+    hands: null,
+    legs: null,
+    feet: null,
+    primary,
+    secondary: null,
+  };
 }
 
 const STAT_KEYS = ['str', 'sta', 'agi', 'dex', 'wis', 'int', 'cha'] as const;
 
 export function armorAc(content: ContentDb, state: GameState): number {
-  const base = content.classes[state.classId]?.ac ?? 0;
-  const head = state.equipment.head ? content.items[state.equipment.head] : undefined;
-  return base + (head?.ac ?? 0);
+  let ac = content.classes[state.classId]?.ac ?? 0;
+  for (const id of Object.values(state.equipment)) {
+    if (!id) continue;
+    ac += content.items[id]?.ac ?? 0;
+  }
+  return ac;
+}
+
+/** Worn items add their bonuses on top of the hero chosen at the gate. */
+export function refreshGear(state: GameState, content: ContentDb): void {
+  const stats = { ...state.baseStats };
+  let bonusHp = 0;
+  let bonusMana = 0;
+  for (const id of Object.values(state.equipment)) {
+    const bonus = id ? content.items[id]?.bonuses : undefined;
+    if (!bonus) continue;
+    stats.str += bonus.str ?? 0;
+    stats.sta += bonus.sta ?? 0;
+    stats.agi += bonus.agi ?? 0;
+    stats.dex += bonus.dex ?? 0;
+    stats.wis += bonus.wis ?? 0;
+    stats.int += bonus.int ?? 0;
+    stats.cha += bonus.cha ?? 0;
+    bonusHp += bonus.hp ?? 0;
+    bonusMana += bonus.mana ?? 0;
+  }
+  state.stats = stats;
+  state.ac = armorAc(content, state);
+  const player = getPlayer(state);
+  player.maxHp = maxHp(content, state.classId, state.level, stats) + bonusHp;
+  if (player.hp > player.maxHp) player.hp = player.maxHp;
+  state.maxMana = maxMana(content, state.classId, state.level, stats) + bonusMana;
+  if (state.mana > state.maxMana) state.mana = state.maxMana;
 }
 
 /** Gate creation. Only before the first tick. Race mods and bonus points land on the class base. */
@@ -85,6 +171,7 @@ export function applyHero(
   raceId: string,
   classId: string,
   bonus: Stats,
+  sex: 'male' | 'female' = 'male',
 ): boolean {
   if (state.tick > 0) return false;
   const race = content.roster.races.find((entry) => entry.id === raceId);
@@ -99,17 +186,19 @@ export function applyHero(
     spent += add;
   }
   if (spent > content.roster.points) return false;
+  state.sex = sex;
   configurePlayer(state, content, classId);
   const stats = { ...cls.stats };
   for (const key of STAT_KEYS) {
     stats[key] = Math.max(1, cls.stats[key] + (race.mods[key] ?? 0) + (bonus[key] ?? 0));
   }
-  state.stats = stats;
+  state.baseStats = { ...stats };
+  state.stats = { ...stats };
   state.raceId = race.id;
+  state.sex = state.sex === 'female' ? 'female' : 'male';
+  refreshGear(state, content);
   const player = getPlayer(state);
-  player.maxHp = maxHp(content, classId, 1, stats);
   player.hp = player.maxHp;
-  state.maxMana = maxMana(content, classId, 1, stats);
   state.mana = state.maxMana;
   return true;
 }
@@ -183,8 +272,10 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     actors,
     ground: [],
     inventory: [],
-    equipment: { primary: cls.weapon, head: null },
+    equipment: emptyEquipment(cls.weapon),
+    baseStats: { ...cls.stats },
     copper: 0,
+    factions: {},
     xp: 0,
     level: 1,
     stats: { ...cls.stats },
@@ -194,6 +285,14 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     mana: 0,
     maxMana: 0,
     manaRegenBank: 0,
+    focus: 0,
+    focusMax: 0,
+    learned: [],
+    loadout: [],
+    sneakMs: 0,
+    evadeMs: 0,
+    powerMs: 0,
+    sex: 'male',
     autoAttack: false,
     targetId: null,
     cooldowns: {},

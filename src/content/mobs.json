@@ -6,7 +6,11 @@
     "hp": 18,
     "ac": 3,
     "attack": 8,
-    "damage": { "n": 1, "sides": 4, "bonus": 1 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
     "delayMs": 2400,
     "aggroRange": 72,
     "assistRange": 96,
@@ -18,10 +22,30 @@
     "crit": 0.03,
     "verb": "bites",
     "loot": [
-      { "itemId": "wolf_pelt", "chance": 0.7, "min": 1, "max": 1 },
-      { "itemId": "wolf_tooth", "chance": 0.45, "min": 1, "max": 1 },
-      { "itemId": "stringy_meat", "chance": 0.35, "min": 1, "max": 1 },
-      { "itemId": "cracked_fang", "chance": 0.05, "min": 1, "max": 1 }
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.7,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_tooth",
+        "chance": 0.45,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cracked_fang",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
     ],
     "coinMin": 0,
     "coinMax": 4
@@ -33,7 +57,11 @@
     "hp": 28,
     "ac": 5,
     "attack": 11,
-    "damage": { "n": 1, "sides": 4, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 2
+    },
     "delayMs": 2300,
     "aggroRange": 84,
     "assistRange": 104,
@@ -45,10 +73,30 @@
     "crit": 0.04,
     "verb": "bites",
     "loot": [
-      { "itemId": "wolf_pelt", "chance": 0.85, "min": 1, "max": 1 },
-      { "itemId": "wolf_tooth", "chance": 0.55, "min": 1, "max": 2 },
-      { "itemId": "stringy_meat", "chance": 0.4, "min": 1, "max": 1 },
-      { "itemId": "cracked_fang", "chance": 0.12, "min": 1, "max": 1 }
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.85,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_tooth",
+        "chance": 0.55,
+        "min": 1,
+        "max": 2
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cracked_fang",
+        "chance": 0.12,
+        "min": 1,
+        "max": 1
+      }
     ],
     "coinMin": 1,
     "coinMax": 6
@@ -60,7 +108,11 @@
     "hp": 38,
     "ac": 8,
     "attack": 14,
-    "damage": { "n": 1, "sides": 6, "bonus": 1 },
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
     "delayMs": 2200,
     "aggroRange": 96,
     "assistRange": 110,
@@ -72,12 +124,499 @@
     "crit": 0.06,
     "verb": "bites",
     "loot": [
-      { "itemId": "wolf_pelt", "chance": 0.9, "min": 1, "max": 1 },
-      { "itemId": "wolf_pelt", "chance": 0.35, "min": 1, "max": 1 },
-      { "itemId": "wolf_tooth", "chance": 0.6, "min": 1, "max": 2 },
-      { "itemId": "cracked_fang", "chance": 0.28, "min": 1, "max": 1 }
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.9,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_tooth",
+        "chance": 0.6,
+        "min": 1,
+        "max": 2
+      },
+      {
+        "itemId": "cracked_fang",
+        "chance": 0.28,
+        "min": 1,
+        "max": 1
+      }
     ],
     "coinMin": 2,
     "coinMax": 8
+  },
+  {
+    "id": "snow_hare",
+    "name": "snow hare",
+    "level": 1,
+    "hp": 10,
+    "ac": 1,
+    "attack": 6,
+    "damage": {
+      "n": 1,
+      "sides": 3,
+      "bonus": 0
+    },
+    "delayMs": 1800,
+    "aggroRange": 40,
+    "assistRange": 60,
+    "leash": 180,
+    "social": "",
+    "xp": 12,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "nips",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 0,
+    "coinMax": 2,
+    "sprite": "hare"
+  },
+  {
+    "id": "red_fox",
+    "name": "red fox",
+    "level": 2,
+    "hp": 16,
+    "ac": 3,
+    "attack": 9,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
+    "delayMs": 1900,
+    "aggroRange": 70,
+    "assistRange": 90,
+    "leash": 180,
+    "social": "fox",
+    "xp": 28,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 1,
+    "coinMax": 4,
+    "sprite": "fox"
+  },
+  {
+    "id": "wolf_alpha",
+    "name": "wolf alpha",
+    "level": 4,
+    "hp": 48,
+    "ac": 10,
+    "attack": 16,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 180,
+    "social": "wolf",
+    "xp": 90,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 3,
+    "coinMax": 10,
+    "sprite": "frost_wolf"
+  },
+  {
+    "id": "ice_beetle",
+    "name": "ice beetle",
+    "level": 3,
+    "hp": 22,
+    "ac": 8,
+    "attack": 10,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 2
+    },
+    "delayMs": 2400,
+    "aggroRange": 48,
+    "assistRange": 68,
+    "leash": 180,
+    "social": "beetle",
+    "xp": 48,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "pinches",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 1,
+    "coinMax": 5,
+    "sprite": "beetle"
+  },
+  {
+    "id": "frost_spider",
+    "name": "frost spider",
+    "level": 5,
+    "hp": 36,
+    "ac": 9,
+    "attack": 14,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "delayMs": 2000,
+    "aggroRange": 90,
+    "assistRange": 110,
+    "leash": 180,
+    "social": "spider",
+    "xp": 110,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 2,
+    "coinMax": 8,
+    "sprite": "spider"
+  },
+  {
+    "id": "cave_bear",
+    "name": "cave bear",
+    "level": 6,
+    "hp": 80,
+    "ac": 12,
+    "attack": 18,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "delayMs": 2600,
+    "aggroRange": 80,
+    "assistRange": 100,
+    "leash": 180,
+    "social": "",
+    "xp": 160,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 4,
+    "coinMax": 14,
+    "sprite": "bear"
+  },
+  {
+    "id": "barrow_bones",
+    "name": "barrow bones",
+    "level": 7,
+    "hp": 44,
+    "ac": 12,
+    "attack": 15,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 2200,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bones",
+    "xp": 150,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "claws",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 3,
+    "coinMax": 12,
+    "sprite": "bones"
+  },
+  {
+    "id": "bandit_thug",
+    "name": "bandit thug",
+    "level": 5,
+    "hp": 40,
+    "ac": 8,
+    "attack": 14,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "delayMs": 2000,
+    "aggroRange": 120,
+    "assistRange": 140,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 100,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "clubs",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 4,
+    "coinMax": 12,
+    "sprite": "bandit"
+  },
+  {
+    "id": "bandit_archer",
+    "name": "bandit archer",
+    "level": 7,
+    "hp": 34,
+    "ac": 7,
+    "attack": 16,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 1
+    },
+    "delayMs": 2200,
+    "aggroRange": 160,
+    "assistRange": 180,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 150,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "shoots",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 5,
+    "coinMax": 16,
+    "sprite": "archer"
+  },
+  {
+    "id": "camp_leader",
+    "name": "camp leader",
+    "level": 10,
+    "hp": 90,
+    "ac": 14,
+    "attack": 20,
+    "damage": {
+      "n": 1,
+      "sides": 10,
+      "bonus": 4
+    },
+    "delayMs": 2000,
+    "aggroRange": 140,
+    "assistRange": 160,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 280,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.05,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 12,
+    "coinMax": 30,
+    "sprite": "leader"
+  },
+  {
+    "id": "old_bramble",
+    "name": "Old Bramble",
+    "level": 8,
+    "hp": 120,
+    "ac": 14,
+    "attack": 18,
+    "damage": {
+      "n": 1,
+      "sides": 10,
+      "bonus": 5
+    },
+    "delayMs": 2500,
+    "aggroRange": 90,
+    "assistRange": 110,
+    "leash": 180,
+    "social": "",
+    "xp": 240,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "wolf_pelt",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 8,
+    "coinMax": 24,
+    "sprite": "bear"
+  },
+  {
+    "id": "warden_wolf",
+    "name": "snow wolf",
+    "level": 1,
+    "hp": 36,
+    "ac": 6,
+    "attack": 12,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "delayMs": 1800,
+    "aggroRange": 0,
+    "assistRange": 20,
+    "leash": 180,
+    "social": "",
+    "xp": 0,
+    "speed": 60,
+    "wanderSpeed": 28,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [],
+    "coinMin": 0,
+    "coinMax": 0,
+    "sprite": "frost_wolf"
   }
 ]
