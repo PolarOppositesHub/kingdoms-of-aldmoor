@@ -5,8 +5,10 @@ import type {
   ItemDef,
   MobDef,
   NpcDef,
+  MapChart,
   QuestDef,
   Roster,
+  VendorDef,
 } from './types';
 import itemsJson from '../content/items.json';
 import mobsJson from '../content/mobs.json';
@@ -20,6 +22,7 @@ import economyJson from '../content/economy.json';
 import playerJson from '../content/player.json';
 import rosterJson from '../content/roster.json';
 import questsJson from '../content/quests.json';
+import mapsJson from '../content/maps.json';
 import armorJson from '../content/armor.json';
 import armorRules from '../content/armor-rules.json';
 
@@ -48,13 +51,22 @@ export function loadContent(): ContentDb {
       throw new Error(`${item.id} wearers do not match the ${item.armorType} rule`);
     }
   }
+  const maps = indexById(mapsJson as MapChart[]);
+  const vendors: VendorDef[] = (merchantJson.vendors as VendorDef[]).map((vendor) => {
+    if (!vendor.copyFrom) return vendor;
+    const source = (merchantJson.vendors as VendorDef[]).find((entry) => entry.npcId === vendor.copyFrom);
+    if (!source) throw new Error(`${vendor.npcId} copies missing vendor ${vendor.copyFrom}`);
+    return { ...vendor, stock: source.stock.map((row) => ({ ...row })) };
+  });
   const mobs = indexById(mobsJson as MobDef[]);
   const npcs = indexById(npcsJson as NpcDef[]);
   const abilities = indexById(abilitiesJson as AbilityDef[]);
   const classes = indexById(classesJson as ClassDef[]);
-  for (const vendor of merchantJson.vendors) {
+  for (const vendor of vendors) {
     for (const stock of vendor.stock) {
       if (!items[stock.itemId]) throw new Error(`${vendor.npcId} stock missing item ${stock.itemId}`);
+      const chart = items[stock.itemId]?.chart;
+      if (chart && !maps[chart]) throw new Error(`${stock.itemId} charts an unknown region ${chart}`);
     }
   }
   for (const mob of Object.values(mobs)) {
@@ -70,10 +82,11 @@ export function loadContent(): ContentDb {
     abilities,
     classes,
     tuning: tuningJson as ContentDb['tuning'],
-    merchant: merchantJson,
+    merchant: { vendors },
     economy: economyJson,
     player: playerJson,
     roster: rosterJson as Roster,
     quests: questsJson as QuestDef[],
+    maps,
   };
 }

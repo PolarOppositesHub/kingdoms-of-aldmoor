@@ -2,7 +2,9 @@ import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
 import { findActor, getPlayer, applyHero, refreshGear } from './state';
-import { abandonQuest, acceptQuest, addItem, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+import { abandonQuest, acceptQuest, addItem, askPrice, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+import { moveBag, moveItem, removeBag, removeOne } from './bags';
+import { LOADOUT_CAP } from './types';
 import { wearRefusal } from './wear';
 
 function nearestSign(map: MapData, x: number, y: number, maxDist: number) {
@@ -159,7 +161,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           return;
         }
         if (choice.action === 'turnIn' && choice.quest === 'wolf_pelts') {
-          turnInPelts(state, content, emit);
+          turnInPelts(state, content, emit, choice.reward === 'jerkin' ? 'jerkin' : 'helm');
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
           return;
         }
@@ -179,45 +181,72 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const item = content.items[intent.itemId];
         if (!stock || !item) return;
         if (item.teaches) {
-          if (state.copper < stock.price) {
+          const price = askPrice(npc.defId, stock.price);
+          if (state.copper < price) {
             emit({ type: 'log', text: "You don't have the coin." });
             return;
           }
           if (!learnAbility(state, content, item.teaches, emit)) return;
-          state.copper -= stock.price;
-          emit({ type: 'log', text: `You pay ${stock.price} copper.` });
+          state.copper -= price;
+          emit({ type: 'log', text: `You pay ${price} copper.` });
           return;
         }
-        if (state.copper < stock.price) {
+        if (item.chart) {
+          const price = askPrice(npc.defId, stock.price);
+          if (state.charts.includes(item.chart)) {
+            emit({ type: 'log', text: 'You already have that chart.' });
+            return;
+          }
+          if (state.copper < price) {
+            emit({ type: 'log', text: "You don't have the coin." });
+            return;
+          }
+          state.copper -= price;
+          state.charts.push(item.chart);
+          emit({ type: 'log', text: `You buy the ${item.name}. It is in your map case.` });
+          return;
+        }
+        const price = askPrice(npc.defId, stock.price);
+        if (state.copper < price) {
           emit({ type: 'log', text: "You don't have the coin." });
           return;
         }
         const left = addItem(state, content, item.id, 1);
         if (left > 0) {
-          emit({ type: 'log', text: 'Your pack is full.' });
+          emit({ type: 'log', text: 'Your bags are full.' });
           return;
         }
-        state.copper -= stock.price;
-        emit({ type: 'log', text: `You buy a ${item.name} for ${stock.price} copper.` });
+        state.copper -= price;
+        emit({ type: 'log', text: `You buy a ${item.name} for ${price} copper.` });
         return;
       }
       case 'sell': {
         if (state.ui.panel !== 'merchant') return;
-        const stack = state.inventory[intent.slot];
-        if (!stack) return;
-        const item = content.items[stack.itemId];
+        const taken = removeOne(state, intent.bag, intent.slot);
+        if (!taken) return;
+        const item = content.items[taken.itemId];
         if (!item) return;
-        stack.qty -= 1;
-        if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
         state.copper += item.value;
         emit({ type: 'log', text: `You sell a ${item.name} for ${item.value} copper.` });
         return;
       }
+      case 'sellBag': {
+        if (state.ui.panel !== 'merchant') return;
+        const id = removeBag(state, intent.holder);
+        if (!id) {
+          emit({ type: 'log', text: 'Empty the bag before you sell it.' });
+          return;
+        }
+        const item = content.items[id];
+        state.copper += item?.value ?? 0;
+        emit({ type: 'log', text: `You sell the ${item?.name ?? 'bag'}.` });
+        return;
+      }
       case 'use': {
         if (state.itemLockMs > 0 || state.dead) return;
-        const stack = state.inventory[intent.slot];
-        if (!stack) return;
-        const item = content.items[stack.itemId];
+        const held = state.bags[intent.bag]?.slots[intent.slot];
+        if (!held) return;
+        const item = content.items[held.itemId];
         if (!item || item.kind !== 'consumable' || !item.heal) return;
         if (player.hp >= player.maxHp) {
           emit({ type: 'log', text: 'You are already at full health.' });
@@ -225,17 +254,16 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         }
         const healed = Math.min(item.heal, player.maxHp - player.hp);
         player.hp += healed;
-        stack.qty -= 1;
-        if (stack.qty <= 0) state.inventory.splice(intent.slot, 1);
+        removeOne(state, intent.bag, intent.slot);
         state.itemLockMs = content.tuning.itemLockMs;
         emit({ type: 'heal', targetId: player.id, amount: healed });
         emit({ type: 'log', text: `The ${item.name} restores ${healed} health.` });
         return;
       }
       case 'equip': {
-        const stack = state.inventory[intent.slot];
-        if (!stack) return;
-        const item = content.items[stack.itemId];
+        const held = state.bags[intent.bag]?.slots[intent.slot];
+        if (!held) return;
+        const item = content.items[held.itemId];
         if (!item?.slot) return;
         const refusal = wearRefusal(state, item);
         if (refusal) {
@@ -248,16 +276,12 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         }
         const slot = item.slot;
         const previous = state.equipment[slot];
-        const snapshot = stack.qty;
-        stack.qty -= 1;
-        const removedIndex = stack.qty <= 0;
-        if (removedIndex) state.inventory.splice(intent.slot, 1);
+        removeOne(state, intent.bag, intent.slot);
         if (previous) {
-          const left = addItem(state, content, previous, 1);
-          if (left > 0) {
-            if (removedIndex) addItem(state, content, item.id, 1);
-            else stack.qty = snapshot;
-            emit({ type: 'log', text: 'Your pack is full.' });
+          const leftover = addItem(state, content, previous, 1);
+          if (leftover > 0) {
+            addItem(state, content, item.id, 1);
+            emit({ type: 'log', text: 'Your bags are full.' });
             return;
           }
         }
@@ -272,7 +296,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (!worn) return;
         const left = addItem(state, content, worn, 1);
         if (left > 0) {
-          emit({ type: 'log', text: 'Your pack is full.' });
+          emit({ type: 'log', text: 'Your bags are full.' });
           return;
         }
         state.equipment[intent.slot] = null;
@@ -281,6 +305,45 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         emit({ type: 'log', text: `You take off the ${name}.` });
         return;
       }
+      case 'moveItem': {
+        moveItem(state, content, intent.fromBag, intent.fromSlot, intent.toBag, intent.toSlot);
+        return;
+      }
+      case 'moveBag': {
+        moveBag(state, intent.from, intent.to);
+        return;
+      }
+      case 'pet': {
+        if (state.classId !== 'warden') return;
+        state.petOrder = intent.order;
+        const pet = state.actors.find((actor) => actor.pet && actor.alive);
+        if (intent.order === 'stay' && pet) state.petHold = { x: pet.x, y: pet.y };
+        else state.petHold = null;
+        if (intent.order === 'attack') {
+          const target = findActor(state, state.targetId);
+          if (!target || target.kind !== 'mob' || !target.alive || target.pet) {
+            emit({ type: 'log', text: 'Your wolf has nothing to attack.' });
+            state.petOrder = 'follow';
+            state.petFocus = null;
+            return;
+          }
+          state.petFocus = target.id;
+          emit({ type: 'log', text: `Your wolf goes for ${target.name}.` });
+          return;
+        }
+        state.petFocus = null;
+        const line =
+          intent.order === 'stay' ? 'Your wolf stays.' : intent.order === 'backoff' ? 'Your wolf backs off.' : 'Your wolf follows.';
+        emit({ type: 'log', text: line });
+        return;
+      }
+      case 'openMaps':
+        if (state.dead) return;
+        state.ui = { panel: 'maps', npcId: null, nodeId: null, title: null, body: null };
+        state.input.x = 0;
+        state.input.y = 0;
+        state.input.dest = null;
+        return;
       case 'openBook':
         if (state.dead) return;
         state.ui = { panel: 'book', npcId: null, nodeId: null, title: null, body: null };
@@ -290,7 +353,12 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         return;
       case 'setLoadout': {
         const known = knownAbilities(state, content);
-        const slots = intent.slots.filter((id) => known.includes(id)).slice(0, 2);
+        const slots: string[] = [];
+        for (const id of intent.slots) {
+          if (!known.includes(id) || slots.includes(id)) continue;
+          slots.push(id);
+          if (slots.length >= LOADOUT_CAP) break;
+        }
         if (!slots.length) return;
         state.loadout = slots;
         return;

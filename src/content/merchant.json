@@ -19,6 +19,14 @@
         {
           "itemId": "bearded_handaxe",
           "price": 43
+        },
+        {
+          "itemId": "threadbare_sack",
+          "price": 8
+        },
+        {
+          "itemId": "canvas_haversack",
+          "price": 22
         }
       ]
     },
@@ -319,6 +327,14 @@
         {
           "itemId": "wool_sash",
           "price": 21
+        },
+        {
+          "itemId": "stitched_pouch",
+          "price": 18
+        },
+        {
+          "itemId": "hide_satchel",
+          "price": 40
         }
       ]
     },
@@ -438,6 +454,27 @@
           "itemId": "scroll_deep",
           "price": 136
         }
+      ]
+    },
+    {
+      "npcId": "marta",
+      "title": "Holt's Counter",
+      "copyFrom": "ivar"
+    },
+    {
+      "npcId": "sefa",
+      "title": "Sefa's Charts",
+      "stock": [
+        { "itemId": "chart_hoffender", "price": 15 },
+        { "itemId": "chart_frostmere_road", "price": 25 }
+      ]
+    },
+    {
+      "npcId": "nils",
+      "title": "Reed's Charts",
+      "stock": [
+        { "itemId": "chart_frostmere_deep", "price": 40 },
+        { "itemId": "chart_barrow", "price": 55 }
       ]
     }
   ]

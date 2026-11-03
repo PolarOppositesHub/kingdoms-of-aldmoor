@@ -1,5 +1,8 @@
 import type { Actor, ContentDb, Equipment, GameState, MapData, Stats } from './types';
+import { LOADOUT_CAP } from './types';
 import { maxHp, maxMana } from './formulas';
+import { addItem, emptyBags } from './bags';
+import { raceScale } from './appearance';
 
 export function getPlayer(state: GameState): Actor {
   const player = state.actors.find((actor) => actor.id === state.playerId);
@@ -39,6 +42,7 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     dotAmount: 0,
     dotBank: 0,
     pet: false,
+    scale: 1,
     ...partial,
   };
 }
@@ -56,7 +60,7 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.level = level;
   state.xp = 0;
   state.equipment = emptyEquipment(cls.weapon);
-  state.inventory = content.player.items.map((stack) => ({ ...stack }));
+  state.bags = emptyBags();
   state.copper = content.player.copper;
   state.autoAttack = false;
   state.targetId = null;
@@ -72,7 +76,11 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.cooldowns = {};
   for (const abilityId of cls.abilities) state.cooldowns[abilityId] = 0;
   state.learned = [];
-  state.loadout = cls.abilities.slice(0, 2);
+  state.loadout = cls.abilities.slice(0, LOADOUT_CAP);
+  state.charts = [];
+  state.petOrder = 'follow';
+  state.petHold = null;
+  state.petFocus = null;
   state.sneakMs = 0;
   state.evadeMs = 0;
   state.powerMs = 0;
@@ -86,6 +94,9 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
     }
   }
   player.sprite = state.sex === 'female' ? 'body_f' : 'body_m';
+  player.scale = raceScale(content, state.raceId);
+  addItem(state, content, 'threadbare_sack', 1);
+  for (const stack of content.player.items) addItem(state, content, stack.itemId, stack.qty);
   refreshGear(state, content);
   syncCompanion(state, content);
 }
@@ -187,6 +198,7 @@ export function applyHero(
   }
   if (spent > content.roster.points) return false;
   state.sex = sex;
+  state.raceId = race.id;
   configurePlayer(state, content, classId);
   const stats = { ...cls.stats };
   for (const key of STAT_KEYS) {
@@ -194,10 +206,11 @@ export function applyHero(
   }
   state.baseStats = { ...stats };
   state.stats = { ...stats };
-  state.raceId = race.id;
   state.sex = state.sex === 'female' ? 'female' : 'male';
   refreshGear(state, content);
   const player = getPlayer(state);
+  player.scale = raceScale(content, state.raceId);
+  player.sprite = state.sex === 'female' ? 'body_f' : 'body_m';
   player.hp = player.maxHp;
   state.mana = state.maxMana;
   return true;
@@ -233,6 +246,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
           sprite: spawn.sprite || def.id,
           x: spawn.x,
           y: spawn.y,
+          scale: raceScale(content, def.race ?? 'barbarian'),
         }),
       );
     } else if (spawn.kind === 'mob') {
@@ -271,7 +285,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     playerId: player.id,
     actors,
     ground: [],
-    inventory: [],
+    bags: emptyBags(),
     equipment: emptyEquipment(cls.weapon),
     baseStats: { ...cls.stats },
     copper: 0,
@@ -289,6 +303,10 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     focusMax: 0,
     learned: [],
     loadout: [],
+    charts: [],
+    petOrder: 'follow',
+    petHold: null,
+    petFocus: null,
     sneakMs: 0,
     evadeMs: 0,
     powerMs: 0,

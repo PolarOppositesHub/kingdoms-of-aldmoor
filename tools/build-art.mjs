@@ -18,7 +18,7 @@ import {
   silhouette,
   writePng,
 } from './pixel.mjs';
-import { buildHeroArt } from './hero-art.mjs';
+import { buildHeroArt, buildPeopleArt } from './hero-art.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetDir = join(root, 'src', 'assets');
@@ -160,6 +160,7 @@ const T = {
   SDOOR_MR: 42,
   SDOOR_BL: 43,
   SDOOR_BR: 44,
+  FLOOR: 45,
 };
 
 function tileCanvas() {
@@ -502,6 +503,7 @@ function buildTileset() {
   tiles.set(T.STONE_DOOR, paintStoneDoor());
   tiles.set(T.STONE_WIN, paintStoneWin());
   tiles.set(T.FENCE, paintFence());
+  tiles.set(T.FLOOR, paintFloor());
   const woodLeaves = { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
   const stoneLeaves = { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR };
   for (const [part, id] of Object.entries(woodLeaves)) tiles.set(id, paintDoorLeaf(part, false));
@@ -1327,45 +1329,65 @@ function drawCrate() {
   return img;
 }
 
-function drawWell() {
-  const img = createImage(32, 32);
-  // Posts and beam
-  for (let y = 6; y < 28; y++) {
-    for (const x of [8, 9, 22, 23]) img.set(x, y, WOOD_DARK);
-  }
-  for (let x = 8; x <= 23; x++) {
-    img.set(x, 6, WOOD);
-    img.set(x, 7, WOOD_HI);
-  }
-  // Stone ring
-  const cx = 16;
-  const cy = 22;
-  for (let y = 14; y <= 30; y++) {
-    for (let x = 6; x <= 26; x++) {
-      const dx = (x - cx) / 10;
-      const dy = (y - cy) / 7;
-      const d = dx * dx + dy * dy;
-      if (d > 1) continue;
-      if (d < 0.35) img.set(x, y, hex('#1a242c'));
-      else img.set(x, y, d > 0.75 ? hex('#6a6058') : hex('#b7aa9e'));
+function paintFloor() {
+  const img = tileCanvas();
+  img.fill(hex('#6a4a32'));
+  for (let y = 0; y < 16; y++) {
+    for (let x = 0; x < 16; x++) {
+      if (y % 4 === 0) img.set(x, y, hex('#4a3020'));
+      else if ((x + y) % 5 === 0) img.set(x, y, hex('#8a6244'));
     }
   }
-  img.set(18, 8, IRON_SH);
+  return img;
+}
+
+function drawWell() {
+  const img = createImage(56, 48);
+  // Posts and beam
+  for (let y = 8; y < 40; y++) {
+    for (const x of [12, 13, 42, 43]) img.set(x, y, WOOD_DARK);
+  }
+  for (let x = 12; x <= 43; x++) {
+    img.set(x, 8, WOOD);
+    img.set(x, 9, WOOD_HI);
+  }
+  const cx = 28;
+  const cy = 32;
+  for (let y = 18; y <= 46; y++) {
+    for (let x = 8; x <= 48; x++) {
+      const dx = (x - cx) / 18;
+      const dy = (y - cy) / 12;
+      const d = dx * dx + dy * dy;
+      if (d > 1) continue;
+      if (d < 0.28) img.set(x, y, hex('#1a242c'));
+      else img.set(x, y, d > 0.72 ? hex('#6a6058') : hex('#b7aa9e'));
+    }
+  }
+  img.set(30, 10, IRON_SH);
+  img.set(31, 11, IRON);
   silhouette(img, INK);
   return img;
 }
 
 function drawFire(frame) {
-  const img = createImage(16, 16);
-  for (let a = 0; a < 8; a++) {
-    const x = 4 + (a % 4) + (a > 3 ? 4 : 0);
-    const y = 10 + (a % 2);
-    img.set(x, y, hex('#6a6058'));
-    img.set(x, y - 1, hex('#8a8078'));
+  const img = createImage(40, 32);
+  for (let x = 6; x <= 34; x++) {
+    const y = 22 + (x % 3 === 0 ? 1 : 0);
+    img.set(x, y, hex('#5a4030'));
+    img.set(x, y + 1, hex('#3a2418'));
+    if (x % 4 === 0) img.set(x, y - 1, hex('#8a6050'));
   }
-  const flames = frame === 0 ? [[7, 8], [8, 7], [8, 6], [9, 8], [8, 5], [6, 8], [10, 9]] : [[8, 8], [7, 7], [8, 6], [9, 7], [8, 4], [10, 8], [6, 9]];
-  for (const [x, y] of flames) img.set(x, y, y < 7 ? hex('#ffe08a') : hex('#e07030'));
-  img.set(8, frame === 0 ? 9 : 8, hex('#a83820'));
+  for (let y = 24; y <= 30; y++) {
+    for (let x = 8; x <= 32; x++) img.set(x, y, hex('#6a5040'));
+  }
+  const flames = frame === 0
+    ? [[14, 18], [16, 14], [18, 10], [20, 8], [22, 12], [24, 16], [26, 18], [18, 16], [21, 14]]
+    : [[15, 16], [17, 12], [19, 8], [21, 6], [23, 11], [25, 15], [27, 18], [19, 14], [22, 16]];
+  for (const [x, y] of flames) {
+    img.set(x, y, y < 12 ? hex('#ffe08a') : hex('#e07030'));
+    img.set(x, y + 1, hex('#a83820'));
+    img.set(x + 1, y, y < 14 ? hex('#fff0c0') : hex('#e07030'));
+  }
   silhouette(img, INK);
   return img;
 }
@@ -1556,6 +1578,10 @@ function buildActors() {
     bandit: 26,
     archer: 27,
     leader: 28,
+    greymaw: 29,
+    vetch: 30,
+    widow: 31,
+    mira: 32,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1718,6 +1744,35 @@ function buildActors() {
       blob(9, 16, 3, 5, hex('#3a241c'));
       img.set(6, 10, hex('#1c1418'));
       img.set(9, 10, hex('#1c1418'));
+    } else if (kind === 'greymaw') {
+      blob(3, 8, 10, 6, hex('#3a4450'));
+      blob(10, 9, 4, 3, hex('#8aa4b4'));
+      blob(4, 14, 2, 5, hex('#2a3038'));
+      blob(9, 14, 2, 5, hex('#2a3038'));
+      img.set(6, 10, hex('#e6c15a'));
+      img.set(8, 10, hex('#e6c15a'));
+    } else if (kind === 'vetch') {
+      blob(5, 4, 6, 5, hex('#3a241c'));
+      blob(4, 9, 8, 7, hex('#6a2420'));
+      blob(5, 16, 2, 6, hex('#2a2018'));
+      blob(9, 16, 2, 6, hex('#2a2018'));
+      blob(11, 8, 3, 6, hex('#d7dee6'));
+    } else if (kind === 'widow') {
+      blob(6, 9, 5, 5, hex('#d5e4ee'));
+      blob(1, 7, 4, 2, hex('#8aa4b4'));
+      blob(12, 7, 4, 2, hex('#8aa4b4'));
+      blob(1, 15, 4, 2, hex('#8aa4b4'));
+      blob(12, 15, 4, 2, hex('#8aa4b4'));
+      img.set(7, 11, hex('#1c1418'));
+      img.set(9, 11, hex('#1c1418'));
+    } else if (kind === 'mira') {
+      blob(5, 2, 6, 6, hex('#f4f1ea'));
+      blob(4, 8, 8, 8, hex('#d8d0c4'));
+      blob(5, 16, 2, 6, hex('#f4f1ea'));
+      blob(9, 16, 2, 6, hex('#f4f1ea'));
+      img.set(6, 4, hex('#6a3030'));
+      img.set(9, 4, hex('#6a3030'));
+      blob(2, 10, 2, 6, hex('#8a3030'));
     } else if (kind === 'bones') {
       blob(6, 4, 4, 4, hex('#e6e0d4'));
       blob(5, 9, 6, 6, hex('#d8d0c4'));
@@ -1744,6 +1799,10 @@ function buildActors() {
     ['bandit', 26],
     ['archer', 27],
     ['leader', 28],
+    ['greymaw', 29],
+    ['vetch', 30],
+    ['widow', 31],
+    ['mira', 32],
   ]) {
     const img = critter(name);
     for (let dir = 0; dir < 4; dir++) {
@@ -1762,6 +1821,22 @@ function buildActors() {
       rows: rowOf,
     },
   };
+}
+
+function drawAnvil() {
+  const img = createImage(32, 24);
+  for (let y = 14; y <= 22; y++) {
+    for (let x = 14; x <= 17; x++) img.set(x, y, hex('#3a2418'));
+  }
+  for (let y = 8; y <= 14; y++) {
+    for (let x = 6; x <= 26; x++) img.set(x, y, y < 11 ? hex('#8b97a3') : hex('#5c656e'));
+  }
+  for (let x = 8; x <= 24; x++) img.set(x, 7, hex('#d7dee6'));
+  img.set(10, 10, hex('#e07030'));
+  img.set(11, 10, hex('#ffe08a'));
+  img.set(12, 11, hex('#a83820'));
+  silhouette(img, INK);
+  return img;
 }
 
 function buildProps() {
@@ -1784,6 +1859,7 @@ function buildProps() {
     bush: drawBush(),
     pouch: drawPouch(),
     coins: drawCoins(),
+    anvil: drawAnvil(),
   };
   // Pack left to right, wrapping at 128px. Record anchors at bottom center.
   const sheetW = 128;
@@ -1960,12 +2036,35 @@ function buildMap(tiles) {
       const cy = y + 1;
       if (cy < y + roofH - 1) g[cy][cx] = T.CHIMNEY;
     }
-    return { doorX: x + doorLeft, doorY: y + h - 1 };
+    // The room under the eaves is a floor you can walk. The door is the way in.
+    for (let yy = roofH; yy < h - 1; yy++) {
+      for (let xx = 1; xx < w - 1; xx++) {
+        g[y + yy][x + xx] = T.FLOOR;
+        solid[y + yy][x + xx] = 0;
+      }
+    }
+    for (let xx = doorLeft; xx < doorLeft + doorW; xx++) {
+      for (let yy = Math.max(roofH, doorTop + 1); yy < h; yy++) {
+        g[y + yy][x + xx] = T.FLOOR;
+        solid[y + yy][x + xx] = 0;
+      }
+    }
+    return {
+      x,
+      y,
+      w,
+      h,
+      roofH,
+      doorX: x + doorLeft,
+      doorY: y + h - 1,
+      inX: x + Math.floor(w / 2),
+      inY: y + roofH + 1,
+    };
   }
 
   const inn = building(16, 26, 12, 8, { chimney: true, chamfer: true, long: true });
   const shop = building(36, 26, 12, 8, { shop: true, chamfer: true });
-  // Mead hall: stone, not a castle. Door faces the south yard. Interiors are not enterable.
+  // Mead hall: stone, not a castle. Door faces the south yard. The room under the eaves is open.
   const meadHall = building(14, 40, 16, 8, { chimney: true, stone: true, chamfer: true, long: true });
   building(40, 40, 10, 7, { chamfer: true });
   const guild = building(38, 51, 16, 8, { chimney: true, chamfer: true, long: true });
@@ -2006,21 +2105,23 @@ function buildMap(tiles) {
   add('spawn', 'player', 30, 31);
   add('bind', 'inn-yard', 22, 36);
 
-  add('npc', 'brenna', 39, 34, { defId: 'brenna', sprite: 'brenna' });
-  add('npc', 'hilda', 21, 34, { defId: 'hilda', sprite: 'hilda' });
   add('npc', 'torvald', 24, 39, { defId: 'torvald', sprite: 'torvald' });
   add('npc', 'soren', 33, 26, { defId: 'soren', sprite: 'soren' });
-  // Just outside the mead-hall door. The door tile itself is solid.
+  // Jarl stays in the yard, where the hold can see her. Guild folk stand in their halls.
   add('npc', 'freya', meadHall.doorX, meadHall.doorY + 1, { defId: 'freya', sprite: 'freya' });
-  add('npc', 'eirik', guild.doorX, guild.doorY + 1, { defId: 'eirik', sprite: 'eirik' });
-  add('npc', 'ivar', forge.doorX, forge.doorY + 1, { defId: 'ivar', sprite: 'ivar' });
-  add('npc', 'signe', needles.doorX, needles.doorY + 1, { defId: 'signe', sprite: 'signe' });
-  add('npc', 'ysolde', wizHall.doorX, wizHall.doorY + 1, { defId: 'ysolde', sprite: 'ysolde' });
-  add('npc', 'torunn', shaHall.doorX, shaHall.doorY + 1, { defId: 'torunn', sprite: 'torunn' });
-  add('npc', 'sable', rogHall.doorX, rogHall.doorY + 1, { defId: 'sable', sprite: 'sable' });
-  add('npc', 'hroth', berHall.doorX, berHall.doorY + 1, { defId: 'hroth', sprite: 'hroth' });
-  add('npc', 'bjorn', wdHall.doorX, wdHall.doorY + 1, { defId: 'bjorn', sprite: 'bjorn' });
-  add('npc', 'sigrid', smithy.doorX, smithy.doorY + 1, { defId: 'sigrid', sprite: 'sigrid' });
+  add('npc', 'brenna', shop.inX, shop.inY, { defId: 'brenna', sprite: 'brenna' });
+  add('npc', 'hilda', inn.inX - 1, inn.inY, { defId: 'hilda', sprite: 'hilda' });
+  add('npc', 'sefa', inn.inX + 2, inn.inY, { defId: 'sefa', sprite: 'sefa' });
+  add('npc', 'eirik', guild.inX, guild.inY, { defId: 'eirik', sprite: 'eirik' });
+  add('npc', 'marta', forge.inX, forge.inY, { defId: 'marta', sprite: 'marta' });
+  add('npc', 'ivar', forge.doorX + 3, forge.doorY + 2, { defId: 'ivar', sprite: 'ivar' });
+  add('npc', 'signe', needles.inX, needles.inY, { defId: 'signe', sprite: 'signe' });
+  add('npc', 'ysolde', wizHall.inX, wizHall.inY, { defId: 'ysolde', sprite: 'ysolde' });
+  add('npc', 'torunn', shaHall.inX, shaHall.inY, { defId: 'torunn', sprite: 'torunn' });
+  add('npc', 'sable', rogHall.inX, rogHall.inY, { defId: 'sable', sprite: 'sable' });
+  add('npc', 'hroth', berHall.inX, berHall.inY, { defId: 'hroth', sprite: 'hroth' });
+  add('npc', 'bjorn', wdHall.inX, wdHall.inY, { defId: 'bjorn', sprite: 'bjorn' });
+  add('npc', 'sigrid', smithy.inX, smithy.inY, { defId: 'sigrid', sprite: 'sigrid' });
 
   const mobs = [
     ['young_wolf', 24, 16],
@@ -2041,6 +2142,7 @@ function buildMap(tiles) {
   const props = [
     { sprite: 'well', tx: 33, ty: 43, solid: true },
     { sprite: 'firepit', tx: 33, ty: 39 },
+    { sprite: 'anvil', tx: forge.doorX + 3, ty: forge.doorY + 1, solid: true },
     { sprite: 'banner', tx: 33, ty: 30 },
     { sprite: 'barrel', tx: 41, ty: 34, solid: true },
     { sprite: 'barrel', tx: 53, ty: 31, solid: true },
@@ -2128,6 +2230,10 @@ function buildMap(tiles) {
     add('prop', prop.sprite, prop.tx, prop.ty, { sprite: prop.sprite });
     if (prop.solid) solid[prop.ty][prop.tx] = 1;
   }
+  // The well is wider than one tile. Keep the stone ring from being walked through.
+  solid[43][34] = 1;
+  solid[44][33] = 1;
+  solid[44][34] = 1;
 
   // Place names drawn over the map. Labels are not feet, so they may sit on a roof.
   add('label', 'Frostmere Wilds', 30, 20);
@@ -2147,7 +2253,7 @@ function buildMap(tiles) {
   });
   add('sign', "Ivar's Forge", forge.doorX - 2, forge.doorY + 1, {
     sprite: 'sign_shop',
-    text: "Ivar's Forge. Plate and chain. The smith stands at the door.",
+    text: "Ivar's Forge. The smith works the outdoor anvil. Marta sells inside, at the price on the slate.",
   });
   add('sign', "Signe's Needles", needles.doorX - 2, needles.doorY + 1, {
     sprite: 'sign_shop',
@@ -2275,6 +2381,11 @@ function buildMap(tiles) {
   spawnMob('bandit_thug', 21, 14, 'bandit');
   spawnMob('bandit_archer', 23, 15, 'archer');
   spawnMob('camp_leader', 22, 16, 'leader');
+  spawnMob('greymaw', 36, 18, 'greymaw');
+  spawnMob('vetch', 20, 48, 'vetch');
+  spawnMob('sleetwidow', 50, 28, 'widow');
+  spawnMob('mira_palehand', 42, 8, 'mira');
+  add('npc', 'nils', 31, 68, { defId: 'nils', sprite: 'nils' });
 
   // Spawns must stand on open ground.
   for (const o of objects) {
@@ -2654,6 +2765,66 @@ function drawItemIcons() {
       img.set(6, 8, hex('#d7f0c0'));
       return img;
     })(),
+    wolf_jerkin: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, y < 6 ? hex('#c49464') : hex('#8a5a32'));
+      img.set(6, 5, hex('#5c3a28'));
+      img.set(9, 5, hex('#5c3a28'));
+      return img;
+    })(),
+    threadbare_sack: (() => {
+      const img = iconCanvas();
+      for (let y = 5; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex('#a87848'));
+      for (let x = 6; x <= 9; x++) img.set(x, 4, hex('#5c3a28'));
+      return img;
+    })(),
+    canvas_haversack: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#c4a574'));
+      for (let x = 5; x <= 10; x++) img.set(x, 3, hex('#6b4e3a'));
+      return img;
+    })(),
+    stitched_pouch: (() => {
+      const img = iconCanvas();
+      for (let y = 5; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex('#8a5438'));
+      img.set(6, 7, hex('#e6c15a'));
+      img.set(9, 9, hex('#e6c15a'));
+      return img;
+    })(),
+    hide_satchel: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#5c3a28'));
+      for (let y = 5; y <= 12; y++) img.set(7, y, hex('#c49464'));
+      return img;
+    })(),
+    chart_hoffender: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#e7d3a4'));
+      for (let x = 5; x <= 10; x++) img.set(x, 8, hex('#6b4428'));
+      img.set(8, 5, hex('#a33b32'));
+      return img;
+    })(),
+    chart_frostmere_road: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#e7d3a4'));
+      for (let y = 4; y <= 12; y++) img.set(8, y, hex('#6b4428'));
+      return img;
+    })(),
+    chart_frostmere_deep: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d5e6f0'));
+      for (let y = 4; y <= 12; y++) img.set(6, y, hex('#2c4a30'));
+      img.set(9, 8, hex('#1a4d66'));
+      return img;
+    })(),
+    chart_barrow: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d8d0c4'));
+      for (let x = 5; x <= 10; x++) img.set(x, 6, hex('#6a6058'));
+      img.set(7, 9, hex('#1c1418'));
+      img.set(8, 9, hex('#1c1418'));
+      return img;
+    })(),
     wolf_helm: (() => {
       const img = iconCanvas();
       for (let y = 3; y <= 12; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#8a8178'));
@@ -2685,10 +2856,11 @@ async function main() {
   const tileset = buildTileset();
   const actors = buildActors();
   const hero = buildHeroArt();
+  const people = buildPeopleArt();
   const props = buildProps();
   const map = buildMap(tileset);
   const tmj = buildTmj(map, tileset);
-  const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta };
+  const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };
   const itemIcons = drawItemIcons();
 
   await writePng(join(assetDir, 'tiles.png'), tileset.sheet);
@@ -2697,6 +2869,7 @@ async function main() {
   await writePng(join(assetDir, 'actors.png'), actors.sheet);
   await writePng(join(assetDir, 'hero.png'), hero.field.sheet);
   await writePng(join(assetDir, 'portrait.png'), hero.portrait.sheet);
+  await writePng(join(assetDir, 'people.png'), people.sheet);
   await writePng(join(assetDir, 'props.png'), props.sheet);
   writeFileSync(join(assetDir, 'hoffender.tmj'), JSON.stringify(tmj));
   writeFileSync(join(assetDir, 'atlas.json'), JSON.stringify(atlas, null, 2));

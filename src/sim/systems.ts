@@ -3,7 +3,10 @@ import type { Emit } from './events';
 import { dist, facingOf, hitChance, maxHp, maxMana, roll, rollDice, xpLossFraction, xpToNext } from './formulas';
 import { findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
 import { findActor, getPlayer, nextEntityId, refreshGear } from './state';
-import { TICK_MS } from './types';
+import { addItem, countItem, takeItems } from './bags';
+import { TICK_MS, type PeltReward } from './types';
+
+export { addItem };
 
 export function subject(actor: Actor): string {
   if (actor.kind === 'player') return 'You';
@@ -217,33 +220,55 @@ export function acceptQuest(state: GameState, questId: string, emit: Emit): void
   emit({ type: 'log', text: 'Eirik wants four wolf pelts from the Frostmere Wilds.' });
 }
 
-export function turnInPelts(state: GameState, content: ContentDb, emit: Emit): void {
+export function turnInPelts(state: GameState, content: ContentDb, emit: Emit, reward: PeltReward = 'helm'): void {
   const quest = state.quests.wolf_pelts;
   if (quest.stage !== 'active') return;
   const need = 4;
-  let have = 0;
-  for (const stack of state.inventory) if (stack.itemId === 'wolf_pelt') have += stack.qty;
+  const have = countItem(state, 'wolf_pelt');
   if (have < need) {
     emit({ type: 'log', text: `You have ${have} wolf pelts. Eirik asked for ${need}.` });
     return;
   }
-  let left = need;
-  for (let i = state.inventory.length - 1; i >= 0 && left > 0; i--) {
-    const stack = state.inventory[i];
-    if (!stack || stack.itemId !== 'wolf_pelt') continue;
-    const take = Math.min(stack.qty, left);
-    stack.qty -= take;
-    left -= take;
-    if (stack.qty <= 0) state.inventory.splice(i, 1);
-  }
+  takeItems(state, 'wolf_pelt', need);
   quest.stage = 'done';
   quest.progress = need;
   state.copper += 15;
   emit({ type: 'coin', copper: 15 });
   grantXp(state, content, 40, emit);
-  state.equipment.head = 'wolf_helm';
-  refreshGear(state, content);
-  emit({ type: 'log', text: 'Eirik pays you and sets a wolf helm on your brow. The snout sits over your forehead.' });
+  const itemId = reward === 'jerkin' ? 'wolf_jerkin' : 'wolf_helm';
+  const slot = reward === 'jerkin' ? 'chest' : 'head';
+  const name = reward === 'jerkin' ? 'wolf-hide jerkin' : 'wolf-head helm';
+  if (!state.equipment[slot]) {
+    state.equipment[slot] = itemId;
+    refreshGear(state, content);
+    emit({ type: 'log', text: `Eirik pays you and sets a ${name} on you.` });
+  } else {
+    const left = addItem(state, content, itemId, 1);
+    refreshGear(state, content);
+    emit({
+      type: 'log',
+      text: left > 0 ? `Eirik pays you. Your bags are full, so he holds the ${name}.` : `Eirik pays you and puts a ${name} in your bag.`,
+    });
+  }
+}
+
+/** The smith is at the anvil about two talks in five, and then he will not haggle. */
+export function ivarIsBusy(state: GameState): boolean {
+  const bucket = Math.floor(state.timeMs / 20000);
+  const n = Math.imul((bucket + 1) ^ state.seed, 0x9e3779b1) >>> 0;
+  return n % 5 < 2;
+}
+
+/** Ivar shaves the slate when he is the one selling. Marta and everyone else take the listed price. */
+export function askPrice(npcId: string, list: number): number {
+  if (npcId !== 'ivar') return list;
+  return Math.max(1, Math.round(list * 0.8));
+}
+
+export function mobRespawnDelay(state: GameState, content: ContentDb, named: boolean): number {
+  const base = named ? content.tuning.namedRespawnMs : content.tuning.mobRespawnMs;
+  const jitter = named ? content.tuning.namedRespawnJitterMs : content.tuning.mobRespawnJitterMs;
+  return base + Math.floor(roll(state) * Math.max(0, jitter));
 }
 
 export function openInspect(state: GameState, title: string, body: string): void {
@@ -379,7 +404,7 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
     return;
   }
   target.corpseMs = content.tuning.corpseFadeMs;
-  target.respawnMs = content.tuning.mobRespawnMs;
+  target.respawnMs = target.pet ? 20000 : content.tuning.mobRespawnMs;
   emit({ type: 'log', text: `${cap(subject(target))} falls.` });
   if (state.targetId === target.id) state.targetId = null;
   for (const actor of state.actors) {
@@ -399,6 +424,7 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
   if (!def) return;
   grantXp(state, content, def.xp, emit);
   dropLoot(state, content, map, target, emit);
+  if (!target.pet) target.respawnMs = mobRespawnDelay(state, content, def.named === true);
 }
 
 function grantXp(state: GameState, content: ContentDb, amount: number, emit: Emit): void {
@@ -465,26 +491,6 @@ function scatter(state: GameState, map: MapData, x: number, y: number): { x: num
   return tryMove(map, x, y, Math.cos(angle) * mag, Math.sin(angle) * mag, 2, 2, false);
 }
 
-export function addItem(state: GameState, content: ContentDb, itemId: string, qty: number): number {
-  const def = content.items[itemId];
-  if (!def || qty <= 0) return qty;
-  let left = qty;
-  if (def.stack > 1) {
-    for (const stack of state.inventory) {
-      if (stack.itemId !== itemId || left <= 0) continue;
-      const room = def.stack - stack.qty;
-      const moved = Math.min(room, left);
-      stack.qty += moved;
-      left -= moved;
-    }
-  }
-  while (left > 0 && state.inventory.length < content.tuning.bagSlots) {
-    const moved = Math.min(def.stack, left);
-    state.inventory.push({ itemId, qty: moved });
-    left -= moved;
-  }
-  return left;
-}
 
 function followPath(map: MapData, actor: Actor, goal: { x: number; y: number }, speed: number, forMob: boolean, rx: number, ry: number): void {
   const goalTile = tileOf(map, goal.x, goal.y);
@@ -602,6 +608,8 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
     const quest = state.quests.wolf_pelts;
     if (quest.stage === 'done') nodeId = 'done';
     else if (quest.stage === 'active') nodeId = 'active';
+  } else if (npc.defId === 'ivar' && ivarIsBusy(state)) {
+    nodeId = 'busy';
   }
   state.ui = { panel: 'dialogue', npcId: npc.id, nodeId, title: null, body: null };
   state.input.dest = null;
@@ -636,19 +644,46 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       continue;
     }
     if (mob.pet) {
-      const foe = findActor(state, state.targetId);
-      const goal = foe && foe.alive && foe.kind === 'mob' && !foe.pet && !isSafe(map, player.x, player.y) ? foe : player;
+      const speed = (def.speed ?? 60) * (TICK_MS / 1000);
       mob.homeX = player.x;
       mob.homeY = player.y;
-      if (dist(mob, goal) > (goal === player ? 22 : 16)) {
-        followPath(map, mob, goal, (def.speed ?? 60) * (TICK_MS / 1000), true, tuning.footRx, tuning.footRy);
-      } else if (goal !== player) {
-        mob.attackMs -= TICK_MS;
-        mob.facing = facingOf(goal.x - mob.x, goal.y - mob.y, mob.facing);
-        if (mob.attackMs <= 0) {
-          mob.attackMs = def.delayMs;
-          resolveStrike(state, content, map, mob, goal, def.damage, def.attack, false, def.verb, emit);
+      const order = state.petOrder;
+      if (order === 'stay' && state.petHold) {
+        if (dist(mob, state.petHold) > 8) followPath(map, mob, state.petHold, speed, true, tuning.footRx, tuning.footRy);
+        else mob.path = [];
+        continue;
+      }
+      if (order === 'backoff') {
+        if (dist(mob, player) > 18) followPath(map, mob, player, speed, true, tuning.footRx, tuning.footRy);
+        else mob.path = [];
+        continue;
+      }
+      let foe = order === 'attack' ? findActor(state, state.petFocus) : null;
+      if (order === 'attack' && (!foe || !foe.alive || foe.pet || foe.kind !== 'mob')) {
+        state.petOrder = 'follow';
+        state.petFocus = null;
+        foe = null;
+      }
+      if (!foe && order !== 'attack') {
+        const marked = findActor(state, state.targetId);
+        if (marked && marked.alive && marked.kind === 'mob' && !marked.pet && !isSafe(map, player.x, player.y)) foe = marked;
+      }
+      if (foe) {
+        if (dist(mob, foe) > tuning.meleeRange) {
+          followPath(map, mob, foe, speed, true, tuning.footRx, tuning.footRy);
+        } else {
+          mob.path = [];
+          mob.attackMs -= TICK_MS;
+          mob.facing = facingOf(foe.x - mob.x, foe.y - mob.y, mob.facing);
+          if (mob.attackMs <= 0) {
+            mob.attackMs = def.delayMs;
+            resolveStrike(state, content, map, mob, foe, def.damage, def.attack, false, def.verb, emit);
+          }
         }
+      } else if (dist(mob, player) > 22) {
+        followPath(map, mob, player, speed, true, tuning.footRx, tuning.footRy);
+      } else {
+        mob.path = [];
       }
       continue;
     }
@@ -723,7 +758,7 @@ export function combat(state: GameState, content: ContentDb, map: MapData, emit:
   if (state.dead) return;
   for (const mob of state.actors) {
     if (state.dead) return;
-    if (mob.kind !== 'mob' || !mob.alive) continue;
+    if (mob.kind !== 'mob' || !mob.alive || mob.pet) continue;
     const target = topHateTarget(state, mob);
     if (!target) continue;
     if (dist(mob, target) > tuning.meleeRange) continue;
@@ -870,7 +905,7 @@ export function respawnMobs(state: GameState, content: ContentDb): void {
   const player = getPlayer(state);
   for (const mob of state.actors) {
     if (mob.kind !== 'mob' || mob.alive || mob.respawnMs > 0) continue;
-    if (dist(mob, player) < 28) {
+    if (!mob.pet && dist(mob, player) < 28) {
       mob.respawnMs = 1000;
       continue;
     }
