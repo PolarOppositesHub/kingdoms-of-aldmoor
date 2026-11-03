@@ -172,6 +172,7 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
     player.y = save.y;
   }
   syncCompanion(state, content);
+  state.sitting = false;
   if (save.note) state.log.push(save.note);
   return save.note ?? '';
 }

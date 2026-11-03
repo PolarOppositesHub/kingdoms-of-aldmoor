@@ -236,12 +236,13 @@ export interface Tuning {
   critMult: number;
   strBonusDiv: number;
   acMitigate: number;
-  regenDelayMs: number;
-  regenHpPerSec: number;
-  townRegenHpPerSec: number;
-  combatManaPerSec: number;
-  restManaPerSec: number;
-  townManaPerSec: number;
+  standHpPerSec: number;
+  sitHpPerSec: number;
+  standManaPerSec: number;
+  sitManaPerSec: number;
+  townPostureMult: number;
+  /** Multiplier added per level above 1 on top of the standing and sitting rates. */
+  regenLevelGrowth: number;
   swingWindupMs: number;
   itemLockMs: number;
   respawnDelayMs: number;
@@ -434,6 +435,8 @@ export interface GameState {
   powerMs: number;
   sex: 'male' | 'female';
   autoAttack: boolean;
+  /** Resting. Standing is the trickle; sitting is the fast regen. Not written to the save. */
+  sitting: boolean;
   targetId: string | null;
   cooldowns: Record<string, number>;
   itemLockMs: number;
@@ -486,6 +489,7 @@ export type Intent =
   | { type: 'clearTarget' }
   | { type: 'cycleTarget' }
   | { type: 'toggleAutoAttack' }
+  | { type: 'toggleSit' }
   | { type: 'ability'; id: string }
   | { type: 'selectClass'; classId: string }
   | { type: 'createHero'; raceId: string; classId: string; bonus: Stats; sex?: 'male' | 'female' }
@@ -509,7 +513,8 @@ export type Intent =
   | { type: 'abandonQuest'; id: string }
   | { type: 'openHelp' }
   | { type: 'close' }
-  | { type: 'debugTeleport'; x: number; y: number };
+  | { type: 'debugTeleport'; x: number; y: number }
+  | { type: 'debugGrantXp'; amount: number };
 
 export interface Spawn {
   kind: string;

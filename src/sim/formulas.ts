@@ -43,7 +43,7 @@ export function conLabel(color: ConColor): string {
   }
 }
 
-/** Below 5: none. 5–9: 2.5% of this level's bar. 10+: 5%. No delevel in M1. */
+/** Below 5: none. 5–9: 2.5% of this level's bar. 10+: 5%. No delevel. */
 export function xpLossFraction(level: number): number {
   if (level < 5) return 0;
   if (level < 10) return 0.025;
@@ -55,15 +55,45 @@ export function xpToNext(content: ContentDb, level: number): number {
   return table[level] ?? table[table.length - 1] ?? 100;
 }
 
+/** Gray gives nothing. Green is half. The rest of the ladder pays the listed amount. */
+export function xpYield(playerLevel: number, mobLevel: number, amount: number): number {
+  const color = conColor(playerLevel, mobLevel);
+  const mod = color === 'gray' ? 0 : color === 'green' ? 0.5 : 1;
+  return Math.floor(amount * mod);
+}
+
+export function xpProgress(content: ContentDb, level: number, xp: number): { need: number; ratio: number; capped: boolean } {
+  if (level >= content.tuning.levelCap) return { need: 0, ratio: 1, capped: true };
+  const need = Math.max(1, xpToNext(content, level));
+  return { need, ratio: Math.max(0, Math.min(1, xp / need)), capped: false };
+}
+
+/**
+ * Levels 1–10 keep the original per-level step.
+ * Each level past 10 also adds half a step, so the later climb still grows.
+ */
+function levelBodies(perLevel: number, level: number): number {
+  const climbed = Math.max(0, level - 1);
+  const veteran = Math.max(0, level - 10);
+  return climbed * perLevel + veteran * Math.ceil(perLevel / 2);
+}
+
 export function maxHp(content: ContentDb, classId: string, level: number, stats: Stats): number {
   const cls = content.classes[classId];
-  return cls.baseHp + stats.sta * cls.hpPerSta + (level - 1) * cls.hpPerLevel;
+  return cls.baseHp + stats.sta * cls.hpPerSta + levelBodies(cls.hpPerLevel, level);
 }
 
 export function maxMana(content: ContentDb, classId: string, level: number, stats: Stats): number {
   const cls = content.classes[classId];
   if (!cls || cls.baseMana <= 0) return 0;
-  return cls.baseMana + stats.int * cls.manaPerInt + (level - 1) * cls.manaPerLevel;
+  return cls.baseMana + stats.int * cls.manaPerInt + levelBodies(cls.manaPerLevel, level);
+}
+
+/** Level 1 matches the old flat `base + perLevel`. Later levels keep adding that step. */
+export function maxFocus(content: ContentDb, classId: string, level: number): number {
+  const cls = content.classes[classId];
+  if (!cls || (cls.resource !== 'guile' && cls.resource !== 'rage')) return 0;
+  return cls.baseFocus + cls.focusPerLevel * Math.max(1, level);
 }
 
 export function formatCoin(copper: number, economy = { copperPerSilver: 10, silverPerGold: 10, goldPerPlatinum: 10 }): string {

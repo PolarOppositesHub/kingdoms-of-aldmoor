@@ -1,6 +1,6 @@
 import type { AbilityDef, Actor, ContentDb, Dice, GameState, MapData } from './types';
 import type { Emit } from './events';
-import { dist, facingOf, hitChance, maxHp, maxMana, roll, rollDice, xpLossFraction, xpToNext } from './formulas';
+import { dist, facingOf, hitChance, roll, rollDice, xpLossFraction, xpToNext, xpYield } from './formulas';
 import { bodyBlocked, findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
 import { findActor, getPlayer, nextEntityId, refreshGear, refreshMobActivity } from './state';
 import { addItem, countItem, takeItems } from './bags';
@@ -38,6 +38,13 @@ function spellDice(state: GameState, ability: AbilityDef): Dice {
 
 function spellAttack(state: GameState): number {
   return 8 + state.level * 2 + Math.floor(state.stats.int / 2);
+}
+
+/** Movement, a swing, a cast, or a landed hit drops you out of the sit. */
+export function standUp(state: GameState, emit?: Emit): void {
+  if (!state.sitting) return;
+  state.sitting = false;
+  emit?.({ type: 'log', text: 'You stand.' });
 }
 
 export function knownAbilities(state: GameState, content: ContentDb): string[] {
@@ -101,6 +108,7 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
   const known = knownAbilities(state, content).includes(abilityId) && state.loadout.includes(abilityId);
   if (!ability || !known || state.level < ability.level) return;
   if ((state.cooldowns[ability.id] ?? 0) > 0) return;
+  standUp(state, emit);
   const player = getPlayer(state);
   const kind = ability.kind ?? 'strike';
   const self = kind === 'heal' || kind === 'ward';
@@ -420,6 +428,7 @@ export function resolveStrike(
   const crit = roll(state) < critChance;
   if (crit) damage = Math.max(1, Math.floor(damage * content.tuning.critMult));
   target.hp -= damage;
+  if (target.kind === 'player') standUp(state, emit);
   emit({ type: 'damage', targetId: target.id, sourceId: source.id, amount: damage, crit });
   const how = crit ? ' hard' : '';
   const line =
@@ -459,6 +468,7 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
     state.dead = true;
     state.deathMs = content.tuning.respawnDelayMs;
     state.autoAttack = false;
+    state.sitting = false;
     state.input.dest = null;
     state.input.pendingInteract = null;
     emit({ type: 'playerDeath' });
@@ -485,12 +495,12 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
   }
   const def = content.mobs[target.defId];
   if (!def) return;
-  grantXp(state, content, def.xp, emit);
+  grantXp(state, content, xpYield(state.level, def.level, def.xp), emit);
   dropLoot(state, content, map, target, emit);
   if (!target.pet) target.respawnMs = mobRespawnDelay(state, content, def.named === true);
 }
 
-function grantXp(state: GameState, content: ContentDb, amount: number, emit: Emit): void {
+export function grantXp(state: GameState, content: ContentDb, amount: number, emit: Emit): void {
   if (amount <= 0 || state.level >= content.tuning.levelCap) return;
   state.xp += amount;
   emit({ type: 'log', text: `You gain ${amount} experience.` });
@@ -499,10 +509,10 @@ function grantXp(state: GameState, content: ContentDb, amount: number, emit: Emi
     state.level += 1;
     const player = getPlayer(state);
     player.level = state.level;
-    player.maxHp = maxHp(content, state.classId, state.level, state.stats);
+    refreshGear(state, content);
     player.hp = player.maxHp;
-    state.maxMana = maxMana(content, state.classId, state.level, state.stats);
     state.mana = state.maxMana;
+    if (content.classes[state.classId]?.resource === 'guile') state.focus = state.focusMax;
     emit({ type: 'level', level: state.level });
     emit({ type: 'log', text: `You reach level ${state.level}. The cold feels a little thinner.` });
   }
@@ -623,6 +633,7 @@ export function movement(state: GameState, content: ContentDb, map: MapData, emi
   const tuning = content.tuning;
   const speed = tuning.playerSpeed * (TICK_MS / 1000);
   const steering = state.input.x !== 0 || state.input.y !== 0;
+  if (state.sitting && (steering || state.input.dest)) standUp(state, emit);
   if (steering) {
     state.input.dest = null;
     state.input.pendingInteract = null;
@@ -650,6 +661,7 @@ export function movement(state: GameState, content: ContentDb, map: MapData, emi
     if (target?.alive && target.kind === 'mob') {
       if (dist(player, target) > tuning.meleeRange) {
         state.input.dest = approachPoint(player, target, Math.max(8, tuning.meleeRange - 4));
+        standUp(state, emit);
       } else {
         player.path = [];
         player.facing = facingOf(target.x - player.x, target.y - player.y, player.facing);
@@ -871,6 +883,7 @@ export function combat(state: GameState, content: ContentDb, map: MapData, emit:
       if (player.attackMs <= 0) {
         const profile = weaponProfile(state, content);
         player.facing = facingOf(target.x - player.x, target.y - player.y, player.facing);
+        standUp(state, emit);
         resolveStrike(state, content, map, player, target, profile.dice, profile.attack, false, 'strike', emit);
         player.attackMs = profile.delayMs;
       }
@@ -935,23 +948,28 @@ export function pickups(state: GameState, content: ContentDb, emit: Emit): void 
   state.ground = kept;
 }
 
+function postureRate(state: GameState, content: ContentDb, map: MapData, sittingRate: number, standingRate: number): number {
+  const player = getPlayer(state);
+  const growth = 1 + Math.max(0, state.level - 1) * content.tuning.regenLevelGrowth;
+  const town = isSafe(map, player.x, player.y) ? content.tuning.townPostureMult : 1;
+  const base = state.sitting ? sittingRate : standingRate;
+  return base * growth * town;
+}
+
 export function regen(state: GameState, content: ContentDb, map: MapData): void {
   if (state.dead) return;
   const player = getPlayer(state);
-  const fightingNow = state.actors.some((actor) => actor.kind === 'mob' && !actor.pet && actor.alive && actor.hate.some((hate) => hate.id === player.id));
-  tickResources(state, content, map, fightingNow);
-  const fighting = state.actors.some(
-    (actor) => actor.kind === 'mob' && actor.alive && actor.hate.some((hate) => hate.id === player.id),
-  );
-  regenMana(state, content, map, fighting);
-  if (fighting) {
-    state.outOfCombatMs = 0;
-    return;
-  }
-  state.outOfCombatMs += TICK_MS;
-  if (state.outOfCombatMs < content.tuning.regenDelayMs || player.hp >= player.maxHp) return;
-  const rate = isSafe(map, player.x, player.y) ? content.tuning.townRegenHpPerSec : content.tuning.regenHpPerSec;
-  state.regenBank += (rate * TICK_MS) / 1000;
+  const fighting = state.actors.some((actor) => actor.kind === 'mob' && !actor.pet && actor.alive && actor.hate.some((hate) => hate.id === player.id));
+  if (fighting) state.outOfCombatMs = 0;
+  else state.outOfCombatMs += TICK_MS;
+  const manaRate = postureRate(state, content, map, content.tuning.sitManaPerSec, content.tuning.standManaPerSec);
+  tickResources(state, content, map, fighting, manaRate);
+  regenPool(state, manaRate, () => state.mana, (value) => {
+    state.mana = value;
+  }, state.maxMana, 'manaRegenBank');
+  if (player.hp >= player.maxHp) return;
+  const hpRate = postureRate(state, content, map, content.tuning.sitHpPerSec, content.tuning.standHpPerSec);
+  state.regenBank += (hpRate * TICK_MS) / 1000;
   if (state.regenBank >= 1) {
     const heal = Math.floor(state.regenBank);
     state.regenBank -= heal;
@@ -959,15 +977,14 @@ export function regen(state: GameState, content: ContentDb, map: MapData): void 
   }
 }
 
-function tickResources(state: GameState, content: ContentDb, map: MapData, fighting: boolean): void {
+function tickResources(state: GameState, content: ContentDb, map: MapData, fighting: boolean, manaRate: number): void {
   const player = getPlayer(state);
   if (state.sneakMs > 0) state.sneakMs = Math.max(0, state.sneakMs - TICK_MS);
   if (state.evadeMs > 0) state.evadeMs = Math.max(0, state.evadeMs - TICK_MS);
   if (state.powerMs > 0) state.powerMs = Math.max(0, state.powerMs - TICK_MS);
   const kind = content.classes[state.classId]?.resource;
   if (kind === 'guile' && state.focus < state.focusMax) {
-    const rate = isSafe(map, player.x, player.y) ? content.tuning.townManaPerSec : fighting ? content.tuning.combatManaPerSec : content.tuning.restManaPerSec;
-    state.manaRegenBank += (rate * TICK_MS) / 1000;
+    state.manaRegenBank += (manaRate * TICK_MS) / 1000;
     if (state.manaRegenBank >= 1) {
       const gain = Math.floor(state.manaRegenBank);
       state.manaRegenBank -= gain;
@@ -1006,19 +1023,20 @@ function emitDot(state: GameState, actor: Actor, amount: number): void {
   if (state.log.length > 12) state.log.shift();
 }
 
-function regenMana(state: GameState, content: ContentDb, map: MapData, fighting: boolean): void {
-  if (state.maxMana <= 0 || state.mana >= state.maxMana) return;
-  const player = getPlayer(state);
-  const rate = isSafe(map, player.x, player.y)
-    ? content.tuning.townManaPerSec
-    : fighting
-      ? content.tuning.combatManaPerSec
-      : content.tuning.restManaPerSec;
-  state.manaRegenBank += (rate * TICK_MS) / 1000;
-  if (state.manaRegenBank >= 1) {
-    const gain = Math.floor(state.manaRegenBank);
-    state.manaRegenBank -= gain;
-    state.mana = Math.min(state.maxMana, state.mana + gain);
+function regenPool(
+  state: GameState,
+  rate: number,
+  read: () => number,
+  write: (value: number) => void,
+  max: number,
+  bank: 'manaRegenBank',
+): void {
+  if (max <= 0 || read() >= max) return;
+  state[bank] += (rate * TICK_MS) / 1000;
+  if (state[bank] >= 1) {
+    const gain = Math.floor(state[bank]);
+    state[bank] -= gain;
+    write(Math.min(max, read() + gain));
   }
 }
 
@@ -1069,10 +1087,11 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
   state.dead = false;
   state.deathMs = 0;
   state.autoAttack = false;
+  state.sitting = false;
   state.targetId = null;
   state.input = { x: 0, y: 0, dest: null, pendingInteract: null, pendingSign: null };
   state.invulnMs = content.tuning.invulnMs;
-  state.outOfCombatMs = content.tuning.regenDelayMs;
+  state.outOfCombatMs = 0;
   for (const mob of state.actors) {
     if (mob.kind !== 'mob') continue;
     mob.hate = mob.hate.filter((hate) => hate.id !== player.id);
