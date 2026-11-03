@@ -42,7 +42,8 @@
       "greymaw": 29,
       "vetch": 30,
       "widow": 31,
-      "mira": 32
+      "mira": 32,
+      "witch": 33
     }
   },
   "props": {
@@ -304,14 +305,18 @@
       "ivar": 6,
       "marta": 7,
       "signe": 8,
-      "ysolde": 9,
+      "ingrid": 9,
       "torunn": 10,
       "sable": 11,
       "hroth": 12,
       "bjorn": 13,
       "sigrid": 14,
       "sefa": 15,
-      "nils": 16
+      "nils": 16,
+      "sigrun": 17,
+      "brand": 18,
+      "yrsa": 19,
+      "hjorvin": 20
     }
   }
 }

@@ -8,5 +8,57 @@
     "itemId": "wolf_pelt",
     "need": 4,
     "reward": "15 copper, 40 experience, and your choice of a wolf-head helm or a wolf-hide jerkin"
+  },
+  {
+    "id": "teeth_at_the_gate",
+    "name": "Teeth at the Gate",
+    "giver": "Sigrun Ashmantle",
+    "description": "Frost wolves are on the roads outside every gate. Sigrun wants them culled. Old Brand Kettilsson, by the north gate, will take five pelts.",
+    "objective": "Five wolf pelts for Old Brand",
+    "itemId": "wolf_pelt",
+    "need": 5,
+    "consume": true,
+    "rewardCopper": 25,
+    "rewardXp": 60,
+    "reward": "25 copper and 60 experience from Old Brand"
+  },
+  {
+    "id": "missing_scout",
+    "name": "The Missing Scout",
+    "giver": "Sigrun Ashmantle",
+    "description": "A scout did not come back from the frozen camp north of the gate. The fire is cold. Something was written down.",
+    "objective": "Read the journal at the frozen scout camp and tell Sigrun",
+    "itemId": "",
+    "need": 1,
+    "rewardCopper": 30,
+    "rewardXp": 80,
+    "reward": "30 copper and 80 experience"
+  },
+  {
+    "id": "icebound_cairns",
+    "name": "Icebound Cairns",
+    "giver": "Sigrun Ashmantle",
+    "description": "The journal spoke of blue light, and the cairns are full of barrow-dead. Put eight of them down. Yrsa, in Sigrid's hall, has a blade for the one who does.",
+    "objective": "Barrow-dead put down in the Icebound Cairns",
+    "itemId": "",
+    "need": 8,
+    "killId": "barrow_bones",
+    "rewardItem": "rune_blade",
+    "rewardCopper": 40,
+    "rewardXp": 120,
+    "reward": "Yrsa's rune blade, 40 copper, and 120 experience"
+  },
+  {
+    "id": "rimeheart",
+    "name": "The Rimeheart",
+    "giver": "Sigrun Ashmantle",
+    "description": "Blue lights under the ice at Rimeheart Lake. Ysolde of the Black Ice serves the Shadow King there. She is not the wizard of Hoffender. End her and come back.",
+    "objective": "Ysolde of the Black Ice",
+    "itemId": "",
+    "need": 1,
+    "killId": "ysolde_black_ice",
+    "rewardCopper": 80,
+    "rewardXp": 200,
+    "reward": "80 copper and 200 experience"
   }
 ]

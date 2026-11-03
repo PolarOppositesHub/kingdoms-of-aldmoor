@@ -6,12 +6,16 @@ import { conColor, formatCoin, xpLossFraction } from './formulas';
 import { applyIntent } from './intents';
 import { askPrice, ivarIsBusy, mobRespawnDelay, turnInPelts } from './systems';
 import { addItem, countItem, findStack, moveItem } from './bags';
-import { captureSave, migrateSave } from './save';
+import { applySave, captureSave, migrateSave } from './save';
 import { bodyBlocked, placeName } from './map';
-import { applyHero, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
+import { applyHero, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
 import { step } from './step';
 import type { MapData } from './types';
 import hoffenderRaw from '../assets/hoffender.tmj?raw';
+import innRaw from '../assets/zones/inn.tmj?raw';
+import warriorRaw from '../assets/zones/warrior.tmj?raw';
+import wizardRaw from '../assets/zones/wizard.tmj?raw';
+import barrowRaw from '../assets/zones/barrow.tmj?raw';
 import { parseTiledMap, type TiledJson } from './map';
 
 const content = loadContent();
@@ -34,6 +38,7 @@ function arena(): MapData {
     tileWidth: 16,
     collision,
     safe,
+    ground: new Uint16Array(width * height).fill(1),
     spawns: [],
     bind: { x: 40, y: 40 },
     zoneId: 'test',
@@ -198,9 +203,13 @@ describe('simulation', () => {
     const state = createWorld(content, map, 7);
     const player = getPlayer(state);
     expect(bodyBlocked(map, player.x, player.y, 5, 3, false)).toBe(false);
-    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(17);
+    expect(map.width).toBe(256);
+    expect(map.height).toBe(256);
+    expect(state.actors.filter((actor) => actor.kind === 'npc').length).toBeGreaterThanOrEqual(7);
+    expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(false);
+    expect(state.actors.some((actor) => actor.defId === 'sigrun')).toBe(true);
+    expect(state.actors.filter((actor) => actor.kind === 'mob' && !actor.dormant).length).toBeLessThanOrEqual(40);
     expect(state.actors.filter((actor) => actor.kind === 'mob').length).toBeGreaterThanOrEqual(8);
-    expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(true);
     for (let i = 0; i < 30; i++) step(state, content, map);
     expect(player.alive).toBe(true);
   });
@@ -514,32 +523,77 @@ describe('bags, charts, pets, and respawn', () => {
   it('puts guild folk indoors, the smith at the forge, and named wolves in the wilds', () => {
     const raw = JSON.parse(hoffenderRaw) as TiledJson & { layers: { name: string; data?: number[] }[] };
     const map = parseTiledMap(raw);
-    const ground = raw.layers.find((layer) => layer.name === 'ground')?.data ?? [];
-    const tileAt = (x: number, y: number) => ground[Math.floor(y / 16) * raw.width + Math.floor(x / 16)];
-    const state = createWorld(content, map, 4);
-    const eirik = state.actors.find((actor) => actor.defId === 'eirik');
-    const marta = state.actors.find((actor) => actor.defId === 'marta');
-    const ivar = state.actors.find((actor) => actor.defId === 'ivar');
-    const ysolde = state.actors.find((actor) => actor.defId === 'ysolde');
-    const freya = state.actors.find((actor) => actor.defId === 'freya');
-    expect(tileAt(eirik!.x, eirik!.y)).toBe(45);
-    expect(tileAt(marta!.x, marta!.y)).toBe(45);
-    expect(tileAt(ivar!.x, ivar!.y)).not.toBe(45);
-    expect(ysolde!.scale).toBeLessThan(freya!.scale);
+    const warrior = parseTiledMap(JSON.parse(warriorRaw) as TiledJson);
+    const wizard = parseTiledMap(JSON.parse(wizardRaw) as TiledJson);
+    const inn = parseTiledMap(JSON.parse(innRaw) as TiledJson);
+    const barrow = parseTiledMap(JSON.parse(barrowRaw) as TiledJson);
+    const tileAt = (zone: ReturnType<typeof parseTiledMap>, x: number, y: number) => zone.ground[Math.floor(y / 16) * zone.width + Math.floor(x / 16)];
+    const outdoors = createWorld(content, map, 4);
+    expect(outdoors.actors.some((actor) => actor.defId === 'eirik')).toBe(false);
+    expect(outdoors.actors.some((actor) => actor.defId === 'brenna')).toBe(false);
+    const inside = createWorld(content, warrior, 4);
+    const eirik = inside.actors.find((actor) => actor.defId === 'eirik');
+    const ivar = outdoors.actors.find((actor) => actor.defId === 'ivar');
+    const ingrid = createWorld(content, wizard, 4).actors.find((actor) => actor.defId === 'ingrid');
+    const freya = outdoors.actors.find((actor) => actor.defId === 'freya');
+    expect(tileAt(warrior, eirik!.x, eirik!.y)).toBe(45);
+    expect(tileAt(inn, inn.spawns.find((spawn) => spawn.defId === 'hilda')!.x, inn.spawns.find((spawn) => spawn.defId === 'hilda')!.y)).toBe(45);
+    expect(tileAt(map, ivar!.x, ivar!.y)).not.toBe(45);
+    expect(map.ground.includes(45)).toBe(false);
+    expect(ingrid!.scale).toBeLessThan(freya!.scale);
+    expect(ingrid!.name).toBe('Ingrid Mire');
     expect(map.spawns.some((spawn) => spawn.defId === 'greymaw')).toBe(true);
     expect(map.spawns.some((spawn) => spawn.defId === 'mira_palehand')).toBe(true);
+    expect(map.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'inn')).toBe(true);
+    expect(barrow.spawns.some((spawn) => spawn.defId === 'camp_leader')).toBe(true);
     expect(content.mobs.greymaw.named).toBe(true);
+    expect(content.mobs.greymaw.loot.some((loot) => loot.itemId === 'greymaw_pelt_cloak' && loot.chance === 0.25)).toBe(true);
     expect(content.mobs.mira_palehand.named).toBe(true);
+    expect(content.maps.hoffender.w).toBeGreaterThan(16);
+    expect(content.maps.barrow.zone).toBe('barrow');
     const warden = createWorld(content, arena(), 6);
     configurePlayer(warden, content, 'warden');
-    const wolf = warden.actors.find((actor) => actor.pet);
-    expect(wolf).toBeTruthy();
+    const pet = warden.actors.find((actor) => actor.pet);
+    expect(pet).toBeTruthy();
     warden.targetId = 'nobody';
     applyIntent(warden, { type: 'pet', order: 'attack' }, content, arena());
     expect(warden.petOrder).toBe('follow');
     applyIntent(warden, { type: 'pet', order: 'stay' }, content, arena());
     expect(warden.petOrder).toBe('stay');
     expect(warden.petHold).toBeTruthy();
+
+    const follower = createWorld(content, arena(), 8);
+    configurePlayer(follower, content, 'warden');
+    const hero = getPlayer(follower);
+    const wolf = follower.actors.find((actor) => actor.pet);
+    expect(wolf).toBeTruthy();
+    const start = wolf!.x;
+    for (let i = 0; i < 80; i++) {
+      follower.input.x = 1;
+      follower.input.y = 0;
+      step(follower, content, arena());
+    }
+    expect(hero.x).toBeGreaterThan(start + 24);
+    expect(wolf!.x).toBeGreaterThan(start + 12);
+    expect(Math.abs(wolf!.x - hero.x)).toBeLessThan(80);
+
+    const home = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+    const saved = createWorld(content, home, 9);
+    const stale = captureSave(saved);
+    stale.version = 2;
+    stale.x = 8;
+    stale.y = 8;
+    applySave(saved, content, home, stale);
+    const moved = getPlayer(saved);
+    const spawn = home.spawns.find((entry) => entry.kind === 'spawn');
+    expect(moved.x).toBe(spawn!.x);
+    expect(moved.y).toBe(spawn!.y);
+    const door = home.spawns.find((entry) => entry.kind === 'door' && entry.toZone === 'warrior');
+    expect(door?.toX).toBeTypeOf('number');
+    commitZone(saved, content, warrior, door!.toX!, door!.toY!);
+    expect(saved.zoneId).toBe('warrior');
+    expect(saved.actors.some((actor) => actor.defId === 'eirik')).toBe(true);
+    expect(getPlayer(saved).pet === undefined || saved.actors.some((actor) => actor.id === 'player')).toBe(true);
   });
 });
 

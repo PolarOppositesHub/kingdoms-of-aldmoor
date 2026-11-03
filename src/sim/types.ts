@@ -107,6 +107,13 @@ export interface QuestDef {
   itemId: string;
   need: number;
   reward: string;
+  /** When set, progress counts kills of this mob. */
+  killId?: string;
+  /** Take the objective items out of the bags on turn-in. */
+  consume?: boolean;
+  rewardCopper?: number;
+  rewardXp?: number;
+  rewardItem?: string;
 }
 
 export interface LootEntry {
@@ -153,9 +160,11 @@ export interface NpcDef {
 export interface DialogueChoice {
   label: string;
   next?: string;
-  action?: 'close' | 'merchant' | 'acceptQuest' | 'turnIn';
+  action?: 'close' | 'merchant' | 'acceptQuest' | 'turnIn' | 'sellAll';
   quest?: string;
   reward?: PeltReward;
+  /** Item sold in bulk by a sellAll choice. */
+  itemId?: string;
 }
 
 export interface DialogueNode {
@@ -282,6 +291,13 @@ export interface MapChart {
   id: string;
   name: string;
   blurb: string;
+  /** Zone this chart draws. */
+  zone: string;
+  /** Tile rectangle inside that zone. */
+  x: number;
+  y: number;
+  w: number;
+  h: number;
 }
 
 export interface RaceDef {
@@ -357,6 +373,8 @@ export interface Actor {
   dotAmount: number;
   dotBank: number;
   pet: boolean;
+  /** Far from the player. Skipped by AI and hidden by the renderer. */
+  dormant: boolean;
   /** Drawn size. Feet stay put; the body grows up from them. */
   scale: number;
 }
@@ -407,6 +425,10 @@ export interface GameState {
   petOrder: PetOrder;
   petHold: { x: number; y: number } | null;
   petFocus: string | null;
+  /** Blocks a door from firing again the moment a zone loads. */
+  portalLockMs: number;
+  /** Node name to the timeMs when it can be gathered again. */
+  nodeReady: Record<string, number>;
   sneakMs: number;
   evadeMs: number;
   powerMs: number;
@@ -432,7 +454,7 @@ export interface GameState {
     title: string | null;
     body: string | null;
   };
-  quests: { wolf_pelts: { stage: 'none' | 'active' | 'done'; progress: number } };
+  quests: Record<string, { stage: 'none' | 'active' | 'done'; progress: number }>;
   log: string[];
   bind: { x: number; y: number };
   dead: boolean;
@@ -453,7 +475,9 @@ export type SimEvent =
   | { type: 'swing'; actorId: string }
   | { type: 'aggro'; actorId: string }
   | { type: 'bolt'; fromX: number; fromY: number; toX: number; toY: number }
-  | { type: 'field'; x: number; y: number; radius: number };
+  | { type: 'field'; x: number; y: number; radius: number }
+  | { type: 'zone'; zoneId: string; x: number; y: number }
+  | { type: 'seam'; title: string };
 
 export type Intent =
   | { type: 'move'; x: number; y: number }
@@ -495,6 +519,9 @@ export interface Spawn {
   defId: string;
   sprite: string;
   text?: string;
+  toZone?: string;
+  toX?: number;
+  toY?: number;
 }
 
 export interface MapData {
@@ -503,6 +530,8 @@ export interface MapData {
   tileWidth: number;
   collision: Uint8Array;
   safe: Uint8Array;
+  /** Ground tile ids, row-major. Used to draw purchased charts. */
+  ground: Uint16Array;
   spawns: Spawn[];
   bind: { x: number; y: number };
   zoneId: string;

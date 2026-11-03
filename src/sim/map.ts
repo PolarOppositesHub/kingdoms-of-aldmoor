@@ -33,12 +33,14 @@ export interface TiledJson {
 export function parseTiledMap(raw: TiledJson): MapData {
   const collisionLayer = raw.layers.find((layer) => layer.name === 'collision');
   const safeLayer = raw.layers.find((layer) => layer.name === 'safe');
+  const groundLayer = raw.layers.find((layer) => layer.name === 'ground');
   const objectLayer = raw.layers.find((layer) => layer.name === 'objects');
-  if (!collisionLayer?.data || !safeLayer?.data) {
-    throw new Error('Hoffender map is missing collision or safe data');
+  if (!collisionLayer?.data || !safeLayer?.data || !groundLayer?.data) {
+    throw new Error('Hoffender map is missing collision, safe, or ground data');
   }
   const collision = Uint8Array.from(collisionLayer.data, (cell) => (cell ? 1 : 0));
   const safe = Uint8Array.from(safeLayer.data, (cell) => (cell ? 1 : 0));
+  const ground = Uint16Array.from(groundLayer.data);
   const spawns: Spawn[] = [];
   let bind = { x: raw.tilewidth * 2, y: raw.tilewidth * 2 };
   for (const obj of objectLayer?.objects ?? []) {
@@ -52,6 +54,9 @@ export function parseTiledMap(raw: TiledJson): MapData {
       defId: typeof props.defId === 'string' ? props.defId : obj.name,
       sprite: typeof props.sprite === 'string' ? props.sprite : obj.name,
       text: typeof props.text === 'string' ? props.text : undefined,
+      toZone: typeof props.toZone === 'string' ? props.toZone : undefined,
+      toX: typeof props.toX === 'number' ? props.toX : undefined,
+      toY: typeof props.toY === 'number' ? props.toY : undefined,
     };
     if (kind === 'bind') bind = { x: obj.x, y: obj.y };
     spawns.push(spawn);
@@ -66,6 +71,7 @@ export function parseTiledMap(raw: TiledJson): MapData {
     tileWidth: raw.tilewidth,
     collision,
     safe,
+    ground,
     spawns,
     bind,
     zoneId: typeof zone?.value === 'string' ? zone.value : 'hoffender',

@@ -2,21 +2,41 @@
   {
     "id": "hoffender",
     "name": "Hoffender",
-    "blurb": "The palisade, the mead hall, and the streets inside the hold. The gate is the north edge of the ink."
+    "blurb": "The palisade, the mead hall, the guild doors, and the four gates. The ink stops at the wall."
   },
   {
     "id": "frostmere_road",
     "name": "Frostmere Road",
-    "blurb": "The packed road north of the gate, as far as the first pines and the near camp."
+    "blurb": "The ring path and the three roads where they leave the gates, as far as the first camps."
   },
   {
     "id": "frostmere_deep",
     "name": "Deep Frostmere",
-    "blurb": "The middle wilds. A frozen stream, the pine camp, and the bear country west of it."
+    "blurb": "The north road past the scout camp, where the pines thicken and the creek starts."
+  },
+  {
+    "id": "whitepine",
+    "name": "Whitepine Fringe",
+    "blurb": "The east road through the dark pines, and the rocks that hold iron."
+  },
+  {
+    "id": "cairns",
+    "name": "Icebound Cairns",
+    "blurb": "The northwest highlands, the cairn field, and the door of the Barrow."
+  },
+  {
+    "id": "rimeheart",
+    "name": "Rimeheart",
+    "blurb": "The frozen lake at the end of the east fork. Blue light under the ice."
+  },
+  {
+    "id": "bay",
+    "name": "Hoffender Bay",
+    "blurb": "The docks, Gull Point, Saltwind Head, and the southwest shore down to Smugglers' Cove."
   },
   {
     "id": "barrow",
     "name": "The Barrow",
-    "blurb": "The far north of the Frostmere Wilds, where the ground is old and the bones do not stay down."
+    "blurb": "The rooms under the cairn. The last of them is Torsten Crowe's."
   }
 ]

@@ -349,9 +349,9 @@
       ]
     }
   },
-  "ysolde": {
+  "ingrid": {
     "start": {
-      "text": "Ysolde Mire. The wizard hall keeps its pages, even though no Barbarian may walk this path. The door is open for the day a wizard race arrives.",
+      "text": "Ingrid Mire. The wizard hall keeps its pages, even though no Barbarian may walk this path. The door is open for the day a wizard race arrives.",
       "choices": [
         {
           "label": "Show me what you teach.",
@@ -541,7 +541,7 @@
   },
   "sefa": {
     "start": {
-      "text": "Sefa Chart. I ink Hoffender, and the road just north of the gate. I do not draw the deep wilds. Nils Reed does, and he will not sell you the hold.",
+      "text": "Sefa Chart. I ink Hoffender, the near roads, and the bay. Nils Reed, north of the gate, keeps the deep wilds. Neither of us sells every chart.",
       "choices": [
         {
           "label": "Show me the charts.",
@@ -556,7 +556,7 @@
   },
   "nils": {
     "start": {
-      "text": "Nils Reed. Deep Frostmere, and the Barrow, if you mean to go that far. Sefa in the inn keeps the town. I do not.",
+      "text": "Nils Reed. Deep Frostmere, Whitepine, the Cairns, Rimeheart, and the Barrow. Sefa in the inn keeps the town and the bay. I do not.",
       "choices": [
         {
           "label": "Show me the charts.",
@@ -567,6 +567,148 @@
           "action": "close"
         }
       ]
+    }
+  },
+  "sigrun": {
+    "start": {
+      "text": "Sigrun Ashmantle. I captain the scouts. The frost wolves are on every road out of this gate, and I am short of people who come back. Will you thin them?",
+      "choices": [
+        { "label": "I'll cull the wolves.", "action": "acceptQuest", "quest": "teeth_at_the_gate" },
+        { "label": "What is out there?", "next": "wilds" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "wilds": {
+      "text": "Gate commons first, if you are new to this. Whitepine to the east. The cairns to the northwest. Rimeheart is the frozen lake, and I do not send the green ones there.",
+      "choices": [
+        { "label": "I'll take the wolves.", "action": "acceptQuest", "quest": "teeth_at_the_gate" },
+        { "label": "Back.", "next": "start" }
+      ]
+    },
+    "teeth_active": {
+      "text": "Five pelts, to Old Brand by the gate. He buys them when the task is done, and he will buy more after. The wolves are the work.",
+      "choices": [{ "label": "I'll find him.", "action": "close" }]
+    },
+    "after_teeth": {
+      "text": "Brand has the pelts. I have a worse problem. A scout did not come back from the frozen camp up the north road. The fire should still be there. See what was left.",
+      "choices": [
+        { "label": "I'll go to the camp.", "action": "acceptQuest", "quest": "missing_scout" },
+        { "label": "Not today.", "action": "close" }
+      ]
+    },
+    "scout_active": {
+      "text": "The camp is north, off the road, about a hard walk. Look for the dead fire. Read whatever they wrote.",
+      "choices": [{ "label": "I'm going.", "action": "close" }]
+    },
+    "scout_ready": {
+      "text": "Blue lights under the ice. She wrote that and then she stopped writing. That lake is Rimeheart, but the cairns are in the way, and the barrow-dead are walking.",
+      "choices": [
+        { "label": "The journal is theirs.", "action": "turnIn", "quest": "missing_scout" },
+        { "label": "Let me think.", "action": "close" }
+      ]
+    },
+    "after_scout": {
+      "text": "Eight barrow-dead in the Icebound Cairns. When they are down, Yrsa in Sigrid's hall will put a rune blade in your hand. Then we talk about the lake.",
+      "choices": [
+        { "label": "I'll clear the cairns.", "action": "acceptQuest", "quest": "icebound_cairns" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "cairns_active": {
+      "text": "Northwest, where the road climbs. The Barrow door is farther on. Torsten Crowe is in there, if you are foolish. The cairns themselves are the task I gave you. Yrsa pays the blade.",
+      "choices": [{ "label": "Understood.", "action": "close" }]
+    },
+    "after_cairns": {
+      "text": "Rimeheart. The east fork of the north road follows the creek to a frozen lake. Ysolde of the Black Ice is there. She is a frost witch in the Shadow King's service. She is not Ingrid.",
+      "choices": [
+        { "label": "I'll go to the lake.", "action": "acceptQuest", "quest": "rimeheart" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "rime_active": {
+      "text": "The lake, the blue light, the witch. Come back when she is done.",
+      "choices": [{ "label": "I'll come back.", "action": "close" }]
+    },
+    "rime_ready": {
+      "text": "You came back from Rimeheart. The scouts will sleep easier, which is all I can promise.",
+      "choices": [
+        { "label": "It is done.", "action": "turnIn", "quest": "rimeheart" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "done": {
+      "text": "The gate is quieter. It will not stay that way. You know the roads now.",
+      "choices": [{ "label": "Captain.", "action": "close" }]
+    }
+  },
+  "brand": {
+    "start": {
+      "text": "Old Brand Kettilsson. I buy pelts, and I buy them again tomorrow. Sigrun sends the hunters. I pay them.",
+      "choices": [
+        { "label": "Buy my pelts.", "action": "sellAll", "itemId": "wolf_pelt" },
+        { "label": "Show me your kit.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "quest": {
+      "text": "Five pelts and the wolves that wore them. Bring the hides here. After that I will still buy whatever you skin.",
+      "choices": [
+        { "label": "Here are the pelts.", "action": "turnIn", "quest": "teeth_at_the_gate" },
+        { "label": "Buy what I have.", "action": "sellAll", "itemId": "wolf_pelt" },
+        { "label": "I'm still hunting.", "action": "close" }
+      ]
+    }
+  },
+  "yrsa": {
+    "start": {
+      "text": "Yrsa. I upgrade what Sigrid forges and what the cairns leave behind. Iron ore from Whitepine, if you have it. I pay.",
+      "choices": [
+        { "label": "Show me the upgrades.", "action": "merchant" },
+        { "label": "Buy my ore.", "action": "sellAll", "itemId": "iron_ore" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "reward": {
+      "text": "Eight barrow-dead. I said I would cut a rune blade for that count. The cairn-iron is on the bench.",
+      "choices": [
+        { "label": "I'll take the blade.", "action": "turnIn", "quest": "icebound_cairns" },
+        { "label": "Buy my ore.", "action": "sellAll", "itemId": "iron_ore" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "after": {
+      "text": "The blade is yours. Ore is still welcome. The runes were the once.",
+      "choices": [
+        { "label": "Show me the stock.", "action": "merchant" },
+        { "label": "Buy my ore.", "action": "sellAll", "itemId": "iron_ore" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "hjorvin": {
+    "start": {
+      "text": "Hjorvin. I sing in Freya's hall. The jarl would rather I fill the benches than start a war, so the songs are about roads, not crowns.",
+      "choices": [
+        { "label": "Who is the Shadow King?", "next": "king" },
+        { "label": "Tell me about Greymaw.", "next": "grey" },
+        { "label": "What is Rimeheart?", "next": "lake" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "king": {
+      "text": "A name the north uses when the cold acts like it has a master. Ysolde of the Black Ice is said to serve him. Ingrid Mire, in the wizard hall, is a different woman. Do not mix the two if you like your teeth.",
+      "choices": [
+        { "label": "And the lake?", "next": "lake" },
+        { "label": "Back.", "next": "start" }
+      ]
+    },
+    "grey": {
+      "text": "Greymaw walks the north meadow. A wolf big enough to have a name. The hide, if it comes off, turns weather that should have turned you.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "lake": {
+      "text": "Rimeheart is the frozen lake at the end of the east fork. Scouts talk about blue light under the ice. I have not gone to see it. I am paid to sing, not to drown.",
+      "choices": [{ "label": "Back.", "next": "start" }]
     }
   }
 }

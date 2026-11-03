@@ -1,7 +1,7 @@
 import type { ContentDb, GameState, MapData } from './types';
 import { TICK_MS } from './types';
 import { collect } from './events';
-import { ai, combat, movement, pickups, regen, respawnMobs, respawnPlayer } from './systems';
+import { ai, combat, movement, pickups, portals, regen, respawnMobs, respawnPlayer } from './systems';
 
 /**
  * One fixed simulation tick.
@@ -28,6 +28,7 @@ export function step(state: GameState, content: ContentDb, map: MapData) {
     if (state.invulnMs > 0) state.invulnMs = Math.max(0, state.invulnMs - TICK_MS);
 
     movement(state, content, map, emit);
+    portals(state, content, map, emit);
     if (state.ui.panel !== 'none') {
       state.timeMs += TICK_MS;
       state.tick += 1;

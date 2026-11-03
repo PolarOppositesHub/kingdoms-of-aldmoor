@@ -19,6 +19,7 @@ import {
   writePng,
 } from './pixel.mjs';
 import { buildHeroArt, buildPeopleArt } from './hero-art.mjs';
+import { buildWorld, T } from './frostmere-map.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetDir = join(root, 'src', 'assets');
@@ -112,56 +113,6 @@ const PAL = {
 
 const TILE = 16;
 const COLS = 8;
-const MAP_W = 72;
-const MAP_H = 90;
-
-const T = {
-  SNOW: 1,
-  SNOW_B: 2,
-  SNOW_C: 3,
-  PATH: 4,
-  PATH_B: 5,
-  ICE: 6,
-  WATER: 7,
-  WATER_B: 8,
-  DOCK: 9,
-  WALL: 10,
-  WALL_FRONT: 11,
-  WINDOW: 12,
-  DOOR: 13,
-  ROOF: 14,
-  ROOF_B: 15,
-  ROOF_N: 16,
-  ROOF_W: 17,
-  ROOF_E: 18,
-  ROOF_NW: 19,
-  ROOF_NE: 20,
-  ROOF_EAVES: 21,
-  ROOF_SHOP: 22,
-  PALISADE: 23,
-  POST: 24,
-  CHIMNEY: 25,
-  AWNING: 26,
-  DOOR_SHOP: 27,
-  STONE: 28,
-  STONE_FRONT: 29,
-  STONE_DOOR: 30,
-  STONE_WIN: 31,
-  FENCE: 32,
-  DOOR_TL: 33,
-  DOOR_TR: 34,
-  DOOR_ML: 35,
-  DOOR_MR: 36,
-  DOOR_BL: 37,
-  DOOR_BR: 38,
-  SDOOR_TL: 39,
-  SDOOR_TR: 40,
-  SDOOR_ML: 41,
-  SDOOR_MR: 42,
-  SDOOR_BL: 43,
-  SDOOR_BR: 44,
-  FLOOR: 45,
-};
 
 function tileCanvas() {
   return createImage(TILE, TILE);
@@ -469,6 +420,174 @@ function paintChimney() {
   return img;
 }
 
+function paintGrass(seed) {
+  const img = tileCanvas();
+  const rand = mulberry(seed + 40);
+  img.fill(seed % 2 === 0 ? hex('#6e8f5a') : hex('#7f9a62'));
+  for (let i = 0; i < 8; i++) img.set(Math.floor(rand() * 16), Math.floor(rand() * 16), hex('#3e6b40'));
+  img.set(4, 12, hex('#c9d48a'));
+  return img;
+}
+
+function paintMud() {
+  const img = tileCanvas();
+  img.fill(hex('#6b5344'));
+  for (let i = 0; i < 10; i++) img.set((i * 5) % 16, (i * 3) % 16, hex('#4a382c'));
+  img.set(8, 8, hex('#8a6a4c'));
+  return img;
+}
+
+function paintSlush() {
+  const img = tileCanvas();
+  img.fill(hex('#c5d0c8'));
+  for (let y = 0; y < 16; y += 3) for (let x = 0; x < 16; x += 4) img.set(x, y, hex('#8aa090'));
+  img.set(6, 10, hex('#6b5344'));
+  return img;
+}
+
+function paintPineGround() {
+  const img = tileCanvas();
+  img.fill(hex('#2a3a30'));
+  img.set(3, 4, hex('#1e3324'));
+  img.set(11, 9, hex('#3e6b40'));
+  img.set(7, 13, hex('#6b5344'));
+  return img;
+}
+
+function paintRockGround() {
+  const img = tileCanvas();
+  img.fill(hex('#8b97a3'));
+  img.set(2, 3, hex('#d7dee6'));
+  img.set(12, 11, hex('#556068'));
+  img.set(6, 8, hex('#6a7580'));
+  return img;
+}
+
+function paintSand() {
+  const img = tileCanvas();
+  img.fill(hex('#d9c59a'));
+  img.set(4, 5, hex('#c4a574'));
+  img.set(11, 12, hex('#efe6c8'));
+  img.set(7, 2, hex('#b08968'));
+  return img;
+}
+
+function paintCliff() {
+  const img = tileCanvas();
+  img.fill(hex('#5c656e'));
+  for (let x = 0; x < 16; x++) img.set(x, 12, hex('#2e343a'));
+  for (let y = 0; y < 12; y++) img.set(4, y, hex('#8b97a3'));
+  img.set(9, 4, hex('#d7dee6'));
+  return img;
+}
+
+function paintFloe() {
+  const img = paintWater(0);
+  for (let y = 3; y < 13; y++) for (let x = 3; x < 13; x++) if ((x + y) % 3 !== 0) img.set(x, y, hex('#d5e6f0'));
+  img.set(6, 6, hex('#f4fbff'));
+  return img;
+}
+
+function paintDeepSnow() {
+  const img = tileCanvas();
+  img.fill(hex('#d5e0ea'));
+  for (let i = 0; i < 8; i++) img.set((i * 3) % 16, (i * 5) % 16, hex('#9aafc0'));
+  img.set(8, 8, hex('#f8fbfe'));
+  return img;
+}
+
+function paintFarm() {
+  const img = tileCanvas();
+  img.fill(hex('#8a9a62'));
+  for (let y = 2; y < 15; y += 4) for (let x = 0; x < 16; x++) img.set(x, y, hex('#6b5344'));
+  img.set(5, 6, hex('#c9d48a'));
+  return img;
+}
+
+function paintTreeTile(variant) {
+  const img = tileCanvas();
+  img.fill(variant ? hex('#e6eef4') : hex('#d5e0ea'));
+  img.set(7, 14, hex('#5c3a26'));
+  img.set(8, 14, hex('#3a2418'));
+  img.set(7, 13, hex('#5c3a26'));
+  for (let y = 2; y <= 12; y++) {
+    const reach = y < 5 ? 2 : y < 9 ? 4 : 3;
+    for (let x = 8 - reach; x <= 8 + reach; x++) {
+      img.set(x, y, (x + y) % 3 === 0 ? hex('#7aa85a') : hex('#2c4a30'));
+    }
+  }
+  img.set(8, 3, hex('#1e3324'));
+  return img;
+}
+
+function paintRockTile() {
+  const img = tileCanvas();
+  img.fill(hex('#e6eef4'));
+  for (let y = 6; y <= 13; y++) {
+    for (let x = 3; x <= 12; x++) {
+      if (y === 6 && (x < 5 || x > 10)) continue;
+      img.set(x, y, y < 9 ? hex('#d7dee6') : hex('#6a7580'));
+    }
+  }
+  img.set(6, 8, hex('#f4f7fb'));
+  return img;
+}
+
+function paintBushTile() {
+  const img = tileCanvas();
+  img.fill(hex('#e6eef4'));
+  for (let y = 8; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, y === 8 ? hex('#7aa85a') : hex('#2c4a30'));
+  return img;
+}
+
+function paintCave() {
+  const img = tileCanvas();
+  img.fill(hex('#5c656e'));
+  for (let y = 4; y <= 14; y++) {
+    for (let x = 3; x <= 12; x++) {
+      const dx = (x - 8) / 5;
+      const dy = (y - 10) / 6;
+      if (dx * dx + dy * dy < 1) img.set(x, y, hex('#1c1418'));
+    }
+  }
+  img.set(7, 9, hex('#3a4450'));
+  return img;
+}
+
+function paintStack() {
+  const img = paintWater(1);
+  for (let y = 2; y <= 13; y++) {
+    for (let x = 6; x <= 10; x++) img.set(x, y, y < 6 ? hex('#d7dee6') : hex('#556068'));
+  }
+  img.set(8, 3, hex('#f4f7fb'));
+  return img;
+}
+
+function paintShelf() {
+  const img = paintIce();
+  for (let x = 0; x < 16; x += 3) img.set(x, 8, hex('#9ec4d4'));
+  img.set(4, 4, hex('#f8fbfe'));
+  return img;
+}
+
+function paintDungeon() {
+  const img = tileCanvas();
+  img.fill(hex('#3a342e'));
+  img.set(2, 6, hex('#2a241e'));
+  img.set(11, 10, hex('#5c534c'));
+  img.set(7, 3, hex('#6a6058'));
+  return img;
+}
+
+function paintGlow() {
+  const img = paintIce();
+  img.set(6, 8, hex('#7ec8e8'));
+  img.set(7, 9, hex('#b7e3ff'));
+  img.set(9, 7, hex('#3c86a2'));
+  img.set(8, 11, hex('#d5f0ff'));
+  return img;
+}
+
 function buildTileset() {
   const tiles = new Map();
   tiles.set(T.SNOW, paintSnow(1));
@@ -504,6 +623,26 @@ function buildTileset() {
   tiles.set(T.STONE_WIN, paintStoneWin());
   tiles.set(T.FENCE, paintFence());
   tiles.set(T.FLOOR, paintFloor());
+  tiles.set(T.GRASS, paintGrass(1));
+  tiles.set(T.GRASS_B, paintGrass(2));
+  tiles.set(T.MUD, paintMud());
+  tiles.set(T.SLUSH, paintSlush());
+  tiles.set(T.PINE_GROUND, paintPineGround());
+  tiles.set(T.ROCK_GROUND, paintRockGround());
+  tiles.set(T.SAND, paintSand());
+  tiles.set(T.CLIFF, paintCliff());
+  tiles.set(T.ICE_FLOE, paintFloe());
+  tiles.set(T.DEEP_SNOW, paintDeepSnow());
+  tiles.set(T.FARM, paintFarm());
+  tiles.set(T.TREE, paintTreeTile(0));
+  tiles.set(T.TREE_B, paintTreeTile(1));
+  tiles.set(T.ROCK, paintRockTile());
+  tiles.set(T.BUSH, paintBushTile());
+  tiles.set(T.CAVE, paintCave());
+  tiles.set(T.STACK, paintStack());
+  tiles.set(T.SHELF, paintShelf());
+  tiles.set(T.DUNGEON, paintDungeon());
+  tiles.set(T.GLOW, paintGlow());
   const woodLeaves = { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
   const stoneLeaves = { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR };
   for (const [part, id] of Object.entries(woodLeaves)) tiles.set(id, paintDoorLeaf(part, false));
@@ -1003,6 +1142,22 @@ function wizardOverlay(dir) {
     for (let y = 4; y <= 20; y++) img.set(staffX, y, WOOD_DARK);
     img.set(staffX, 3, gem);
     img.set(staffX, 2, gemHi);
+  };
+}
+
+function witchOverlay(dir) {
+  return (img) => {
+    const ice = hex('#b7e3ff');
+    const iceHi = hex('#f4fbff');
+    if (dir === 's' || dir === 'n') {
+      for (let x = 5; x <= 10; x++) img.set(x, 1, hex('#102f3e'));
+      img.set(6, 2, ice);
+      img.set(9, 2, iceHi);
+    }
+    const staffX = dir === 'e' ? 12 : 2;
+    for (let y = 4; y <= 20; y++) img.set(staffX, y, hex('#1a4d66'));
+    img.set(staffX, 3, iceHi);
+    img.set(staffX, 2, ice);
   };
 }
 
@@ -1582,6 +1737,7 @@ function buildActors() {
     vetch: 30,
     widow: 31,
     mira: 32,
+    witch: 33,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1661,6 +1817,7 @@ function buildActors() {
     { row: 17, tint: clothTint(hex('#6a2420'), hex('#a33b32'), hex('#3a1410'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
     { row: 18, tint: clothTint(hex('#2a4038'), hex('#4e7a68'), hex('#1a2822'), hex('#c8c0b6'), hex('#f4f1ea')), overlay: () => (img) => img },
     { row: 19, tint: clothTint(hex('#3a3230'), hex('#6a5a50'), hex('#241c1a'), hex('#5c4030'), hex('#a86840')), overlay: () => (img) => img },
+    { row: 33, tint: clothTint(hex('#163044'), hex('#3c86a2'), hex('#0c1c28'), hex('#d5e6f0'), hex('#f4fbff')), overlay: (dir) => witchOverlay(dir) },
   ];
 
   for (const person of people) {
@@ -1896,515 +2053,6 @@ function grid(w, h, fill) {
   return Array.from({ length: h }, () => Array(w).fill(fill));
 }
 
-function buildMap(tiles) {
-  const g = grid(MAP_W, MAP_H, 0);
-  const solid = grid(MAP_W, MAP_H, 0);
-  const safe = grid(MAP_W, MAP_H, 0);
-  const rand = mulberry(7);
-
-  for (let y = 0; y < MAP_H; y++) {
-    for (let x = 0; x < MAP_W; x++) {
-      const n = Math.floor(mulberry((y + 1) * 1000 + x)() * 3);
-      g[y][x] = n === 0 ? T.SNOW : n === 1 ? T.SNOW_B : T.SNOW_C;
-    }
-  }
-
-  // Fjord along the east.
-  const shore = MAP_W - 7;
-  for (let y = 0; y < MAP_H; y++) {
-    for (let x = shore + 1; x < MAP_W; x++) {
-      g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
-      solid[y][x] = 1;
-    }
-    g[y][shore] = T.ICE;
-  }
-
-  const stamp = (x, y, tile, blocked = false) => {
-    if (x < 0 || y < 0 || x >= MAP_W || y >= g.length) return;
-    g[y][x] = tile;
-    if (blocked) solid[y][x] = 1;
-  };
-
-  const fillRect = (x, y, w, h, tile, blocked = false) => {
-    for (let yy = y; yy < y + h; yy++) {
-      for (let xx = x; xx < x + w; xx++) stamp(xx, yy, tile, blocked);
-    }
-  };
-
-  // Roads. Vertical avenue and the east-west street.
-  fillRect(29, 6, 3, 56, T.PATH);
-  fillRect(16, 35, 29, 3, T.PATH);
-  // Porches in front of the north buildings.
-  fillRect(18, 34, 8, 1, T.PATH_B);
-  fillRect(36, 34, 8, 1, T.PATH_B);
-  // Approach shoulders
-  for (let y = 8; y < 24; y += 3) {
-    stamp(28, y, T.PATH_B);
-    stamp(32, y, T.PATH_B);
-  }
-
-  // Dock on the new shore.
-  fillRect(shore - 2, 30, 3, 4, T.DOCK, false);
-  for (let y = 30; y <= 33; y++) {
-    solid[y][shore] = 0;
-    g[y][shore] = T.DOCK;
-  }
-
-  // Palisade. Gate is a wide opening on the north wall where the road passes.
-  const x0 = 8;
-  const y0 = 24;
-  const x1 = 60;
-  const y1 = 84;
-  for (let x = x0; x <= x1; x++) {
-    const gate = x >= 28 && x <= 32;
-    if (!gate) {
-      stamp(x, y0, x === 27 || x === 33 ? T.POST : T.PALISADE, true);
-      stamp(x, y1, T.PALISADE, true);
-    } else {
-      stamp(x, y0, T.PATH);
-      solid[y0][x] = 0;
-    }
-  }
-  for (let y = y0 + 1; y < y1; y++) {
-    stamp(x0, y, T.PALISADE, true);
-    stamp(x1, y, T.PALISADE, true);
-  }
-
-  function building(x, y, w, h, opts) {
-    const roofH = Math.max(2, Math.round(h * (opts.long ? 0.55 : 0.45)));
-    // Character sprites are 24px. A door is 2 tiles wide (32px) and 3 tall (48px),
-    // so it stands clearly taller and wider than the person in front of it.
-    const doorW = 2;
-    const doorH = 3;
-    const doorLeft = Math.floor((w - doorW) / 2);
-    const doorTop = h - doorH;
-    const wallTile = opts.stone ? T.STONE : T.WALL;
-    const frontTile = opts.stone ? T.STONE_FRONT : T.WALL_FRONT;
-    const windowTile = opts.stone ? T.STONE_WIN : T.WINDOW;
-    const leaves = opts.stone
-      ? { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR }
-      : { tl: T.DOOR_TL, tr: T.DOOR_TR, ml: T.DOOR_ML, mr: T.DOOR_MR, bl: T.DOOR_BL, br: T.DOOR_BR };
-    const isDoor = (xx, yy) => xx >= doorLeft && xx < doorLeft + doorW && yy >= doorTop && yy < h;
-    const windows = new Set();
-    const markWindow = (xx, yy) => {
-      if (xx < 0 || yy < roofH || xx >= w || yy >= h || isDoor(xx, yy)) return;
-      windows.add(yy * w + xx);
-    };
-    const bay = (x0) => {
-      for (let dy = 0; dy < 2; dy++) for (let dx = 0; dx < 2; dx++) markWindow(x0 + dx, roofH + dy);
-    };
-    for (let wx = 1; wx + 2 <= doorLeft; wx += 3) bay(wx);
-    for (let wx = doorLeft + doorW + 1; wx + 2 <= w - 1; wx += 3) bay(wx);
-    for (const yy of [roofH, roofH + 1]) {
-      markWindow(0, yy);
-      markWindow(w - 1, yy);
-    }
-    for (let yy = 0; yy < h; yy++) {
-      for (let xx = 0; xx < w; xx++) {
-        const X = x + xx;
-        const Y = y + yy;
-        if (opts.chamfer && yy < 2 && (xx < 2 || xx >= w - 2)) continue;
-        solid[Y][X] = 1;
-        if (yy < roofH) {
-          const north = yy === 0;
-          const west = xx === 0;
-          const east = xx === w - 1;
-          const eaves = yy === roofH - 1;
-          let tile = (xx + yy) % 5 === 0 ? T.ROOF_B : T.ROOF;
-          if (eaves) tile = opts.shop ? T.ROOF_SHOP : T.ROOF_EAVES;
-          else if (north && west) tile = T.ROOF_NW;
-          else if (north && east) tile = T.ROOF_NE;
-          else if (north) tile = T.ROOF_N;
-          else if (west) tile = T.ROOF_W;
-          else if (east) tile = T.ROOF_E;
-          g[Y][X] = tile;
-        } else if (isDoor(xx, yy)) {
-          const band = yy === doorTop ? 't' : yy === h - 1 ? 'b' : 'm';
-          const side = xx === doorLeft ? 'l' : 'r';
-          g[Y][X] = leaves[band + side];
-        } else if (windows.has(yy * w + xx)) {
-          g[Y][X] = windowTile;
-        } else if (yy === h - 1) {
-          g[Y][X] = opts.shop ? T.AWNING : frontTile;
-        } else {
-          g[Y][X] = wallTile;
-        }
-      }
-    }
-    if (opts.chimney) {
-      const cx = x + 2;
-      const cy = y + 1;
-      if (cy < y + roofH - 1) g[cy][cx] = T.CHIMNEY;
-    }
-    // The room under the eaves is a floor you can walk. The door is the way in.
-    for (let yy = roofH; yy < h - 1; yy++) {
-      for (let xx = 1; xx < w - 1; xx++) {
-        g[y + yy][x + xx] = T.FLOOR;
-        solid[y + yy][x + xx] = 0;
-      }
-    }
-    for (let xx = doorLeft; xx < doorLeft + doorW; xx++) {
-      for (let yy = Math.max(roofH, doorTop + 1); yy < h; yy++) {
-        g[y + yy][x + xx] = T.FLOOR;
-        solid[y + yy][x + xx] = 0;
-      }
-    }
-    return {
-      x,
-      y,
-      w,
-      h,
-      roofH,
-      doorX: x + doorLeft,
-      doorY: y + h - 1,
-      inX: x + Math.floor(w / 2),
-      inY: y + roofH + 1,
-    };
-  }
-
-  const inn = building(16, 26, 12, 8, { chimney: true, chamfer: true, long: true });
-  const shop = building(36, 26, 12, 8, { shop: true, chamfer: true });
-  // Mead hall: stone, not a castle. Door faces the south yard. The room under the eaves is open.
-  const meadHall = building(14, 40, 16, 8, { chimney: true, stone: true, chamfer: true, long: true });
-  building(40, 40, 10, 7, { chamfer: true });
-  const guild = building(38, 51, 16, 8, { chimney: true, chamfer: true, long: true });
-  building(10, 51, 12, 8, { chamfer: true, long: true });
-  const forge = building(49, 26, 10, 8, { chimney: true, chamfer: true });
-  const needles = building(50, 40, 9, 8, { shop: true, chamfer: true });
-  const wizHall = building(10, 64, 14, 8, { chimney: true, chamfer: true, long: true });
-  const shaHall = building(26, 64, 14, 8, { chamfer: true, long: true });
-  const rogHall = building(42, 64, 14, 8, { chamfer: true, long: true });
-  const berHall = building(10, 74, 14, 8, { chimney: true, chamfer: true, long: true });
-  const wdHall = building(26, 74, 14, 8, { chamfer: true, long: true });
-  const smithy = building(42, 74, 14, 8, { chimney: true, chamfer: true });
-  // Alley between the halls, plus the streets their doors open onto.
-  fillRect(24, 50, 2, 34, T.PATH);
-  fillRect(12, 72, 46, 2, T.PATH);
-  fillRect(12, 82, 46, 2, T.PATH);
-  fillRect(12, 49, 46, 2, T.PATH);
-  // Wooden fences on the outskirts, with the road left open.
-  for (let x = 6; x <= 26; x++) stamp(x, 18, T.FENCE, true);
-  for (let x = 34; x <= 56; x++) stamp(x, 18, T.FENCE, true);
-  // A short stone wall beside the mead hall. Not a castle.
-  for (let y = 48; y <= 50; y++) stamp(12, y, T.STONE, true);
-
-  // Safe yard: inside the walls, not the wall tiles themselves, not the gate.
-  for (let y = y0 + 1; y < y1; y++) {
-    for (let x = x0 + 1; x < x1; x++) safe[y][x] = 1;
-  }
-
-  // Props and spawns. Feet positions are pixels.
-  const px = (tx, ty) => ({ x: tx * TILE + 8, y: ty * TILE + 14 });
-  /** @type {{kind:string,name:string,defId?:string,sprite?:string,x:number,y:number}[]} */
-  const objects = [];
-  const add = (kind, name, tx, ty, extra = {}) => {
-    const p = px(tx, ty);
-    objects.push({ kind, name, x: p.x, y: p.y, ...extra });
-  };
-
-  add('spawn', 'player', 30, 31);
-  add('bind', 'inn-yard', 22, 36);
-
-  add('npc', 'torvald', 24, 39, { defId: 'torvald', sprite: 'torvald' });
-  add('npc', 'soren', 33, 26, { defId: 'soren', sprite: 'soren' });
-  // Jarl stays in the yard, where the hold can see her. Guild folk stand in their halls.
-  add('npc', 'freya', meadHall.doorX, meadHall.doorY + 1, { defId: 'freya', sprite: 'freya' });
-  add('npc', 'brenna', shop.inX, shop.inY, { defId: 'brenna', sprite: 'brenna' });
-  add('npc', 'hilda', inn.inX - 1, inn.inY, { defId: 'hilda', sprite: 'hilda' });
-  add('npc', 'sefa', inn.inX + 2, inn.inY, { defId: 'sefa', sprite: 'sefa' });
-  add('npc', 'eirik', guild.inX, guild.inY, { defId: 'eirik', sprite: 'eirik' });
-  add('npc', 'marta', forge.inX, forge.inY, { defId: 'marta', sprite: 'marta' });
-  add('npc', 'ivar', forge.doorX + 3, forge.doorY + 2, { defId: 'ivar', sprite: 'ivar' });
-  add('npc', 'signe', needles.inX, needles.inY, { defId: 'signe', sprite: 'signe' });
-  add('npc', 'ysolde', wizHall.inX, wizHall.inY, { defId: 'ysolde', sprite: 'ysolde' });
-  add('npc', 'torunn', shaHall.inX, shaHall.inY, { defId: 'torunn', sprite: 'torunn' });
-  add('npc', 'sable', rogHall.inX, rogHall.inY, { defId: 'sable', sprite: 'sable' });
-  add('npc', 'hroth', berHall.inX, berHall.inY, { defId: 'hroth', sprite: 'hroth' });
-  add('npc', 'bjorn', wdHall.inX, wdHall.inY, { defId: 'bjorn', sprite: 'bjorn' });
-  add('npc', 'sigrid', smithy.inX, smithy.inY, { defId: 'sigrid', sprite: 'sigrid' });
-
-  const mobs = [
-    ['young_wolf', 24, 16],
-    ['young_wolf', 36, 17],
-    ['young_wolf', 27, 12],
-    ['wolf', 9, 10],
-    ['wolf', 12, 13],
-    ['wolf', 43, 12],
-    ['frost_wolf', 20, 7],
-    ['frost_wolf', 40, 6],
-    ['wolf', 7, 32],
-  ];
-  mobs.forEach(([defId, tx, ty], i) => {
-    add('mob', `${defId}_${i}`, tx, ty, { defId, sprite: defId });
-  });
-
-  /** @type {{sprite:string,tx:number,ty:number,solid?:boolean}[]} */
-  const props = [
-    { sprite: 'well', tx: 33, ty: 43, solid: true },
-    { sprite: 'firepit', tx: 33, ty: 39 },
-    { sprite: 'anvil', tx: forge.doorX + 3, ty: forge.doorY + 1, solid: true },
-    { sprite: 'banner', tx: 33, ty: 30 },
-    { sprite: 'barrel', tx: 41, ty: 34, solid: true },
-    { sprite: 'barrel', tx: 53, ty: 31, solid: true },
-    { sprite: 'crate', tx: 17, ty: 34, solid: true },
-    { sprite: 'crate', tx: 40, ty: 47, solid: true },
-    { sprite: 'stump', tx: 26, ty: 16, solid: true },
-    { sprite: 'stump', tx: 34, ty: 14, solid: true },
-  ];
-
-  function nearPath(tx, ty, rad) {
-    for (let y = ty - rad; y <= ty + rad; y++) {
-      for (let x = tx - rad; x <= tx + rad; x++) {
-        if (y < 0 || x < 0 || y >= MAP_H || x >= MAP_W) continue;
-        if (g[y][x] === T.PATH || g[y][x] === T.PATH_B) return true;
-      }
-    }
-    return false;
-  }
-
-  const treeSpots = [];
-  for (let y = 2; y < MAP_H - 2; y++) {
-    for (let x = 2; x < 53; x++) {
-      if (solid[y][x]) continue;
-      if (safe[y][x]) continue;
-      if (g[y][x] === T.ICE || g[y][x] === T.DOCK || g[y][x] === T.WATER || g[y][x] === T.WATER_B) continue;
-      if (nearPath(x, y, 2)) continue;
-      if (y > 20 && x > 10 && x < 50) continue;
-      treeSpots.push([x, y]);
-    }
-  }
-  // Stable shuffle
-  treeSpots.sort((a, b) => {
-    const ha = Math.imul(a[0] * 13 + a[1] * 29, 0x45d9f3b) >>> 0;
-    const hb = Math.imul(b[0] * 13 + b[1] * 29, 0x45d9f3b) >>> 0;
-    return ha - hb;
-  });
-  const used = grid(MAP_W, MAP_H, 0);
-  let trees = 0;
-  for (const [x, y] of treeSpots) {
-    if (trees >= 42) break;
-    let crowded = false;
-    for (let yy = y - 3; yy <= y + 3 && !crowded; yy++) {
-      for (let xx = x - 3; xx <= x + 3; xx++) {
-        if (yy < 0 || xx < 0 || yy >= MAP_H || xx >= MAP_W) continue;
-        if (used[yy][xx]) crowded = true;
-      }
-    }
-    if (crowded) continue;
-    used[y][x] = 1;
-    props.push({ sprite: trees % 2 ? 'tree_b' : 'tree', tx: x, ty: y, solid: true });
-    trees++;
-  }
-
-  const rockSpots = [
-    [18, 5],
-    [23, 8],
-    [38, 8],
-    [45, 9],
-    [6, 8],
-    [11, 20],
-    [48, 18],
-    [4, 40],
-    [50, 40],
-    [22, 4],
-  ];
-  for (const [x, y] of rockSpots) {
-    if (solid[y][x] || safe[y][x]) continue;
-    props.push({ sprite: 'rock', tx: x, ty: y, solid: true });
-  }
-  for (let i = 0; i < 14; i++) {
-    const x = 3 + Math.floor(rand() * 48);
-    const y = 3 + Math.floor(rand() * 18);
-    if (solid[y][x] || safe[y][x] || nearPath(x, y, 1)) continue;
-    if (g[y][x] === T.ICE) continue;
-    props.push({ sprite: i % 2 ? 'bush' : 'rock_small', tx: x, ty: y, solid: i % 2 === 0 });
-  }
-
-  // Bushes only on open ground. Never inside a wall.
-  for (const [tx, ty] of [[20, 46], [48, 48], [22, 60]]) {
-    if (!solid[ty][tx] && !safe[ty]?.[tx]) props.push({ sprite: 'bush', tx, ty });
-    else if (!solid[ty][tx]) props.push({ sprite: 'bush', tx, ty });
-  }
-
-  for (const prop of props) {
-    add('prop', prop.sprite, prop.tx, prop.ty, { sprite: prop.sprite });
-    if (prop.solid) solid[prop.ty][prop.tx] = 1;
-  }
-  // The well is wider than one tile. Keep the stone ring from being walked through.
-  solid[43][34] = 1;
-  solid[44][33] = 1;
-  solid[44][34] = 1;
-
-  // Place names drawn over the map. Labels are not feet, so they may sit on a roof.
-  add('label', 'Frostmere Wilds', 30, 20);
-  add('label', 'Hoffender', 30, 33);
-  add('label', 'Mead Hall', meadHall.doorX, meadHall.doorY - 3);
-  add('sign', 'Mead Hall', meadHall.doorX - 2, meadHall.doorY + 1, {
-    sprite: 'sign_hall',
-    text: "Jarl Freya's mead hall. Stone, not a castle. She would rather fill it with traders than with a war-band.",
-  });
-  add('sign', 'Frosthearth Inn', inn.doorX - 2, inn.doorY + 1, {
-    sprite: 'sign_inn',
-    text: 'Frosthearth Inn. Hilda Venn keeps the fire. If you fall in combat, you wake in her yard.',
-  });
-  add('sign', "Brenna's Goods", shop.doorX - 2, shop.doorY + 1, {
-    sprite: 'sign_shop',
-    text: "Brenna's Goods. Pelts, bandages, and a draught that costs more than bread.",
-  });
-  add('sign', "Ivar's Forge", forge.doorX - 2, forge.doorY + 1, {
-    sprite: 'sign_shop',
-    text: "Ivar's Forge. The smith works the outdoor anvil. Marta sells inside, at the price on the slate.",
-  });
-  add('sign', "Signe's Needles", needles.doorX - 2, needles.doorY + 1, {
-    sprite: 'sign_shop',
-    text: "Signe's Needles. Cloth and leather, cut and stitched.",
-  });
-  add('sign', 'Warrior Guild', guild.doorX + 2, guild.doorY + 1, {
-    sprite: 'sign_hall',
-    text: 'Warrior Guild. Eirik Stonehand is guildmaster. The hall is still new.',
-  });
-  add('sign', 'Wizard Hall', wizHall.doorX - 2, wizHall.doorY + 1, {
-    sprite: 'sign_hall',
-    text: 'Wizard Hall. Ysolde Mire keeps the pages. Barbarians are not taught here.',
-  });
-  add('sign', 'Shaman Hall', shaHall.doorX - 2, shaHall.doorY + 1, {
-    sprite: 'sign_hall',
-    text: 'Shaman Hall. Torunn Ash. Slows, mends, and the burn that stays.',
-  });
-  add('sign', 'Rogue Hall', rogHall.doorX - 2, rogHall.doorY + 1, {
-    sprite: 'sign_hall',
-    text: 'Rogue Hall. Sable Venn. Speak quietly.',
-  });
-  add('sign', 'Berserker Hall', berHall.doorX - 2, berHall.doorY + 1, {
-    sprite: 'sign_hall',
-    text: 'Berserker Hall. Hroth Keld. Rage is a tool, not a mood.',
-  });
-  add('sign', 'Warden Hall', wdHall.doorX - 2, wdHall.doorY + 1, {
-    sprite: 'sign_hall',
-    text: 'Warden Hall. Bjorn Pale. Fists, a staff, and a snow wolf.',
-  });
-  add('sign', "Sigrid's Steel", smithy.doorX + 2, smithy.doorY + 1, {
-    sprite: 'sign_shop',
-    text: "Sigrid's Steel. Weapons. Armor is Ivar's forge, north of here.",
-  });
-  add('sign', 'Frostmere Wilds this way', 26, 22, {
-    sprite: 'sign_wilds',
-    text: 'Frostmere Wilds this way. North, through the gate. Wolves are on the road.',
-  });
-  add('sign', 'Hoffender this way', 34, 22, {
-    sprite: 'sign_inn',
-    text: 'Hoffender this way. The gate is south. Jarl Freya keeps the mead hall.',
-  });
-
-  // Border
-  for (let x = 0; x < MAP_W; x++) {
-    solid[0][x] = 1;
-    solid[MAP_H - 1][x] = 1;
-  }
-  for (let y = 0; y < MAP_H; y++) {
-    solid[y][0] = 1;
-    solid[y][MAP_W - 1] = 1;
-  }
-
-  const WILD = 72;
-  const prependRows = (grid2d, fill) => {
-    for (let i = 0; i < WILD; i++) grid2d.unshift(Array(MAP_W).fill(fill));
-  };
-  prependRows(g, T.SNOW);
-  prependRows(solid, 0);
-  prependRows(safe, 0);
-  for (const obj of objects) obj.y += WILD * TILE;
-  for (let x = 1; x < MAP_W - 1; x++) solid[WILD][x] = 0;
-  for (let y = 0; y < WILD; y++) {
-    solid[y][0] = 1;
-    solid[y][MAP_W - 1] = 1;
-    g[y][0] = T.SNOW_C;
-    g[y][MAP_W - 1] = T.SNOW_C;
-  }
-  for (let x = 0; x < MAP_W; x++) solid[0][x] = 1;
-  for (let y = 2; y < WILD - 1; y++) {
-    for (let x = 1; x < MAP_W - 1; x++) {
-      const n = Math.floor(mulberry(y * 50 + x)() * 5);
-      g[y][x] = n === 0 ? T.SNOW_B : n === 1 ? T.SNOW_C : T.SNOW;
-    }
-  }
-  // Frozen stream and the road north from the gate.
-  for (let y = 3; y < WILD - 2; y++) {
-    const x = 12 + Math.round(Math.sin(y / 5) * 3);
-    g[y][x] = T.ICE;
-    g[y][x + 1] = T.ICE;
-  }
-  fillRect(29, 2, 3, WILD + 8, T.PATH);
-  const treeAt = (tx, ty) => {
-    add('prop', 'pine', tx, ty, { sprite: (tx + ty) % 2 === 0 ? 'tree' : 'tree_b' });
-  };
-  const rockAt = (tx, ty, big = true) => {
-    add('prop', 'boulder', tx, ty, { sprite: big ? 'rock' : 'rock_small' });
-    solid[ty][tx] = 1;
-  };
-  for (let i = 0; i < 70; i++) {
-    const tx = 2 + Math.floor(mulberry(8000 + i)() * (MAP_W - 4));
-    const ty = 3 + Math.floor(mulberry(9000 + i)() * (WILD - 8));
-    if (tx >= 28 && tx <= 32) continue;
-    if (i % 5 === 0) rockAt(tx, ty, i % 10 === 0);
-    else treeAt(tx, ty);
-  }
-  // Three camps, deeper as the level climbs. A barrow in the far north.
-  const camp = (cx, cy, name) => {
-    rockAt(cx - 2, cy - 1, true);
-    rockAt(cx + 2, cy - 1, true);
-    rockAt(cx - 2, cy + 1, false);
-    rockAt(cx + 2, cy + 1, false);
-    add('prop', 'fire', cx, cy, { sprite: 'firepit' });
-    add('sign', name, cx + 1, cy + 2, { sprite: 'sign_wilds', text: name });
-  };
-  camp(18, WILD - 16, 'Road camp. Thugs of the near wilds, about the fifth winter.');
-  camp(46, 40, 'Pine camp. Archers in the middle wilds, about the seventh winter.');
-  camp(22, 12, 'Deep camp. A leader of the tenth winter waits with the last fire.');
-  add('sign', 'The Barrow', 40, 8, {
-    sprite: 'sign_wilds',
-    text: 'The Barrow. Bones that did not stay down. Mira Palehand is said to walk here.',
-  });
-  const spawnMob = (defId, tx, ty, sprite) => add('mob', defId, tx, ty, { defId, sprite });
-  [[24, WILD - 8], [34, WILD - 12], [16, WILD - 6], [40, WILD - 10]].forEach(([tx, ty]) => spawnMob('snow_hare', tx, ty, 'hare'));
-  [[20, WILD - 22], [38, WILD - 26], [50, 58]].forEach(([tx, ty]) => spawnMob('red_fox', tx, ty, 'fox'));
-  [[14, 50], [52, 48], [18, 36]].forEach(([tx, ty]) => spawnMob('ice_beetle', tx, ty, 'beetle'));
-  [[44, 30], [16, 28], [36, 22]].forEach(([tx, ty]) => spawnMob('frost_spider', tx, ty, 'spider'));
-  spawnMob('wolf_alpha', 48, WILD - 20, 'frost_wolf');
-  spawnMob('wolf_alpha', 12, 44, 'frost_wolf');
-  spawnMob('cave_bear', 54, 24, 'bear');
-  spawnMob('old_bramble', 8, 18, 'bear');
-  spawnMob('barrow_bones', 38, 10, 'bones');
-  spawnMob('barrow_bones', 44, 9, 'bones');
-  [[17, WILD - 16], [19, WILD - 17], [18, WILD - 19]].forEach(([tx, ty]) => spawnMob('bandit_thug', tx, ty, 'bandit'));
-  [[45, 40], [47, 42], [46, 38]].forEach(([tx, ty], i) => spawnMob(i === 2 ? 'bandit_archer' : 'bandit_thug', tx, ty, i === 2 ? 'archer' : 'bandit'));
-  spawnMob('bandit_thug', 21, 14, 'bandit');
-  spawnMob('bandit_archer', 23, 15, 'archer');
-  spawnMob('camp_leader', 22, 16, 'leader');
-  spawnMob('greymaw', 36, 18, 'greymaw');
-  spawnMob('vetch', 20, 48, 'vetch');
-  spawnMob('sleetwidow', 50, 28, 'widow');
-  spawnMob('mira_palehand', 42, 8, 'mira');
-  add('npc', 'nils', 31, 68, { defId: 'nils', sprite: 'nils' });
-
-  // Spawns must stand on open ground.
-  for (const o of objects) {
-    if (o.kind === 'prop' || o.kind === 'label' || o.kind === 'sign') continue;
-    const tx = Math.floor(o.x / TILE);
-    const ty = Math.floor(o.y / TILE);
-    if (solid[ty][tx]) {
-      throw new Error(`${o.kind} ${o.name} is on a blocked tile ${tx},${ty}`);
-    }
-  }
-
-  // Silence unused vars from building door positions — they document the layout.
-  void inn;
-  void shop;
-  void tiles;
-
-  return { ground: g, solid, safe, objects };
-}
-
 function flatten(grid2d) {
   const out = [];
   for (const row of grid2d) {
@@ -2424,6 +2072,9 @@ function buildTmj(map, tileset) {
     if (o.defId) properties.push({ name: 'defId', type: 'string', value: o.defId });
     if (o.sprite) properties.push({ name: 'sprite', type: 'string', value: o.sprite });
     if (o.text) properties.push({ name: 'text', type: 'string', value: o.text });
+    if (o.toZone) properties.push({ name: 'toZone', type: 'string', value: o.toZone });
+    if (o.toX !== undefined) properties.push({ name: 'toX', type: 'float', value: o.toX });
+    if (o.toY !== undefined) properties.push({ name: 'toY', type: 'float', value: o.toY });
     return {
       id: oid++,
       name: o.name,
@@ -2447,10 +2098,12 @@ function buildTmj(map, tileset) {
     });
   }
 
+  const width = map.ground[0].length;
+  const height = map.ground.length;
   return {
     compressionlevel: -1,
-    width: MAP_W,
-    height: map.ground.length,
+    width,
+    height,
     tilewidth: TILE,
     tileheight: TILE,
     infinite: false,
@@ -2461,11 +2114,7 @@ function buildTmj(map, tileset) {
     version: '1.10',
     nextlayerid: 5,
     nextobjectid: oid,
-    properties: [
-      { name: 'zoneId', type: 'string', value: 'hoffender' },
-      { name: 'townName', type: 'string', value: 'Hoffender' },
-      { name: 'wildsName', type: 'string', value: 'Frostmere Wilds' },
-    ],
+    properties: map.props,
     tilesets: [
       {
         columns: tileset.columns,
@@ -2484,19 +2133,19 @@ function buildTmj(map, tileset) {
     ],
     layers: [
       layer(1, 'ground', 'tilelayer', {
-        width: MAP_W,
-        height: map.ground.length,
+        width,
+        height,
         data: flatten(map.ground),
       }),
       layer(2, 'collision', 'tilelayer', {
-        width: MAP_W,
-        height: map.ground.length,
+        width,
+        height,
         visible: false,
         data: flatten(map.solid),
       }),
       layer(3, 'safe', 'tilelayer', {
-        width: MAP_W,
-        height: map.ground.length,
+        width,
+        height,
         visible: false,
         data: flatten(map.safe),
       }),
@@ -2511,45 +2160,26 @@ function buildTmj(map, tileset) {
 function renderPreview(map, tileset, props, actors) {
   const scaleN = 2;
   const worldH = map.ground.length;
-  const world = createImage(MAP_W * TILE, worldH * TILE);
+  const worldW = map.ground[0].length;
+  const world = createImage(worldW * scaleN, worldH * scaleN);
   for (let y = 0; y < worldH; y++) {
-    for (let x = 0; x < MAP_W; x++) {
+    for (let x = 0; x < worldW; x++) {
       const id = map.ground[y][x];
       const tile = tileset.tiles.get(id);
-      if (tile) blit(world, tile, x * TILE, y * TILE);
+      const color = tile ? tile.get(8, 8) : hex('#000000');
+      for (let dy = 0; dy < scaleN; dy++) for (let dx = 0; dx < scaleN; dx++) world.set(x * scaleN + dx, y * scaleN + dy, color);
     }
   }
-  const propImgs = {
-    tree: drawTree(0),
-    tree_b: drawTree(1),
-    rock: drawRock(true),
-    rock_small: drawRock(false),
-    barrel: drawBarrel(),
-    crate: drawCrate(),
-    well: drawWell(),
-    firepit: drawFire(0),
-    banner: drawBanner(),
-    sign_inn: drawSign('inn'),
-    sign_shop: drawSign('shop'),
-    sign_hall: drawSign('hall'),
-    sign_wilds: drawSign('wilds'),
-    stump: drawStump(),
-    bush: drawBush(),
-  };
+  void props;
+  void actors;
   for (const o of map.objects) {
-    if (o.kind !== 'prop') continue;
-    const img = propImgs[o.sprite];
-    if (!img) continue;
-    const meta = props.meta[o.sprite];
-    blit(world, img, o.x - meta.anchorX, o.y - meta.anchorY);
+    if (o.kind === 'prop' || o.kind === 'label') continue;
+    const c = o.kind === 'mob' ? hex('#c44840') : o.kind === 'npc' ? hex('#e6c15a') : o.kind === 'door' ? hex('#3c86a2') : hex('#f4f0e6');
+    const px = Math.round((o.x / TILE) * scaleN);
+    const py = Math.round((o.y / TILE) * scaleN);
+    world.set(px, py, c);
   }
-  // Mark actors as small dots so layout can be checked. Real sprites are in the contact sheet.
-  for (const o of map.objects) {
-    if (o.kind === 'prop') continue;
-    const c = o.kind === 'mob' ? hex('#c44840') : o.kind === 'npc' ? hex('#e6c15a') : hex('#3c86a2');
-    for (let y = -2; y <= 2; y++) for (let x = -2; x <= 2; x++) world.set(o.x + x, o.y + y, c);
-  }
-  return scale(world, scaleN);
+  return world;
 }
 
 function contact(actors, props) {
@@ -2825,6 +2455,57 @@ function drawItemIcons() {
       img.set(8, 9, hex('#1c1418'));
       return img;
     })(),
+    chart_whitepine: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d5e6f0'));
+      for (let y = 4; y <= 12; y++) img.set(6, y, hex('#2c4a30'));
+      for (let y = 5; y <= 11; y++) img.set(10, y, hex('#3e6b40'));
+      return img;
+    })(),
+    chart_cairns: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d8d0c4'));
+      for (let x = 5; x <= 8; x++) img.set(x, 8, hex('#8b97a3'));
+      for (let x = 8; x <= 11; x++) img.set(x, 6, hex('#556068'));
+      return img;
+    })(),
+    chart_rimeheart: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#d5e6f0'));
+      img.set(8, 8, hex('#3c86a2'));
+      img.set(9, 9, hex('#b7e3ff'));
+      img.set(6, 7, hex('#1a4d66'));
+      return img;
+    })(),
+    chart_bay: (() => {
+      const img = iconCanvas();
+      for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#e7d3a4'));
+      for (let y = 4; y <= 12; y++) for (let x = 3; x <= 6; x++) img.set(x, y, hex('#1a4d66'));
+      img.set(8, 8, hex('#8d5a38'));
+      return img;
+    })(),
+    greymaw_pelt_cloak: (() => {
+      const img = iconCanvas();
+      for (let y = 3; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, y < 6 ? hex('#8a8178') : hex('#5a534c'));
+      img.set(5, 5, hex('#c8c0b6'));
+      img.set(10, 8, hex('#3c86a2'));
+      return img;
+    })(),
+    iron_ore: (() => {
+      const img = iconCanvas();
+      for (let y = 4; y <= 12; y++) for (let x = 4; x <= 12; x++) img.set(x, y, hex('#6a7580'));
+      img.set(6, 6, hex('#d7dee6'));
+      img.set(9, 9, hex('#8a4038'));
+      return img;
+    })(),
+    rune_blade: (() => {
+      const img = iconCanvas();
+      for (let i = 2; i <= 13; i++) img.set(i, 16 - i, hex('#c5ced6'));
+      img.set(4, 3, hex('#b7e3ff'));
+      img.set(5, 4, hex('#7ec8e8'));
+      img.set(12, 13, hex('#5c3a26'));
+      return img;
+    })(),
     wolf_helm: (() => {
       const img = iconCanvas();
       for (let y = 3; y <= 12; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#8a8178'));
@@ -2858,8 +2539,8 @@ async function main() {
   const hero = buildHeroArt();
   const people = buildPeopleArt();
   const props = buildProps();
-  const map = buildMap(tileset);
-  const tmj = buildTmj(map, tileset);
+  const world = buildWorld();
+  const map = world.maps.find((zone) => zone.id === 'hoffender');
   const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };
   const itemIcons = drawItemIcons();
 
@@ -2871,7 +2552,14 @@ async function main() {
   await writePng(join(assetDir, 'portrait.png'), hero.portrait.sheet);
   await writePng(join(assetDir, 'people.png'), people.sheet);
   await writePng(join(assetDir, 'props.png'), props.sheet);
-  writeFileSync(join(assetDir, 'hoffender.tmj'), JSON.stringify(tmj));
+  const zoneDir = join(assetDir, 'zones');
+  mkdirSync(zoneDir, { recursive: true });
+  for (const zone of world.maps) {
+    const tmj = buildTmj(zone, tileset);
+    const file = zone.id === 'hoffender' ? join(assetDir, 'hoffender.tmj') : join(zoneDir, `${zone.id}.tmj`);
+    writeFileSync(file, JSON.stringify(tmj));
+  }
+  writeFileSync(join(assetDir, 'chart-bounds.json'), JSON.stringify(world.charts, null, 2));
   writeFileSync(join(assetDir, 'atlas.json'), JSON.stringify(atlas, null, 2));
   await writePng(join(publicDir, 'favicon.png'), scale(drawIcon(32), 1));
   await writePng(join(publicDir, 'icons', 'apple-touch-icon.png'), drawIcon(180));
@@ -2883,7 +2571,7 @@ async function main() {
   await writePng(join(previewDir, 'map.png'), renderPreview(map, tileset, props, actors));
   await writePng(join(previewDir, 'sprites.png'), contact(actors, props));
   await writePng(join(previewDir, 'tiles.png'), scale(tileset.sheet, 4));
-  console.log(`map ${MAP_W}x${MAP_H}, objects ${map.objects.length}, tiles ${tileset.imageWidth}x${tileset.imageHeight}`);
+  console.log(`map ${map.ground[0].length}x${map.ground.length}, zones ${world.maps.length}, objects ${map.objects.length}, tiles ${tileset.imageWidth}x${tileset.imageHeight}`);
 }
 
 main().catch((err) => {

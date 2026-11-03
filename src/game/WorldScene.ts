@@ -7,15 +7,22 @@ import propsUrl from '../assets/props.png?url';
 import tilesUrl from '../assets/tiles.png?url';
 import mapUrl from '../assets/hoffender.tmj?url';
 import mapRaw from '../assets/hoffender.tmj?raw';
+
+const zoneUrls = import.meta.glob('../assets/zones/*.tmj', { query: '?url', import: 'default', eager: true }) as Record<string, string>;
+const zoneRaws = import.meta.glob('../assets/zones/*.tmj', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+
+function zoneIdFromPath(path: string): string {
+  return path.split('/').pop()?.replace(/\.tmj$/, '') ?? path;
+}
 import { controls } from './controls';
 import type { GameApi } from './api';
 import { createAudio } from './audio';
 import { loadContent } from '../sim/content';
 import { applyIntent } from '../sim/intents';
 import { parseTiledMap, type TiledJson } from '../sim/map';
-import { createWorld } from '../sim/state';
+import { commitZone, createWorld } from '../sim/state';
 import { step } from '../sim/step';
-import { TICK_MS, type Actor, type GameState, type SimEvent } from '../sim/types';
+import { TICK_MS, type Actor, type GameState, type MapData, type SimEvent } from '../sim/types';
 import { playerVisuals } from '../sim/appearance';
 
 interface Atlas {
@@ -75,7 +82,13 @@ export function onGameReady(handler: (api: GameApi) => void): void {
 export class WorldScene extends Phaser.Scene {
   private state!: GameState;
   private content!: ReturnType<typeof loadContent>;
-  private mapData!: ReturnType<typeof parseTiledMap>;
+  private mapData!: MapData;
+  private zones: Record<string, MapData> = {};
+  private api!: GameApi;
+  private tiled?: Phaser.Tilemaps.Tilemap;
+  private groundLayer?: Phaser.Tilemaps.TilemapLayer;
+  private swap: { zoneId: string; x: number; y: number; at: number; committed: boolean } | null = null;
+  private fade!: HTMLElement;
   private running = false;
   private acc = 0;
   private views = new Map<string, ActorView>();
@@ -92,7 +105,7 @@ export class WorldScene extends Phaser.Scene {
   private snow!: Phaser.GameObjects.Graphics;
   private flakes: { x: number; y: number; s: number; v: number }[] = [];
   private water: Phaser.Tilemaps.Tile[] = [];
-  private waterFlip = false;
+  private waterFrame = 0;
   private cam!: Phaser.Cameras.Scene2D.Camera;
   private audio = createAudio();
   private debugGraphics?: Phaser.GameObjects.Graphics;
@@ -104,6 +117,7 @@ export class WorldScene extends Phaser.Scene {
   preload(): void {
     this.load.image('tiles', tilesUrl);
     this.load.tilemapTiledJSON('hoffender', mapUrl);
+    for (const [path, url] of Object.entries(zoneUrls)) this.load.tilemapTiledJSON(zoneIdFromPath(path), url);
     this.load.spritesheet('actors', actorsUrl, {
       frameWidth: atlas.actors.frameW,
       frameHeight: atlas.actors.frameH,
@@ -125,69 +139,41 @@ export class WorldScene extends Phaser.Scene {
 
   create(): void {
     this.content = loadContent();
-    this.mapData = parseTiledMap(JSON.parse(mapRaw) as TiledJson);
+    this.zones = { hoffender: parseTiledMap(JSON.parse(mapRaw) as TiledJson) };
+    for (const [path, raw] of Object.entries(zoneRaws)) this.zones[zoneIdFromPath(path)] = parseTiledMap(JSON.parse(raw) as TiledJson);
+    this.mapData = this.zones.hoffender;
     const debug = new URLSearchParams(window.location.search).has('debug');
     this.state = createWorld(this.content, this.mapData, (Date.now() ^ 0xa1d300) >>> 0 || 1, debug);
+    this.fade = document.createElement('div');
+    this.fade.id = 'zone-fade';
+    document.body.appendChild(this.fade);
 
     const tex = this.textures.get('props');
     for (const [name, frame] of Object.entries(atlas.props)) {
       tex.add(name, 0, frame.x, frame.y, frame.w, frame.h);
     }
 
-    const tiled = this.make.tilemap({ key: 'hoffender' });
-    const tiles = tiled.addTilesetImage('hoffender', 'tiles', 16, 16, 1, 2);
-    if (!tiles) throw new Error('Hoffender tileset failed to load');
-    const ground = tiled.createLayer('ground', tiles, 0, 0);
-    if (!ground) throw new Error('Hoffender ground layer failed to load');
-    ground.setCullPadding(4, 4);
-    ground.forEachTile((tile) => {
-      if (tile.index === 7 || tile.index === 8) this.water.push(tile);
-    });
-
-    for (const spawn of this.mapData.spawns) {
-      if (spawn.kind !== 'prop' && spawn.kind !== 'sign') continue;
-      const frame = atlas.props[spawn.sprite];
-      if (!frame) continue;
-      const sprite = this.add.sprite(spawn.x, spawn.y, 'props', spawn.sprite);
-      sprite.setOrigin(frame.anchorX / frame.w, frame.anchorY / frame.h);
-      sprite.setDepth(spawn.y);
-      this.propSprites.push(sprite);
-    }
+    this.cam = this.cameras.main;
+    this.mountMap('hoffender');
 
     this.bracket = this.add.graphics().setDepth(4000);
     this.snow = this.add.graphics().setDepth(5000);
     for (let i = 0; i < 18; i++) {
       this.flakes.push({
-        x: Math.random() * tiled.widthInPixels,
-        y: Math.random() * tiled.heightInPixels,
+        x: this.state.actors[0].x + Math.random() * 200,
+        y: this.state.actors[0].y + Math.random() * 200,
         s: 0.6 + Math.random(),
         v: 8 + Math.random() * 10,
       });
     }
 
-    this.cam = this.cameras.main;
-    this.cam.setBounds(0, 0, tiled.widthInPixels, tiled.heightInPixels);
     this.cam.roundPixels = true;
-    for (const spawn of this.mapData.spawns) {
-      if (spawn.kind !== 'label') continue;
-      const text = this.add.text(spawn.x, spawn.y - 10, spawn.name, {
-        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
-        fontSize: '20px',
-        color: '#e6c15a',
-        stroke: '#1c1418',
-        strokeThickness: 4,
-        resolution: 2,
-      });
-      text.setOrigin(0.5, 1);
-      text.setDepth(5500);
-      this.placeLabels.push(text);
-    }
     this.applyZoom();
     const player = this.state.actors[0];
     this.cam.centerOn(player.x, player.y);
     this.scale.on('resize', () => this.applyZoom());
 
-    if (debug) {
+    if (debug && this.mapData.width * this.mapData.height < 20000) {
       this.debugGraphics = this.add.graphics().setDepth(1500).setAlpha(0.35);
       this.drawCollision();
     }
@@ -225,6 +211,7 @@ export class WorldScene extends Phaser.Scene {
       getState: () => this.state,
       content: this.content,
       map: this.mapData,
+      zones: this.zones,
       push: (intent) => controls.queue.push(intent),
       setRunning: (running) => {
         this.running = running;
@@ -236,8 +223,57 @@ export class WorldScene extends Phaser.Scene {
       hook.__ALDMOOR__ = api;
       hook.__ZOOM__ = () => this.zoom;
     }
+    this.api = api;
     ready?.(api);
     this.syncActors(1);
+  }
+
+  private mountMap(key: string): void {
+    this.groundLayer?.destroy();
+    this.tiled?.destroy();
+    for (const sprite of this.propSprites) sprite.destroy();
+    this.propSprites = [];
+    for (const label of this.placeLabels) label.destroy();
+    this.placeLabels = [];
+    this.water = [];
+    const tiled = this.make.tilemap({ key });
+    this.tiled = tiled;
+    const tiles = tiled.addTilesetImage('hoffender', 'tiles', 16, 16, 1, 2);
+    if (!tiles) throw new Error('tileset failed to load');
+    const ground = tiled.createLayer('ground', tiles, 0, 0);
+    if (!ground) throw new Error('ground layer failed to load');
+    ground.setCullPadding(2, 2);
+    this.groundLayer = ground;
+    this.cam.setBounds(0, 0, tiled.widthInPixels, tiled.heightInPixels);
+    for (const spawn of this.mapData.spawns) {
+      if (spawn.kind !== 'prop' && spawn.kind !== 'sign' && spawn.kind !== 'node') continue;
+      const frame = atlas.props[spawn.sprite];
+      if (!frame) continue;
+      const sprite = this.add.sprite(spawn.x, spawn.y, 'props', spawn.sprite);
+      sprite.setOrigin(frame.anchorX / frame.w, frame.anchorY / frame.h);
+      sprite.setDepth(spawn.y);
+      this.propSprites.push(sprite);
+    }
+    for (const spawn of this.mapData.spawns) {
+      if (spawn.kind !== 'label') continue;
+      const text = this.add.text(spawn.x, spawn.y - 10, spawn.name, {
+        fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+        fontSize: '20px',
+        color: '#e6c15a',
+        stroke: '#1c1418',
+        strokeThickness: 4,
+        resolution: 2,
+      });
+      text.setOrigin(0.5, 1);
+      text.setDepth(5500);
+      text.setScale(1 / (this.cam.zoom || 1));
+      this.placeLabels.push(text);
+    }
+    const view = this.cam.worldView;
+    for (const flake of this.flakes) {
+      flake.x = view.x + Math.random() * Math.max(32, view.width);
+      flake.y = view.y + Math.random() * Math.max(32, view.height);
+    }
   }
 
   private dragging = false;
@@ -309,8 +345,35 @@ export class WorldScene extends Phaser.Scene {
   }
 
   update(_time: number, delta: number): void {
+    if (!this.swap && this.mapData.zoneId !== this.state.zoneId) {
+      const map = this.zones[this.state.zoneId];
+      if (map) {
+        this.mapData = map;
+        this.api.map = map;
+        this.mountMap(map.zoneId);
+      }
+    }
+    if (this.swap) {
+      const elapsed = this.time.now - this.swap.at;
+      if (!this.swap.committed && elapsed > 240) {
+        const map = this.zones[this.swap.zoneId];
+        if (map) {
+          commitZone(this.state, this.content, map, this.swap.x, this.swap.y);
+          this.mapData = map;
+          this.api.map = map;
+          this.mountMap(map.zoneId);
+          const player = this.state.actors.find((actor) => actor.id === this.state.playerId);
+          if (player) this.cam.centerOn(player.x, player.y);
+        }
+        this.swap.committed = true;
+        this.swap.at = this.time.now;
+        this.fade.classList.remove('on');
+      } else if (this.swap.committed && elapsed > 200) {
+        this.swap = null;
+      }
+    }
     const events: SimEvent[] = [];
-    if (this.running) {
+    if (this.running && !this.swap) {
       events.push(...applyIntent(this.state, { type: 'move', x: controls.moveX, y: controls.moveY }, this.content, this.mapData));
       if (controls.dest && this.state.ui.panel === 'none' && !this.state.dead) {
         events.push(...applyIntent(this.state, { type: 'moveTo', x: controls.dest.x, y: controls.dest.y }, this.content, this.mapData));
@@ -375,6 +438,14 @@ export class WorldScene extends Phaser.Scene {
         g.lineStyle(2, 0xb7e3ff, 0.9);
         g.strokeCircle(event.x, event.y, event.radius);
         this.fields.push({ g, life: 520 });
+      } else if (event.type === 'zone') {
+        if (!this.swap) {
+          this.swap = { zoneId: event.zoneId, x: event.x, y: event.y, at: this.time.now, committed: false };
+          this.fade.classList.add('on');
+        }
+      } else if (event.type === 'seam') {
+        this.fade.classList.add('on');
+        this.time.delayedCall(200, () => this.fade.classList.remove('on'));
       } else if (event.type === 'swing') {
         const view = this.views.get(event.actorId);
         if (view) view.lunge = 1;
@@ -433,11 +504,27 @@ export class WorldScene extends Phaser.Scene {
     }
   }
 
-  private animateWater(delta: number): void {
-    this.waterFlip = Math.floor(this.time.now / 480) % 2 === 0 ? this.waterFlip : !this.waterFlip;
-    void delta;
+  private animateWater(_delta: number): void {
     const showA = Math.floor(this.time.now / 480) % 2 === 0;
-    for (const tile of this.water) tile.index = showA ? 7 : 8;
+    const next = showA ? 7 : 8;
+    if (this.waterFrame === next || !this.groundLayer) return;
+    this.waterFrame = next;
+    const view = this.cam.worldView;
+    const tw = 16;
+    const x0 = Math.max(0, Math.floor(view.x / tw) - 1);
+    const y0 = Math.max(0, Math.floor(view.y / tw) - 1);
+    const width = Math.ceil(view.width / tw) + 2;
+    const height = Math.ceil(view.height / tw) + 2;
+    this.groundLayer.forEachTile(
+      (tile) => {
+        if (tile.index === 7 || tile.index === 8) tile.index = next;
+      },
+      this,
+      x0,
+      y0,
+      width,
+      height,
+    );
   }
 
   private animateSnow(delta: number): void {
@@ -477,6 +564,15 @@ export class WorldScene extends Phaser.Scene {
 
   private syncActors(alpha: number): void {
     const state = this.state;
+    const live = new Set(state.actors.map((actor) => actor.id));
+    for (const [id, view] of this.views) {
+      if (live.has(id)) continue;
+      view.sprite.destroy();
+      view.shadow.destroy();
+      view.label.destroy();
+      for (const layer of view.layers) layer.destroy();
+      this.views.delete(id);
+    }
     for (const actor of state.actors) {
       let view = this.views.get(actor.id);
       if (!view) {
@@ -507,6 +603,13 @@ export class WorldScene extends Phaser.Scene {
         label.setOrigin(0.5, 1);
         view = { sprite, shadow, label, prevX: actor.x, prevY: actor.y, flash: 0, lunge: 0, layers };
         this.views.set(actor.id, view);
+      }
+      if (actor.dormant) {
+        view.sprite.setVisible(false);
+        view.shadow.setVisible(false);
+        view.label.setVisible(false);
+        for (const layer of view.layers) layer.setVisible(false);
+        continue;
       }
       const snapped = Math.hypot(actor.x - view.prevX, actor.y - view.prevY) > 48;
       const x = snapped ? actor.x : view.prevX + (actor.x - view.prevX) * alpha;

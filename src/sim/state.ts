@@ -42,6 +42,7 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     dotAmount: 0,
     dotBank: 0,
     pet: false,
+    dormant: false,
     scale: 1,
     ...partial,
   };
@@ -216,22 +217,15 @@ export function applyHero(
   return true;
 }
 
-export function createWorld(content: ContentDb, map: MapData, seed: number, debug = false): GameState {
-  const cls = content.classes[content.player.classId];
-  if (!cls) throw new Error(`missing class ${content.player.classId}`);
-  const playerSpawn = map.spawns.find((spawn) => spawn.kind === 'spawn');
-  const origin = playerSpawn ?? { x: map.bind.x, y: map.bind.y };
-  const player = blankActor({
-    id: 'player',
-    kind: 'player',
-    defId: cls.id,
-    name: content.player.name,
-    sprite: cls.sprite,
-    x: origin.x,
-    y: origin.y,
-  });
+export function emptyQuests(content: ContentDb): GameState['quests'] {
+  const quests: GameState['quests'] = {};
+  for (const quest of content.quests) quests[quest.id] = { stage: 'none', progress: 0 };
+  if (!quests.wolf_pelts) quests.wolf_pelts = { stage: 'none', progress: 0 };
+  return quests;
+}
 
-  const actors: Actor[] = [player];
+export function actorsFromMap(content: ContentDb, map: MapData): Actor[] {
+  const actors: Actor[] = [];
   let mobIndex = 0;
   for (const spawn of map.spawns) {
     if (spawn.kind === 'npc') {
@@ -255,7 +249,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
       mobIndex += 1;
       actors.push(
         blankActor({
-          id: `mob_${mobIndex}`,
+          id: `mob_${map.zoneId}_${mobIndex}`,
           kind: 'mob',
           defId: def.id,
           name: def.name,
@@ -272,6 +266,25 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
       );
     }
   }
+  return actors;
+}
+
+export function createWorld(content: ContentDb, map: MapData, seed: number, debug = false): GameState {
+  const cls = content.classes[content.player.classId];
+  if (!cls) throw new Error(`missing class ${content.player.classId}`);
+  const playerSpawn = map.spawns.find((spawn) => spawn.kind === 'spawn');
+  const origin = playerSpawn ?? { x: map.bind.x, y: map.bind.y };
+  const player = blankActor({
+    id: 'player',
+    kind: 'player',
+    defId: cls.id,
+    name: content.player.name,
+    sprite: cls.sprite,
+    x: origin.x,
+    y: origin.y,
+  });
+
+  const actors: Actor[] = [player, ...actorsFromMap(content, map)];
 
   const world: GameState = {
     version: 1,
@@ -307,6 +320,8 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     petOrder: 'follow',
     petHold: null,
     petFocus: null,
+    portalLockMs: 0,
+    nodeReady: {},
     sneakMs: 0,
     evadeMs: 0,
     powerMs: 0,
@@ -320,7 +335,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     invulnMs: 0,
     input: { x: 0, y: 0, dest: null, pendingInteract: null, pendingSign: null },
     ui: { panel: 'none', npcId: null, nodeId: null, title: null, body: null },
-    quests: { wolf_pelts: { stage: 'none', progress: 0 } },
+    quests: emptyQuests(content),
     log: ['The gate of Hoffender is north. The Frostmere Wilds, and the wolves on their road, wait beyond it.'],
     bind: { ...map.bind },
     dead: false,
@@ -328,7 +343,71 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     events: [],
   };
   configurePlayer(world, content, cls.id);
+  refreshMobActivity(world, map);
   return world;
+}
+
+const CELL_TILES = 32;
+const CELL_RANGE = 2;
+const ACTIVE_CAP = 40;
+
+/** Simulate mobs only in cells near the player, and keep about 40 of them awake. */
+export function refreshMobActivity(state: GameState, map: MapData): void {
+  const player = getPlayer(state);
+  const cell = map.tileWidth * CELL_TILES;
+  const pcx = Math.floor(player.x / cell);
+  const pcy = Math.floor(player.y / cell);
+  const ranked = state.actors
+    .filter((actor) => actor.kind === 'mob' && !actor.pet)
+    .map((mob) => {
+      const cx = Math.floor(mob.homeX / cell);
+      const cy = Math.floor(mob.homeY / cell);
+      const cheb = Math.max(Math.abs(cx - pcx), Math.abs(cy - pcy));
+      const engaged = mob.hate.length > 0 || state.targetId === mob.id || state.petFocus === mob.id;
+      const dx = mob.x - player.x;
+      const dy = mob.y - player.y;
+      return { mob, cheb, engaged, d: dx * dx + dy * dy };
+    });
+  ranked.sort((a, b) => Number(b.engaged) - Number(a.engaged) || a.cheb - b.cheb || a.d - b.d);
+  let active = 0;
+  for (const row of ranked) {
+    const wake = row.engaged || (row.cheb <= CELL_RANGE && active < ACTIVE_CAP);
+    row.mob.dormant = !wake;
+    if (wake) active += 1;
+  }
+}
+
+/** Swap the living cast for another map. The player, the wolf, and the inn bind stay. */
+export function commitZone(state: GameState, content: ContentDb, map: MapData, x: number, y: number): void {
+  const player = getPlayer(state);
+  const pet = state.actors.find((actor) => actor.pet);
+  const spawned = actorsFromMap(content, map);
+  state.actors = pet ? [player, pet, ...spawned] : [player, ...spawned];
+  player.x = x;
+  player.y = y;
+  player.path = [];
+  player.pathTx = -999;
+  player.pathTy = -999;
+  if (pet) {
+    pet.x = x - 16;
+    pet.y = y + 10;
+    pet.homeX = pet.x;
+    pet.homeY = pet.y;
+    pet.path = [];
+    pet.pathTx = -999;
+    pet.dormant = false;
+  }
+  state.zoneId = map.zoneId;
+  state.ground = [];
+  state.targetId = null;
+  state.autoAttack = false;
+  state.petFocus = null;
+  if (state.petOrder === 'attack') state.petOrder = 'follow';
+  state.input.dest = null;
+  state.input.pendingInteract = null;
+  state.input.pendingSign = null;
+  state.portalLockMs = 800;
+  refreshMobActivity(state, map);
 }
 
 export function nextEntityId(state: GameState, prefix: string): string {

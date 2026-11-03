@@ -1,8 +1,8 @@
 import type { AbilityDef, Actor, ContentDb, Dice, GameState, MapData } from './types';
 import type { Emit } from './events';
 import { dist, facingOf, hitChance, maxHp, maxMana, roll, rollDice, xpLossFraction, xpToNext } from './formulas';
-import { findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
-import { findActor, getPlayer, nextEntityId, refreshGear } from './state';
+import { bodyBlocked, findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
+import { findActor, getPlayer, nextEntityId, refreshGear, refreshMobActivity } from './state';
 import { addItem, countItem, takeItems } from './bags';
 import { TICK_MS, type PeltReward } from './types';
 
@@ -205,19 +205,21 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
 }
 
 export function abandonQuest(state: GameState, questId: string, emit: Emit): void {
-  if (questId !== 'wolf_pelts') return;
-  const quest = state.quests.wolf_pelts;
-  if (quest.stage !== 'active') return;
-  state.quests.wolf_pelts = { stage: 'none', progress: 0 };
-  emit({ type: 'log', text: 'You set the pelt task aside. The pelts stay in your bag. Eirik will ask again.' });
+  const quest = state.quests[questId];
+  if (!quest || quest.stage !== 'active') return;
+  quest.stage = 'none';
+  quest.progress = 0;
+  const name = questId === 'wolf_pelts' ? 'the pelt task' : 'the task';
+  emit({ type: 'log', text: `You set ${name} aside.` });
 }
 
-export function acceptQuest(state: GameState, questId: string, emit: Emit): void {
-  if (questId !== 'wolf_pelts') return;
-  const quest = state.quests.wolf_pelts;
-  if (quest.stage === 'done') return;
+export function acceptQuest(state: GameState, content: ContentDb, questId: string, emit: Emit): void {
+  const quest = state.quests[questId];
+  const def = content.quests.find((entry) => entry.id === questId);
+  if (!quest || !def || quest.stage === 'done') return;
   quest.stage = 'active';
-  emit({ type: 'log', text: 'Eirik wants four wolf pelts from the Frostmere Wilds.' });
+  if (!def.killId) quest.progress = 0;
+  emit({ type: 'log', text: questId === 'wolf_pelts' ? 'Eirik wants four wolf pelts from the Frostmere Wilds.' : `You take up ${def.name}.` });
 }
 
 export function turnInPelts(state: GameState, content: ContentDb, emit: Emit, reward: PeltReward = 'helm'): void {
@@ -250,6 +252,56 @@ export function turnInPelts(state: GameState, content: ContentDb, emit: Emit, re
       text: left > 0 ? `Eirik pays you. Your bags are full, so he holds the ${name}.` : `Eirik pays you and puts a ${name} in your bag.`,
     });
   }
+}
+
+export function turnInQuest(state: GameState, content: ContentDb, questId: string, emit: Emit): void {
+  const def = content.quests.find((entry) => entry.id === questId);
+  const quest = state.quests[questId];
+  if (!def || !quest || quest.stage !== 'active') return;
+  if (def.killId) {
+    if (quest.progress < def.need) {
+      emit({ type: 'log', text: `Not yet. ${quest.progress} of ${def.need}.` });
+      return;
+    }
+  } else if (def.itemId) {
+    const have = countItem(state, def.itemId);
+    if (have < def.need) {
+      emit({ type: 'log', text: `You have ${have}. The task asks for ${def.need}.` });
+      return;
+    }
+    if (def.consume) takeItems(state, def.itemId, def.need);
+  } else if (quest.progress < def.need) {
+    emit({ type: 'log', text: 'You do not have what was asked for yet.' });
+    return;
+  }
+  quest.stage = 'done';
+  quest.progress = Math.max(quest.progress, def.need);
+  if (def.rewardCopper) {
+    state.copper += def.rewardCopper;
+    emit({ type: 'coin', copper: def.rewardCopper });
+  }
+  if (def.rewardXp) grantXp(state, content, def.rewardXp, emit);
+  if (def.rewardItem) {
+    const left = addItem(state, content, def.rewardItem, 1);
+    const name = content.items[def.rewardItem]?.name ?? def.rewardItem;
+    emit({ type: 'log', text: left > 0 ? `Your bags are full, so the ${name} stays behind.` : `You receive the ${name}.` });
+  } else {
+    emit({ type: 'log', text: `${def.name} is done.` });
+  }
+}
+
+export function sellAllOf(state: GameState, content: ContentDb, itemId: string, emit: Emit): void {
+  const have = countItem(state, itemId);
+  const item = content.items[itemId];
+  if (!have || !item) {
+    emit({ type: 'log', text: 'You have none to sell.' });
+    return;
+  }
+  takeItems(state, itemId, have);
+  const paid = item.value * have;
+  state.copper += paid;
+  emit({ type: 'coin', copper: paid });
+  emit({ type: 'log', text: `You sell ${have} ${item.name}${have === 1 ? '' : 's'} for ${paid} copper.` });
 }
 
 /** The smith is at the anvil about two talks in five, and then he will not haggle. */
@@ -383,6 +435,16 @@ export function resolveStrike(
   if (target.hp <= 0) finishKill(state, content, map, source, target, emit);
 }
 
+function noteQuestKill(state: GameState, content: ContentDb, defId: string, emit: Emit): void {
+  for (const def of content.quests) {
+    if (!def.killId || def.killId !== defId) continue;
+    const quest = state.quests[def.id];
+    if (!quest || quest.stage !== 'active' || quest.progress >= def.need) continue;
+    quest.progress += 1;
+    if (quest.progress >= def.need) emit({ type: 'log', text: `${def.name}: the count is met.` });
+  }
+}
+
 function cap(text: string): string {
   return text.charAt(0).toUpperCase() + text.slice(1);
 }
@@ -405,6 +467,7 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
   }
   target.corpseMs = content.tuning.corpseFadeMs;
   target.respawnMs = target.pet ? 20000 : content.tuning.mobRespawnMs;
+  if (source.kind === 'player' || source.pet) noteQuestKill(state, content, target.defId, emit);
   emit({ type: 'log', text: `${cap(subject(target))} falls.` });
   if (state.targetId === target.id) state.targetId = null;
   for (const actor of state.actors) {
@@ -491,6 +554,23 @@ function scatter(state: GameState, map: MapData, x: number, y: number): { x: num
   return tryMove(map, x, y, Math.cos(angle) * mag, Math.sin(angle) * mag, 2, 2, false);
 }
 
+
+function unstickPet(map: MapData, mob: Actor, rx: number, ry: number): void {
+  if (!bodyBlocked(map, mob.x, mob.y, rx, ry, false)) return;
+  for (let radius = 8; radius <= 48; radius += 8) {
+    for (let step = 0; step < 8; step++) {
+      const angle = (step / 8) * Math.PI * 2;
+      const x = mob.x + Math.cos(angle) * radius;
+      const y = mob.y + Math.sin(angle) * radius;
+      if (bodyBlocked(map, x, y, rx, ry, false)) continue;
+      mob.x = x;
+      mob.y = y;
+      mob.path = [];
+      mob.pathTx = -999;
+      return;
+    }
+  }
+}
 
 function followPath(map: MapData, actor: Actor, goal: { x: number; y: number }, speed: number, forMob: boolean, rx: number, ry: number): void {
   const goalTile = tileOf(map, goal.x, goal.y);
@@ -587,6 +667,13 @@ export function movement(state: GameState, content: ContentDb, map: MapData, emi
   if (state.input.pendingSign) {
     const sign = map.spawns.find((spawn) => spawn.kind === 'sign' && spawn.name === state.input.pendingSign);
     if (sign && dist(player, sign) <= 36) {
+      if (sign.name === 'Frozen journal') {
+        const quest = state.quests.missing_scout;
+        if (quest && quest.stage === 'active' && quest.progress < 1) {
+          quest.progress = 1;
+          emit({ type: 'log', text: 'The journal is in your hands. Sigrun should hear what it says.' });
+        }
+      }
       openInspect(state, sign.name, sign.text ?? sign.name);
       return;
     }
@@ -600,11 +687,39 @@ export function movement(state: GameState, content: ContentDb, map: MapData, emi
   }
 }
 
+function sigrunNode(state: GameState, content: ContentDb): string {
+  const teeth = state.quests.teeth_at_the_gate;
+  const scout = state.quests.missing_scout;
+  const cairns = state.quests.icebound_cairns;
+  const rime = state.quests.rimeheart;
+  const need = (id: string) => content.quests.find((quest) => quest.id === id)?.need ?? 1;
+  if (!teeth || teeth.stage === 'none') return 'start';
+  if (teeth.stage === 'active') return 'teeth_active';
+  if (!scout || scout.stage === 'none') return 'after_teeth';
+  if (scout.stage === 'active') return scout.progress >= need('missing_scout') ? 'scout_ready' : 'scout_active';
+  if (!cairns || cairns.stage === 'none') return 'after_scout';
+  if (cairns.stage === 'active') return 'cairns_active';
+  if (!rime || rime.stage === 'none') return 'after_cairns';
+  if (rime.stage === 'active') return rime.progress >= need('rimeheart') ? 'rime_ready' : 'rime_active';
+  return 'done';
+}
+
+function yrsaNode(state: GameState, content: ContentDb): string {
+  const cairns = state.quests.icebound_cairns;
+  const need = content.quests.find((quest) => quest.id === 'icebound_cairns')?.need ?? 8;
+  if (cairns?.stage === 'active' && cairns.progress >= need) return 'reward';
+  if (cairns?.stage === 'done') return 'after';
+  return 'start';
+}
+
 export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _emit: Emit): void {
   const def = content.npcs[npc.defId];
   if (!def) return;
   let nodeId = 'start';
-  if (npc.defId === 'eirik') {
+  if (npc.defId === 'sigrun') nodeId = sigrunNode(state, content);
+  else if (npc.defId === 'brand') nodeId = state.quests.teeth_at_the_gate?.stage === 'active' ? 'quest' : 'start';
+  else if (npc.defId === 'yrsa') nodeId = yrsaNode(state, content);
+  else if (npc.defId === 'eirik') {
     const quest = state.quests.wolf_pelts;
     if (quest.stage === 'done') nodeId = 'done';
     else if (quest.stage === 'active') nodeId = 'active';
@@ -622,6 +737,7 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
 }
 
 export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emit): void {
+  refreshMobActivity(state, map);
   const player = getPlayer(state);
   const tuning = content.tuning;
   const playerHidden = state.dead || !player.alive || isSafe(map, player.x, player.y);
@@ -644,17 +760,21 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       continue;
     }
     if (mob.pet) {
-      const speed = (def.speed ?? 60) * (TICK_MS / 1000);
+      // Pets are not hostiles. Safe tiles block mobs, which left the wolf stuck in the yard and unable to follow anyone out of Hoffender.
+      const speed = Math.max(def.speed ?? 60, tuning.playerSpeed + 8) * (TICK_MS / 1000);
       mob.homeX = player.x;
       mob.homeY = player.y;
+      mob.dormant = false;
+      unstickPet(map, mob, tuning.footRx, tuning.footRy);
       const order = state.petOrder;
+      const stepTo = (goal: { x: number; y: number }) => followPath(map, mob, goal, speed, false, tuning.footRx, tuning.footRy);
       if (order === 'stay' && state.petHold) {
-        if (dist(mob, state.petHold) > 8) followPath(map, mob, state.petHold, speed, true, tuning.footRx, tuning.footRy);
+        if (dist(mob, state.petHold) > 8) stepTo(state.petHold);
         else mob.path = [];
         continue;
       }
       if (order === 'backoff') {
-        if (dist(mob, player) > 18) followPath(map, mob, player, speed, true, tuning.footRx, tuning.footRy);
+        if (dist(mob, player) > 18) stepTo(player);
         else mob.path = [];
         continue;
       }
@@ -670,7 +790,7 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       }
       if (foe) {
         if (dist(mob, foe) > tuning.meleeRange) {
-          followPath(map, mob, foe, speed, true, tuning.footRx, tuning.footRy);
+          stepTo(foe);
         } else {
           mob.path = [];
           mob.attackMs -= TICK_MS;
@@ -680,13 +800,14 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
             resolveStrike(state, content, map, mob, foe, def.damage, def.attack, false, def.verb, emit);
           }
         }
-      } else if (dist(mob, player) > 22) {
-        followPath(map, mob, player, speed, true, tuning.footRx, tuning.footRy);
+      } else if (dist(mob, player) > 26) {
+        stepTo(approachPoint(mob, player, 18));
       } else {
         mob.path = [];
       }
       continue;
     }
+    if (mob.dormant) continue;
     if (mob.slowMs > 0) mob.slowMs = Math.max(0, mob.slowMs - TICK_MS);
     const pace = mob.slowMs > 0 ? mob.slowRate : 1;
     const home = { x: mob.homeX, y: mob.homeY };
@@ -957,7 +1078,56 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
     mob.hate = mob.hate.filter((hate) => hate.id !== player.id);
     if (mob.alive && dist(mob, { x: mob.homeX, y: mob.homeY }) > 8) mob.ai = 'return';
   }
+  if (state.zoneId !== 'hoffender') {
+    emit({ type: 'zone', zoneId: 'hoffender', x: state.bind.x, y: state.bind.y });
+  }
   emit({ type: 'log', text: 'You wake in the yard of the Frosthearth Inn.' });
+}
+
+export function portals(state: GameState, content: ContentDb, map: MapData, emit: Emit): void {
+  if (state.portalLockMs > 0) {
+    state.portalLockMs = Math.max(0, state.portalLockMs - TICK_MS);
+    return;
+  }
+  const player = getPlayer(state);
+  for (const spawn of map.spawns) {
+    const gap = Math.hypot(player.x - spawn.x, player.y - spawn.y);
+    if (spawn.kind === 'door' && spawn.toZone && gap < 14 && !state.input.pendingInteract && !state.input.pendingSign) {
+      emit({ type: 'zone', zoneId: spawn.toZone, x: spawn.toX ?? spawn.x, y: spawn.toY ?? spawn.y });
+      state.portalLockMs = 800;
+      player.path = [];
+      state.input.dest = null;
+      state.input.x = 0;
+      state.input.y = 0;
+      return;
+    }
+    if (spawn.kind === 'seam' && gap < 20) {
+      openInspect(state, spawn.name, spawn.text ?? 'The road is not yet open.');
+      emit({ type: 'seam', title: spawn.name });
+      const margin = 64;
+      if (player.y < margin) player.y = margin;
+      else if (player.y > map.height * map.tileWidth - margin) player.y = map.height * map.tileWidth - margin;
+      if (player.x < margin) player.x = margin;
+      else if (player.x > map.width * map.tileWidth - margin) player.x = map.width * map.tileWidth - margin;
+      state.portalLockMs = 800;
+      return;
+    }
+    if (spawn.kind === 'node' && spawn.defId && gap < 16) {
+      const ready = state.nodeReady[spawn.name] ?? 0;
+      if (state.timeMs < ready) continue;
+      const left = addItem(state, content, spawn.defId, 1);
+      if (left > 0) {
+        state.nodeReady[spawn.name] = state.timeMs + 2000;
+        emit({ type: 'log', text: 'Your bags are full.' });
+      } else {
+        state.nodeReady[spawn.name] = state.timeMs + 45000;
+        const name = content.items[spawn.defId]?.name ?? 'ore';
+        emit({ type: 'log', text: `You break off some ${name}.` });
+        emit({ type: 'loot', itemId: spawn.defId, qty: 1 });
+      }
+      return;
+    }
+  }
 }
 
 export function nearestMob(state: GameState, x: number, y: number, maxDist: number, exclude: string | null): Actor | null {

@@ -1,7 +1,8 @@
 import type { GameApi } from '../game/api';
 import { controls, pushIntent } from '../game/controls';
 import { conColor, conLabel, formatCoin } from '../sim/formulas';
-import { isSafe, placeName } from '../sim/map';
+import { isSafe, placeName, tileOf } from '../sim/map';
+import { tileColor } from '../sim/mapColors';
 import { EQUIP_SLOTS, LOADOUT_CAP, type EquipSlot, type GameState, type ItemDef, type PetOrder } from '../sim/types';
 import { armorLabel, classLabel } from '../sim/wear';
 import { askPrice, knownAbilities } from '../sim/systems';
@@ -463,8 +464,12 @@ function panelSignature(state: GameState): string {
     .map((held, index) => (held ? `${index}:${held.itemId}:${held.slots.map((slot) => (slot ? `${slot.itemId}:${slot.qty}` : '.')).join('/')}` : `${index}:.`))
     .join(',');
   const worn = EQUIP_SLOTS.map((slot) => state.equipment[slot] ?? '').join(',');
-  const quest = `${state.quests.wolf_pelts.stage}:${state.quests.wolf_pelts.progress}`;
-  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.charts.join(',')}|${state.petOrder}|${state.dead ? 1 : 0}`;
+  const quest = Object.entries(state.quests)
+    .map(([id, progress]) => `${id}:${progress.stage}:${progress.progress}`)
+    .join(',');
+  const player = state.actors.find((actor) => actor.id === state.playerId);
+  const spot = state.ui.panel === 'maps' && player ? `${state.zoneId}:${Math.floor(player.x / 16)}:${Math.floor(player.y / 16)}` : '';
+  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.charts.join(',')}|${state.petOrder}|${state.dead ? 1 : 0}|${spot}`;
 }
 
 function paintPanel(
@@ -487,7 +492,10 @@ function paintPanel(
   if (state.ui.panel === 'dialogue') panel.innerHTML = dialogueHtml(state, api);
   else if (state.ui.panel === 'merchant') panel.innerHTML = merchantHtml(state, api);
   else if (state.ui.panel === 'pack') panel.innerHTML = inventoryHtml(state, api, focus, openBag);
-  else if (state.ui.panel === 'maps') panel.innerHTML = mapsHtml(state, api);
+  else if (state.ui.panel === 'maps') {
+    panel.innerHTML = mapsHtml(state, api);
+    paintCharts(panel, state, api);
+  }
   else if (state.ui.panel === 'journal') panel.innerHTML = journalHtml(state, api, confirmAbandon);
   else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookSlot);
   else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
@@ -722,13 +730,16 @@ function itemCard(item: ItemDef, api: GameApi, wornSlot: EquipSlot | null, loc: 
 function journalHtml(state: GameState, api: GameApi, confirmAbandon: boolean): string {
   const cards = api.content.quests
     .map((quest) => {
-      const progress = state.quests.wolf_pelts;
-      if (quest.id !== 'wolf_pelts' || progress.stage === 'none') return '';
-      const have = countItem(state, quest.itemId);
-      const shown = progress.stage === 'done' ? quest.need : Math.min(quest.need, have);
+      const progress = state.quests[quest.id];
+      if (!progress || progress.stage === 'none') return '';
+      const shown = quest.killId || !quest.itemId
+        ? Math.min(quest.need, progress.progress)
+        : progress.stage === 'done'
+          ? quest.need
+          : Math.min(quest.need, countItem(state, quest.itemId));
       const abandon = progress.stage === 'active'
         ? confirmAbandon
-          ? `<p>Abandon this quest? Pelts already in your bag stay, and Eirik will offer it again.</p>
+          ? `<p>Abandon this quest? What you already carry stays in your bag.</p>
              <div class="row-actions">
                <button type="button" data-action="abandon-yes" data-quest="${quest.id}">Abandon</button>
                <button type="button" data-action="abandon-no">Keep it</button>
@@ -785,11 +796,46 @@ function bagRows(state: GameState, api: GameApi, selling: boolean): string {
   return `<ul class="trade">${rows.join('')}</ul>`;
 }
 
+function paintCharts(panel: HTMLElement, state: GameState, api: GameApi): void {
+  const player = state.actors.find((actor) => actor.id === state.playerId);
+  for (const canvas of panel.querySelectorAll<HTMLCanvasElement>('canvas[data-chart]')) {
+    const chart = api.content.maps[canvas.dataset.chart ?? ''];
+    const zone = chart ? api.zones[chart.zone] : undefined;
+    if (!chart || !zone) continue;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) continue;
+    const scale = Math.max(1, Math.min(4, Math.floor(280 / Math.max(chart.w, 1))));
+    canvas.width = chart.w * scale;
+    canvas.height = chart.h * scale;
+    for (let ty = 0; ty < chart.h; ty++) {
+      for (let tx = 0; tx < chart.w; tx++) {
+        const gx = chart.x + tx;
+        const gy = chart.y + ty;
+        const id = gx >= 0 && gy >= 0 && gx < zone.width && gy < zone.height ? zone.ground[gy * zone.width + gx] : 0;
+        ctx.fillStyle = tileColor(id);
+        ctx.fillRect(tx * scale, ty * scale, scale, scale);
+      }
+    }
+    if (!player || state.zoneId !== chart.zone) continue;
+    const here = tileOf(zone, player.x, player.y);
+    if (here.tx < chart.x || here.ty < chart.y || here.tx >= chart.x + chart.w || here.ty >= chart.y + chart.h) continue;
+    const px = (here.tx - chart.x) * scale + scale / 2;
+    const py = (here.ty - chart.y) * scale + scale / 2;
+    const arm = Math.max(3, scale + 1);
+    ctx.fillStyle = '#1c1418';
+    ctx.fillRect(px - 1, py - arm - 1, 3, arm * 2 + 3);
+    ctx.fillRect(px - arm - 1, py - 1, arm * 2 + 3, 3);
+    ctx.fillStyle = '#ff3355';
+    ctx.fillRect(px, py - arm, 1, arm * 2 + 1);
+    ctx.fillRect(px - arm, py, arm * 2 + 1, 1);
+  }
+}
+
 function mapsHtml(state: GameState, api: GameApi): string {
   if (!state.charts.length) {
     return `<div class="sheet">
       <header><h2>Maps</h2></header>
-      <p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender and the road. Nils Reed, north of the gate, sells the deep wilds and the Barrow. Neither of them sells every map.</p>
+      <p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender, the near roads, and the bay. Nils Reed, north of the gate, sells the deep wilds. Neither of them sells every map.</p>
       <button type="button" class="close" data-action="close">Close</button>
     </div>`;
   }
@@ -799,7 +845,7 @@ function mapsHtml(state: GameState, api: GameApi): string {
       if (!chart) return '';
       return `<article class="quest-card map-card" data-map="${chart.id}">
         <header><h3>${escapeHtml(chart.name)}</h3></header>
-        <div class="map-sketch map-${chart.id}" aria-hidden="true"></div>
+        <canvas class="map-canvas" data-chart="${chart.id}" width="160" height="120" aria-label="${escapeHtml(chart.name)}"></canvas>
         <p>${escapeHtml(chart.blurb)}</p>
       </article>`;
     })

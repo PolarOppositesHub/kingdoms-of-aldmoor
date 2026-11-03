@@ -642,7 +642,8 @@
     "verb": "bites",
     "loot": [
       { "itemId": "wolf_pelt", "chance": 1, "min": 1, "max": 2 },
-      { "itemId": "cracked_fang", "chance": 0.8, "min": 1, "max": 1 }
+      { "itemId": "cracked_fang", "chance": 0.8, "min": 1, "max": 1 },
+      { "itemId": "greymaw_pelt_cloak", "chance": 0.25, "min": 1, "max": 1 }
     ],
     "coinMin": 8,
     "coinMax": 18,
@@ -727,5 +728,32 @@
     "coinMin": 20,
     "coinMax": 48,
     "sprite": "mira"
+  },
+  {
+    "id": "ysolde_black_ice",
+    "name": "Ysolde of the Black Ice",
+    "named": true,
+    "level": 10,
+    "hp": 180,
+    "ac": 16,
+    "attack": 22,
+    "damage": { "n": 2, "sides": 6, "bonus": 4 },
+    "delayMs": 2100,
+    "aggroRange": 140,
+    "assistRange": 40,
+    "leash": 220,
+    "social": "",
+    "xp": 360,
+    "speed": 56,
+    "wanderSpeed": 18,
+    "crit": 0.06,
+    "verb": "freezes",
+    "loot": [
+      { "itemId": "cracked_fang", "chance": 1, "min": 1, "max": 1 },
+      { "itemId": "iron_ore", "chance": 0.5, "min": 1, "max": 2 }
+    ],
+    "coinMin": 30,
+    "coinMax": 70,
+    "sprite": "witch"
   }
 ]
