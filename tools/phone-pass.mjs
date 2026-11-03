@@ -9,6 +9,58 @@ const outDir = process.env.SHOT_DIR ?? '/tmp/aldmoor-phone';
 mkdirSync(outDir, { recursive: true });
 const base = process.env.GAME_URL ?? 'http://127.0.0.1:4173/?debug=1';
 
+async function openTrainer(page, npcId) {
+  const zoneOf = { torunn: 'shaman', eirik: 'warrior' };
+  const zoneId = zoneOf[npcId] ?? npcId;
+  const trainerId = zoneOf[npcId] ? npcId : 'torunn';
+  const door = await page.evaluate((zoneId) => {
+    const home = window.__ALDMOOR__.zones.hoffender;
+    return home.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === zoneId) ?? null;
+  }, zoneId);
+  if (!door) throw new Error(`no door to ${zoneId}`);
+  await page.evaluate((spot) => {
+    const api = window.__ALDMOOR__;
+    const state = api.getState();
+    state.autoAttack = false;
+    state.targetId = null;
+    state.input.dest = null;
+    state.input.pendingInteract = null;
+    state.ui.panel = 'none';
+    api.push({ type: 'debugTeleport', x: spot.x, y: spot.y });
+  }, door);
+  await page.waitForFunction((zoneId) => window.__ALDMOOR__.getState().zoneId === zoneId, zoneId, { timeout: 8000 });
+  await page.waitForTimeout(400);
+  await page.evaluate((trainerId) => {
+    const api = window.__ALDMOOR__;
+    const npc = api.getState().actors.find((actor) => actor.defId === trainerId);
+    if (!npc) throw new Error(`missing ${trainerId}`);
+    api.push({ type: 'debugTeleport', x: npc.x, y: npc.y + 12 });
+    api.push({ type: 'talkTo', id: npc.id });
+  }, trainerId);
+  await page.waitForTimeout(400);
+  if ((await page.evaluate(() => window.__ALDMOOR__.getState().ui.panel)) !== 'dialogue') {
+    await page.evaluate((trainerId) => {
+      const npc = window.__ALDMOOR__.getState().actors.find((actor) => actor.defId === trainerId);
+      window.__ALDMOOR__.push({ type: 'talkTo', id: npc.id });
+    }, trainerId);
+  }
+  await page.waitForFunction(() => window.__ALDMOOR__.getState().ui.panel === 'dialogue', { timeout: 4000 });
+  await page.locator('#panel button[data-action="choice"]').first().click();
+  await page.waitForFunction(() => window.__ALDMOOR__.getState().ui.panel === 'merchant', { timeout: 4000 });
+}
+
+async function leaveHall(page) {
+  await page.locator('#panel button[data-action="close"]').click();
+  await page.waitForFunction(() => window.__ALDMOOR__.getState().ui.panel === 'none');
+  const door = await page.evaluate(() => window.__ALDMOOR__.map.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === 'hoffender'));
+  if (!door) throw new Error('no door back to Hoffender');
+  await page.evaluate((spot) => {
+    window.__ALDMOOR__.push({ type: 'debugTeleport', x: spot.x, y: spot.y });
+  }, door);
+  await page.waitForFunction(() => window.__ALDMOOR__.getState().zoneId === 'hoffender', null, { timeout: 8000 });
+  await page.waitForTimeout(400);
+}
+
 const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, hasTouch: true });
 await page.addInitScript(() => {
@@ -39,6 +91,18 @@ const bar = await page.locator('.hotbar-a .bar.xp').boundingBox();
 if (!bar || bar.height < 6 || bar.width < 80) throw new Error(`XP bar track missing: ${JSON.stringify(bar)}`);
 
 await page.screenshot({ path: `${outDir}/01-stone-bar.png` });
+
+await openTrainer(page, 'shaman');
+const lockedAtOne = await page.locator('#panel .trade li.is-locked').count();
+if (lockedAtOne < 5) throw new Error(`expected the level 1 trainer list locked, saw ${lockedAtOne}`);
+for (const level of [5, 8, 12, 18, 24]) {
+  const row = page.locator('#panel .is-locked button', { hasText: `Requires level ${level}` });
+  if ((await row.count()) < 1) throw new Error(`missing Requires level ${level}`);
+  if (!(await row.first().isDisabled())) throw new Error(`level ${level} drill is not disabled`);
+}
+await page.locator('#panel .is-locked').last().scrollIntoViewIfNeeded();
+await page.screenshot({ path: `${outDir}/09-trainer-locked.png` });
+await leaveHall(page);
 
 const beforeTip = await page.evaluate(() => window.__ALDMOOR__.getState().mana);
 const slot = page.locator('.hotbar-a .spell').first();
@@ -154,6 +218,27 @@ if (leveled.level <= 10) throw new Error(`did not level past 10: ${JSON.stringif
 const highText = await page.locator('.xp-edge .xp-readout').innerText();
 if (!highText.includes(`Lv ${leveled.level}`)) throw new Error(`XP bar did not follow the level: ${highText}`);
 await page.screenshot({ path: `${outDir}/08-past-10.png` });
+if (leveled.learned.includes('peat_bind')) throw new Error('peat bind was learned without a purchase');
+
+await openTrainer(page, 'shaman');
+const stillLocked = await page.locator('#panel .is-locked button').allInnerTexts();
+if (!stillLocked.some((text) => text.includes('Requires level 18'))) throw new Error(`level 18 should stay locked: ${stillLocked.join(' | ')}`);
+if (!stillLocked.some((text) => text.includes('Requires level 24'))) throw new Error(`level 24 should stay locked: ${stillLocked.join(' | ')}`);
+const peat = page.locator('#panel button[data-item="scroll_peat"]');
+if ((await peat.count()) < 1) throw new Error('peat bind was not offered for purchase');
+if (await peat.isDisabled()) throw new Error('peat bind stayed locked after level 12');
+await page.evaluate(() => {
+  window.__ALDMOOR__.getState().copper = 5000;
+});
+await peat.click();
+await page.waitForFunction(() => window.__ALDMOOR__.getState().learned.includes('peat_bind'));
+const afterBuy = await page.evaluate(() => window.__ALDMOOR__.getState().copper);
+if (afterBuy !== 5000 - 220) throw new Error(`trainer did not charge the listed value, copper ${afterBuy}`);
+if ((await page.locator('#panel .is-locked button', { hasText: 'Requires level 18' }).count()) < 1) {
+  throw new Error('buying peat unlocked the level 18 rite');
+}
+await page.locator('#panel button[data-item="scroll_peat"], #panel .is-locked').first().scrollIntoViewIfNeeded();
+await page.screenshot({ path: `${outDir}/10-trainer-unlocked.png` });
 
 if (errors.length) throw new Error(errors.join('\n'));
 await browser.close();

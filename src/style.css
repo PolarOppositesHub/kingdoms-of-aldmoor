@@ -229,6 +229,13 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .util-row button { font-size: 11px; line-height: 1.1; min-height: 32px; padding: 2px 4px; flex: 1; }
 .actions[data-spells="5"] .util-row button { min-height: 30px; font-size: 11px; }
 .trade button { white-space: nowrap; }
+.trade li.is-locked { opacity: 0.5; }
+.trade li.is-locked button {
+  opacity: 1;
+  color: var(--muted);
+  background: #241c18;
+  border-color: #4a3c34;
+}
 
 .death {
   position: fixed;

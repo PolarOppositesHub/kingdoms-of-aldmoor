@@ -383,7 +383,10 @@
         {
           "itemId": "scroll_breaker",
           "price": 140
-        }
+        },
+        { "itemId": "scroll_rush", "price": 220 },
+        { "itemId": "scroll_wind", "price": 352 },
+        { "itemId": "scroll_oath", "price": 412 }
       ]
     },
     {
@@ -397,7 +400,10 @@
         {
           "itemId": "scroll_white",
           "price": 148
-        }
+        },
+        { "itemId": "scroll_needle", "price": 220 },
+        { "itemId": "scroll_wall", "price": 352 },
+        { "itemId": "scroll_star", "price": 412 }
       ]
     },
     {
@@ -411,7 +417,10 @@
         {
           "itemId": "scroll_ward",
           "price": 132
-        }
+        },
+        { "itemId": "scroll_peat", "price": 220 },
+        { "itemId": "scroll_cinder", "price": 352 },
+        { "itemId": "scroll_ashen", "price": 412 }
       ]
     },
     {
@@ -425,7 +434,10 @@
         {
           "itemId": "scroll_vanish",
           "price": 128
-        }
+        },
+        { "itemId": "scroll_ham", "price": 220 },
+        { "itemId": "scroll_night", "price": 352 },
+        { "itemId": "scroll_bane", "price": 412 }
       ]
     },
     {
@@ -439,7 +451,10 @@
         {
           "itemId": "scroll_feast",
           "price": 155
-        }
+        },
+        { "itemId": "scroll_sweep", "price": 220 },
+        { "itemId": "scroll_warblood", "price": 352 },
+        { "itemId": "scroll_howl", "price": 412 }
       ]
     },
     {
@@ -453,7 +468,10 @@
         {
           "itemId": "scroll_deep",
           "price": 136
-        }
+        },
+        { "itemId": "scroll_call", "price": 220 },
+        { "itemId": "scroll_root", "price": 352 },
+        { "itemId": "scroll_elder", "price": 412 }
       ]
     },
     {

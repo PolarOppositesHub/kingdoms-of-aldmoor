@@ -671,7 +671,7 @@ function panelSignature(state: GameState): string {
     .join(',');
   const player = state.actors.find((actor) => actor.id === state.playerId);
   const spot = state.ui.panel === 'maps' && player ? `${state.zoneId}:${Math.floor(player.x / 16)}:${Math.floor(player.y / 16)}` : '';
-  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.charts.join(',')}|${state.petOrder}|${state.dead ? 1 : 0}|${spot}`;
+  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.level}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.charts.join(',')}|${state.petOrder}|${state.dead ? 1 : 0}|${spot}`;
 }
 
 function paintPanel(
@@ -748,13 +748,27 @@ function dialogueHtml(state: GameState, api: GameApi): string {
 function merchantHtml(state: GameState, api: GameApi): string {
   const npc = state.actors.find((actor) => actor.id === state.ui.npcId);
   const vendor = api.content.merchant.vendors.find((entry) => entry.npcId === npc?.defId);
+  const known = new Set(knownAbilities(state, api.content));
   const groups = new Map<string, string[]>();
   for (const row of vendor?.stock ?? []) {
     const item = api.content.items[row.itemId];
     if (!item) continue;
-    const key = item.armorType ? armorLabel(item.armorType) : 'Goods';
-    const line = `<li><span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.slot ? SLOT_LABEL[item.slot] : item.blurb)}</small></span>
-        <button type="button" data-action="buy" data-item="${item.id}">${formatCoin(askPrice(npc?.defId ?? '', row.price), api.content.economy)}</button></li>`;
+    const taught = item.teaches ? api.content.abilities[item.teaches] : undefined;
+    const locked = Boolean(taught && state.level < taught.level);
+    const already = Boolean(taught && known.has(taught.id));
+    const key = item.armorType ? armorLabel(item.armorType) : item.teaches ? 'Training' : 'Goods';
+    const note = locked
+      ? `Requires level ${taught?.level}`
+      : item.slot
+        ? SLOT_LABEL[item.slot]
+        : item.blurb;
+    const button = locked
+      ? `<button type="button" disabled>Requires level ${taught?.level}</button>`
+      : already
+        ? `<button type="button" disabled>Known</button>`
+        : `<button type="button" data-action="buy" data-item="${item.id}">${formatCoin(askPrice(npc?.defId ?? '', row.price), api.content.economy)}</button>`;
+    const line = `<li class="${locked ? 'is-locked' : ''}">${item.teaches ? iconHtml(item.id) : ''}<span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(note)}</small></span>
+        ${button}</li>`;
     const list = groups.get(key) ?? [];
     list.push(line);
     groups.set(key, list);
@@ -1147,7 +1161,7 @@ function helpHtml(state: GameState, api: GameApi): string {
       <li>Tap a wolf to mark it, then ATK. Swings land on their own timer. Sit rests you. Walking, swinging, casting, or being hit stands you up.</li>
       ${caster ? spells : '<li>Kick is immediate, then it needs a breath.</li>'}
       <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
-      <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. A warden's wolf follows, attacks your target, and takes Attack, Back off, Stay, and Follow.</li>
+      <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf follows, attacks your target, and takes Attack, Back off, Stay, and Follow.</li>
       <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall in combat and you wake in Hilda's yard. The wilds run through level 10. The climb goes on to 25.</li>
     </ul>
     <h3>Settings</h3>

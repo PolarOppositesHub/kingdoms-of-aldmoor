@@ -4,7 +4,7 @@ import { dist, facingOf, hitChance, roll, rollDice, xpLossFraction, xpToNext, xp
 import { bodyBlocked, findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
 import { findActor, getPlayer, nextEntityId, refreshGear, refreshMobActivity } from './state';
 import { addItem, countItem, takeItems } from './bags';
-import { LOADOUT_CAP, TICK_MS, type PeltReward } from './types';
+import { TICK_MS, type PeltReward } from './types';
 
 export { addItem };
 
@@ -45,25 +45,6 @@ export function standUp(state: GameState, emit?: Emit): void {
   if (!state.sitting) return;
   state.sitting = false;
   emit?.({ type: 'log', text: 'You stand.' });
-}
-
-/**
- * Abilities from level 12 up come with the level. Frostmere drills below that
- * stay on the trainers' scrolls.
- */
-export function unlockReached(state: GameState, content: ContentDb): string[] {
-  const known = new Set(knownAbilities(state, content));
-  const pending = Object.values(content.abilities)
-    .filter((ability) => ability.classId === state.classId && ability.level >= 12 && ability.level <= state.level && !known.has(ability.id))
-    .sort((a, b) => a.level - b.level || a.id.localeCompare(b.id));
-  const gained: string[] = [];
-  for (const ability of pending) {
-    state.learned.push(ability.id);
-    state.cooldowns[ability.id] = 0;
-    if (state.loadout.length < LOADOUT_CAP && !state.loadout.includes(ability.id)) state.loadout.push(ability.id);
-    gained.push(ability.name);
-  }
-  return gained;
 }
 
 export function knownAbilities(state: GameState, content: ContentDb): string[] {
@@ -534,7 +515,6 @@ export function grantXp(state: GameState, content: ContentDb, amount: number, em
     if (content.classes[state.classId]?.resource === 'guile') state.focus = state.focusMax;
     emit({ type: 'level', level: state.level });
     emit({ type: 'log', text: `You reach level ${state.level}. The cold feels a little thinner.` });
-    for (const name of unlockReached(state, content)) emit({ type: 'log', text: `You learn ${name}.` });
   }
 }
 

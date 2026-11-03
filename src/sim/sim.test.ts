@@ -643,7 +643,7 @@ describe('levels, rest, and ability icons', () => {
     }
   });
 
-  it('levels past 10, learns the later drills, and still reads an old save', () => {
+  it('levels past 10 without handing out drills, and still reads an old save', () => {
     const map = arena();
     const blocked = createWorld(content, map, 4);
     applyIntent(blocked, { type: 'debugGrantXp', amount: 20000 }, content, map);
@@ -655,15 +655,14 @@ describe('levels, rest, and ability icons', () => {
     expect(state.level).toBeGreaterThan(10);
     expect(state.level).toBeLessThan(25);
     expect(state.xp).toBeGreaterThan(0);
-    expect(state.learned).toContain('shoulder_rush');
-    expect(state.learned).toContain('second_wind');
-    expect(state.learned).not.toContain('oath_axe');
-    expect(state.loadout).toContain('shoulder_rush');
+    expect(state.learned).not.toContain('shoulder_rush');
+    expect(state.loadout).not.toContain('shoulder_rush');
     expect(getPlayer(state).maxHp).toBe(maxHp(content, 'warrior', state.level, state.stats));
 
     const capped = createWorld(content, map, 9);
     capped.level = 10;
     capped.xp = 40;
+    capped.learned = ['sundering_chop', 'shoulder_rush'];
     getPlayer(capped).level = 10;
     const save = captureSave(capped);
     expect(save).not.toHaveProperty('sitting');
@@ -672,7 +671,59 @@ describe('levels, rest, and ability icons', () => {
     expect(restored.level).toBe(10);
     expect(restored.xp).toBe(40);
     expect(restored.sitting).toBe(false);
-    expect(restored.learned).not.toContain('shoulder_rush');
+    expect(restored.learned).toEqual(['sundering_chop', 'shoulder_rush']);
+  });
+
+  it('sells later drills from the guild trainer at their value, locked until that level', () => {
+    const trainers: [string, string, string[]][] = [
+      ['eirik', 'warrior', ['shoulder_rush', 'second_wind', 'oath_axe']],
+      ['torunn', 'shaman', ['peat_bind', 'cinder_mend', 'ashen_circle']],
+      ['sable', 'rogue', ['hamstring', 'night_step', 'kingsbane']],
+      ['hroth', 'berserker', ['red_sweep', 'war_blood', 'last_howl']],
+      ['bjorn', 'warden', ['pack_call', 'deep_root', 'elder_mend']],
+      ['ingrid', 'wizard', ['ice_needle', 'rime_wall', 'starfall']],
+    ];
+    for (const [npcId, classId, abilityIds] of trainers) {
+      const vendor = content.merchant.vendors.find((entry) => entry.npcId === npcId);
+      expect(vendor, npcId).toBeTruthy();
+      const priced = abilityIds.map((id) => {
+        const ability = content.abilities[id];
+        expect(ability?.classId).toBe(classId);
+        expect(ability.level).toBeGreaterThanOrEqual(12);
+        const item = Object.values(content.items).find((entry) => entry.teaches === id);
+        expect(item, id).toBeTruthy();
+        const row = vendor?.stock.find((entry) => entry.itemId === item?.id);
+        expect(row?.price).toBe(item?.value);
+        expect(row?.price ?? 0).toBeGreaterThan(100);
+        return row?.price ?? 0;
+      });
+      expect(priced[0]).toBeLessThan(priced[1]);
+      expect(priced[1]).toBeLessThan(priced[2]);
+    }
+
+    const hall = parseTiledMap(JSON.parse(warriorRaw) as TiledJson);
+    const state = createWorld(content, hall, 6);
+    const eirik = state.actors.find((actor) => actor.defId === 'eirik');
+    expect(eirik).toBeTruthy();
+    const player = getPlayer(state);
+    player.x = eirik!.x;
+    player.y = eirik!.y + 10;
+    applyIntent(state, { type: 'talkTo', id: eirik!.id }, content, hall);
+    applyIntent(state, { type: 'choice', index: 1 }, content, hall);
+    expect(state.ui.panel).toBe('merchant');
+    state.copper = 5000;
+    applyIntent(state, { type: 'buy', itemId: 'scroll_rush' }, content, hall);
+    expect(state.learned).not.toContain('shoulder_rush');
+    expect(state.copper).toBe(5000);
+    expect(state.log.at(-1)).toMatch(/level 12/);
+    state.level = 12;
+    player.level = 12;
+    applyIntent(state, { type: 'buy', itemId: 'scroll_rush' }, content, hall);
+    expect(state.learned).toContain('shoulder_rush');
+    expect(state.copper).toBe(5000 - 220);
+    applyIntent(state, { type: 'buy', itemId: 'scroll_wind' }, content, hall);
+    expect(state.learned).not.toContain('second_wind');
+    expect(state.copper).toBe(5000 - 220);
   });
 
   it('regens a trickle while standing and much faster while sitting', () => {

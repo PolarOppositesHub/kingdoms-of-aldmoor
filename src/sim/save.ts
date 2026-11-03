@@ -1,6 +1,5 @@
 import type { ContentDb, Equipment, GameState, HeldBag, ItemStack, MapData, PetOrder } from './types';
 import { emptyQuests, refreshGear, syncCompanion } from './state';
-import { unlockReached } from './systems';
 import { raceScale } from './appearance';
 import { bagsFromLegacy, normalizeBags } from './bags';
 import { bodyBlocked } from './map';
@@ -174,7 +173,6 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   }
   syncCompanion(state, content);
   state.sitting = false;
-  for (const name of unlockReached(state, content)) state.log.push(`You learn ${name}.`);
   if (save.note) state.log.push(save.note);
   return save.note ?? '';
 }
