@@ -2,7 +2,7 @@ import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
 import { findActor, getPlayer, applyHero, refreshGear } from './state';
-import { abandonQuest, acceptQuest, addItem, askPrice, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, sellAllOf, turnInPelts, turnInQuest } from './systems';
+import { abandonQuest, acceptQuest, addItem, askPrice, grantXp, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, sellAllOf, standUp, turnInPelts, turnInQuest } from './systems';
 import { moveBag, moveItem, removeBag, removeOne } from './bags';
 import { LOADOUT_CAP } from './types';
 import { wearRefusal } from './wear';
@@ -35,6 +35,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         state.input.x = clampAxis(intent.x);
         state.input.y = clampAxis(intent.y);
         if (state.input.x !== 0 || state.input.y !== 0) {
+          standUp(state, emit);
           state.input.dest = null;
           state.input.pendingInteract = null;
           state.input.pendingSign = null;
@@ -43,6 +44,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       }
       case 'moveTo': {
         if (state.dead || busy) return;
+        standUp(state, emit);
         state.input.dest = { x: intent.x, y: intent.y };
         state.input.pendingInteract = null;
         state.input.pendingSign = null;
@@ -71,9 +73,26 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         state.targetId = nearby[(index + 1) % nearby.length].id;
         return;
       }
+      case 'toggleSit': {
+        if (state.dead || busy) return;
+        if (state.sitting) {
+          state.sitting = false;
+          emit({ type: 'log', text: 'You stand.' });
+          return;
+        }
+        if (state.input.x !== 0 || state.input.y !== 0 || state.input.dest) {
+          emit({ type: 'log', text: 'You are still moving.' });
+          return;
+        }
+        state.sitting = true;
+        state.autoAttack = false;
+        emit({ type: 'log', text: 'You sit and let your breath come back.' });
+        return;
+      }
       case 'toggleAutoAttack': {
         if (state.dead || busy) return;
         state.autoAttack = !state.autoAttack;
+        if (state.autoAttack) standUp(state, emit);
         if (!state.autoAttack) return;
         const current = findActor(state, state.targetId);
         if (!current || !current.alive || current.kind !== 'mob') {
@@ -405,6 +424,11 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         player.path = [];
         player.pathTx = -999;
         state.input.dest = null;
+        return;
+      }
+      case 'debugGrantXp': {
+        if (!state.debug) return;
+        grantXp(state, content, Math.max(0, Math.floor(intent.amount)), emit);
         return;
       }
       default:

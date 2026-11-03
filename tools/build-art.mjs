@@ -20,6 +20,7 @@ import {
 } from './pixel.mjs';
 import { buildHeroArt, buildPeopleArt } from './hero-art.mjs';
 import { buildWorld, T } from './frostmere-map.mjs';
+import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetDir = join(root, 'src', 'assets');
@@ -2307,9 +2308,7 @@ function drawGearIcons() {
     if (!item.teaches && !['bone_staff', 'skinning_knife', 'paired_hatchets', 'hand_wraps'].includes(item.id)) continue;
     const img = iconCanvas();
     if (item.teaches) {
-      for (let y = 2; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex('#e7d3a4'));
-      for (let y = 4; y <= 11; y++) img.set(6, y, hex('#6b4428'));
-      img.set(8, 3, hex('#a33b32'));
+      blit(img, scrollIcon(item.teaches), 0, 0);
     } else if (item.grip === 'staff' || item.id === 'bone_staff') {
       for (let y = 1; y <= 14; y++) img.set(8, y, hex('#e6dcc8'));
       img.set(7, 2, hex('#8d97a3'));
@@ -2593,6 +2592,8 @@ function drawItemIcons() {
       return img;
     })(),
   };
+  const abilities = JSON.parse(readFileSync(join(root, 'src', 'content', 'abilities.json'), 'utf8'));
+  for (const ability of abilities) frames[ability.id] = paintAbilityIcon(ability.id);
   Object.assign(frames, drawArmorIcons(), drawGearIcons());
   const order = Object.keys(frames);
   const sheet = createImage(order.length * 16, 16);

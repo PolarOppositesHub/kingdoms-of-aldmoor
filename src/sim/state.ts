@@ -1,6 +1,6 @@
 import type { Actor, ContentDb, Equipment, GameState, MapData, Stats } from './types';
 import { LOADOUT_CAP } from './types';
-import { maxHp, maxMana } from './formulas';
+import { maxFocus, maxHp, maxMana } from './formulas';
 import { addItem, emptyBags } from './bags';
 import { raceScale } from './appearance';
 
@@ -85,7 +85,7 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.sneakMs = 0;
   state.evadeMs = 0;
   state.powerMs = 0;
-  const focusMax = cls.resource === 'guile' || cls.resource === 'rage' ? cls.baseFocus + cls.focusPerLevel : 0;
+  const focusMax = maxFocus(content, cls.id, level);
   state.focusMax = focusMax;
   state.focus = cls.resource === 'rage' ? 0 : focusMax;
   if (cls.kit) {
@@ -174,6 +174,8 @@ export function refreshGear(state: GameState, content: ContentDb): void {
   if (player.hp > player.maxHp) player.hp = player.maxHp;
   state.maxMana = maxMana(content, state.classId, state.level, stats) + bonusMana;
   if (state.mana > state.maxMana) state.mana = state.maxMana;
+  state.focusMax = maxFocus(content, state.classId, state.level);
+  if (state.focus > state.focusMax) state.focus = state.focusMax;
 }
 
 /** Gate creation. Only before the first tick. Race mods and bonus points land on the class base. */
@@ -327,6 +329,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     powerMs: 0,
     sex: 'male',
     autoAttack: false,
+    sitting: false,
     targetId: null,
     cooldowns: {},
     itemLockMs: 0,

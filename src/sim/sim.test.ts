@@ -2,13 +2,16 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadContent } from './content';
-import { conColor, formatCoin, xpLossFraction } from './formulas';
+import { PNG } from 'pngjs';
+import { conColor, formatCoin, maxFocus, maxHp, xpLossFraction, xpToNext, xpYield } from './formulas';
 import { applyIntent } from './intents';
-import { askPrice, ivarIsBusy, mobRespawnDelay, turnInPelts } from './systems';
+import { askPrice, ivarIsBusy, mobRespawnDelay, resolveStrike, turnInPelts } from './systems';
 import { addItem, countItem, findStack, moveItem } from './bags';
 import { applySave, captureSave, migrateSave } from './save';
 import { bodyBlocked, placeName } from './map';
-import { applyHero, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
+import { applyHero, blankActor, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
+import abilitiesJson from '../content/abilities.json';
+import iconMeta from '../assets/icons.json';
 import { step } from './step';
 import type { MapData } from './types';
 import hoffenderRaw from '../assets/hoffender.tmj?raw';
@@ -608,6 +611,163 @@ describe('bags, charts, pets, and respawn', () => {
     expect(saved.zoneId).toBe('warrior');
     expect(saved.actors.some((actor) => actor.defId === 'eirik')).toBe(true);
     expect(getPlayer(saved).pet === undefined || saved.actors.some((actor) => actor.id === 'player')).toBe(true);
+  });
+});
+
+const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
+
+describe('levels, rest, and ability icons', () => {
+  it('keeps the 1–9 curve and extends it through level 25', () => {
+    expect(content.tuning.levelCap).toBe(25);
+    expect(content.tuning.xpTable[9]).toBe(750);
+    expect(xpToNext(content, 1)).toBe(70);
+    expect(xpToNext(content, 10)).toBe(880);
+    expect(xpToNext(content, 24)).toBe(3750);
+    expect(content.tuning.xpTable).toHaveLength(25);
+    const stats = content.classes.warrior.stats;
+    expect(maxHp(content, 'warrior', 10, stats)).toBe(28 + 12 + 9 * 8);
+    expect(maxHp(content, 'warrior', 11, stats)).toBe(28 + 12 + 10 * 8 + 4);
+    expect(maxHp(content, 'warrior', 25, stats)).toBeGreaterThan(maxHp(content, 'warrior', 10, stats) + 14 * 8);
+    expect(maxFocus(content, 'rogue', 1)).toBe(84);
+    expect(maxFocus(content, 'rogue', 25)).toBe(80 + 4 * 25);
+    expect(maxFocus(content, 'warrior', 10)).toBe(0);
+  });
+
+  it('pays nothing for gray quarry and keeps Frostmere at levels 1–10', () => {
+    expect(xpYield(1, 1, 38)).toBe(38);
+    expect(xpYield(10, 7, 100)).toBe(50);
+    expect(xpYield(20, 10, 280)).toBe(0);
+    for (const mob of Object.values(content.mobs)) {
+      expect(mob.level).toBeGreaterThanOrEqual(1);
+      expect(mob.level).toBeLessThanOrEqual(10);
+    }
+  });
+
+  it('levels past 10, learns the later drills, and still reads an old save', () => {
+    const map = arena();
+    const blocked = createWorld(content, map, 4);
+    applyIntent(blocked, { type: 'debugGrantXp', amount: 20000 }, content, map);
+    expect(blocked.level).toBe(1);
+
+    const state = createWorld(content, map, 4);
+    state.debug = true;
+    applyIntent(state, { type: 'debugGrantXp', amount: 20000 }, content, map);
+    expect(state.level).toBeGreaterThan(10);
+    expect(state.level).toBeLessThan(25);
+    expect(state.xp).toBeGreaterThan(0);
+    expect(state.learned).toContain('shoulder_rush');
+    expect(state.learned).toContain('second_wind');
+    expect(state.learned).not.toContain('oath_axe');
+    expect(state.loadout).toContain('shoulder_rush');
+    expect(getPlayer(state).maxHp).toBe(maxHp(content, 'warrior', state.level, state.stats));
+
+    const capped = createWorld(content, map, 9);
+    capped.level = 10;
+    capped.xp = 40;
+    getPlayer(capped).level = 10;
+    const save = captureSave(capped);
+    expect(save).not.toHaveProperty('sitting');
+    const restored = createWorld(content, map, 9);
+    applySave(restored, content, map, save);
+    expect(restored.level).toBe(10);
+    expect(restored.xp).toBe(40);
+    expect(restored.sitting).toBe(false);
+    expect(restored.learned).not.toContain('shoulder_rush');
+  });
+
+  it('regens a trickle while standing and much faster while sitting', () => {
+    const map = arena();
+    const state = createWorld(content, map, 11);
+    expect(applyHero(state, content, 'barbarian', 'shaman', bonus)).toBe(true);
+    const player = getPlayer(state);
+    const run = (sitting: boolean) => {
+      player.hp = 10;
+      state.mana = 0;
+      state.regenBank = 0;
+      state.manaRegenBank = 0;
+      state.sitting = sitting;
+      for (let i = 0; i < 90; i++) step(state, content, map);
+      return { hp: player.hp, mana: state.mana };
+    };
+    const sitting = run(true);
+    const standing = run(false);
+    expect(sitting.mana).toBeGreaterThan(standing.mana + 3);
+    expect(sitting.hp).toBeGreaterThan(standing.hp + 4);
+    expect(standing.mana).toBeLessThan(2);
+  });
+
+  it('stands up when moving, casting, swinging, or being hit', () => {
+    const map = arena();
+    const state = createWorld(content, map, 12);
+    expect(applyHero(state, content, 'barbarian', 'shaman', bonus)).toBe(true);
+    const player = getPlayer(state);
+    state.sitting = true;
+    applyIntent(state, { type: 'move', x: 1, y: 0 }, content, map);
+    expect(state.sitting).toBe(false);
+
+    state.sitting = true;
+    state.input.x = 0;
+    applyIntent(state, { type: 'ability', id: 'frostbind' }, content, map);
+    expect(state.sitting).toBe(false);
+
+    player.x = 200;
+    player.y = 200;
+    const wolf = blankActor({
+      id: 'mob_hit',
+      kind: 'mob',
+      defId: 'wolf',
+      name: 'wolf',
+      sprite: 'wolf',
+      x: 208,
+      y: 200,
+      hp: 40,
+      maxHp: 40,
+      level: 2,
+    });
+    state.actors.push(wolf);
+    state.sitting = true;
+    resolveStrike(state, content, map, wolf, player, { n: 1, sides: 1, bonus: 4 }, 40, true, 'bites', () => undefined);
+    expect(state.sitting).toBe(false);
+    expect(player.hp).toBeLessThan(player.maxHp);
+
+    state.sitting = true;
+    state.autoAttack = true;
+    state.targetId = wolf.id;
+    player.attackMs = 1;
+    step(state, content, map);
+    expect(state.sitting).toBe(false);
+  });
+
+  it('draws a distinct icon for every ability', () => {
+    const png = PNG.sync.read(readFileSync(join(process.cwd(), 'src', 'assets', 'icons.png')));
+    const frames = iconMeta.frames as Record<string, { x: number; y: number; w: number; h: number }>;
+    const seen = new Set<string>();
+    const hashOf = (id: string) => {
+      const frame = frames[id];
+      expect(frame, id).toBeTruthy();
+      const bytes: number[] = [];
+      for (let y = 0; y < frame.h; y++) {
+        for (let x = 0; x < frame.w; x++) {
+          const i = ((frame.y + y) * png.width + (frame.x + x)) * 4;
+          bytes.push(png.data[i], png.data[i + 1], png.data[i + 2], png.data[i + 3]);
+        }
+      }
+      return bytes.join(',');
+    };
+    for (const ability of abilitiesJson as { id: string }[]) {
+      const hash = hashOf(ability.id);
+      expect(seen.has(hash), ability.id).toBe(false);
+      seen.add(hash);
+    }
+    const scrolls = Object.values(content.items).filter((item) => item.teaches);
+    expect(scrolls.length).toBeGreaterThan(4);
+    const scrollHashes = new Set<string>();
+    for (const item of scrolls) {
+      const hash = hashOf(item.id);
+      expect(scrollHashes.has(hash), item.id).toBe(false);
+      scrollHashes.add(hash);
+      expect(seen.has(hash), item.id).toBe(false);
+    }
   });
 });
 
