@@ -148,6 +148,107 @@
     "effects": "Worn on the head. The hide turns a light blow."
   },
   {
+    "id": "wolf_jerkin",
+    "name": "wolf-hide jerkin",
+    "kind": "armor",
+    "slot": "chest",
+    "value": 18,
+    "weight": 2.8,
+    "stack": 1,
+    "ac": 4,
+    "look": "chest_fur",
+    "blurb": "A jerkin stitched from the pelts Eirik did not nail to the wall. The fur still smells of pine.",
+    "effects": "Worn on the chest. Warmer than it looks, and a little harder to bite through."
+  },
+  {
+    "id": "threadbare_sack",
+    "name": "threadbare sack",
+    "kind": "bag",
+    "slots": 4,
+    "value": 8,
+    "weight": 0.4,
+    "stack": 1,
+    "blurb": "Four pockets and a drawstring that has given up. It still holds what you put in it.",
+    "effects": "A bag. Opens four slots. It does not lighten what you carry."
+  },
+  {
+    "id": "canvas_haversack",
+    "name": "canvas haversack",
+    "kind": "bag",
+    "slots": 6,
+    "value": 22,
+    "weight": 0.6,
+    "stack": 1,
+    "blurb": "Waxed canvas with six pockets. Brenna sells them to anyone who walks in wet.",
+    "effects": "A bag. Opens six slots."
+  },
+  {
+    "id": "stitched_pouch",
+    "name": "stitched pouch",
+    "kind": "bag",
+    "slots": 6,
+    "value": 18,
+    "weight": 0.3,
+    "stack": 1,
+    "blurb": "Signe's neat stitches. Six pockets, and none of them leak thread.",
+    "effects": "A bag. Opens six slots."
+  },
+  {
+    "id": "hide_satchel",
+    "name": "hide satchel",
+    "kind": "bag",
+    "slots": 8,
+    "value": 40,
+    "weight": 0.9,
+    "stack": 1,
+    "blurb": "A leatherworker's satchel with eight pockets. Heavy on its own. It does not make the rest lighter.",
+    "effects": "A bag. Opens eight slots."
+  },
+  {
+    "id": "chart_hoffender",
+    "name": "chart of Hoffender",
+    "kind": "chart",
+    "chart": "hoffender",
+    "value": 15,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Ink of the hold: palisade, streets, and the mead hall. The wilds are a blank margin.",
+    "effects": "Adds Hoffender to your map case."
+  },
+  {
+    "id": "chart_frostmere_road",
+    "name": "chart of the Frostmere road",
+    "kind": "chart",
+    "chart": "frostmere_road",
+    "value": 25,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The road north of the gate, drawn as far as the first pines.",
+    "effects": "Adds the Frostmere road to your map case."
+  },
+  {
+    "id": "chart_frostmere_deep",
+    "name": "chart of deep Frostmere",
+    "kind": "chart",
+    "chart": "frostmere_deep",
+    "value": 40,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Stream, pine camp, and the bear country. The barrow is deliberately left off.",
+    "effects": "Adds the deep Frostmere Wilds to your map case."
+  },
+  {
+    "id": "chart_barrow",
+    "name": "chart of the Barrow",
+    "kind": "chart",
+    "chart": "barrow",
+    "value": 55,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "A small, careful drawing of the far north. The ink is darker than it needs to be.",
+    "effects": "Adds the Barrow to your map case."
+  },
+  {
     "id": "bone_staff",
     "name": "bone staff",
     "kind": "weapon",

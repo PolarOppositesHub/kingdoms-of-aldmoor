@@ -1,0 +1,22 @@
+[
+  {
+    "id": "hoffender",
+    "name": "Hoffender",
+    "blurb": "The palisade, the mead hall, and the streets inside the hold. The gate is the north edge of the ink."
+  },
+  {
+    "id": "frostmere_road",
+    "name": "Frostmere Road",
+    "blurb": "The packed road north of the gate, as far as the first pines and the near camp."
+  },
+  {
+    "id": "frostmere_deep",
+    "name": "Deep Frostmere",
+    "blurb": "The middle wilds. A frozen stream, the pine camp, and the bear country west of it."
+  },
+  {
+    "id": "barrow",
+    "name": "The Barrow",
+    "blurb": "The far north of the Frostmere Wilds, where the ground is old and the bones do not stay down."
+  }
+]

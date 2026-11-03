@@ -4,7 +4,9 @@ import { describe, expect, it } from 'vitest';
 import { loadContent } from './content';
 import { conColor, formatCoin, xpLossFraction } from './formulas';
 import { applyIntent } from './intents';
-import { turnInPelts } from './systems';
+import { askPrice, ivarIsBusy, mobRespawnDelay, turnInPelts } from './systems';
+import { addItem, countItem, findStack, moveItem } from './bags';
+import { captureSave, migrateSave } from './save';
 import { bodyBlocked, placeName } from './map';
 import { applyHero, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
 import { step } from './step';
@@ -103,19 +105,21 @@ describe('simulation', () => {
     state.ui = { panel: 'merchant', npcId: brenna!.id, nodeId: null, title: null, body: null };
     applyIntent(state, { type: 'buy', itemId: 'bearded_handaxe' }, content, map);
     expect(state.copper).toBe(57);
-    const slot = state.inventory.findIndex((stack) => stack.itemId === 'bearded_handaxe');
-    applyIntent(state, { type: 'equip', slot }, content, map);
+    const slot = findStack(state, 'bearded_handaxe');
+    expect(slot).toBeTruthy();
+    applyIntent(state, { type: 'equip', bag: slot!.bag, slot: slot!.slot }, content, map);
     expect(state.equipment.primary).toBe('bearded_handaxe');
-    const old = state.inventory.findIndex((stack) => stack.itemId === 'worn_axe');
-    expect(old).toBeGreaterThanOrEqual(0);
+    const old = findStack(state, 'worn_axe');
+    expect(old).toBeTruthy();
     const before = state.copper;
-    applyIntent(state, { type: 'sell', slot: old }, content, map);
+    applyIntent(state, { type: 'sell', bag: old!.bag, slot: old!.slot }, content, map);
     expect(state.copper).toBe(before + content.items.worn_axe.value);
     applyIntent(state, { type: 'buy', itemId: 'trail_ration' }, content, map);
     state.ui.panel = 'none';
-    const ration = state.inventory.findIndex((stack) => stack.itemId === 'trail_ration');
+    const ration = findStack(state, 'trail_ration');
+    expect(ration).toBeTruthy();
     getPlayer(state).hp = 10;
-    applyIntent(state, { type: 'use', slot: ration }, content, map);
+    applyIntent(state, { type: 'use', bag: ration!.bag, slot: ration!.slot }, content, map);
     expect(getPlayer(state).hp).toBe(28);
   });
 
@@ -144,7 +148,7 @@ describe('simulation', () => {
     for (let i = 0; i < 500 && wolf.alive; i++) step(first, content, map);
     expect(wolf.alive).toBe(false);
     expect(first.xp).toBeGreaterThan(0);
-    expect(first.ground.length + first.inventory.length).toBeGreaterThan(1);
+    expect(first.ground.length + countItem(first, 'wolf_pelt') + countItem(first, 'wolf_tooth') + countItem(first, 'stringy_meat')).toBeGreaterThan(0);
 
     // Same seed and same opening kick produce the same remaining health.
     const firstWolfHpAfterKick = createWorld(content, map, 11);
@@ -194,7 +198,7 @@ describe('simulation', () => {
     const state = createWorld(content, map, 7);
     const player = getPlayer(state);
     expect(bodyBlocked(map, player.x, player.y, 5, 3, false)).toBe(false);
-    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(14);
+    expect(state.actors.filter((actor) => actor.kind === 'npc')).toHaveLength(17);
     expect(state.actors.filter((actor) => actor.kind === 'mob').length).toBeGreaterThanOrEqual(8);
     expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(true);
     for (let i = 0; i < 30; i++) step(state, content, map);
@@ -296,13 +300,13 @@ describe('wizard and the pelt quest', () => {
     const map = arena();
     const state = createWorld(content, map, 4);
     state.quests.wolf_pelts.stage = 'active';
-    state.inventory.push({ itemId: 'wolf_pelt', qty: 4 });
+    addItem(state, content, 'wolf_pelt', 4);
     const xp = state.xp;
-    turnInPelts(state, content, () => undefined);
+    turnInPelts(state, content, () => undefined, 'helm');
     expect(state.quests.wolf_pelts.stage).toBe('done');
     expect(state.equipment.head).toBe('wolf_helm');
     expect(state.xp).toBeGreaterThan(xp);
-    expect(state.inventory.some((stack) => stack.itemId === 'wolf_pelt')).toBe(false);
+    expect(countItem(state, 'wolf_pelt')).toBe(0);
   });
 });
 
@@ -314,21 +318,23 @@ describe('gear and quests', () => {
     }
     const map = arena();
     const state = createWorld(content, map, 8);
-    state.inventory.push({ itemId: 'bearded_handaxe', qty: 1 });
-    const slot = state.inventory.findIndex((stack) => stack.itemId === 'bearded_handaxe');
-    applyIntent(state, { type: 'equip', slot }, content, map);
+    addItem(state, content, 'bearded_handaxe', 1);
+    const slot = findStack(state, 'bearded_handaxe');
+    expect(slot).toBeTruthy();
+    applyIntent(state, { type: 'equip', bag: slot!.bag, slot: slot!.slot }, content, map);
     expect(state.equipment.primary).toBe('bearded_handaxe');
     expect(state.stats.str).toBe(state.baseStats.str + 1);
     applyIntent(state, { type: 'unequip', slot: 'primary' }, content, map);
     expect(state.equipment.primary).toBeNull();
-    expect(state.inventory.some((stack) => stack.itemId === 'bearded_handaxe')).toBe(true);
+    expect(findStack(state, 'bearded_handaxe')).toBeTruthy();
 
     state.quests.wolf_pelts.stage = 'active';
-    state.inventory.push({ itemId: 'wolf_pelt', qty: 2 });
+    addItem(state, content, 'wolf_pelt', 2);
     applyIntent(state, { type: 'abandonQuest', id: 'wolf_pelts' }, content, map);
     expect(state.quests.wolf_pelts.stage).toBe('none');
-    expect(state.inventory.some((stack) => stack.itemId === 'wolf_pelt' && stack.qty === 2)).toBe(true);
-    expect(content.quests[0]?.reward).toMatch(/wolf helm/);
+    expect(countItem(state, 'wolf_pelt')).toBe(2);
+    expect(content.quests[0]?.reward).toMatch(/wolf-head helm/);
+    expect(content.quests[0]?.reward).toMatch(/wolf-hide jerkin/);
   });
 });
 
@@ -351,8 +357,11 @@ describe('armor shops', () => {
     }
     const ivar = content.merchant.vendors.find((vendor) => vendor.npcId === 'ivar');
     const signe = content.merchant.vendors.find((vendor) => vendor.npcId === 'signe');
+    const marta = content.merchant.vendors.find((vendor) => vendor.npcId === 'marta');
     expect(ivar?.stock).toHaveLength(36);
-    expect(signe?.stock).toHaveLength(36);
+    expect(marta?.stock).toHaveLength(36);
+    expect(signe?.stock.filter((row) => content.items[row.itemId].armorType)).toHaveLength(36);
+    expect(signe?.stock.some((row) => content.items[row.itemId].kind === 'bag')).toBe(true);
     for (const row of ivar?.stock ?? []) {
       const item = content.items[row.itemId];
       expect(['plate', 'chain']).toContain(item.armorType);
@@ -360,6 +369,7 @@ describe('armor shops', () => {
     }
     for (const row of signe?.stock ?? []) {
       const item = content.items[row.itemId];
+      if (item.kind === 'bag') continue;
       expect(['cloth', 'leather']).toContain(item.armorType);
       expect(row.price).toBe(item.value);
     }
@@ -370,18 +380,20 @@ describe('armor shops', () => {
   it('lets a warrior wear plate and refuses it on a wizard', () => {
     const map = arena();
     const warrior = createWorld(content, map, 3);
-    warrior.inventory.push({ itemId: 'iron_helm', qty: 1 });
-    applyIntent(warrior, { type: 'equip', slot: warrior.inventory.length - 1 }, content, map);
+    addItem(warrior, content, 'iron_helm', 1);
+    const warriorHelm = findStack(warrior, 'iron_helm');
+    applyIntent(warrior, { type: 'equip', bag: warriorHelm!.bag, slot: warriorHelm!.slot }, content, map);
     expect(warrior.equipment.head).toBe('iron_helm');
 
     const wizard = createWorld(content, map, 4);
     expect(applyHero(wizard, content, 'barbarian', 'wizard', { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 })).toBe(false);
     configurePlayer(wizard, content, 'wizard');
-    wizard.inventory.push({ itemId: 'iron_helm', qty: 1 });
-    applyIntent(wizard, { type: 'equip', slot: wizard.inventory.length - 1 }, content, map);
+    addItem(wizard, content, 'iron_helm', 1);
+    const wizardHelm = findStack(wizard, 'iron_helm');
+    applyIntent(wizard, { type: 'equip', bag: wizardHelm!.bag, slot: wizardHelm!.slot }, content, map);
     expect(wizard.equipment.head).toBeNull();
     expect(wizard.log.at(-1)).toMatch(/Wizard cannot wear plate/);
-    expect(wizard.inventory.some((stack) => stack.itemId === 'iron_helm')).toBe(true);
+    expect(findStack(wizard, 'iron_helm')).toBeTruthy();
   });
 
   it('gates a scale piece behind faction standing', () => {
@@ -402,13 +414,15 @@ describe('armor shops', () => {
       faction: { id: 'zasariz', rank: 2 },
     };
     try {
-      state.inventory.push({ itemId: 'scale_test', qty: 1 });
-      const slot = state.inventory.length - 1;
-      applyIntent(state, { type: 'equip', slot }, content, map);
+      addItem(state, content, 'scale_test', 1);
+      const held = findStack(state, 'scale_test');
+      const slot = held!.slot;
+      const bag = held!.bag;
+      applyIntent(state, { type: 'equip', bag, slot }, content, map);
       expect(state.equipment.chest).toBe('cracked_leather_tunic');
       expect(state.log.at(-1)).toMatch(/zasariz standing 2/);
       state.factions.zasariz = 2;
-      applyIntent(state, { type: 'equip', slot }, content, map);
+      applyIntent(state, { type: 'equip', bag, slot }, content, map);
       expect(state.equipment.chest).toBe('scale_test');
     } finally {
       delete content.items.scale_test;
@@ -435,6 +449,97 @@ describe('save and classes', () => {
     const next = createWorld(content, map, 12);
     applySave(next, content, map, migrated);
     expect(next.classId).toBe('warrior');
+  });
+});
+
+describe('bags, charts, pets, and respawn', () => {
+  it('starts with one sack, five ability slots, and no charts', () => {
+    const state = createWorld(content, arena(), 1);
+    expect(state.bags.filter(Boolean)).toHaveLength(1);
+    expect(state.bags[0]?.slots).toHaveLength(4);
+    expect(state.loadout.length).toBeLessThanOrEqual(5);
+    expect(state.loadout.length).toBeGreaterThan(0);
+    expect(state.charts).toEqual([]);
+    expect(getPlayer(state).scale).toBeGreaterThan(1);
+  });
+
+  it('drags items between bag slots and keeps a flat save readable', () => {
+    const map = arena();
+    const state = createWorld(content, arena(), 2);
+    addItem(state, content, 'canvas_haversack', 1);
+    expect(state.bags[1]?.slots).toHaveLength(6);
+    addItem(state, content, 'wolf_pelt', 3);
+    const from = findStack(state, 'wolf_pelt');
+    expect(from).toBeTruthy();
+    const destBag = from!.bag === 0 ? 1 : 0;
+    expect(moveItem(state, content, from!.bag, from!.slot, destBag, 0)).toBe(true);
+    expect(state.bags[destBag]?.slots[0]?.itemId).toBe('wolf_pelt');
+    const legacy = captureSave(state) as ReturnType<typeof captureSave> & { inventory?: { itemId: string; qty: number }[] };
+    delete legacy.bags;
+    legacy.version = 1;
+    legacy.inventory = [{ itemId: 'trail_ration', qty: 2 }];
+    const migrated = migrateSave(legacy);
+    expect(migrated?.bags?.[0]?.slots.some((slot) => slot?.itemId === 'trail_ration' && slot.qty === 2)).toBe(true);
+  });
+
+  it('sells each region from a different mapmaker and discounts the smith', () => {
+    const charts = content.merchant.vendors.filter((vendor) => vendor.stock.some((row) => content.items[row.itemId]?.kind === 'chart'));
+    expect(charts.length).toBeGreaterThan(1);
+    const all = Object.keys(content.maps);
+    for (const vendor of charts) {
+      const sold = vendor.stock.map((row) => content.items[row.itemId]?.chart).filter(Boolean);
+      expect(sold.length).toBeGreaterThan(0);
+      expect(sold.length).toBeLessThan(all.length);
+    }
+    const breast = content.merchant.vendors.find((vendor) => vendor.npcId === 'ivar')?.stock[0];
+    expect(breast).toBeTruthy();
+    expect(askPrice('ivar', breast!.price)).toBeLessThan(breast!.price);
+    expect(askPrice('marta', breast!.price)).toBe(breast!.price);
+    const state = createWorld(content, arena(), 9);
+    state.timeMs = 0;
+    const first = ivarIsBusy(state);
+    let flipped = first;
+    for (let bucket = 1; bucket < 12; bucket++) {
+      state.timeMs = bucket * 20000;
+      if (ivarIsBusy(state) !== first) flipped = !first;
+    }
+    expect(flipped).not.toBe(first);
+    const common = mobRespawnDelay(state, content, false);
+    const named = mobRespawnDelay(state, content, true);
+    expect(common).toBeGreaterThanOrEqual(5 * 60 * 1000);
+    expect(named).toBeGreaterThan(common - content.tuning.mobRespawnJitterMs);
+    expect(content.tuning.namedRespawnMs).toBeGreaterThan(content.tuning.mobRespawnMs);
+  });
+
+  it('puts guild folk indoors, the smith at the forge, and named wolves in the wilds', () => {
+    const raw = JSON.parse(hoffenderRaw) as TiledJson & { layers: { name: string; data?: number[] }[] };
+    const map = parseTiledMap(raw);
+    const ground = raw.layers.find((layer) => layer.name === 'ground')?.data ?? [];
+    const tileAt = (x: number, y: number) => ground[Math.floor(y / 16) * raw.width + Math.floor(x / 16)];
+    const state = createWorld(content, map, 4);
+    const eirik = state.actors.find((actor) => actor.defId === 'eirik');
+    const marta = state.actors.find((actor) => actor.defId === 'marta');
+    const ivar = state.actors.find((actor) => actor.defId === 'ivar');
+    const ysolde = state.actors.find((actor) => actor.defId === 'ysolde');
+    const freya = state.actors.find((actor) => actor.defId === 'freya');
+    expect(tileAt(eirik!.x, eirik!.y)).toBe(45);
+    expect(tileAt(marta!.x, marta!.y)).toBe(45);
+    expect(tileAt(ivar!.x, ivar!.y)).not.toBe(45);
+    expect(ysolde!.scale).toBeLessThan(freya!.scale);
+    expect(map.spawns.some((spawn) => spawn.defId === 'greymaw')).toBe(true);
+    expect(map.spawns.some((spawn) => spawn.defId === 'mira_palehand')).toBe(true);
+    expect(content.mobs.greymaw.named).toBe(true);
+    expect(content.mobs.mira_palehand.named).toBe(true);
+    const warden = createWorld(content, arena(), 6);
+    configurePlayer(warden, content, 'warden');
+    const wolf = warden.actors.find((actor) => actor.pet);
+    expect(wolf).toBeTruthy();
+    warden.targetId = 'nobody';
+    applyIntent(warden, { type: 'pet', order: 'attack' }, content, arena());
+    expect(warden.petOrder).toBe('follow');
+    applyIntent(warden, { type: 'pet', order: 'stay' }, content, arena());
+    expect(warden.petOrder).toBe('stay');
+    expect(warden.petHold).toBeTruthy();
   });
 });
 

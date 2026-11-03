@@ -2,9 +2,11 @@ import type { GameApi } from '../game/api';
 import { controls, pushIntent } from '../game/controls';
 import { conColor, conLabel, formatCoin } from '../sim/formulas';
 import { isSafe, placeName } from '../sim/map';
-import { EQUIP_SLOTS, type EquipSlot, type GameState, type ItemDef } from '../sim/types';
+import { EQUIP_SLOTS, LOADOUT_CAP, type EquipSlot, type GameState, type ItemDef, type PetOrder } from '../sim/types';
 import { armorLabel, classLabel } from '../sim/wear';
-import { knownAbilities } from '../sim/systems';
+import { askPrice, knownAbilities } from '../sim/systems';
+import { countItem, firstConsumable } from '../sim/bags';
+import { playerVisuals, raceScale } from '../sim/appearance';
 import iconsUrl from '../assets/icons.png?url';
 import iconMeta from '../assets/icons.json';
 import actorsUrl from '../assets/actors.png?url';
@@ -35,6 +37,12 @@ export function mountHud(api: GameApi): void {
     <section class="target-box" id="target-box">
       <div id="target-name">No target</div>
       <div class="bar hp thin"><span id="target-fill"></span></div>
+      <div class="pet-bar" id="pet-bar" hidden>
+        <button type="button" data-pet="attack">Attack</button>
+        <button type="button" data-pet="backoff">Back off</button>
+        <button type="button" data-pet="stay">Stay</button>
+        <button type="button" data-pet="follow">Follow</button>
+      </div>
     </section>
     <p id="log" aria-live="polite"></p>
     <div class="pad" id="pad" data-scheme="stick" role="group" aria-label="Move">
@@ -48,13 +56,11 @@ export function mountHud(api: GameApi): void {
       <button type="button" class="dir right" data-dir="e" aria-label="Right">▶</button>
       <button type="button" class="dir down" data-dir="s" aria-label="Down">▼</button>
     </div>
-    <div class="actions" data-spells="1">
+    <div class="actions" data-spells="5">
       <button type="button" id="atk" class="atk" aria-pressed="false">ATK</button>
-      <button type="button" id="spell-a">Kick</button>
-      <button type="button" id="spell-b" hidden>Spell</button>
+      ${Array.from({ length: LOADOUT_CAP }, (_, index) => `<button type="button" class="spell" data-spell="${index}">—</button>`).join('')}
       <button type="button" id="next">Next</button>
       <button type="button" id="talk">Look</button>
-      <button type="button" id="pack">Inv</button>
       <button type="button" id="book">Book</button>
       <button type="button" id="quest">Quest</button>
       <button type="button" id="item">Item</button>
@@ -89,29 +95,43 @@ export function mountHud(api: GameApi): void {
   applyScheme(stored);
   scheme.addEventListener('click', () => applyScheme(pad.dataset.scheme === 'dpad' ? 'stick' : 'dpad'));
 
-  const cast = (slot: 'a' | 'b') => {
-    const button = root.querySelector<HTMLButtonElement>(slot === 'a' ? '#spell-a' : '#spell-b');
-    const id = button?.dataset.ability;
-    if (id) pushIntent({ type: 'ability', id });
-  };
-  root.querySelector('#atk')!.addEventListener('click', () => pushIntent({ type: 'toggleAutoAttack' }));
-  root.querySelector('#spell-a')!.addEventListener('click', () => cast('a'));
-  root.querySelector('#spell-b')!.addEventListener('click', () => cast('b'));
-  root.querySelector('#next')!.addEventListener('click', () => pushIntent({ type: 'cycleTarget' }));
-  root.querySelector('#talk')!.addEventListener('click', () => pushIntent({ type: 'interact' }));
-  root.querySelector('#pack')!.addEventListener('click', () => {
+  const tools = document.createElement('div');
+  tools.className = 'corner-tools';
+  tools.innerHTML = `
+    <button type="button" id="maps" class="corner-btn" aria-label="Maps">
+      <span class="pixel-globe" aria-hidden="true"></span>
+    </button>
+    <button type="button" id="pack" class="corner-btn" aria-label="Inventory">
+      <span class="pixel-pack" aria-hidden="true"></span>
+    </button>
+  `;
+  document.getElementById('app')?.appendChild(tools);
+  tools.querySelector('#maps')!.addEventListener('click', () => pushIntent({ type: 'openMaps' }));
+  tools.querySelector('#pack')!.addEventListener('click', () => {
     detail = null;
+    openBag = 0;
     pushIntent({ type: 'openPack' });
   });
+  root.querySelector('#atk')!.addEventListener('click', () => pushIntent({ type: 'toggleAutoAttack' }));
+  root.querySelectorAll<HTMLButtonElement>('.spell').forEach((button) => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.ability;
+      if (id) pushIntent({ type: 'ability', id });
+    });
+  });
+  root.querySelectorAll<HTMLButtonElement>('[data-pet]').forEach((button) => {
+    button.addEventListener('click', () => pushIntent({ type: 'pet', order: (button.dataset.pet ?? 'follow') as PetOrder }));
+  });
+  root.querySelector('#next')!.addEventListener('click', () => pushIntent({ type: 'cycleTarget' }));
+  root.querySelector('#talk')!.addEventListener('click', () => pushIntent({ type: 'interact' }));
   root.querySelector('#book')!.addEventListener('click', () => pushIntent({ type: 'openBook' }));
   root.querySelector('#quest')!.addEventListener('click', () => {
     abandonArmed = false;
     pushIntent({ type: 'openJournal' });
   });
   root.querySelector('#item')!.addEventListener('click', () => {
-    const state = api.getState();
-    const slot = state.inventory.findIndex((stack) => api.content.items[stack.itemId]?.kind === 'consumable');
-    if (slot >= 0) pushIntent({ type: 'use', slot });
+    const loc = firstConsumable(api.getState(), api.content);
+    if (loc) pushIntent({ type: 'use', bag: loc.bag, slot: loc.slot });
   });
   root.querySelector('#help')!.addEventListener('click', () => pushIntent({ type: 'openHelp' }));
   const mute = root.querySelector<HTMLButtonElement>('#mute')!;
@@ -128,8 +148,14 @@ export function mountHud(api: GameApi): void {
   let detail: { itemId: string } | { emptySlot: EquipSlot } | null = null;
   let abandonArmed = false;
   let bookSlot = 0;
+  let openBag = 0;
+  let dragged = false;
 
   panel.addEventListener('click', (event) => {
+    if (dragged) {
+      dragged = false;
+      return;
+    }
     const button = (event.target as HTMLElement).closest('button');
     if (!button) return;
     const action = button.dataset.action;
@@ -139,9 +165,11 @@ export function mountHud(api: GameApi): void {
       pushIntent({ type: 'close' });
     } else if (action === 'choice') pushIntent({ type: 'choice', index: Number(button.dataset.index) });
     else if (action === 'buy') pushIntent({ type: 'buy', itemId: button.dataset.item ?? '' });
-    else if (action === 'sell') pushIntent({ type: 'sell', slot: Number(button.dataset.slot) });
-    else if (action === 'use') pushIntent({ type: 'use', slot: Number(button.dataset.slot) });
-    else if (action === 'equip') pushIntent({ type: 'equip', slot: Number(button.dataset.slot) });
+    else if (action === 'sell') pushIntent({ type: 'sell', bag: Number(button.dataset.bag), slot: Number(button.dataset.slot) });
+    else if (action === 'sell-bag') pushIntent({ type: 'sellBag', holder: Number(button.dataset.holder) });
+    else if (action === 'use') pushIntent({ type: 'use', bag: Number(button.dataset.bag), slot: Number(button.dataset.slot) });
+    else if (action === 'equip') pushIntent({ type: 'equip', bag: Number(button.dataset.bag), slot: Number(button.dataset.slot) });
+    else if (action === 'open-bag') openBag = Number(button.dataset.holder);
     else if (action === 'unequip') pushIntent({ type: 'unequip', slot: (button.dataset.equipSlot ?? 'head') as EquipSlot });
     else if (action === 'focus-item') detail = { itemId: button.dataset.item ?? '' };
     else if (action === 'focus-slot') {
@@ -150,7 +178,7 @@ export function mountHud(api: GameApi): void {
     } else if (action === 'book-slot') bookSlot = Number(button.dataset.slot);
     else if (action === 'learn') {
       const live = api.getState();
-      const next = [live.loadout[0] ?? '', live.loadout[1] ?? ''];
+      const next = Array.from({ length: LOADOUT_CAP }, (_, index) => live.loadout[index] ?? '');
       next[bookSlot] = button.dataset.ability ?? '';
       pushIntent({ type: 'setLoadout', slots: next.filter((id) => id.length > 0) });
     } else if (action === 'abandon-ask') abandonArmed = true;
@@ -166,7 +194,10 @@ export function mountHud(api: GameApi): void {
   let hintedFight = false;
   let hintedSell = false;
   let lastLevel = 1;
-  const startItems = api.getState().inventory.reduce((sum, stack) => sum + stack.qty, 0);
+  const startItems = countQty(api.getState());
+  bindBagDrag(panel, () => {
+    dragged = true;
+  });
 
   const showToast = (text: string) => {
     toast.textContent = text;
@@ -180,17 +211,17 @@ export function mountHud(api: GameApi): void {
   const tick = () => {
     const state = api.getState();
     paintVitals(root, state, api);
-    const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}|${bookSlot}`;
+    const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}|${bookSlot}|${openBag}`;
     if (key !== panelKey) {
       panelKey = key;
-      paintPanel(panel, state, api, detail, abandonArmed, bookSlot);
+      paintPanel(panel, state, api, detail, abandonArmed, bookSlot, openBag);
     }
     if (!hintedFight && state.ui.panel === 'none' && !isSafe(api.map, getXY(state).x, getXY(state).y)) {
       hintedFight = true;
       if (state.maxMana > 0) showToast('Tap a wolf, then Shard. Rime slows a pack. The blue bar is mana.');
       else showToast('Tap a wolf, then ATK. The button fills between swings.');
     }
-    const items = state.inventory.reduce((sum, stack) => sum + stack.qty, 0);
+    const items = countQty(state);
     if (!hintedSell && items > startItems) {
       hintedSell = true;
       showToast("Pelts sell at Brenna's — the stall with the red awning.");
@@ -210,7 +241,13 @@ function getXY(state: GameState): { x: number; y: number } {
 }
 
 function paintSpell(button: HTMLButtonElement, id: string | undefined, state: GameState, api: GameApi): void {
-  if (!id) return;
+  if (!id) {
+    button.disabled = true;
+    button.textContent = '—';
+    delete button.dataset.ability;
+    button.setAttribute('aria-label', 'Empty ability slot');
+    return;
+  }
   const ability = api.content.abilities[id];
   if (!ability) return;
   button.dataset.ability = id;
@@ -309,9 +346,9 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const weapon = root.querySelector('#weapon');
   const log = root.querySelector('#log');
   const atk = root.querySelector<HTMLButtonElement>('#atk');
-  const spellA = root.querySelector<HTMLButtonElement>('#spell-a');
-  const spellB = root.querySelector<HTMLButtonElement>('#spell-b');
+  const spells = [...root.querySelectorAll<HTMLButtonElement>('.spell')];
   const actions = root.querySelector<HTMLElement>('.actions');
+  const petBar = root.querySelector<HTMLElement>('#pet-bar');
   const manaLine = root.querySelector<HTMLElement>('#mana-line');
   const manaFill = root.querySelector<HTMLElement>('#mana-fill');
   const manaNum = root.querySelector('#mana-num');
@@ -319,7 +356,7 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const targetName = root.querySelector<HTMLElement>('#target-name');
   const targetFill = root.querySelector<HTMLElement>('#target-fill');
   const death = root.querySelector<HTMLElement>('#death');
-  if (!who || !place || !coin || !hpNum || !hpFill || !xpFill || !weapon || !log || !atk || !spellA || !spellB || !actions || !item || !targetName || !targetFill || !death) return;
+  if (!who || !place || !coin || !hpNum || !hpFill || !xpFill || !weapon || !log || !atk || spells.length < LOADOUT_CAP || !actions || !item || !targetName || !targetFill || !death) return;
 
   const className = api.content.classes[state.classId]?.name ?? 'Warrior';
   who.textContent = `Lv ${state.level} ${className}`;
@@ -353,19 +390,24 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   atk.setAttribute('aria-pressed', state.autoAttack ? 'true' : 'false');
   atk.textContent = state.autoAttack ? 'ATK' : 'ATK';
 
-  paintSpell(spellA, state.loadout[0], state, api);
-  paintSpell(spellB, state.loadout[1], state, api);
-  actions.dataset.spells = state.loadout.length > 1 ? '2' : '1';
-  spellB.hidden = !state.loadout[1];
+  spells.forEach((button, index) => paintSpell(button, state.loadout[index], state, api));
+  actions.dataset.spells = '5';
+  if (petBar) {
+    const warden = state.classId === 'warden';
+    petBar.hidden = !warden;
+    petBar.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+      button.setAttribute('aria-pressed', button.dataset.pet === state.petOrder ? 'true' : 'false');
+    });
+  }
 
-  const slot = state.inventory.findIndex((stack) => api.content.items[stack.itemId]?.kind === 'consumable');
-  if (slot < 0) {
+  const food = firstConsumable(state, api.content);
+  if (!food) {
     item.textContent = 'No food';
     item.disabled = true;
   } else {
-    const stack = state.inventory[slot];
-    item.disabled = false;
-    item.textContent = `${api.content.items[stack.itemId].name} ×${stack.qty}`;
+    const stack = state.bags[food.bag]?.slots[food.slot];
+    item.disabled = !stack;
+    item.textContent = stack ? `${api.content.items[stack.itemId].name} ×${stack.qty}` : 'No food';
   }
 
   const target = state.actors.find((actor) => actor.id === state.targetId && actor.alive);
@@ -407,11 +449,22 @@ function conHex(color: string): string {
   }
 }
 
+function countQty(state: GameState): number {
+  let total = 0;
+  for (const bag of state.bags) {
+    if (!bag) continue;
+    for (const slot of bag.slots) if (slot) total += slot.qty;
+  }
+  return total;
+}
+
 function panelSignature(state: GameState): string {
-  const bag = state.inventory.map((stack) => `${stack.itemId}:${stack.qty}`).join(',');
+  const bag = state.bags
+    .map((held, index) => (held ? `${index}:${held.itemId}:${held.slots.map((slot) => (slot ? `${slot.itemId}:${slot.qty}` : '.')).join('/')}` : `${index}:.`))
+    .join(',');
   const worn = EQUIP_SLOTS.map((slot) => state.equipment[slot] ?? '').join(',');
   const quest = `${state.quests.wolf_pelts.stage}:${state.quests.wolf_pelts.progress}`;
-  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.dead ? 1 : 0}`;
+  return `${state.ui.panel}|${state.ui.nodeId}|${state.ui.title}|${state.copper}|${worn}|${bag}|${quest}|${state.loadout.join(',')}|${state.learned.join(',')}|${state.charts.join(',')}|${state.petOrder}|${state.dead ? 1 : 0}`;
 }
 
 function paintPanel(
@@ -421,6 +474,7 @@ function paintPanel(
   focus: { itemId: string } | { emptySlot: EquipSlot } | null,
   confirmAbandon: boolean,
   bookSlot: number,
+  openBag: number,
 ): void {
   if (state.ui.panel === 'none') {
     panel.hidden = true;
@@ -432,7 +486,8 @@ function paintPanel(
   panel.dataset.kind = state.ui.panel === 'pack' ? 'paper' : '';
   if (state.ui.panel === 'dialogue') panel.innerHTML = dialogueHtml(state, api);
   else if (state.ui.panel === 'merchant') panel.innerHTML = merchantHtml(state, api);
-  else if (state.ui.panel === 'pack') panel.innerHTML = inventoryHtml(state, api, focus);
+  else if (state.ui.panel === 'pack') panel.innerHTML = inventoryHtml(state, api, focus, openBag);
+  else if (state.ui.panel === 'maps') panel.innerHTML = mapsHtml(state, api);
   else if (state.ui.panel === 'journal') panel.innerHTML = journalHtml(state, api, confirmAbandon);
   else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookSlot);
   else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
@@ -441,7 +496,7 @@ function paintPanel(
 
 function bookHtml(state: GameState, api: GameApi, armed: number): string {
   const known = knownAbilities(state, api.content);
-  const slots = [0, 1]
+  const slots = Array.from({ length: LOADOUT_CAP }, (_, index) => index)
     .map((index) => {
       const id = state.loadout[index];
       const ability = id ? api.content.abilities[id] : undefined;
@@ -489,7 +544,7 @@ function merchantHtml(state: GameState, api: GameApi): string {
     if (!item) continue;
     const key = item.armorType ? armorLabel(item.armorType) : 'Goods';
     const line = `<li><span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(item.slot ? SLOT_LABEL[item.slot] : item.blurb)}</small></span>
-        <button type="button" data-action="buy" data-item="${item.id}">${formatCoin(row.price, api.content.economy)}</button></li>`;
+        <button type="button" data-action="buy" data-item="${item.id}">${formatCoin(askPrice(npc?.defId ?? '', row.price), api.content.economy)}</button></li>`;
     const list = groups.get(key) ?? [];
     list.push(line);
     groups.set(key, list);
@@ -538,11 +593,13 @@ function actorLayerStyle(rowName: string): string {
   return `--frame-y:-${frameY}px;--step:${frameW}px;width:${frameW}px;height:${frameH}px;background-image:url(${url});background-size:${sheetW}px ${sheetH}px;`;
 }
 
-function dollFigure(state: GameState): string {
+function dollFigure(state: GameState, api: GameApi): string {
   const body = state.sex === 'female' ? 'body_f' : 'body_m';
-  const helm = state.equipment.head === 'wolf_helm' ? (state.sex === 'female' ? 'wolf_helm_f' : 'wolf_helm_m') : '';
-  const layers = helm ? `<span class="doll-layer" style="${actorLayerStyle(helm)}"></span>` : '';
-  return `<div class="doll-stage">
+  const layers = playerVisuals(state, api.content)
+    .map((visual) => `<span class="doll-layer" style="${actorLayerStyle(visual.row)}"></span>`)
+    .join('');
+  const scale = Math.min(1.16, raceScale(api.content, state.raceId));
+  return `<div class="doll-stage" style="transform:scale(${scale});transform-origin:bottom center">
     <span class="doll-shadow"></span>
     <span class="doll-layer doll-body" style="${actorLayerStyle(body)}"></span>
     ${layers}
@@ -566,23 +623,35 @@ function slotButton(
   </button>`;
 }
 
-function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string } | { emptySlot: EquipSlot } | null): string {
-  const cells = state.inventory
-    .map((stack, index) => {
-      const item = api.content.items[stack.itemId];
-      if (!item) return '';
-      const selected = focus && 'itemId' in focus && focus.itemId === item.id;
-      return `<button type="button" class="slot-frame bag-cell${selected ? ' is-on' : ''}" data-action="focus-item" data-item="${item.id}" data-slot="${index}" aria-pressed="${selected ? 'true' : 'false'}" aria-label="${item.name}, ${stack.qty}">
-        <span class="slot-art">${iconHtml(item.id)}</span>
-        <small>×${stack.qty}</small>
+function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string } | { emptySlot: EquipSlot } | null, openBag: number): string {
+  const holders = state.bags
+    .map((bag, index) => {
+      const item = bag ? api.content.items[bag.itemId] : undefined;
+      const on = index === openBag ? ' is-on' : '';
+      return `<button type="button" class="slot-frame holder${on}" data-action="open-bag" data-holder="${index}" data-drag="bag" data-drop="bag" aria-label="${item ? item.name : 'Empty bag slot'}">
+        <span class="slot-art">${item ? iconHtml(item.id) : ''}</span>
+        <small>${item ? item.slots ?? bag?.slots.length : 'Bag'}</small>
       </button>`;
     })
     .join('');
+  const held = state.bags[openBag];
+  const cells = held
+    ? held.slots
+        .map((stack, index) => {
+          const item = stack ? api.content.items[stack.itemId] : undefined;
+          const selected = Boolean(item && focus && 'itemId' in focus && focus.itemId === item.id);
+          return `<button type="button" class="slot-frame bag-cell${selected ? ' is-on' : ''}" data-action="focus-item" data-item="${item?.id ?? ''}" data-bag="${openBag}" data-slot="${index}" data-drag="item" data-drop="item" aria-label="${item ? `${item.name}, ${stack?.qty}` : 'Empty'}">
+            <span class="slot-art">${item ? iconHtml(item.id) : ''}</span>
+            <small>${stack ? `×${stack.qty}` : ''}</small>
+          </button>`;
+        })
+        .join('')
+    : '<p class="empty">This holder is empty. Bags from Brenna or Signe sit here.</p>';
   const focused = focus && 'itemId' in focus ? api.content.items[focus.itemId] : undefined;
   const wornSlot = focused?.slot && state.equipment[focused.slot] === focused.id ? focused.slot : null;
-  const bagIndex = focused ? state.inventory.findIndex((stack) => stack.itemId === focused.id) : -1;
+  const loc = focused ? findHeld(state, focused.id) : null;
   const detail = focused
-    ? itemCard(focused, api, wornSlot, bagIndex)
+    ? itemCard(focused, api, wornSlot, loc)
     : focus && 'emptySlot' in focus
       ? `<article class="item-card"><h3>${SLOT_LABEL[focus.emptySlot]}</h3><p>Nothing is worn here.</p></article>`
       : '';
@@ -591,21 +660,34 @@ function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string }
     <div class="paper-doll">
       ${slotButton(state, api, 'head', focus)}
       ${slotButton(state, api, 'chest', focus)}
-      ${dollFigure(state)}
+      ${dollFigure(state, api)}
       ${slotButton(state, api, 'hands', focus)}
       ${slotButton(state, api, 'legs', focus)}
       ${slotButton(state, api, 'feet', focus)}
       ${slotButton(state, api, 'primary', focus)}
       ${slotButton(state, api, 'secondary', focus)}
     </div>
-    <h3>Bag</h3>
-    <div class="bag-grid">${cells || '<p class="empty">Nothing in the bag.</p>'}</div>
+    <h3>Bags</h3>
+    <p class="empty">Eight holders. Drag a bag or an item. Weight-light bags are not sold yet.</p>
+    <div class="holder-row">${holders}</div>
+    <div class="bag-grid">${cells}</div>
     ${detail}
     <button type="button" class="close" data-action="close">Close</button>
   </div>`;
 }
 
-function itemCard(item: ItemDef, api: GameApi, wornSlot: EquipSlot | null, bagIndex: number): string {
+function findHeld(state: GameState, itemId: string): { bag: number; slot: number } | null {
+  for (let bag = 0; bag < state.bags.length; bag++) {
+    const held = state.bags[bag];
+    if (!held) continue;
+    for (let slot = 0; slot < held.slots.length; slot++) {
+      if (held.slots[slot]?.itemId === itemId) return { bag, slot };
+    }
+  }
+  return null;
+}
+
+function itemCard(item: ItemDef, api: GameApi, wornSlot: EquipSlot | null, loc: { bag: number; slot: number } | null): string {
   const lines: string[] = [];
   lines.push(`<p><strong>Type.</strong> ${escapeHtml(item.kind)}${item.slot ? `, ${SLOT_LABEL[item.slot]}` : ', bag only'}</p>`);
   if (item.armorType) lines.push(`<p><strong>Material.</strong> ${escapeHtml(armorLabel(item.armorType))}</p>`);
@@ -627,8 +709,8 @@ function itemCard(item: ItemDef, api: GameApi, wornSlot: EquipSlot | null, bagIn
   lines.push(`<p><strong>Value.</strong> ${formatCoin(item.value, api.content.economy)}</p>`);
   const actions = [
     wornSlot ? `<button type="button" data-action="unequip" data-equip-slot="${wornSlot}">Unequip</button>` : '',
-    !wornSlot && item.slot && bagIndex >= 0 ? `<button type="button" data-action="equip" data-slot="${bagIndex}">Equip</button>` : '',
-    item.kind === 'consumable' && bagIndex >= 0 ? `<button type="button" data-action="use" data-slot="${bagIndex}">Use</button>` : '',
+    !wornSlot && item.slot && loc ? `<button type="button" data-action="equip" data-bag="${loc.bag}" data-slot="${loc.slot}">Equip</button>` : '',
+    item.kind === 'consumable' && loc ? `<button type="button" data-action="use" data-bag="${loc.bag}" data-slot="${loc.slot}">Use</button>` : '',
   ].join('');
   return `<article class="item-card">
     <header>${iconHtml(item.id, 'icon icon-lg')}<div><h3>${escapeHtml(item.name)}</h3><p>${escapeHtml(item.blurb)}</p></div></header>
@@ -642,8 +724,7 @@ function journalHtml(state: GameState, api: GameApi, confirmAbandon: boolean): s
     .map((quest) => {
       const progress = state.quests.wolf_pelts;
       if (quest.id !== 'wolf_pelts' || progress.stage === 'none') return '';
-      let have = 0;
-      for (const stack of state.inventory) if (stack.itemId === quest.itemId) have += stack.qty;
+      const have = countItem(state, quest.itemId);
       const shown = progress.stage === 'done' ? quest.need : Math.min(quest.need, have);
       const abandon = progress.stage === 'active'
         ? confirmAbandon
@@ -680,20 +761,112 @@ function packHtml(state: GameState, api: GameApi, selling: boolean): string {
 }
 
 function bagRows(state: GameState, api: GameApi, selling: boolean): string {
-  if (!state.inventory.length) return `<p class="empty">Nothing in the pack.</p>`;
-  const rows = state.inventory
-    .map((stack, index) => {
+  const rows: string[] = [];
+  state.bags.forEach((bag, bagIndex) => {
+    if (!bag) return;
+    const bagItem = api.content.items[bag.itemId];
+    const empty = bag.slots.every((slot) => !slot);
+    if (selling && empty && bagItem) {
+      rows.push(`<li><span><strong>${escapeHtml(bagItem.name)}</strong><small>Empty bag</small></span><span class="row-actions"><button type="button" data-action="sell-bag" data-holder="${bagIndex}">Sell ${formatCoin(bagItem.value, api.content.economy)}</button></span></li>`);
+    }
+    bag.slots.forEach((stack, slot) => {
+      if (!stack) return;
       const item = api.content.items[stack.itemId];
-      if (!item) return '';
+      if (!item) return;
       const buttons = [
-        item.kind === 'consumable' ? `<button type="button" data-action="use" data-slot="${index}">Use</button>` : '',
-        item.kind === 'weapon' || item.kind === 'armor' ? `<button type="button" data-action="equip" data-slot="${index}">Equip</button>` : '',
-        selling ? `<button type="button" data-action="sell" data-slot="${index}">Sell ${formatCoin(item.value, api.content.economy)}</button>` : '',
+        item.kind === 'consumable' ? `<button type="button" data-action="use" data-bag="${bagIndex}" data-slot="${slot}">Use</button>` : '',
+        item.kind === 'weapon' || item.kind === 'armor' ? `<button type="button" data-action="equip" data-bag="${bagIndex}" data-slot="${slot}">Equip</button>` : '',
+        selling ? `<button type="button" data-action="sell" data-bag="${bagIndex}" data-slot="${slot}">Sell ${formatCoin(item.value, api.content.economy)}</button>` : '',
       ].join('');
-      return `<li><span><strong>${escapeHtml(item.name)} ×${stack.qty}</strong><small>${escapeHtml(item.blurb)}</small></span><span class="row-actions">${buttons}</span></li>`;
+      rows.push(`<li><span><strong>${escapeHtml(item.name)} ×${stack.qty}</strong><small>${escapeHtml(item.blurb)}</small></span><span class="row-actions">${buttons}</span></li>`);
+    });
+  });
+  if (!rows.length) return `<p class="empty">Nothing in the bags.</p>`;
+  return `<ul class="trade">${rows.join('')}</ul>`;
+}
+
+function mapsHtml(state: GameState, api: GameApi): string {
+  if (!state.charts.length) {
+    return `<div class="sheet">
+      <header><h2>Maps</h2></header>
+      <p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender and the road. Nils Reed, north of the gate, sells the deep wilds and the Barrow. Neither of them sells every map.</p>
+      <button type="button" class="close" data-action="close">Close</button>
+    </div>`;
+  }
+  const cards = state.charts
+    .map((id) => {
+      const chart = api.content.maps[id];
+      if (!chart) return '';
+      return `<article class="quest-card map-card" data-map="${chart.id}">
+        <header><h3>${escapeHtml(chart.name)}</h3></header>
+        <div class="map-sketch map-${chart.id}" aria-hidden="true"></div>
+        <p>${escapeHtml(chart.blurb)}</p>
+      </article>`;
     })
     .join('');
-  return `<ul class="trade">${rows}</ul>`;
+  return `<div class="sheet">
+    <header><h2>Maps</h2><p>${state.charts.length} chart${state.charts.length === 1 ? '' : 's'}</p></header>
+    ${cards}
+    <button type="button" class="close" data-action="close">Close</button>
+  </div>`;
+}
+
+function bindBagDrag(panel: HTMLElement, onDrag: () => void): void {
+  let drag: { kind: 'item' | 'bag'; bag: number; slot: number; x: number; y: number; moved: boolean } | null = null;
+  const ghost = document.createElement('div');
+  ghost.className = 'drag-ghost';
+  ghost.hidden = true;
+  document.body.appendChild(ghost);
+  panel.addEventListener('pointerdown', (event) => {
+    const button = (event.target as HTMLElement).closest<HTMLElement>('[data-drag]');
+    if (!button || event.button !== 0) return;
+    const kind = button.dataset.drag === 'bag' ? 'bag' : 'item';
+    drag = {
+      kind,
+      bag: Number(button.dataset.bag ?? button.dataset.holder ?? -1),
+      slot: Number(button.dataset.slot ?? 0),
+      x: event.clientX,
+      y: event.clientY,
+      moved: false,
+    };
+    ghost.textContent = button.getAttribute('aria-label') ?? '';
+  });
+  panel.addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) < 8) return;
+    drag.moved = true;
+    onDrag();
+    ghost.hidden = false;
+    ghost.style.left = `${event.clientX + 8}px`;
+    ghost.style.top = `${event.clientY + 8}px`;
+  });
+  const end = (event: PointerEvent) => {
+    if (!drag) return;
+    const current = drag;
+    drag = null;
+    ghost.hidden = true;
+    if (!current.moved) return;
+    const hit = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-drop]');
+    if (!hit) return;
+    if (current.kind === 'bag' && hit.dataset.drop === 'bag') {
+      pushIntent({ type: 'moveBag', from: current.bag, to: Number(hit.dataset.holder) });
+      return;
+    }
+    if (current.kind === 'item' && hit.dataset.drop === 'item') {
+      pushIntent({
+        type: 'moveItem',
+        fromBag: current.bag,
+        fromSlot: current.slot,
+        toBag: Number(hit.dataset.bag),
+        toSlot: Number(hit.dataset.slot),
+      });
+    }
+  };
+  panel.addEventListener('pointerup', end);
+  panel.addEventListener('pointercancel', () => {
+    drag = null;
+    ghost.hidden = true;
+  });
 }
 
 function inspectHtml(state: GameState): string {
@@ -718,7 +891,8 @@ function helpHtml(state: GameState, api: GameApi): string {
       <li>Stick or D-pad, or tap the ground, walks. The Pad button swaps them. WASD works on a keyboard. Pinch the map, or use the mouse wheel, to zoom.</li>
       <li>Tap a wolf to mark it, then ATK. Swings land on their own timer.</li>
       ${caster ? spells : '<li>Kick is immediate, then it needs a breath.</li>'}
-      <li>Look talks to a person. On a sign it opens the writing. Inv is your pack and worn gear. Quest lists what you have taken up.</li>
+      <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
+      <li>The action bar holds five abilities. The book chooses which five. A warden's wolf follows, attacks your target, and takes Attack, Back off, Stay, and Follow.</li>
       <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall in combat and you wake in Hilda's yard.</li>
     </ul>
     <button type="button" data-action="reload">Start a new warrior</button>

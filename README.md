@@ -45,7 +45,13 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 - Warrior combat: real-time auto-attack on a weapon delay, plus Kick on a cooldown. Tap a wolf, then ATK.
 - Wizard combat: a mana bar, Shardbolt at range, and Rimefield, which slows every wolf near your target. The staff still swings if a wolf gets close.
 - Pinch the map, or use the mouse wheel, to zoom. The Pad button swaps the stick for a D-pad. Look talks to someone or reads a sign.
-- Eirik Stonehand at the warrior guild will trade four wolf pelts for coin, a little experience, and a wolf helm you can see on your head.
+- Eirik Stonehand, inside the warrior guild, trades four wolf pelts for coin, a little experience, and your choice of a wolf-head helm or a wolf-hide jerkin. Both show on the hero.
+- Worn armor, helms, gloves, boots, and the weapon in your hand are drawn on the hero in every facing. Hand-wraps show as wrapped fists. Townsfolk use the same model; barbarians stand taller than humans.
+- Most guild folk stand inside their halls. Ivar works an outdoor forge and sometimes will not look up; Marta, inside, sells the same armor at the listed price. Buy from Ivar when he will talk and the price is lower.
+- The pack is eight bag holders. Bags of four, six, and eight slots are sold by Brenna and by Signe. Drag items between pockets. The pack button sits with the map button, off the action bar.
+- The action bar holds five abilities. The book chooses which ones sit there. A warden's wolf follows, attacks the current target, and takes Attack, Back off, Stay, and Follow.
+- You start with no maps. Sefa, in the inn, sells Hoffender and the road. Nils, north of the gate, sells the deep wilds and the Barrow. Neither sells every chart.
+- Common creatures return after at least five minutes, plus a random wait. Named creatures in the Frostmere Wilds take longer.
 - Loot and coin. Copper, silver, gold, and platinum, at 10 to 1. Drops land on the snow and are picked up when you step close.
 - If you fall, you wake in the inn yard. Experience loss follows the locked table (none below level 5). Gear stays with you. A corpse you have to run back to is Milestone 2.
 - Layout refits when the window changes: a tall phone keeps the controls under the map; a wide or near-square window puts them in side panels.
@@ -57,11 +63,11 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 | Move | Pad, or tap/drag the ground | WASD or arrows |
 | Target | Tap a creature, or Next | Tab |
 | Auto-attack | ATK | F |
-| First ability | Kick, or Shard | 1 |
-| Second ability | Rime, for a wizard | 2 |
+| Abilities | The five slots on the bar | 1 through 5 |
 | Look | Look, a person, or a sign | E |
 | Zoom | Pinch the map | Mouse wheel |
-| Pack | Pack | I |
+| Pack | The pack icon, top left | I |
+| Maps | The globe icon, top left | M |
 | Use a ration | The food button | — |
 | Close a panel | Close | Esc |
 

@@ -4,7 +4,12 @@ export const TICK_MS = 1000 / 30;
 
 export type Dir = 's' | 'n' | 'e' | 'w';
 export type ConColor = 'gray' | 'green' | 'lightblue' | 'blue' | 'white' | 'yellow' | 'red';
-export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect' | 'journal' | 'book';
+export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect' | 'journal' | 'book' | 'maps';
+
+export const BAG_HOLDERS = 8;
+export const LOADOUT_CAP = 5;
+export type PetOrder = 'follow' | 'attack' | 'stay' | 'backoff';
+export type PeltReward = 'helm' | 'jerkin';
 
 export type EquipSlot = 'head' | 'chest' | 'hands' | 'legs' | 'feet' | 'primary' | 'secondary';
 
@@ -59,7 +64,7 @@ export interface FactionNeed {
 export interface ItemDef {
   id: string;
   name: string;
-  kind: 'junk' | 'consumable' | 'weapon' | 'armor' | 'scroll';
+  kind: 'junk' | 'consumable' | 'weapon' | 'armor' | 'scroll' | 'bag' | 'chart';
   value: number;
   stack: number;
   blurb: string;
@@ -85,6 +90,12 @@ export interface ItemDef {
   faction?: FactionNeed;
   /** Race id of a later, better craft (dwarf, high_elf, human). Hoffender stock leaves this unset. */
   craftedBy?: string;
+  /** How many item slots a bag opens. Bags are 4, 6, or 8. */
+  slots?: number;
+  /** Region chart this purchase adds to the map case. */
+  chart?: string;
+  /** Gear-layer row drawn on the hero. Overrides the material guess. */
+  look?: string;
 }
 
 export interface QuestDef {
@@ -126,6 +137,8 @@ export interface MobDef {
   loot: LootEntry[];
   coinMin: number;
   coinMax: number;
+  /** Unique creatures wait longer than the common packs. */
+  named?: boolean;
 }
 
 export interface NpcDef {
@@ -133,6 +146,8 @@ export interface NpcDef {
   name: string;
   title: string;
   dialogue: string;
+  /** Body scale. Barbarians stand taller than humans. */
+  race?: string;
 }
 
 export interface DialogueChoice {
@@ -140,6 +155,7 @@ export interface DialogueChoice {
   next?: string;
   action?: 'close' | 'merchant' | 'acceptQuest' | 'turnIn';
   quest?: string;
+  reward?: PeltReward;
 }
 
 export interface DialogueNode {
@@ -222,6 +238,9 @@ export interface Tuning {
   respawnDelayMs: number;
   corpseFadeMs: number;
   mobRespawnMs: number;
+  mobRespawnJitterMs: number;
+  namedRespawnMs: number;
+  namedRespawnJitterMs: number;
   invulnMs: number;
   levelCap: number;
   bagSlots: number;
@@ -239,6 +258,8 @@ export interface VendorDef {
   npcId: string;
   title: string;
   stock: MerchantStock[];
+  /** Copy another vendor's list. Prices stay listed; the counter can still discount. */
+  copyFrom?: string;
 }
 
 export interface ContentDb {
@@ -254,6 +275,13 @@ export interface ContentDb {
   player: { name: string; classId: string; copper: number; items: { itemId: string; qty: number }[] };
   roster: Roster;
   quests: QuestDef[];
+  maps: Record<string, MapChart>;
+}
+
+export interface MapChart {
+  id: string;
+  name: string;
+  blurb: string;
 }
 
 export interface RaceDef {
@@ -262,6 +290,8 @@ export interface RaceDef {
   playable: boolean;
   blurb: string;
   mods: Stats;
+  /** 1 is a human. Barbarians are larger. */
+  scale: number;
 }
 
 export interface RosterClass {
@@ -281,6 +311,12 @@ export interface Roster {
 export interface ItemStack {
   itemId: string;
   qty: number;
+}
+
+/** One of the eight bag holders. Null means the holder is empty. */
+export interface HeldBag {
+  itemId: string;
+  slots: (ItemStack | null)[];
 }
 
 export interface HateEntry {
@@ -321,6 +357,8 @@ export interface Actor {
   dotAmount: number;
   dotBank: number;
   pet: boolean;
+  /** Drawn size. Feet stay put; the body grows up from them. */
+  scale: number;
 }
 
 export interface GroundItem {
@@ -346,7 +384,7 @@ export interface GameState {
   playerId: string;
   actors: Actor[];
   ground: GroundItem[];
-  inventory: ItemStack[];
+  bags: (HeldBag | null)[];
   equipment: Equipment;
   baseStats: Stats;
   copper: number;
@@ -365,6 +403,10 @@ export interface GameState {
   focusMax: number;
   learned: string[];
   loadout: string[];
+  charts: string[];
+  petOrder: PetOrder;
+  petHold: { x: number; y: number } | null;
+  petFocus: string | null;
   sneakMs: number;
   evadeMs: number;
   powerMs: number;
@@ -425,13 +467,18 @@ export type Intent =
   | { type: 'createHero'; raceId: string; classId: string; bonus: Stats; sex?: 'male' | 'female' }
   | { type: 'openBook' }
   | { type: 'setLoadout'; slots: string[] }
+  | { type: 'pet'; order: PetOrder }
+  | { type: 'openMaps' }
+  | { type: 'moveItem'; fromBag: number; fromSlot: number; toBag: number; toSlot: number }
+  | { type: 'moveBag'; from: number; to: number }
   | { type: 'talkTo'; id: string }
   | { type: 'interact' }
   | { type: 'choice'; index: number }
   | { type: 'buy'; itemId: string }
-  | { type: 'sell'; slot: number }
-  | { type: 'use'; slot: number }
-  | { type: 'equip'; slot: number }
+  | { type: 'sell'; bag: number; slot: number }
+  | { type: 'sellBag'; holder: number }
+  | { type: 'use'; bag: number; slot: number }
+  | { type: 'equip'; bag: number; slot: number }
   | { type: 'unequip'; slot: EquipSlot }
   | { type: 'openPack' }
   | { type: 'openJournal' }

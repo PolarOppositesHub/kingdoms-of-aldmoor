@@ -51,7 +51,8 @@
     "id": "ysolde",
     "name": "Ysolde Mire",
     "title": "wizard guildmaster",
-    "dialogue": "ysolde"
+    "dialogue": "ysolde",
+    "race": "human"
   },
   {
     "id": "torunn",
@@ -82,5 +83,24 @@
     "name": "Sigrid Holt",
     "title": "weaponsmith",
     "dialogue": "sigrid"
+  },
+  {
+    "id": "marta",
+    "name": "Marta Holt",
+    "title": "forge counter",
+    "dialogue": "marta"
+  },
+  {
+    "id": "sefa",
+    "name": "Sefa Chart",
+    "title": "mapmaker",
+    "dialogue": "sefa"
+  },
+  {
+    "id": "nils",
+    "name": "Nils Reed",
+    "title": "wilds mapmaker",
+    "dialogue": "nils",
+    "race": "human"
   }
 ]

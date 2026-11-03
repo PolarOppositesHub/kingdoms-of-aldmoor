@@ -38,7 +38,11 @@
       "bones": 25,
       "bandit": 26,
       "archer": 27,
-      "leader": 28
+      "leader": 28,
+      "greymaw": 29,
+      "vetch": 30,
+      "widow": 31,
+      "mira": 32
     }
   },
   "props": {
@@ -93,98 +97,106 @@
     "well": {
       "x": 16,
       "y": 40,
-      "w": 32,
-      "h": 32,
-      "anchorX": 16,
-      "anchorY": 31
+      "w": 56,
+      "h": 48,
+      "anchorX": 28,
+      "anchorY": 47
     },
     "firepit": {
-      "x": 48,
+      "x": 72,
       "y": 40,
-      "w": 16,
-      "h": 16,
-      "anchorX": 8,
-      "anchorY": 15
+      "w": 40,
+      "h": 32,
+      "anchorX": 20,
+      "anchorY": 31
     },
     "firepit_b": {
-      "x": 64,
-      "y": 40,
-      "w": 16,
-      "h": 16,
-      "anchorX": 8,
-      "anchorY": 15
+      "x": 0,
+      "y": 88,
+      "w": 40,
+      "h": 32,
+      "anchorX": 20,
+      "anchorY": 31
     },
     "banner": {
-      "x": 80,
-      "y": 40,
+      "x": 40,
+      "y": 88,
       "w": 16,
       "h": 32,
       "anchorX": 8,
       "anchorY": 31
     },
     "sign_inn": {
-      "x": 96,
-      "y": 40,
+      "x": 56,
+      "y": 88,
       "w": 16,
       "h": 24,
       "anchorX": 8,
       "anchorY": 23
     },
     "sign_shop": {
-      "x": 112,
-      "y": 40,
+      "x": 72,
+      "y": 88,
       "w": 16,
       "h": 24,
       "anchorX": 8,
       "anchorY": 23
     },
     "sign_hall": {
-      "x": 0,
-      "y": 72,
+      "x": 88,
+      "y": 88,
       "w": 16,
       "h": 24,
       "anchorX": 8,
       "anchorY": 23
     },
     "sign_wilds": {
-      "x": 16,
-      "y": 72,
+      "x": 104,
+      "y": 88,
       "w": 16,
       "h": 24,
       "anchorX": 8,
       "anchorY": 23
     },
     "stump": {
-      "x": 32,
-      "y": 72,
+      "x": 0,
+      "y": 120,
       "w": 16,
       "h": 16,
       "anchorX": 8,
       "anchorY": 15
     },
     "bush": {
-      "x": 48,
-      "y": 72,
+      "x": 16,
+      "y": 120,
       "w": 16,
       "h": 16,
       "anchorX": 8,
       "anchorY": 15
     },
     "pouch": {
-      "x": 64,
-      "y": 72,
+      "x": 32,
+      "y": 120,
       "w": 16,
       "h": 16,
       "anchorX": 8,
       "anchorY": 15
     },
     "coins": {
-      "x": 80,
-      "y": 72,
+      "x": 48,
+      "y": 120,
       "w": 16,
       "h": 16,
       "anchorX": 8,
       "anchorY": 15
+    },
+    "anvil": {
+      "x": 64,
+      "y": 120,
+      "w": 32,
+      "h": 24,
+      "anchorX": 16,
+      "anchorY": 23
     }
   },
   "hero": {
@@ -207,7 +219,26 @@
       "body_m": 0,
       "wolf_helm_m": 1,
       "body_f": 2,
-      "wolf_helm_f": 3
+      "wolf_helm_f": 3,
+      "chest_leather": 4,
+      "chest_cloth": 5,
+      "chest_chain": 6,
+      "chest_plate": 7,
+      "chest_fur": 8,
+      "legs_leather": 9,
+      "legs_cloth": 10,
+      "legs_chain": 11,
+      "legs_plate": 12,
+      "feet_boot": 13,
+      "feet_shoe": 14,
+      "hands_glove": 15,
+      "hands_wrap": 16,
+      "helm_cap": 17,
+      "helm_coif": 18,
+      "helm_plate": 19,
+      "weapon_axe": 20,
+      "weapon_blade": 21,
+      "weapon_staff": 22
     }
   },
   "portrait": {
@@ -225,7 +256,62 @@
       "body_m": 0,
       "wolf_helm_m": 1,
       "body_f": 2,
-      "wolf_helm_f": 3
+      "wolf_helm_f": 3,
+      "chest_leather": 4,
+      "chest_cloth": 5,
+      "chest_chain": 6,
+      "chest_plate": 7,
+      "chest_fur": 8,
+      "legs_leather": 9,
+      "legs_cloth": 10,
+      "legs_chain": 11,
+      "legs_plate": 12,
+      "feet_boot": 13,
+      "feet_shoe": 14,
+      "hands_glove": 15,
+      "hands_wrap": 16,
+      "helm_cap": 17,
+      "helm_coif": 18,
+      "helm_plate": 19,
+      "weapon_axe": 20,
+      "weapon_blade": 21,
+      "weapon_staff": 22
+    }
+  },
+  "people": {
+    "frameW": 24,
+    "frameH": 40,
+    "dirs": [
+      "s",
+      "e",
+      "n",
+      "w"
+    ],
+    "poses": [
+      "idle0",
+      "idle1",
+      "walk0",
+      "walk1"
+    ],
+    "framesPerDir": 4,
+    "rows": {
+      "brenna": 0,
+      "hilda": 1,
+      "torvald": 2,
+      "soren": 3,
+      "freya": 4,
+      "eirik": 5,
+      "ivar": 6,
+      "marta": 7,
+      "signe": 8,
+      "ysolde": 9,
+      "torunn": 10,
+      "sable": 11,
+      "hroth": 12,
+      "bjorn": 13,
+      "sigrid": 14,
+      "sefa": 15,
+      "nils": 16
     }
   }
 }

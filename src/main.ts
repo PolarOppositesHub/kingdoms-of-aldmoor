@@ -41,11 +41,12 @@ window.addEventListener('keydown', (event) => {
   if (event.repeat) return;
   if (key === 'f') controls.queue.push({ type: 'toggleAutoAttack' });
   else if (key === 'e') controls.queue.push({ type: 'interact' });
-  else if (key === '1' || key === '2') {
+  else if (key >= '1' && key <= '5') {
     const id = apiRef ? apiRef.getState().loadout[Number(key) - 1] : undefined;
     if (id) controls.queue.push({ type: 'ability', id });
   }
   else if (key === 'b') controls.queue.push({ type: 'openBook' });
+  else if (key === 'm') controls.queue.push({ type: 'openMaps' });
   else if (key === 'i') controls.queue.push({ type: 'openPack' });
   else if (key === 'tab') {
     event.preventDefault();

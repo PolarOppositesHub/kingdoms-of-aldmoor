@@ -2,6 +2,7 @@ import Phaser from 'phaser';
 import atlasJson from '../assets/atlas.json';
 import actorsUrl from '../assets/actors.png?url';
 import heroUrl from '../assets/hero.png?url';
+import peopleUrl from '../assets/people.png?url';
 import propsUrl from '../assets/props.png?url';
 import tilesUrl from '../assets/tiles.png?url';
 import mapUrl from '../assets/hoffender.tmj?url';
@@ -15,6 +16,7 @@ import { parseTiledMap, type TiledJson } from '../sim/map';
 import { createWorld } from '../sim/state';
 import { step } from '../sim/step';
 import { TICK_MS, type Actor, type GameState, type SimEvent } from '../sim/types';
+import { playerVisuals } from '../sim/appearance';
 
 interface Atlas {
   actors: {
@@ -26,6 +28,13 @@ interface Atlas {
   };
   props: Record<string, { x: number; y: number; w: number; h: number; anchorX: number; anchorY: number }>;
   hero?: {
+    frameW: number;
+    frameH: number;
+    dirs: string[];
+    framesPerDir: number;
+    rows: Record<string, number>;
+  };
+  people?: {
     frameW: number;
     frameH: number;
     dirs: string[];
@@ -48,7 +57,7 @@ interface ActorView {
   prevY: number;
   flash: number;
   lunge: number;
-  helm?: Phaser.GameObjects.Sprite;
+  layers: Phaser.GameObjects.Sprite[];
 }
 
 interface Floater {
@@ -103,6 +112,12 @@ export class WorldScene extends Phaser.Scene {
       this.load.spritesheet('hero', heroUrl, {
         frameWidth: atlas.hero.frameW,
         frameHeight: atlas.hero.frameH,
+      });
+    }
+    if (atlas.people) {
+      this.load.spritesheet('people', peopleUrl, {
+        frameWidth: atlas.people.frameW,
+        frameHeight: atlas.people.frameH,
       });
     }
     this.load.image('props', propsUrl);
@@ -467,14 +482,19 @@ export class WorldScene extends Phaser.Scene {
       if (!view) {
         const wolf = actor.kind === 'mob';
         const hero = actor.kind === 'player' && !!atlas.hero;
-        const shadow = this.add.ellipse(actor.x, actor.y, wolf ? 14 : 12, 5, 0x1a1614, 0.35);
-        const sprite = this.add.sprite(actor.x, actor.y, hero ? 'hero' : 'actors', 0);
-        sprite.setOrigin(0.5, hero ? 36 / 40 : wolf ? 18 / 24 : 22 / 24);
-        let helm: Phaser.GameObjects.Sprite | undefined;
-        if (actor.kind === 'player') {
-          helm = this.add.sprite(actor.x, actor.y, hero ? 'hero' : 'actors', 0);
-          helm.setOrigin(0.5, hero ? 36 / 40 : 22 / 24);
-          helm.setVisible(false);
+        const person = actor.kind === 'npc' && !!atlas.people?.rows[actor.sprite];
+        const shadow = this.add.ellipse(actor.x, actor.y, wolf ? 14 : 16, 5, 0x1a1614, 0.35);
+        const key = hero ? 'hero' : person ? 'people' : 'actors';
+        const sprite = this.add.sprite(actor.x, actor.y, key, 0);
+        sprite.setOrigin(0.5, hero || person ? 36 / 40 : wolf ? 18 / 24 : 22 / 24);
+        const layers: Phaser.GameObjects.Sprite[] = [];
+        if (hero) {
+          for (let i = 0; i < 6; i++) {
+            const layer = this.add.sprite(actor.x, actor.y, 'hero', 0);
+            layer.setOrigin(0.5, 36 / 40);
+            layer.setVisible(false);
+            layers.push(layer);
+          }
         }
         const label = this.add.text(actor.x, actor.y, actor.kind === 'player' ? '' : actor.name, {
           fontFamily: 'ui-sans-serif, system-ui, sans-serif',
@@ -485,7 +505,7 @@ export class WorldScene extends Phaser.Scene {
           resolution: 2,
         });
         label.setOrigin(0.5, 1);
-        view = { sprite, shadow, label, prevX: actor.x, prevY: actor.y, flash: 0, lunge: 0, helm };
+        view = { sprite, shadow, label, prevX: actor.x, prevY: actor.y, flash: 0, lunge: 0, layers };
         this.views.set(actor.id, view);
       }
       const snapped = Math.hypot(actor.x - view.prevX, actor.y - view.prevY) > 48;
@@ -500,20 +520,25 @@ export class WorldScene extends Phaser.Scene {
       const ox = facing === 'e' ? lunge : facing === 'w' ? -lunge : 0;
       const oy = facing === 's' ? lunge : facing === 'n' ? -lunge : 0;
       view.lunge = Math.max(0, view.lunge - 0.12);
+      const bodyScale = actor.scale || 1;
+      view.sprite.setScale(bodyScale);
+      view.shadow.setScale(bodyScale);
       view.sprite.setPosition(Math.round(x + ox), Math.round(y + oy));
       view.shadow.setPosition(Math.round(x), Math.round(y));
       view.sprite.setDepth(y);
       view.shadow.setDepth(y - 0.2);
       const moving = Math.hypot(actor.x - view.prevX, actor.y - view.prevY) > 0.15;
       const heroSheet = actor.kind === 'player' ? atlas.hero : undefined;
-      const dirIndex = Math.max(0, (heroSheet ?? atlas.actors).dirs.indexOf(facing));
-      const pose = heroSheet
+      const personSheet = actor.kind === 'npc' && atlas.people?.rows[actor.sprite] !== undefined ? atlas.people : undefined;
+      const detailed = heroSheet ?? personSheet;
+      const dirIndex = Math.max(0, (detailed ?? atlas.actors).dirs.indexOf(facing));
+      const pose = detailed
         ? moving
           ? 2 + (Math.floor(state.timeMs / 180) % 2)
           : Math.floor(state.timeMs / 700) % 2
         : 0;
-      const frame = heroSheet ? pose : moving ? Math.floor(state.timeMs / 160) % 2 : 0;
-      const sheet = heroSheet ?? atlas.actors;
+      const frame = detailed ? pose : moving ? Math.floor(state.timeMs / 160) % 2 : 0;
+      const sheet = detailed ?? atlas.actors;
       const row = sheet.rows[actor.sprite] ?? 0;
       const cols = sheet.dirs.length * sheet.framesPerDir;
       view.sprite.setFrame(row * cols + dirIndex * sheet.framesPerDir + frame);
@@ -529,26 +554,28 @@ export class WorldScene extends Phaser.Scene {
       } else {
         view.sprite.clearTint();
       }
-      if (view.helm) {
-        const showHelm = actor.kind === 'player' && this.state.equipment.head === 'wolf_helm';
-        view.helm.setVisible(showHelm && view.sprite.visible);
-        if (showHelm) {
-          const helmKey = state.sex === 'female' ? 'wolf_helm_f' : 'wolf_helm_m';
-          const helmSheet = atlas.hero ?? atlas.actors;
-          const helmRow = helmSheet.rows[helmKey] ?? helmSheet.rows.wolf_helm ?? 0;
-          const helmCols = helmSheet.dirs.length * helmSheet.framesPerDir;
-          view.helm.setFrame(helmRow * helmCols + dirIndex * helmSheet.framesPerDir + frame);
-          view.helm.setPosition(view.sprite.x, view.sprite.y);
-          view.helm.setDepth(y + 1);
+      const visuals = actor.kind === 'player' && atlas.hero ? playerVisuals(state, this.content) : [];
+      view.layers.forEach((layer, index) => {
+        const visual = visuals[index];
+        const gearRow = visual && atlas.hero ? atlas.hero.rows[visual.row] : undefined;
+        if (!visual || gearRow === undefined || !atlas.hero) {
+          layer.setVisible(false);
+          return;
         }
-      }
+        const gearCols = atlas.hero.dirs.length * atlas.hero.framesPerDir;
+        layer.setVisible(view.sprite.visible);
+        layer.setFrame(gearRow * gearCols + dirIndex * atlas.hero.framesPerDir + frame);
+        layer.setPosition(view.sprite.x, view.sprite.y);
+        layer.setScale(bodyScale);
+        layer.setDepth(y + 1 + index * 0.01);
+      });
       const showLabel =
         actor.kind === 'npc' ||
         (actor.kind === 'mob' && actor.alive && (state.targetId === actor.id || actor.hate.length > 0));
       view.label.setVisible(showLabel && view.sprite.visible);
       if (showLabel) {
         view.label.setScale(1 / (this.cam.zoom || 1));
-        view.label.setPosition(Math.round(x), Math.round(y - (actor.kind === 'mob' ? 20 : 26)));
+        view.label.setPosition(Math.round(x), Math.round(y - (actor.kind === 'mob' ? 20 : 28) * bodyScale));
         view.label.setDepth(y + 2);
         if (actor.kind === 'mob') {
           const gap = actor.level - state.level;

@@ -1,8 +1,10 @@
-import type { ContentDb, Equipment, GameState, ItemStack, MapData } from './types';
+import type { ContentDb, Equipment, GameState, HeldBag, ItemStack, MapData, PetOrder } from './types';
 import { refreshGear, syncCompanion } from './state';
+import { raceScale } from './appearance';
+import { bagsFromLegacy, normalizeBags } from './bags';
 import { bodyBlocked } from './map';
 
-export const SAVE_VERSION = 1;
+export const SAVE_VERSION = 2;
 
 export interface CharacterSave {
   version: number;
@@ -21,11 +23,14 @@ export interface CharacterSave {
   focus: number;
   copper: number;
   baseStats: GameState['baseStats'];
-  inventory: ItemStack[];
+  inventory?: ItemStack[];
+  bags?: (HeldBag | null)[];
   equipment: Equipment;
   quests: GameState['quests'];
   learned: string[];
   loadout: string[];
+  charts: string[];
+  petOrder: PetOrder;
   factions: Record<string, number>;
   note?: string;
 }
@@ -49,11 +54,13 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
     focus: state.focus,
     copper: state.copper,
     baseStats: { ...state.baseStats },
-    inventory: state.inventory.map((stack) => ({ ...stack })),
+    bags: state.bags.map((bag) => (bag ? { itemId: bag.itemId, slots: bag.slots.map((slot) => (slot ? { ...slot } : null)) } : null)),
     equipment: { ...state.equipment },
     quests: { wolf_pelts: { ...state.quests.wolf_pelts } },
     learned: [...state.learned],
     loadout: [...state.loadout],
+    charts: [...state.charts],
+    petOrder: state.petOrder,
     factions: { ...state.factions },
   };
 }
@@ -62,8 +69,10 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
 export function migrateSave(raw: unknown): CharacterSave | null {
   if (!raw || typeof raw !== 'object') return null;
   const row = raw as Partial<CharacterSave>;
-  if (row.version !== 1 && row.version !== undefined && row.version !== 1) return null;
-  if (!row.raceId || !row.classId || !row.baseStats || !row.equipment || !row.inventory) return null;
+  if (row.version !== undefined && row.version !== 1 && row.version !== 2) return null;
+  if (!row.raceId || !row.classId || !row.baseStats || !row.equipment) return null;
+  if (!row.bags && !row.inventory) return null;
+  const orders: PetOrder[] = ['follow', 'attack', 'stay', 'backoff'];
   const save: CharacterSave = {
     version: SAVE_VERSION,
     savedAt: row.savedAt ?? 0,
@@ -81,11 +90,13 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     focus: row.focus ?? 0,
     copper: row.copper ?? 0,
     baseStats: { ...row.baseStats },
-    inventory: row.inventory.map((stack) => ({ ...stack })),
+    bags: row.bags ? normalizeBags(row.bags) : bagsFromLegacy(row.inventory ?? []),
     equipment: { ...row.equipment },
     quests: { wolf_pelts: { stage: row.quests?.wolf_pelts?.stage ?? 'none', progress: row.quests?.wolf_pelts?.progress ?? 0 } },
     learned: [...(row.learned ?? [])],
-    loadout: [...(row.loadout ?? [])],
+    loadout: [...(row.loadout ?? [])].slice(0, 5),
+    charts: [...(row.charts ?? [])],
+    petOrder: orders.includes(row.petOrder as PetOrder) ? (row.petOrder as PetOrder) : 'follow',
     factions: { ...(row.factions ?? {}) },
   };
   if (save.raceId === 'barbarian' && save.classId === 'wizard') {
@@ -110,15 +121,18 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   state.xp = save.xp;
   state.copper = save.copper;
   state.baseStats = { ...save.baseStats };
-  state.inventory = save.inventory.map((stack) => ({ ...stack }));
+  state.bags = normalizeBags(save.bags);
   state.equipment = { ...save.equipment };
   state.quests = { wolf_pelts: { ...save.quests.wolf_pelts } };
   state.learned = [...save.learned];
-  state.loadout = [...save.loadout];
+  state.loadout = [...save.loadout].slice(0, 5);
+  state.charts = [...save.charts];
+  state.petOrder = save.petOrder;
   state.factions = { ...save.factions };
   player.level = save.level;
   player.defId = save.classId;
   player.sprite = save.sex === 'female' ? 'body_f' : 'body_m';
+  player.scale = raceScale(content, save.raceId);
   player.facing = save.facing;
   refreshGear(state, content);
   player.hp = Math.max(1, Math.min(player.maxHp, save.hp));

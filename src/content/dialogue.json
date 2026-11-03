@@ -232,7 +232,7 @@
       ]
     },
     "ask": {
-      "text": "Four wolf pelts from the Frostmere Wilds. Bring them here. I will pay, and I have a helm that still smells like the animal.",
+      "text": "Four wolf pelts from the Frostmere Wilds. Bring them here. I will pay, and you may take the wolf-head helm or a jerkin cut from the same hide.",
       "choices": [
         {
           "label": "I'll bring you pelts.",
@@ -246,12 +246,19 @@
       ]
     },
     "active": {
-      "text": "Four pelts. The young ones on the road drop them often enough, if you are the one still standing.",
+      "text": "Four pelts. The young ones on the road drop them often enough, if you are the one still standing. Helm or jerkin, when you have them.",
       "choices": [
         {
-          "label": "Here are the pelts.",
+          "label": "The wolf-head helm.",
           "action": "turnIn",
-          "quest": "wolf_pelts"
+          "quest": "wolf_pelts",
+          "reward": "helm"
+        },
+        {
+          "label": "The wolf-hide jerkin.",
+          "action": "turnIn",
+          "quest": "wolf_pelts",
+          "reward": "jerkin"
         },
         {
           "label": "I'm still hunting.",
@@ -260,7 +267,7 @@
       ]
     },
     "done": {
-      "text": "The helm suits you. Wear it. The guild will have more work when the hall is finished. Not today.",
+      "text": "The hide looks right on you. The guild will have more work when the hall is finished. Not today.",
       "choices": [
         {
           "label": "Guildmaster.",
@@ -271,7 +278,7 @@
   },
   "ivar": {
     "start": {
-      "text": "Ivar Holt. I forge plate and chain. Plate is a warrior's shell. Chain fits a warrior or a berserker. I do not sew cloth, and scale is not my alloy.",
+      "text": "Ivar Holt. I forge plate and chain out here, where the heat can leave. Marta minds the counter inside. Buy from me and I will shave the price, if the hammer is down.",
       "choices": [
         {
           "label": "Show me the armor.",
@@ -297,6 +304,15 @@
         {
           "label": "Back.",
           "next": "start"
+        }
+      ]
+    },
+    "busy": {
+      "text": "Not now. The iron is the color I want, and if I look up it will not be. Marta is inside. She takes the listed price.",
+      "choices": [
+        {
+          "label": "I'll try the counter.",
+          "action": "close"
         }
       ]
     }
@@ -499,6 +515,51 @@
       "choices": [
         {
           "label": "Show me the weapons.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "marta": {
+    "start": {
+      "text": "Marta Holt. Ivar is at the forge outside. If he will talk, his price is kinder. If he will not, I sell the same armor at the price on the slate.",
+      "choices": [
+        {
+          "label": "Show me the slate.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "sefa": {
+    "start": {
+      "text": "Sefa Chart. I ink Hoffender, and the road just north of the gate. I do not draw the deep wilds. Nils Reed does, and he will not sell you the hold.",
+      "choices": [
+        {
+          "label": "Show me the charts.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "nils": {
+    "start": {
+      "text": "Nils Reed. Deep Frostmere, and the Barrow, if you mean to go that far. Sefa in the inn keeps the town. I do not.",
+      "choices": [
+        {
+          "label": "Show me the charts.",
           "action": "merchant"
         },
         {
