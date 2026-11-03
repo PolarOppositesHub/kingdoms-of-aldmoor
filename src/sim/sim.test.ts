@@ -8,6 +8,7 @@ import { applyIntent } from './intents';
 import { askPrice, ivarIsBusy, mobRespawnDelay, resolveStrike, turnInPelts } from './systems';
 import { addItem, countItem, findStack, moveItem } from './bags';
 import { applySave, captureSave, migrateSave } from './save';
+import { itemIconKey } from './icons';
 import { bodyBlocked, placeName } from './map';
 import { applyHero, blankActor, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
 import abilitiesJson from '../content/abilities.json';
@@ -819,6 +820,155 @@ describe('levels, rest, and ability icons', () => {
       scrollHashes.add(hash);
       expect(seen.has(hash), item.id).toBe(false);
     }
+  });
+});
+
+describe('pet window commands', () => {
+  it('dismisses and calls the wolf without breaking an old save', () => {
+    const map = arena();
+    const warden = createWorld(content, map, 6);
+    configurePlayer(warden, content, 'warden');
+    const foe = blankActor({
+      id: 'foe',
+      kind: 'mob',
+      defId: 'young_wolf',
+      name: 'young wolf',
+      sprite: 'wolf',
+      x: 80,
+      y: 80,
+      hp: 20,
+      maxHp: 20,
+      level: 1,
+      social: 'wolf',
+      pet: false,
+    });
+    warden.actors.push(foe);
+    warden.targetId = foe.id;
+    applyIntent(warden, { type: 'pet', order: 'attack' }, content, map);
+    expect(warden.petOrder).toBe('attack');
+    applyIntent(warden, { type: 'pet', order: 'stay' }, content, map);
+    expect(warden.petOrder).toBe('stay');
+    applyIntent(warden, { type: 'pet', order: 'backoff' }, content, map);
+    expect(warden.petOrder).toBe('backoff');
+    applyIntent(warden, { type: 'pet', order: 'follow' }, content, map);
+    expect(warden.petOrder).toBe('follow');
+    applyIntent(warden, { type: 'pet', order: 'taunt' }, content, map);
+    expect(warden.petOrder).toBe('follow');
+    expect(foe!.hate.some((hate) => hate.id === 'pet_wolf')).toBe(false);
+
+    applyIntent(warden, { type: 'pet', order: 'dismiss' }, content, map);
+    expect(warden.petAway).toBe(true);
+    expect(warden.actors.some((actor) => actor.pet)).toBe(false);
+    expect(warden.petOrder).toBe('follow');
+    const saved = captureSave(warden);
+    expect(saved.petAway).toBe(true);
+    const resumed = createWorld(content, map, 6);
+    applySave(resumed, content, map, saved);
+    expect(resumed.petAway).toBe(true);
+    expect(resumed.actors.some((actor) => actor.pet)).toBe(false);
+
+    applyIntent(resumed, { type: 'pet', order: 'call' }, content, map);
+    const wolf = resumed.actors.find((actor) => actor.pet);
+    expect(wolf?.alive).toBe(true);
+    expect(resumed.petAway).toBe(false);
+    expect(resumed.petOrder).toBe('follow');
+
+    const legacy = captureSave(resumed);
+    delete legacy.petAway;
+    legacy.version = 2;
+    const migrated = migrateSave(legacy);
+    expect(migrated?.petAway).toBe(false);
+    const restored = createWorld(content, map, 4);
+    applySave(restored, content, map, legacy);
+    expect(restored.petAway).toBe(false);
+    expect(restored.actors.some((actor) => actor.pet)).toBe(true);
+
+    content.mobs.warden_wolf.petTaunt = true;
+    try {
+      const taunter = createWorld(content, map, 3);
+      configurePlayer(taunter, content, 'warden');
+      const mob = blankActor({
+        id: 'foe',
+        kind: 'mob',
+        defId: 'young_wolf',
+        name: 'young wolf',
+        sprite: 'wolf',
+        x: 90,
+        y: 90,
+        hp: 20,
+        maxHp: 20,
+        level: 2,
+        social: '',
+        pet: false,
+      });
+      taunter.actors.push(mob);
+      taunter.targetId = mob.id;
+      applyIntent(taunter, { type: 'pet', order: 'taunt' }, content, map);
+      expect(mob!.hate.some((hate) => hate.id === 'pet_wolf')).toBe(true);
+    } finally {
+      delete content.mobs.warden_wolf.petTaunt;
+    }
+  });
+});
+
+describe('old save item pictures', () => {
+  it('resolves every worn and bagged item from a version 1 pack to an icon', () => {
+    const map = arena();
+    const state = createWorld(content, map, 4);
+    const stats = { str: 14, sta: 12, agi: 10, dex: 10, wis: 8, int: 8, cha: 8 };
+    const legacy = {
+      version: 1,
+      savedAt: 1,
+      zoneId: 'hoffender',
+      x: 8,
+      y: 8,
+      facing: 's' as const,
+      raceId: 'barbarian',
+      classId: 'warrior',
+      sex: 'male' as const,
+      level: 3,
+      xp: 12,
+      hp: 40,
+      mana: 0,
+      focus: 0,
+      copper: 30,
+      baseStats: stats,
+      inventory: [
+        { itemId: 'wolf_pelt', qty: 4 },
+        { itemId: 'wool_bandage', qty: 2 },
+        { itemId: 'bearded_handaxe', qty: 1 },
+        { itemId: 'wolf_helm', qty: 1 },
+      ],
+      equipment: {
+        head: null,
+        chest: 'cracked_leather_tunic',
+        hands: null,
+        legs: 'cracked_leather_pants',
+        feet: 'cracked_leather_boots',
+        primary: 'worn_axe',
+        secondary: 'rusty_iron_shield',
+      },
+      quests: { wolf_pelts: { stage: 'active' as const, progress: 1 } },
+      learned: ['kick'],
+      loadout: ['kick'],
+      factions: {},
+    };
+    applySave(state, content, map, legacy);
+    expect(state.equipment.primary).toBe('worn_axe');
+    expect(state.equipment.chest).toBe('cracked_leather_tunic');
+    expect(state.bags[0]?.itemId).toBe('threadbare_sack');
+    const held = state.bags[0]?.slots.map((slot) => slot?.itemId).filter((id): id is string => Boolean(id)) ?? [];
+    expect(held).toEqual(['wolf_pelt', 'wool_bandage', 'bearded_handaxe', 'wolf_helm']);
+    const shown = [state.bags[0]!.itemId, ...held, ...Object.values(state.equipment).filter((id): id is string => Boolean(id))];
+    const frames = iconMeta.frames as Record<string, { w: number; h: number }>;
+    for (const id of shown) {
+      const key = itemIconKey(id, frames);
+      expect(key, id).toBe(id);
+      expect(frames[key!].w).toBeGreaterThan(0);
+      expect(frames[key!].h).toBeGreaterThan(0);
+    }
+    const fresh = captureSave(state);
+    applySave(createWorld(content, map, 5), content, map, fresh);
   });
 });
 

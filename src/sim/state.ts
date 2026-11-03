@@ -80,6 +80,7 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.loadout = cls.abilities.slice(0, LOADOUT_CAP);
   state.charts = [];
   state.petOrder = 'follow';
+  state.petAway = false;
   state.petHold = null;
   state.petFocus = null;
   state.sneakMs = 0;
@@ -104,7 +105,7 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
 
 export function syncCompanion(state: GameState, content: ContentDb): void {
   state.actors = state.actors.filter((actor) => !actor.pet);
-  if (state.classId !== 'warden') return;
+  if (state.classId !== 'warden' || state.petAway) return;
   const player = getPlayer(state);
   const def = content.mobs.warden_wolf;
   state.actors.push(
@@ -320,6 +321,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     loadout: [],
     charts: [],
     petOrder: 'follow',
+    petAway: false,
     petHold: null,
     petFocus: null,
     portalLockMs: 0,

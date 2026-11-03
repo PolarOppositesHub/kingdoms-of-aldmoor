@@ -1,8 +1,8 @@
 import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
-import { findActor, getPlayer, applyHero, refreshGear } from './state';
-import { abandonQuest, acceptQuest, addItem, askPrice, grantXp, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, sellAllOf, standUp, turnInPelts, turnInQuest } from './systems';
+import { findActor, getPlayer, applyHero, refreshGear, syncCompanion } from './state';
+import { abandonQuest, acceptQuest, addHate, addItem, askPrice, grantXp, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, sellAllOf, standUp, turnInPelts, turnInQuest } from './systems';
 import { moveBag, moveItem, removeBag, removeOne } from './bags';
 import { LOADOUT_CAP } from './types';
 import { wearRefusal } from './wear';
@@ -343,6 +343,46 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       }
       case 'pet': {
         if (state.classId !== 'warden') return;
+        if (intent.order === 'dismiss') {
+          if (state.petAway) return;
+          state.petAway = true;
+          state.petHold = null;
+          state.petFocus = null;
+          state.petOrder = 'follow';
+          state.actors = state.actors.filter((actor) => !actor.pet);
+          emit({ type: 'log', text: 'Your wolf slips back into the trees.' });
+          return;
+        }
+        if (intent.order === 'call') {
+          state.petAway = false;
+          state.petHold = null;
+          state.petFocus = null;
+          state.petOrder = 'follow';
+          syncCompanion(state, content);
+          emit({ type: 'log', text: 'Your wolf comes back to your side.' });
+          return;
+        }
+        if (intent.order === 'taunt') {
+          if (state.petAway) {
+            state.petAway = false;
+            syncCompanion(state, content);
+          }
+          const pet = state.actors.find((actor) => actor.pet && actor.alive);
+          const def = pet ? content.mobs[pet.defId] : undefined;
+          if (!pet || !def?.petTaunt) return;
+          const target = findActor(state, state.targetId);
+          if (!target || target.kind !== 'mob' || !target.alive || target.pet) {
+            emit({ type: 'log', text: 'Your wolf has nothing to taunt.' });
+            return;
+          }
+          addHate(state, content, map, target, pet.id, 40 + pet.level * 4, emit);
+          emit({ type: 'log', text: `Your wolf taunts ${target.name}.` });
+          return;
+        }
+        if (state.petAway) {
+          state.petAway = false;
+          syncCompanion(state, content);
+        }
         state.petOrder = intent.order;
         const pet = state.actors.find((actor) => actor.pet && actor.alive);
         if (intent.order === 'stay' && pet) state.petHold = { x: pet.x, y: pet.y };
@@ -361,7 +401,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         }
         state.petFocus = null;
         const line =
-          intent.order === 'stay' ? 'Your wolf stays.' : intent.order === 'backoff' ? 'Your wolf backs off.' : 'Your wolf follows.';
+          intent.order === 'stay' ? 'Your wolf holds guard.' : intent.order === 'backoff' ? 'Your wolf backs off.' : 'Your wolf follows.';
         emit({ type: 'log', text: line });
         return;
       }
