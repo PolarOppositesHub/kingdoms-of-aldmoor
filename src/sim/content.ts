@@ -25,6 +25,7 @@ import questsJson from '../content/quests.json';
 import mapsJson from '../content/maps.json';
 import armorJson from '../content/armor.json';
 import armorRules from '../content/armor-rules.json';
+import chartBounds from '../assets/chart-bounds.json';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -52,6 +53,16 @@ export function loadContent(): ContentDb {
     }
   }
   const maps = indexById(mapsJson as MapChart[]);
+  const bounds = chartBounds as Record<string, { zone: string; x: number; y: number; w: number; h: number }>;
+  for (const chart of Object.values(maps)) {
+    const box = bounds[chart.id];
+    if (!box) throw new Error(`${chart.id} has no chart bounds`);
+    chart.zone = box.zone;
+    chart.x = box.x;
+    chart.y = box.y;
+    chart.w = box.w;
+    chart.h = box.h;
+  }
   const vendors: VendorDef[] = (merchantJson.vendors as VendorDef[]).map((vendor) => {
     if (!vendor.copyFrom) return vendor;
     const source = (merchantJson.vendors as VendorDef[]).find((entry) => entry.npcId === vendor.copyFrom);

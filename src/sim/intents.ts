@@ -2,7 +2,7 @@ import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
 import { findActor, getPlayer, applyHero, refreshGear } from './state';
-import { abandonQuest, acceptQuest, addItem, askPrice, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, turnInPelts } from './systems';
+import { abandonQuest, acceptQuest, addItem, askPrice, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, sellAllOf, turnInPelts, turnInQuest } from './systems';
 import { moveBag, moveItem, removeBag, removeOne } from './bags';
 import { LOADOUT_CAP } from './types';
 import { wearRefusal } from './wear';
@@ -156,13 +156,22 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           return;
         }
         if (choice.action === 'acceptQuest' && choice.quest) {
-          acceptQuest(state, choice.quest, emit);
+          acceptQuest(state, content, choice.quest, emit);
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
           return;
         }
         if (choice.action === 'turnIn' && choice.quest === 'wolf_pelts') {
           turnInPelts(state, content, emit, choice.reward === 'jerkin' ? 'jerkin' : 'helm');
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
+          return;
+        }
+        if (choice.action === 'turnIn' && choice.quest) {
+          turnInQuest(state, content, choice.quest, emit);
+          state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
+          return;
+        }
+        if (choice.action === 'sellAll' && choice.itemId) {
+          sellAllOf(state, content, choice.itemId, emit);
           return;
         }
         if (choice.action === 'close' || !choice.next) {

@@ -4,6 +4,7 @@ import { controls } from './game/controls';
 import { onGameReady } from './game/WorldScene';
 import { mountCreate } from './ui/create';
 import { mountHud } from './ui/hud';
+import { commitZone } from './sim/state';
 import { clearSave, readSave, requestPersistentStorage, restoreSave, writeSave } from './game/storage';
 
 const app = document.querySelector<HTMLElement>('#app');
@@ -103,7 +104,12 @@ onGameReady((api) => {
     const save = readSave();
     if (!save) return;
     started = true;
-    const note = restoreSave(api.getState(), api.content, api.map, save);
+    const dest = !save.relocated && api.zones[save.zoneId] ? api.zones[save.zoneId] : api.zones.hoffender ?? api.map;
+    const note = restoreSave(api.getState(), api.content, dest, save);
+    if (dest.zoneId !== 'hoffender') {
+      const player = api.getState().actors.find((actor) => actor.id === 'player');
+      if (player) commitZone(api.getState(), api.content, dest, player.x, player.y);
+    }
     api.audio.unlock();
     api.setRunning(true);
     gate.hidden = true;

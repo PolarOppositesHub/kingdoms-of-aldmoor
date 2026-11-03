@@ -1,0 +1,58 @@
+{
+  "hoffender": {
+    "zone": "hoffender",
+    "x": 90,
+    "y": 120,
+    "w": 64,
+    "h": 64
+  },
+  "frostmere_road": {
+    "zone": "hoffender",
+    "x": 70,
+    "y": 96,
+    "w": 120,
+    "h": 110
+  },
+  "frostmere_deep": {
+    "zone": "hoffender",
+    "x": 90,
+    "y": 20,
+    "w": 120,
+    "h": 90
+  },
+  "whitepine": {
+    "zone": "hoffender",
+    "x": 160,
+    "y": 80,
+    "w": 90,
+    "h": 110
+  },
+  "cairns": {
+    "zone": "hoffender",
+    "x": 36,
+    "y": 4,
+    "w": 80,
+    "h": 60
+  },
+  "rimeheart": {
+    "zone": "hoffender",
+    "x": 160,
+    "y": 4,
+    "w": 90,
+    "h": 60
+  },
+  "bay": {
+    "zone": "hoffender",
+    "x": 4,
+    "y": 120,
+    "w": 100,
+    "h": 120
+  },
+  "barrow": {
+    "zone": "barrow",
+    "x": 0,
+    "y": 0,
+    "w": 48,
+    "h": 48
+  }
+}

@@ -460,5 +460,88 @@
     "teaches": "whiteout",
     "blurb": "A wizard page for a storm of snow.",
     "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "greymaw_pelt_cloak",
+    "name": "Greymaw pelt cloak",
+    "kind": "armor",
+    "slot": "chest",
+    "ac": 6,
+    "weight": 2.2,
+    "value": 120,
+    "stack": 1,
+    "bonuses": { "sta": 2, "hp": 10 },
+    "wearers": ["warrior", "berserker", "rogue", "shaman", "warden"],
+    "blurb": "Greymaw's hide, cut for a cloak. The cold does not bite through it the way it should.",
+    "effects": "Cold resistance, worn on the chest. A little stamina and health besides."
+  },
+  {
+    "id": "iron_ore",
+    "name": "iron ore",
+    "kind": "junk",
+    "value": 6,
+    "weight": 1.4,
+    "stack": 20,
+    "blurb": "A cold chunk from the Whitepine rocks. Yrsa will pay for it.",
+    "effects": "Trade goods. A repeatable turn-in."
+  },
+  {
+    "id": "rune_blade",
+    "name": "rune blade",
+    "kind": "weapon",
+    "value": 90,
+    "weight": 2.4,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2000,
+    "damage": { "n": 1, "sides": 8, "bonus": 4 },
+    "bonuses": { "str": 2 },
+    "blurb": "Cairn-iron, with runes Yrsa cut while the metal was still dull red.",
+    "effects": "Melee. The runes hold a little of the cold they were cut in.",
+    "grip": "axe"
+  },
+  {
+    "id": "chart_whitepine",
+    "name": "chart of Whitepine",
+    "kind": "chart",
+    "chart": "whitepine",
+    "value": 8,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Nils Reed's ink of the east road and the pines.",
+    "effects": "Adds Whitepine to the map case."
+  },
+  {
+    "id": "chart_cairns",
+    "name": "chart of the Cairns",
+    "kind": "chart",
+    "chart": "cairns",
+    "value": 12,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The northwest highlands, as far as the Barrow door.",
+    "effects": "Adds the Icebound Cairns to the map case."
+  },
+  {
+    "id": "chart_rimeheart",
+    "name": "chart of Rimeheart",
+    "kind": "chart",
+    "chart": "rimeheart",
+    "value": 16,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The frozen lake and the creek that feeds it.",
+    "effects": "Adds Rimeheart to the map case."
+  },
+  {
+    "id": "chart_bay",
+    "name": "chart of Hoffender Bay",
+    "kind": "chart",
+    "chart": "bay",
+    "value": 6,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Sefa's ink of the docks, the headlands, and the cove.",
+    "effects": "Adds Hoffender Bay to the map case."
   }
 ]

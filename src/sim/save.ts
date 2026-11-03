@@ -1,10 +1,10 @@
 import type { ContentDb, Equipment, GameState, HeldBag, ItemStack, MapData, PetOrder } from './types';
-import { refreshGear, syncCompanion } from './state';
+import { emptyQuests, refreshGear, syncCompanion } from './state';
 import { raceScale } from './appearance';
 import { bagsFromLegacy, normalizeBags } from './bags';
 import { bodyBlocked } from './map';
 
-export const SAVE_VERSION = 2;
+export const SAVE_VERSION = 3;
 
 export interface CharacterSave {
   version: number;
@@ -32,6 +32,9 @@ export interface CharacterSave {
   charts: string[];
   petOrder: PetOrder;
   factions: Record<string, number>;
+  nodeReady?: Record<string, number>;
+  /** Set when an older map layout cannot be trusted. Not written back out. */
+  relocated?: boolean;
   note?: string;
 }
 
@@ -56,7 +59,8 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
     baseStats: { ...state.baseStats },
     bags: state.bags.map((bag) => (bag ? { itemId: bag.itemId, slots: bag.slots.map((slot) => (slot ? { ...slot } : null)) } : null)),
     equipment: { ...state.equipment },
-    quests: { wolf_pelts: { ...state.quests.wolf_pelts } },
+    quests: Object.fromEntries(Object.entries(state.quests).map(([id, quest]) => [id, { ...quest }])),
+    nodeReady: { ...state.nodeReady },
     learned: [...state.learned],
     loadout: [...state.loadout],
     charts: [...state.charts],
@@ -65,11 +69,24 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
   };
 }
 
+function migrateQuests(raw: CharacterSave['quests'] | undefined): CharacterSave['quests'] {
+  const quests: CharacterSave['quests'] = {};
+  if (raw && typeof raw === 'object') {
+    for (const [id, quest] of Object.entries(raw)) {
+      if (!quest || typeof quest !== 'object') continue;
+      const stage = quest.stage === 'active' || quest.stage === 'done' ? quest.stage : 'none';
+      quests[id] = { stage, progress: typeof quest.progress === 'number' ? quest.progress : 0 };
+    }
+  }
+  if (!quests.wolf_pelts) quests.wolf_pelts = { stage: 'none', progress: 0 };
+  return quests;
+}
+
 /** Barbarian wizards become warriors. Wizard spells are dropped. Gear and progress stay. */
 export function migrateSave(raw: unknown): CharacterSave | null {
   if (!raw || typeof raw !== 'object') return null;
   const row = raw as Partial<CharacterSave>;
-  if (row.version !== undefined && row.version !== 1 && row.version !== 2) return null;
+  if (row.version !== undefined && row.version !== 1 && row.version !== 2 && row.version !== 3) return null;
   if (!row.raceId || !row.classId || !row.baseStats || !row.equipment) return null;
   if (!row.bags && !row.inventory) return null;
   const orders: PetOrder[] = ['follow', 'attack', 'stay', 'backoff'];
@@ -92,7 +109,9 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     baseStats: { ...row.baseStats },
     bags: row.bags ? normalizeBags(row.bags) : bagsFromLegacy(row.inventory ?? []),
     equipment: { ...row.equipment },
-    quests: { wolf_pelts: { stage: row.quests?.wolf_pelts?.stage ?? 'none', progress: row.quests?.wolf_pelts?.progress ?? 0 } },
+    quests: migrateQuests(row.quests),
+    nodeReady: { ...(row.nodeReady ?? {}) },
+    relocated: (row.version ?? 1) < SAVE_VERSION,
     learned: [...(row.learned ?? [])],
     loadout: [...(row.loadout ?? [])].slice(0, 5),
     charts: [...(row.charts ?? [])],
@@ -123,7 +142,9 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   state.baseStats = { ...save.baseStats };
   state.bags = normalizeBags(save.bags);
   state.equipment = { ...save.equipment };
-  state.quests = { wolf_pelts: { ...save.quests.wolf_pelts } };
+  state.quests = emptyQuests(content);
+  for (const [id, quest] of Object.entries(save.quests)) state.quests[id] = { ...quest };
+  state.nodeReady = { ...(save.nodeReady ?? {}) };
   state.learned = [...save.learned];
   state.loadout = [...save.loadout].slice(0, 5);
   state.charts = [...save.charts];
@@ -138,9 +159,18 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   player.hp = Math.max(1, Math.min(player.maxHp, save.hp));
   state.mana = Math.max(0, Math.min(state.maxMana, save.mana));
   state.focus = Math.max(0, Math.min(state.focusMax, save.focus));
-  const blocked = bodyBlocked(map, save.x, save.y, 5, 3, false);
-  player.x = blocked ? state.bind.x : save.x;
-  player.y = blocked ? state.bind.y : save.y;
+  const spawn = map.spawns.find((entry) => entry.kind === 'spawn');
+  const fallback = spawn ? { x: spawn.x, y: spawn.y } : state.bind;
+  const outOfBounds = save.x < 0 || save.y < 0 || save.x > map.width * map.tileWidth || save.y > map.height * map.tileWidth;
+  const blocked = outOfBounds || bodyBlocked(map, save.x, save.y, 5, 3, false);
+  const wrongZone = save.zoneId !== map.zoneId && map.zoneId !== 'test';
+  if (save.relocated || blocked || wrongZone) {
+    player.x = fallback.x;
+    player.y = fallback.y;
+  } else {
+    player.x = save.x;
+    player.y = save.y;
+  }
   syncCompanion(state, content);
   if (save.note) state.log.push(save.note);
   return save.note ?? '';

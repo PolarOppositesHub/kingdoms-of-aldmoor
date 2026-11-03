@@ -387,7 +387,7 @@
       ]
     },
     {
-      "npcId": "ysolde",
+      "npcId": "ingrid",
       "title": "Wizard Pages",
       "stock": [
         {
@@ -466,7 +466,8 @@
       "title": "Sefa's Charts",
       "stock": [
         { "itemId": "chart_hoffender", "price": 15 },
-        { "itemId": "chart_frostmere_road", "price": 25 }
+        { "itemId": "chart_frostmere_road", "price": 25 },
+        { "itemId": "chart_bay", "price": 20 }
       ]
     },
     {
@@ -474,7 +475,27 @@
       "title": "Reed's Charts",
       "stock": [
         { "itemId": "chart_frostmere_deep", "price": 40 },
+        { "itemId": "chart_whitepine", "price": 35 },
+        { "itemId": "chart_cairns", "price": 50 },
+        { "itemId": "chart_rimeheart", "price": 70 },
         { "itemId": "chart_barrow", "price": 55 }
+      ]
+    },
+    {
+      "npcId": "brand",
+      "title": "Brand's Pelts",
+      "stock": [
+        { "itemId": "skinning_knife", "price": 12 },
+        { "itemId": "wool_bandage", "price": 4 }
+      ]
+    },
+    {
+      "npcId": "yrsa",
+      "title": "Yrsa's Upgrades",
+      "stock": [
+        { "itemId": "bearded_handaxe", "price": 28 },
+        { "itemId": "ash_staff", "price": 18 },
+        { "itemId": "hand_wraps", "price": 14 }
       ]
     }
   ]

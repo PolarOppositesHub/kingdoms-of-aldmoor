@@ -281,7 +281,7 @@ export const PEOPLE = [
   { id: 'ivar', sex: 'male', hair: '#1c1418', beard: '#3a2418', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_axe' },
   { id: 'marta', sex: 'female', hair: '#8a4030', hairHi: '#c47058', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
   { id: 'signe', sex: 'female', hair: '#2a2438', hairHi: '#6a6080', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
-  { id: 'ysolde', sex: 'female', hair: '#1a2840', hairHi: '#3c5878', skin: '#f3d2b4', skinHi: '#ffe4cc', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe', weapon: 'weapon_staff' },
+  { id: 'ingrid', sex: 'female', hair: '#1a2840', hairHi: '#3c5878', skin: '#f3d2b4', skinHi: '#ffe4cc', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe', weapon: 'weapon_staff' },
   { id: 'torunn', sex: 'female', hair: '#4a2018', hairHi: '#8a4030', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot' },
   { id: 'sable', sex: 'female', hair: '#1c1418', hairHi: '#3a3038', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_blade' },
   { id: 'hroth', sex: 'male', hair: '#6a2018', hairHi: '#a84830', beard: '#4a1814', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_axe' },
@@ -289,6 +289,10 @@ export const PEOPLE = [
   { id: 'sigrid', sex: 'female', hair: '#3a241c', hairHi: '#6b4030', chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', weapon: 'weapon_blade' },
   { id: 'sefa', sex: 'female', hair: '#4a3020', hairHi: '#8a6040', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
   { id: 'nils', sex: 'male', hair: '#2a2018', hairHi: '#5c4030', beard: '#3a2c24', skin: '#f0c8a4', skinHi: '#ffe0c0', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', helm: 'helm_cap' },
+  { id: 'sigrun', sex: 'female', hair: '#6a3030', hairHi: '#a85848', chest: 'chest_chain', legs: 'legs_leather', feet: 'feet_boot', helm: 'helm_coif', weapon: 'weapon_axe' },
+  { id: 'brand', sex: 'male', hair: '#8a8078', hairHi: '#d8d0c4', beard: '#c8c0b6', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot', helm: 'helm_cap' },
+  { id: 'yrsa', sex: 'female', hair: '#3a2018', hairHi: '#6b4030', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_axe' },
+  { id: 'hjorvin', sex: 'male', hair: '#c4a060', hairHi: '#e6c15a', beard: '#8a5a30', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_boot' },
 ];
 
 function compositePerson(w, h, person, dir, pose) {

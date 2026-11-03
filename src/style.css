@@ -365,11 +365,24 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
   font-size: 12px;
   max-width: 140px;
 }
-.map-sketch { height: 84px; border: 2px solid #6b4428; background: #d7e4ee; position: relative; }
-.map-hoffender { background: linear-gradient(#8a5a3c, #8a5a3c) 46% 8% / 8% 84% no-repeat, repeating-linear-gradient(90deg, #5c3a26 0 4px, transparent 4px 10px), #c3d2de; }
-.map-frostmere_road { background: linear-gradient(#8a5a3c, #8a5a3c) 48% 0 / 10% 100% no-repeat, #e6eef4; }
-.map-frostmere_deep { background: linear-gradient(#1a4d66, #1a4d66) 20% 10% / 8% 80% no-repeat, radial-gradient(circle at 70% 60%, #2c4a30 0 18%, transparent 19%), #d5e6f0; }
-.map-barrow { background: radial-gradient(circle at 50% 60%, #6a6058 0 22%, transparent 23%), linear-gradient(#3a2418, #3a2418) 48% 20% / 6% 30% no-repeat, #c3d2de; }
+.map-canvas {
+  width: 100%;
+  height: auto;
+  image-rendering: pixelated;
+  border: 2px solid #6b4428;
+  background: #d7e4ee;
+  display: block;
+}
+#zone-fade {
+  position: fixed;
+  inset: 0;
+  background: #0c1218;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 40;
+  transition: opacity 220ms linear;
+}
+#zone-fade.on { opacity: 1; }
 .bag-grid {
   display: grid;
   grid-template-columns: repeat(4, 72px);

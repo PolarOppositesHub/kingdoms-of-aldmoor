@@ -48,10 +48,10 @@
     "dialogue": "signe"
   },
   {
-    "id": "ysolde",
-    "name": "Ysolde Mire",
+    "id": "ingrid",
+    "name": "Ingrid Mire",
     "title": "wizard guildmaster",
-    "dialogue": "ysolde",
+    "dialogue": "ingrid",
     "race": "human"
   },
   {
@@ -102,5 +102,33 @@
     "title": "wilds mapmaker",
     "dialogue": "nils",
     "race": "human"
+  },
+  {
+    "id": "sigrun",
+    "name": "Sigrun Ashmantle",
+    "title": "scout captain",
+    "dialogue": "sigrun",
+    "race": "barbarian"
+  },
+  {
+    "id": "brand",
+    "name": "Old Brand Kettilsson",
+    "title": "trapper",
+    "dialogue": "brand",
+    "race": "barbarian"
+  },
+  {
+    "id": "yrsa",
+    "name": "Yrsa the Smith",
+    "title": "gearwright",
+    "dialogue": "yrsa",
+    "race": "barbarian"
+  },
+  {
+    "id": "hjorvin",
+    "name": "Skald Hjorvin",
+    "title": "mead-hall bard",
+    "dialogue": "hjorvin",
+    "race": "barbarian"
   }
 ]
