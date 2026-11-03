@@ -31,6 +31,8 @@ export interface CharacterSave {
   loadout: string[];
   charts: string[];
   petOrder: PetOrder;
+  /** Absent on saves from before the pet window. Those heroes still have their wolf. */
+  petAway?: boolean;
   factions: Record<string, number>;
   nodeReady?: Record<string, number>;
   /** Set when an older map layout cannot be trusted. Not written back out. */
@@ -65,6 +67,7 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
     loadout: [...state.loadout],
     charts: [...state.charts],
     petOrder: state.petOrder,
+    petAway: state.petAway,
     factions: { ...state.factions },
   };
 }
@@ -116,6 +119,7 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     loadout: [...(row.loadout ?? [])].slice(0, 5),
     charts: [...(row.charts ?? [])],
     petOrder: orders.includes(row.petOrder as PetOrder) ? (row.petOrder as PetOrder) : 'follow',
+    petAway: row.petAway === true,
     factions: { ...(row.factions ?? {}) },
   };
   if (save.raceId === 'barbarian' && save.classId === 'wizard') {
@@ -149,6 +153,7 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   state.loadout = [...save.loadout].slice(0, 5);
   state.charts = [...save.charts];
   state.petOrder = save.petOrder;
+  state.petAway = save.petAway === true;
   state.factions = { ...save.factions };
   player.level = save.level;
   player.defId = save.classId;

@@ -9,6 +9,8 @@ export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspec
 export const BAG_HOLDERS = 8;
 export const LOADOUT_CAP = 5;
 export type PetOrder = 'follow' | 'attack' | 'stay' | 'backoff';
+/** Stay is the guard/sit hold. Dismiss and call are not stances, and taunt only exists on a pet that has it. */
+export type PetCommand = PetOrder | 'dismiss' | 'call' | 'taunt';
 export type PeltReward = 'helm' | 'jerkin';
 
 export type EquipSlot = 'head' | 'chest' | 'hands' | 'legs' | 'feet' | 'primary' | 'secondary';
@@ -146,6 +148,8 @@ export interface MobDef {
   coinMax: number;
   /** Unique creatures wait longer than the common packs. */
   named?: boolean;
+  /** Future pets can bark a foe onto themselves. The snow wolf does not. */
+  petTaunt?: boolean;
 }
 
 export interface NpcDef {
@@ -424,6 +428,8 @@ export interface GameState {
   loadout: string[];
   charts: string[];
   petOrder: PetOrder;
+  /** The companion was sent away. Missing on old saves, which still bring the wolf. */
+  petAway: boolean;
   petHold: { x: number; y: number } | null;
   petFocus: string | null;
   /** Blocks a door from firing again the moment a zone loads. */
@@ -495,7 +501,7 @@ export type Intent =
   | { type: 'createHero'; raceId: string; classId: string; bonus: Stats; sex?: 'male' | 'female' }
   | { type: 'openBook' }
   | { type: 'setLoadout'; slots: string[] }
-  | { type: 'pet'; order: PetOrder }
+  | { type: 'pet'; order: PetCommand }
   | { type: 'openMaps' }
   | { type: 'moveItem'; fromBag: number; fromSlot: number; toBag: number; toSlot: number }
   | { type: 'moveBag'; from: number; to: number }

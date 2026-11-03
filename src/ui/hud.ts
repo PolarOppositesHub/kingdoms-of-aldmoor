@@ -3,7 +3,9 @@ import { controls, pushIntent } from '../game/controls';
 import { conColor, conLabel, formatCoin, xpProgress } from '../sim/formulas';
 import { isSafe, placeName, tileOf } from '../sim/map';
 import { tileColor } from '../sim/mapColors';
-import { EQUIP_SLOTS, LOADOUT_CAP, type EquipSlot, type GameState, type ItemDef, type PetOrder } from '../sim/types';
+import { EQUIP_SLOTS, LOADOUT_CAP, type EquipSlot, type GameState, type ItemDef, type PetCommand } from '../sim/types';
+import { bindHudLayout, type HudLayoutCtl } from './hudLayout';
+import { itemIconKey } from '../sim/icons';
 import { armorLabel, classLabel } from '../sim/wear';
 import { askPrice, knownAbilities } from '../sim/systems';
 import { countItem, firstConsumable } from '../sim/bags';
@@ -25,12 +27,11 @@ function slotMarkup(index: number, extra: string): string {
   </button>`;
 }
 
-function sitButton(kind: string): string {
-  return `<button type="button" class="sit-btn ${kind}" aria-pressed="false" aria-label="Sit and rest">
-    <span class="sit-glyph" aria-hidden="true"></span>
-    <span class="sit-label">SIT</span>
-  </button>`;
+function dragHandle(label: string): string {
+  return `<button type="button" class="drag-handle" tabindex="-1" aria-label="${label}"><span class="grip" aria-hidden="true"></span></button>`;
 }
+
+let layoutCtl: HudLayoutCtl | null = null;
 
 function readSetting(key: string, fallback: string): string {
   try {
@@ -47,6 +48,7 @@ function applyHotbar(style: 'bar' | 'arc'): void {
   } catch {
     /* private mode */
   }
+  layoutCtl?.refresh();
 }
 
 function applySlotNames(on: boolean): void {
@@ -65,7 +67,15 @@ export function mountHud(api: GameApi): void {
   if (!root || !panel || !toast) return;
 
   root.innerHTML = `
-    <section class="vitals">
+    <section class="target-box hud-widget" id="target-box" data-hud="target">
+      ${dragHandle('Move target window')}
+      <div class="target-kicker">Target</div>
+      <div id="target-name">No target</div>
+      <div id="target-meta"></div>
+      <div class="bar hp target-hp" aria-label="Target health"><span id="target-fill"></span><em id="target-num">—</em></div>
+    </section>
+    <section class="vitals hud-widget" data-hud="vitals">
+      ${dragHandle('Move player bars')}
       <div class="vitals-top">
         <span id="who">Lv 1 Warrior</span>
         <span id="coin">0c</span>
@@ -76,18 +86,25 @@ export function mountHud(api: GameApi): void {
         <div class="bar mana" aria-label="Mana"><span id="mana-fill"></span><em id="mana-num"></em></div>
       </div>
     </section>
-    <section class="target-box" id="target-box">
-      <div id="target-name">No target</div>
-      <div class="bar hp thin"><span id="target-fill"></span></div>
-      <div class="pet-bar" id="pet-bar" hidden>
+    <section class="pet-panel hud-widget" id="pet-panel" data-hud="pet" hidden>
+      ${dragHandle('Move pet window')}
+      <div class="pet-head">
+        <span id="pet-name">Wolf</span>
+        <span id="pet-level"></span>
+      </div>
+      <div class="bar hp pet-hp" aria-label="Pet health"><span id="pet-fill"></span><em id="pet-num"></em></div>
+      <div class="pet-commands">
         <button type="button" data-pet="attack">Attack</button>
         <button type="button" data-pet="backoff">Back off</button>
-        <button type="button" data-pet="stay">Stay</button>
         <button type="button" data-pet="follow">Follow</button>
+        <button type="button" data-pet="stay" aria-label="Guard or sit">Guard</button>
+        <button type="button" data-pet="taunt" hidden>Taunt</button>
+        <button type="button" data-pet="dismiss" data-pet-role="recall">Dismiss</button>
       </div>
     </section>
-    <p id="log" aria-live="polite"></p>
-    <div class="pad" id="pad" data-scheme="stick" role="group" aria-label="Move">
+    <div id="log" class="hud-widget" data-hud="log" aria-live="polite">${dragHandle('Move log')}<span id="log-line"></span></div>
+    <div class="pad hud-widget" id="pad" data-hud="pad" data-scheme="stick" role="group" aria-label="Move">
+      ${dragHandle('Move movement pad')}
       <span class="pad-arm up"></span>
       <span class="pad-arm down"></span>
       <span class="pad-arm left"></span>
@@ -107,8 +124,8 @@ export function mountHud(api: GameApi): void {
         <button type="button" id="quest">Quest</button>
         <button type="button" id="item">Item</button>
       </div>
-      <div class="hotbar hotbar-a">
-        ${sitButton('sit-a')}
+      <div class="hotbar hotbar-a hud-widget" data-hud="hotbar-a">
+        ${dragHandle('Move hotbar')}
         <div class="iron-frame">
           <div class="xp-plate">
             <span class="xp-readout">Lv 1 XP 0%</span>
@@ -119,8 +136,8 @@ export function mountHud(api: GameApi): void {
           </div>
         </div>
       </div>
-      <div class="hotbar hotbar-b">
-        ${sitButton('sit-b')}
+      <div class="hotbar hotbar-b hud-widget" data-hud="hotbar-b">
+        ${dragHandle('Move arc hotbar')}
         <div class="arc">
           ${Array.from({ length: 4 }, (_, index) => slotMarkup(index, 'orb')).join('')}
           ${slotMarkup(4, 'orb orb-fifth')}
@@ -137,8 +154,16 @@ export function mountHud(api: GameApi): void {
       </div>
     </div>
     <div id="ability-tip" role="tooltip" hidden></div>
+    <div class="sit-dock hud-widget" data-hud="sit">
+      ${dragHandle('Move sit button')}
+      <button type="button" class="sit-btn sit-a" aria-pressed="false" aria-label="Sit and rest">
+        <span class="sit-glyph" aria-hidden="true"></span>
+        <span class="sit-label">SIT</span>
+      </button>
+    </div>
     <button type="button" id="mute" class="mute" aria-label="Mute">Sound</button>
     <button type="button" id="scheme" class="help-btn scheme-btn" aria-label="Movement scheme">Pad</button>
+    <button type="button" id="hud-lock" class="lock-btn" aria-pressed="true" aria-label="Layout locked. Unlock to move windows."><span class="lock-glyph" aria-hidden="true"></span></button>
     <button type="button" id="help" class="help-btn" aria-label="Help">?</button>
     <div id="death" class="death" hidden>The cold takes you.</div>
   `;
@@ -170,8 +195,10 @@ export function mountHud(api: GameApi): void {
   applySlotNames(readSetting('aldmoor-slot-names', '0') === '1');
 
   const tools = document.createElement('div');
-  tools.className = 'corner-tools';
+  tools.className = 'corner-tools hud-widget';
+  tools.dataset.hud = 'maps';
   tools.innerHTML = `
+    ${dragHandle('Move map buttons')}
     <button type="button" id="maps" class="corner-btn" aria-label="Maps">
       <span class="pixel-globe" aria-hidden="true"></span>
     </button>
@@ -180,6 +207,7 @@ export function mountHud(api: GameApi): void {
     </button>
   `;
   document.getElementById('app')?.appendChild(tools);
+  layoutCtl = bindHudLayout();
   tools.querySelector('#maps')!.addEventListener('click', () => pushIntent({ type: 'openMaps' }));
   tools.querySelector('#pack')!.addEventListener('click', () => {
     detail = null;
@@ -192,9 +220,16 @@ export function mountHud(api: GameApi): void {
   root.querySelectorAll<HTMLButtonElement>('.sit-btn').forEach((button) => {
     button.addEventListener('click', () => pushIntent({ type: 'toggleSit' }));
   });
+  root.querySelector('#hud-lock')?.addEventListener('click', () => {
+    layoutCtl?.setLocked(!(layoutCtl?.isLocked() ?? true));
+    panelKey = '';
+  });
   bindAbilitySlots(root, api);
   root.querySelectorAll<HTMLButtonElement>('[data-pet]').forEach((button) => {
-    button.addEventListener('click', () => pushIntent({ type: 'pet', order: (button.dataset.pet ?? 'follow') as PetOrder }));
+    button.addEventListener('click', () => {
+      if (button.disabled) return;
+      pushIntent({ type: 'pet', order: (button.dataset.pet ?? 'follow') as PetCommand });
+    });
   });
   root.querySelector('#next')!.addEventListener('click', () => pushIntent({ type: 'cycleTarget' }));
   root.querySelector('#talk')!.addEventListener('click', () => pushIntent({ type: 'interact' }));
@@ -263,6 +298,8 @@ export function mountHud(api: GameApi): void {
     }     else if (action === 'reload') window.location.reload();
     else if (action === 'set-hotbar') applyHotbar(button.dataset.value === 'arc' ? 'arc' : 'bar');
     else if (action === 'set-names') applySlotNames(document.documentElement.dataset.slotNames !== '1');
+    else if (action === 'toggle-lock') layoutCtl?.setLocked(!(layoutCtl?.isLocked() ?? true));
+    else if (action === 'reset-layout') layoutCtl?.reset();
     panelKey = '';
   });
 
@@ -541,18 +578,21 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const coin = root.querySelector('#coin');
   const hpNum = root.querySelector('#hp-num');
   const hpFill = root.querySelector<HTMLElement>('#hp-fill');
-  const log = root.querySelector('#log');
+  const log = root.querySelector('#log-line');
   const spells = [...root.querySelectorAll<HTMLButtonElement>('.spell')];
   const actions = root.querySelector<HTMLElement>('.actions');
-  const petBar = root.querySelector<HTMLElement>('#pet-bar');
+  const petPanel = root.querySelector<HTMLElement>('#pet-panel');
   const manaLine = root.querySelector<HTMLElement>('#mana-line');
   const manaFill = root.querySelector<HTMLElement>('#mana-fill');
   const manaNum = root.querySelector('#mana-num');
   const item = root.querySelector<HTMLButtonElement>('#item');
   const targetName = root.querySelector<HTMLElement>('#target-name');
+  const targetMeta = root.querySelector<HTMLElement>('#target-meta');
   const targetFill = root.querySelector<HTMLElement>('#target-fill');
+  const targetNum = root.querySelector<HTMLElement>('#target-num');
+  const targetBar = root.querySelector<HTMLElement>('.target-hp');
   const death = root.querySelector<HTMLElement>('#death');
-  if (!who || !place || !coin || !hpNum || !hpFill || !log || spells.length < LOADOUT_CAP || !actions || !item || !targetName || !targetFill || !death) return;
+  if (!who || !place || !coin || !hpNum || !hpFill || !log || spells.length < LOADOUT_CAP || !actions || !item || !targetName || !targetMeta || !targetFill || !targetNum || !death) return;
 
   const className = api.content.classes[state.classId]?.name ?? 'Warrior';
   who.textContent = `Lv ${state.level} ${className}`;
@@ -595,13 +635,7 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
     if (label) label.textContent = state.sitting ? 'UP' : 'SIT';
   });
   actions.dataset.spells = '5';
-  if (petBar) {
-    const warden = state.classId === 'warden';
-    petBar.hidden = !warden;
-    petBar.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
-      button.setAttribute('aria-pressed', button.dataset.pet === state.petOrder ? 'true' : 'false');
-    });
-  }
+  paintPet(root, state, api, petPanel);
 
   const food = firstConsumable(state, api.content);
   if (!food) {
@@ -617,20 +651,69 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   if (!target || target.kind === 'player') {
     targetName.textContent = 'No target';
     targetName.style.color = '#cbbba8';
+    targetMeta.textContent = '';
     targetFill.style.width = '0%';
+    targetNum.textContent = '—';
+    targetBar?.setAttribute('aria-label', 'Target health');
   } else if (target.kind === 'mob') {
     const color = conColor(state.level, target.level);
-    targetName.textContent = `${target.name}  Lv ${target.level}  ${conLabel(color)}`;
-    targetName.style.color = conHex(color);
-    targetFill.style.width = `${Math.max(0, (target.hp / target.maxHp) * 100)}%`;
+    const pct = Math.round(Math.max(0, Math.min(100, (target.hp / Math.max(1, target.maxHp)) * 100)));
+    const hex = conHex(color);
+    targetName.textContent = target.name;
+    targetName.style.color = hex;
+    targetMeta.textContent = `Lv ${target.level} · ${conLabel(color)}`;
+    targetMeta.style.color = hex;
+    targetFill.style.width = `${pct}%`;
+    targetNum.textContent = `${pct}%`;
+    targetBar?.setAttribute('aria-label', `Target health ${pct} percent`);
   } else {
     const npc = api.content.npcs[target.defId];
-    targetName.textContent = npc ? `${npc.name}, ${npc.title}` : target.name;
+    targetName.textContent = npc?.name ?? target.name;
     targetName.style.color = '#f3eee4';
+    targetMeta.textContent = npc?.title ?? '';
+    targetMeta.style.color = '#cbbba8';
     targetFill.style.width = '0%';
+    targetNum.textContent = '—';
+    targetBar?.setAttribute('aria-label', 'Target health');
   }
 
   death.hidden = !state.dead;
+}
+
+let petShown: boolean | null = null;
+
+function paintPet(root: HTMLElement, state: GameState, api: GameApi, panel: HTMLElement | null): void {
+  if (!panel) return;
+  const warden = state.classId === 'warden';
+  panel.hidden = !warden;
+  if (petShown !== warden) {
+    petShown = warden;
+    layoutCtl?.refresh();
+  }
+  if (!warden) return;
+  const pet = state.actors.find((actor) => actor.pet);
+  const def = api.content.mobs.warden_wolf;
+  const name = root.querySelector('#pet-name');
+  const level = root.querySelector('#pet-level');
+  const fill = root.querySelector<HTMLElement>('#pet-fill');
+  const num = root.querySelector('#pet-num');
+  if (name) name.textContent = pet?.name ?? def?.name ?? 'Wolf';
+  if (level) level.textContent = state.petAway ? 'Away' : pet && !pet.alive ? 'Down' : pet ? `Lv ${pet.level}` : '';
+  const pct = !pet || state.petAway ? 0 : Math.round(Math.max(0, Math.min(100, (pet.hp / Math.max(1, pet.maxHp)) * 100)));
+  if (fill) fill.style.width = `${pct}%`;
+  if (num) num.textContent = state.petAway ? '—' : `${pct}%`;
+  const taunt = Boolean((pet && api.content.mobs[pet.defId]?.petTaunt) || def?.petTaunt);
+  panel.querySelectorAll<HTMLButtonElement>('[data-pet]').forEach((button) => {
+    if (button.dataset.pet === 'taunt' || button.dataset.petRole === 'taunt') button.hidden = !taunt;
+    if (button.dataset.petRole === 'recall') {
+      button.dataset.pet = state.petAway ? 'call' : 'dismiss';
+      button.textContent = state.petAway ? 'Call' : 'Dismiss';
+    }
+    button.disabled = state.petAway && button.dataset.petRole !== 'recall';
+    const stance = button.dataset.pet;
+    const pressed = !state.petAway && (stance === 'attack' || stance === 'backoff' || stance === 'follow' || stance === 'stay') && stance === state.petOrder;
+    button.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+  });
 }
 
 function conHex(color: string): string {
@@ -794,7 +877,8 @@ const SLOT_LABEL: Record<EquipSlot, string> = {
 };
 
 function iconStyle(id: string): string | null {
-  const frame = iconMeta.frames[id as keyof typeof iconMeta.frames];
+  const key = itemIconKey(id, iconMeta.frames);
+  const frame = key ? iconMeta.frames[key as keyof typeof iconMeta.frames] : undefined;
   if (!frame) return null;
   const scale = 2;
   return `background-image:url(${iconsUrl});background-position:-${frame.x * scale}px -${frame.y * scale}px;background-size:${iconMeta.sheetW * scale}px ${iconMeta.sheetH * scale}px;`;
@@ -1154,14 +1238,16 @@ function helpHtml(state: GameState, api: GameApi): string {
     .join('');
   const hotbar = readSetting('aldmoor-hotbar', 'bar') === 'arc' ? 'arc' : 'bar';
   const names = readSetting('aldmoor-slot-names', '0') === '1';
+  const locked = layoutCtl?.isLocked() ?? true;
   return `<div class="sheet">
     <header><h2>How to move through Hoffender</h2></header>
     <ul class="help-list">
       <li>Stick or D-pad, or tap the ground, walks. The Pad button swaps them. WASD works on a keyboard. Pinch the map, or use the mouse wheel, to zoom.</li>
-      <li>Tap a wolf to mark it, then ATK. Swings land on their own timer. Sit rests you. Walking, swinging, casting, or being hit stands you up.</li>
+      <li>Tap a wolf to mark it, then ATK. The target window sits above your health. Swings land on their own timer. Sit rests you. Walking, swinging, casting, or being hit stands you up.</li>
       ${caster ? spells : '<li>Kick is immediate, then it needs a breath.</li>'}
       <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
-      <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf follows, attacks your target, and takes Attack, Back off, Stay, and Follow.</li>
+      <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf has its own window: health, Attack, Back off, Follow, Guard, and Dismiss. Call brings the wolf back.</li>
+      <li>The layout lock is on while you play, so nothing slides under your thumb. Unlock it here, or with the lock button, and the windows grow an outline and a handle. Drag the bars, the target, the pet, either hotbar, the pad, sit, the map buttons, and the log. Reset puts them back. The choice is remembered on this device.</li>
       <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall in combat and you wake in Hilda's yard. The wilds run through level 10. The climb goes on to 25.</li>
     </ul>
     <h3>Settings</h3>
@@ -1169,6 +1255,8 @@ function helpHtml(state: GameState, api: GameApi): string {
       <button type="button" data-action="set-hotbar" data-value="bar" aria-pressed="${hotbar === 'bar' ? 'true' : 'false'}">Stone &amp; iron</button>
       <button type="button" data-action="set-hotbar" data-value="arc" aria-pressed="${hotbar === 'arc' ? 'true' : 'false'}">Thumb arc</button>
       <button type="button" data-action="set-names" aria-pressed="${names ? 'true' : 'false'}">Ability names</button>
+      <button type="button" data-action="toggle-lock" aria-pressed="${locked ? 'true' : 'false'}">${locked ? 'Unlock layout' : 'Lock layout'}</button>
+      <button type="button" data-action="reset-layout">Reset layout</button>
     </div>
     <button type="button" data-action="reload">Start a new warrior</button>
     <button type="button" class="close" data-action="close">Close</button>
