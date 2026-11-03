@@ -532,6 +532,8 @@ export interface MapData {
   safe: Uint8Array;
   /** Ground tile ids, row-major. Used to draw purchased charts. */
   ground: Uint16Array;
+  /** Standing scenery ids, row-major. 0 is empty. Trunks and rocks also set collision. */
+  scenery: Uint8Array;
   spawns: Spawn[];
   bind: { x: number; y: number };
   zoneId: string;

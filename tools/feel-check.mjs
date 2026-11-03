@@ -192,16 +192,24 @@ if (wet.water < 4) throw new Error(`coast has no water ${JSON.stringify(wet)}`);
 await page.screenshot({ path: `${outDir}/05d-coast.png` });
 void coast;
 
+await page.evaluate(() => {
+  window.__ALDMOOR__.push({ type: 'debugTeleport', x: 200 * 16 + 8, y: 130 * 16 });
+});
+await page.waitForTimeout(250);
+await page.keyboard.down('d');
 const fps = await page.evaluate(() => new Promise((resolve) => {
   let frames = 0;
   const start = performance.now();
   const step = (now) => {
     frames++;
-    if (now - start < 1200) requestAnimationFrame(step);
+    if (now - start < 1500) requestAnimationFrame(step);
     else resolve(Math.round((frames * 1000) / (now - start)));
   };
   requestAnimationFrame(step);
 }));
+await page.keyboard.up('d');
+const scenery = await page.evaluate(() => (window.__SCENERY__ ? window.__SCENERY__() : 0));
+if (scenery < 15) throw new Error(`expected standing trees near the camera, saw ${scenery}`);
 if (fps < 30) throw new Error(`frame rate ${fps}`);
 
 await page.setViewportSize({ width: 844, height: 390 });
@@ -234,6 +242,6 @@ const woke = await page.evaluate(() => {
   return { dead: s.dead, hp: p.hp, x: p.x, y: p.y, log: s.log.slice(-3) };
 });
 
-console.log(JSON.stringify({ start, moved, pet, fight, after, mapRead, plus, fps, north, wet, woke, errors }, null, 2));
+console.log(JSON.stringify({ start, moved, pet, fight, after, mapRead, plus, fps, scenery, north, wet, woke, errors }, null, 2));
 if (errors.length) throw new Error(errors.join('\n'));
 await browser.close();

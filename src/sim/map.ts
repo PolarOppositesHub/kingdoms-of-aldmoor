@@ -41,6 +41,8 @@ export function parseTiledMap(raw: TiledJson): MapData {
   const collision = Uint8Array.from(collisionLayer.data, (cell) => (cell ? 1 : 0));
   const safe = Uint8Array.from(safeLayer.data, (cell) => (cell ? 1 : 0));
   const ground = Uint16Array.from(groundLayer.data);
+  const sceneryLayer = raw.layers.find((layer) => layer.name === 'scenery');
+  const scenery = Uint8Array.from(sceneryLayer?.data ?? new Array(raw.width * raw.height).fill(0), (cell) => cell & 255);
   const spawns: Spawn[] = [];
   let bind = { x: raw.tilewidth * 2, y: raw.tilewidth * 2 };
   for (const obj of objectLayer?.objects ?? []) {
@@ -72,6 +74,7 @@ export function parseTiledMap(raw: TiledJson): MapData {
     collision,
     safe,
     ground,
+    scenery,
     spawns,
     bind,
     zoneId: typeof zone?.value === 'string' ? zone.value : 'hoffender',

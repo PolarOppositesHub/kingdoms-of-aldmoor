@@ -52,6 +52,25 @@ interface Atlas {
 
 const atlas = atlasJson as Atlas;
 
+/** Ids written by tools/frostmere-map.mjs. Trunks and rocks are 1–9. */
+const SCENERY_FRAMES = [
+  '',
+  'pine_snow',
+  'pine_snow_b',
+  'pine_dark',
+  'pine_dark_b',
+  'tree_green',
+  'tree_green_b',
+  'rock',
+  'rock_small',
+  'rock_coast',
+  'bush',
+  'bush_green',
+  'bush_dark',
+];
+
+const SCENERY_CELL = 8;
+
 function clampZoom(value: number): number {
   return Math.round(Math.max(1.75, Math.min(4.5, value)) * 4) / 4;
 }
@@ -94,6 +113,10 @@ export class WorldScene extends Phaser.Scene {
   private views = new Map<string, ActorView>();
   private groundViews = new Map<string, Phaser.GameObjects.Sprite>();
   private propSprites: Phaser.GameObjects.Sprite[] = [];
+  private sceneryCells = new Map<number, { x: number; y: number; frame: string }[]>();
+  private scenerySprites: Phaser.GameObjects.Sprite[] = [];
+  private sceneryStamp = '';
+  private sceneryLive = 0;
   private placeLabels: Phaser.GameObjects.Text[] = [];
   private zoom = 3;
   private zoomTouched = false;
@@ -222,10 +245,84 @@ export class WorldScene extends Phaser.Scene {
       const hook = window as unknown as { __ALDMOOR__?: GameApi; __ZOOM__?: () => number };
       hook.__ALDMOOR__ = api;
       hook.__ZOOM__ = () => this.zoom;
+      (hook as { __SCENERY__?: () => number }).__SCENERY__ = () => this.sceneryLive;
     }
     this.api = api;
     ready?.(api);
     this.syncActors(1);
+  }
+
+  private indexScenery(): void {
+    this.sceneryCells.clear();
+    this.sceneryStamp = '';
+    for (const sprite of this.scenerySprites) sprite.setVisible(false);
+    const data = this.mapData.scenery;
+    if (!data) return;
+    const tw = this.mapData.tileWidth;
+    for (let ty = 0; ty < this.mapData.height; ty++) {
+      const row = ty * this.mapData.width;
+      const cy = Math.floor(ty / SCENERY_CELL);
+      for (let tx = 0; tx < this.mapData.width; tx++) {
+        const kind = data[row + tx];
+        if (!kind) continue;
+        const frame = SCENERY_FRAMES[kind];
+        if (!frame || !atlas.props[frame]) continue;
+        const key = cy * 64 + Math.floor(tx / SCENERY_CELL);
+        let list = this.sceneryCells.get(key);
+        if (!list) {
+          list = [];
+          this.sceneryCells.set(key, list);
+        }
+        const foot = ty * tw + 14;
+        list.push({ x: tx * tw + 8, y: foot, frame });
+      }
+    }
+  }
+
+  /** Show standing trees, rocks, and bushes only in the cells around the camera. */
+  private syncScenery(): void {
+    if (!this.sceneryCells.size) {
+      for (const sprite of this.scenerySprites) sprite.setVisible(false);
+      this.sceneryLive = 0;
+      return;
+    }
+    const view = this.cam.worldView;
+    const pad = 64;
+    const cellPx = SCENERY_CELL * this.mapData.tileWidth;
+    const x0 = Math.floor((view.x - pad) / cellPx);
+    const y0 = Math.floor((view.y - pad) / cellPx);
+    const x1 = Math.floor((view.right + pad) / cellPx);
+    const y1 = Math.floor((view.bottom + pad) / cellPx);
+    const stamp = `${this.mapData.zoneId}:${x0},${y0},${x1},${y1}`;
+    if (stamp === this.sceneryStamp) return;
+    this.sceneryStamp = stamp;
+    const items: { x: number; y: number; frame: string }[] = [];
+    for (let cy = y0; cy <= y1; cy++) {
+      for (let cx = x0; cx <= x1; cx++) {
+        const list = this.sceneryCells.get(cy * 64 + cx);
+        if (list) items.push(...list);
+      }
+    }
+    while (this.scenerySprites.length < items.length) {
+      const sprite = this.add.sprite(0, 0, 'props', 'pine_snow');
+      sprite.setVisible(false);
+      this.scenerySprites.push(sprite);
+    }
+    for (let i = 0; i < this.scenerySprites.length; i++) {
+      const sprite = this.scenerySprites[i];
+      const item = items[i];
+      if (!item) {
+        sprite.setVisible(false);
+        continue;
+      }
+      const frame = atlas.props[item.frame];
+      sprite.setFrame(item.frame);
+      sprite.setOrigin(frame.anchorX / frame.w, frame.anchorY / frame.h);
+      sprite.setPosition(item.x, item.y);
+      sprite.setDepth(item.y);
+      sprite.setVisible(true);
+    }
+    this.sceneryLive = items.length;
   }
 
   private mountMap(key: string): void {
@@ -269,6 +366,7 @@ export class WorldScene extends Phaser.Scene {
       text.setScale(1 / (this.cam.zoom || 1));
       this.placeLabels.push(text);
     }
+    this.indexScenery();
     const view = this.cam.worldView;
     for (const flake of this.flakes) {
       flake.x = view.x + Math.random() * Math.max(32, view.width);
@@ -719,6 +817,7 @@ export class WorldScene extends Phaser.Scene {
     const px = view ? view.sprite.x : player.x;
     const py = view ? view.sprite.y : player.y;
     this.cam.centerOn(Math.round(px), Math.round(py));
+    this.syncScenery();
 
     const fire = Math.floor(this.time.now / 180) % 2 === 0 ? 'firepit' : 'firepit_b';
     for (const sprite of this.propSprites) {

@@ -1397,30 +1397,64 @@ function wolfTint(body, hi, belly) {
   };
 }
 
-function drawTree(variant) {
-  const img = createImage(32, 40);
-  const rand = mulberry(200 + variant);
+function drawPine(variant, style) {
+  const img = createImage(32, 44);
+  const rand = mulberry(200 + variant + (style === 'dark' ? 17 : 0));
+  const snow = style !== 'dark';
+  const mid = style === 'dark' ? hex('#1a3024') : PINE_MID;
+  const body = style === 'dark' ? hex('#14261c') : PINE;
+  const deep = style === 'dark' ? hex('#0c1812') : PINE_DEEP;
+  const fleck = style === 'dark' ? hex('#2c4a30') : PINE_HI;
   const layers = [
-    { y: 2, h: 12, w: 8, c: PINE_MID },
-    { y: 10, h: 12, w: 12, c: PINE },
-    { y: 18, h: 12, w: 15, c: variant ? PINE_DEEP : PINE },
+    { y: 1, h: 12, w: 7, c: mid },
+    { y: 10, h: 12, w: 11, c: body },
+    { y: 20, h: 12, w: 15, c: variant ? deep : body },
   ];
   for (const layer of layers) {
     for (let y = 0; y < layer.h; y++) {
       const half = Math.max(1, Math.round((y / layer.h) * layer.w));
       for (let x = -half; x <= half; x++) {
         const edge = Math.abs(x) >= half - 1 || y < 2;
-        let c = edge ? PINE_DEEP : layer.c;
-        if (y < 3 && !edge) c = SNOW_HI;
-        else if (rand() > 0.92) c = PINE_HI;
+        let c = edge ? deep : layer.c;
+        if (snow && y < 3 && !edge) c = SNOW_HI;
+        else if (rand() > 0.9) c = fleck;
         img.set(16 + x, layer.y + y, c);
       }
     }
   }
-  for (let y = 28; y < 39; y++) {
+  for (let y = 31; y < 43; y++) {
     for (let x = 14; x <= 17; x++) {
       img.set(x, y, x === 14 || x === 17 ? WOOD_DARK : y % 2 ? WOOD : WOOD_SH);
     }
+  }
+  silhouette(img, INK);
+  return img;
+}
+
+function drawTree(variant) {
+  return drawPine(variant, 'snow');
+}
+
+function drawLeafTree(variant) {
+  const img = createImage(32, 40);
+  const rand = mulberry(80 + variant);
+  const leaf = variant ? hex('#3e6b40') : hex('#6e8f5a');
+  const leafHi = variant ? hex('#7aa85a') : hex('#8eae72');
+  const leafDeep = hex('#2c4a30');
+  for (let y = 2; y <= 26; y++) {
+    for (let x = 2; x <= 29; x++) {
+      const dx = (x - 16) / 13;
+      const dy = (y - 14) / 12;
+      const d = dx * dx + dy * dy;
+      if (d > 1) continue;
+      let c = d > 0.72 ? leafDeep : leaf;
+      if (y < 10 && d < 0.5) c = leafHi;
+      else if (rand() > 0.93) c = leafHi;
+      img.set(x, y, c);
+    }
+  }
+  for (let y = 26; y < 39; y++) {
+    for (let x = 14; x <= 17; x++) img.set(x, y, x === 14 || x === 17 ? WOOD_DARK : WOOD);
   }
   silhouette(img, INK);
   return img;
@@ -1649,16 +1683,36 @@ function drawStump() {
   return img;
 }
 
-function drawBush() {
+function drawBush(style = 'snow') {
   const img = createImage(16, 16);
-  const rand = mulberry(33);
+  const rand = mulberry(style === 'green' ? 41 : style === 'dark' ? 53 : 33);
+  const leaf = style === 'dark' ? hex('#1a3024') : style === 'green' ? hex('#3e6b40') : PINE_MID;
+  const hi = style === 'dark' ? hex('#2c4a30') : style === 'green' ? hex('#7aa85a') : PINE_HI;
   for (let y = 4; y <= 13; y++) {
     for (let x = 2; x <= 13; x++) {
       const dx = (x - 8) / 6;
       const dy = (y - 9) / 5;
       if (dx * dx + dy * dy > 1) continue;
-      let c = rand() > 0.7 ? PINE_HI : PINE_MID;
-      if (y < 7) c = SNOW_HI;
+      let c = rand() > 0.72 ? hi : leaf;
+      if (style === 'snow' && y < 7) c = SNOW_HI;
+      img.set(x, y, c);
+    }
+  }
+  silhouette(img, INK);
+  return img;
+}
+
+function drawCoastRock() {
+  const img = createImage(24, 16);
+  const rand = mulberry(19);
+  for (let y = 2; y < 15; y++) {
+    for (let x = 2; x < 22; x++) {
+      const nx = (x - 12) / 10;
+      const ny = (y - 8) / 6;
+      if (nx * nx + ny * ny > 1) continue;
+      let c = y > 11 ? hex('#6b5344') : hex('#5c656e');
+      if (y < 6 && x < 14) c = hex('#8b97a3');
+      if (rand() > 0.92) c = hex('#d9c59a');
       img.set(x, y, c);
     }
   }
@@ -2000,8 +2054,15 @@ function buildProps() {
   const frames = {
     tree: drawTree(0),
     tree_b: drawTree(1),
+    pine_snow: drawPine(0, 'snow'),
+    pine_snow_b: drawPine(1, 'snow'),
+    pine_dark: drawPine(0, 'dark'),
+    pine_dark_b: drawPine(1, 'dark'),
+    tree_green: drawLeafTree(0),
+    tree_green_b: drawLeafTree(1),
     rock: drawRock(true),
     rock_small: drawRock(false),
+    rock_coast: drawCoastRock(),
     barrel: drawBarrel(),
     crate: drawCrate(),
     well: drawWell(),
@@ -2013,7 +2074,9 @@ function buildProps() {
     sign_hall: drawSign('hall'),
     sign_wilds: drawSign('wilds'),
     stump: drawStump(),
-    bush: drawBush(),
+    bush: drawBush('snow'),
+    bush_green: drawBush('green'),
+    bush_dark: drawBush('dark'),
     pouch: drawPouch(),
     coins: drawCoins(),
     anvil: drawAnvil(),
@@ -2112,7 +2175,7 @@ function buildTmj(map, tileset) {
     type: 'map',
     tiledversion: '1.10.2',
     version: '1.10',
-    nextlayerid: 5,
+    nextlayerid: map.scenery ? 6 : 5,
     nextobjectid: oid,
     properties: map.props,
     tilesets: [
@@ -2153,6 +2216,16 @@ function buildTmj(map, tileset) {
         draworder: 'topdown',
         objects,
       }),
+      ...(map.scenery
+        ? [
+            layer(5, 'scenery', 'tilelayer', {
+              width,
+              height,
+              visible: false,
+              data: flatten(map.scenery),
+            }),
+          ]
+        : []),
     ],
   };
 }

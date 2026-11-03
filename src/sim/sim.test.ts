@@ -39,6 +39,7 @@ function arena(): MapData {
     collision,
     safe,
     ground: new Uint16Array(width * height).fill(1),
+    scenery: new Uint8Array(width * height),
     spawns: [],
     bind: { x: 40, y: 40 },
     zoneId: 'test',
@@ -205,6 +206,19 @@ describe('simulation', () => {
     expect(bodyBlocked(map, player.x, player.y, 5, 3, false)).toBe(false);
     expect(map.width).toBe(256);
     expect(map.height).toBe(256);
+    let trunks = 0;
+    let bushes = 0;
+    for (let i = 0; i < map.scenery.length; i++) {
+      const kind = map.scenery[i];
+      if (!kind) continue;
+      expect(map.ground[i]).not.toBe(57);
+      if (kind <= 9) {
+        expect(map.collision[i]).toBe(1);
+        trunks++;
+      } else bushes++;
+    }
+    expect(trunks).toBeGreaterThan(800);
+    expect(bushes).toBeGreaterThan(200);
     expect(state.actors.filter((actor) => actor.kind === 'npc').length).toBeGreaterThanOrEqual(7);
     expect(state.actors.some((actor) => actor.defId === 'brenna')).toBe(false);
     expect(state.actors.some((actor) => actor.defId === 'sigrun')).toBe(true);

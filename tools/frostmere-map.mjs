@@ -101,8 +101,24 @@ function feet(tx, ty) {
  * @param {number[][]} safe
  * @param {object[]} objects
  */
-function makeMap(id, g, solid, safe, objects, props) {
-  return { id, ground: g, solid, safe, objects, props };
+/** Standing sprites. 1–9 block on the trunk or base. 10+ are bushes and do not. */
+const SC = {
+  PINE_SNOW: 1,
+  PINE_SNOW_B: 2,
+  PINE_DARK: 3,
+  PINE_DARK_B: 4,
+  TREE_GREEN: 5,
+  TREE_GREEN_B: 6,
+  ROCK: 7,
+  ROCK_SMALL: 8,
+  ROCK_COAST: 9,
+  BUSH_SNOW: 10,
+  BUSH_GREEN: 11,
+  BUSH_DARK: 12,
+};
+
+function makeMap(id, g, solid, safe, objects, props, scenery = null) {
+  return { id, ground: g, solid, safe, objects, props, scenery };
 }
 
 export function buildWorld() {
@@ -135,12 +151,14 @@ function buildOutdoor() {
   paintLake(g, solid);
   paintShelfAndFloes(g, solid, shore);
 
+  let sceneryGrid = null;
   const stampRoad = (x, y, tile = T.PATH) => {
     if (x < 1 || y < 1 || x >= W - 1 || y >= H - 1) return;
     if (g[y][x] === T.WATER || g[y][x] === T.WATER_B || g[y][x] === T.ICE_FLOE || g[y][x] === T.STACK) return;
     g[y][x] = tile;
     solid[y][x] = 0;
     road[y][x] = 1;
+    if (sceneryGrid) sceneryGrid[y][x] = 0;
   };
 
   const stroke = (points, radius, tile = T.PATH) => {
@@ -247,6 +265,7 @@ function buildOutdoor() {
   paintCoastEdge(g, solid, shore, road);
 
   const scenery = paintScenery(g, solid, road, safe, shore);
+  sceneryGrid = scenery.grid;
 
   const entryOf = (hall) => {
     const w = Math.max(14, Math.min(20, hall.w + 4));
@@ -257,6 +276,9 @@ function buildOutdoor() {
   const add = (kind, name, tx, ty, extra = {}) => {
     const p = feet(tx, ty);
     objects.push({ kind, name, x: p.x, y: p.y, ...extra });
+    if (ty > 0 && ty < H && tx > 0 && tx < W && scenery.grid[ty][tx] && kind !== 'label' && kind !== 'sign' && kind !== 'seam') {
+      scenery.grid[ty][tx] = 0;
+    }
     if (kind === 'npc' || kind === 'mob' || kind === 'spawn' || kind === 'bind' || kind === 'node' || kind === 'clue') {
       if (ty > 0 && ty < H && tx > 0 && tx < W) {
         solid[ty][tx] = 0;
@@ -365,10 +387,12 @@ function buildOutdoor() {
         g[y][x] = T.SHELF;
       }
       solid[y][x] = 0;
+      scenery.grid[y][x] = 0;
     }
   }
   g[barrowTy][barrowTx] = T.CAVE;
   solid[barrowTy][barrowTx] = 1;
+  scenery.grid[barrowTy][barrowTx] = 0;
   g[barrowTy + 1][barrowTx] = T.PATH;
   solid[barrowTy + 1][barrowTx] = 0;
   add('door', 'Barrow door', barrowTx, barrowTy + 1, { toZone: 'barrow', toX: 24 * TILE + 8, toY: 40 * TILE + 14, sprite: 'sign_wilds' });
@@ -495,6 +519,7 @@ function buildOutdoor() {
     solid[ty][tx] = 0;
     road[ty][tx] = 0;
     safe[ty][tx] = 0;
+    scenery.grid[ty][tx] = 0;
     add('mob', defId, tx, ty, { defId, sprite });
     mobs.push(defId);
   };
@@ -530,10 +555,20 @@ function buildOutdoor() {
     if (obj.kind !== 'seam' && obj.kind !== 'spawn' && obj.kind !== 'npc' && obj.kind !== 'mob' && obj.kind !== 'door' && obj.kind !== 'clue') continue;
     const tx = Math.floor(obj.x / TILE);
     const ty = Math.floor(obj.y / TILE);
-    if (ty > 0 && ty < H - 1 && tx > 0 && tx < W - 1) solid[ty][tx] = 0;
+    if (ty > 0 && ty < H - 1 && tx > 0 && tx < W - 1) {
+      solid[ty][tx] = 0;
+      scenery.grid[ty][tx] = 0;
+    }
   }
   // Seams sit on the outer walkable tile, one in from the border, so the border can stay solid.
   // (Placed at y=3, x=252, y=253, x=248 — already inside.)
+
+  for (const obj of objects) {
+    if (obj.kind === 'label') continue;
+    const sx = Math.floor(obj.x / TILE);
+    const sy = Math.floor(obj.y / TILE);
+    if (scenery.grid[sy]?.[sx]) scenery.grid[sy][sx] = 0;
+  }
 
   for (const obj of objects) {
     if (obj.kind === 'prop' || obj.kind === 'label' || obj.kind === 'sign' || obj.kind === 'door' || obj.kind === 'seam') continue;
@@ -548,7 +583,7 @@ function buildOutdoor() {
     { name: 'zoneId', type: 'string', value: 'hoffender' },
     { name: 'townName', type: 'string', value: 'Hoffender' },
     { name: 'wildsName', type: 'string', value: 'Frostmere Wilds' },
-  ]);
+  ], scenery.grid);
 
   const charts = {
     hoffender: { zone: 'hoffender', x: CITY_X, y: CITY_Y, w: CITY_S, h: CITY_S },
@@ -841,45 +876,78 @@ function paintCoastEdge(g, solid, shore, road) {
 }
 
 function paintScenery(g, solid, road, safe, shore) {
+  const scenery = grid(W, H, 0);
   let trees = 0;
   let rocks = 0;
+  let bushes = 0;
   const nearRoad = (x, y) => {
     for (let dy = -2; dy <= 2; dy++) {
       for (let dx = -2; dx <= 2; dx++) if (road[y + dy]?.[x + dx]) return true;
     }
     return false;
   };
+  const trunkNear = (x, y) => {
+    for (let dy = -1; dy <= 1; dy++) {
+      for (let dx = -1; dx <= 1; dx++) if (solid[y + dy]?.[x + dx]) return true;
+    }
+    return false;
+  };
+  const openGround = new Set([
+    T.SNOW, T.SNOW_B, T.SNOW_C, T.DEEP_SNOW, T.GRASS, T.GRASS_B, T.MUD, T.SLUSH,
+    T.PINE_GROUND, T.ROCK_GROUND, T.SAND, T.FARM, T.SHELF,
+  ]);
   for (let y = 2; y < H - 2; y++) {
     for (let x = 2; x < W - 2; x++) {
-      if (solid[y][x] || safe[y][x] || road[y][x]) continue;
-      if (nearRoad(x, y)) continue;
+      if (solid[y][x] || safe[y][x] || road[y][x] || nearRoad(x, y)) continue;
       const tile = g[y][x];
-      if ([T.WATER, T.WATER_B, T.ICE, T.ICE_FLOE, T.DOCK, T.SHELF, T.GLOW, T.SAND, T.PATH, T.PATH_B, T.CAVE, T.STACK].includes(tile)) continue;
-      const inCity = x > CITY_X && x < CITY_X + CITY_S && y > CITY_Y && y < CITY_Y + CITY_S;
-      if (inCity) continue;
-      const east = x > 170;
-      const chance = east ? 0.1 : tile === T.PINE_GROUND ? 0.14 : tile === T.GRASS || tile === T.GRASS_B ? 0.05 : 0.035;
+      if (!openGround.has(tile)) continue;
+      if (x > CITY_X && x < CITY_X + CITY_S && y > CITY_Y && y < CITY_Y + CITY_S) continue;
+      const coast = x >= shore[y] && x <= shore[y] + 5;
+      const green = tile === T.GRASS || tile === T.GRASS_B || (x > 196 && y > 190);
+      const dark = !green && (tile === T.PINE_GROUND || x > 188);
+      const north = y < 42 || tile === T.ROCK_GROUND || tile === T.DEEP_SNOW;
+      const farm = tile === T.FARM;
       const roll = hash(x, y, 21);
-      if (roll < chance) {
-        let blocked = false;
-        for (let dy = -1; dy <= 1 && !blocked; dy++) {
-          for (let dx = -1; dx <= 1; dx++) if (solid[y + dy][x + dx]) blocked = true;
-        }
-        if (blocked) continue;
-        g[y][x] = hash(x, y, 22) > 0.5 ? T.TREE : T.TREE_B;
-        solid[y][x] = 1;
-        trees++;
-      } else if (roll > 0.982) {
-        g[y][x] = T.ROCK;
+      if (coast && roll < 0.28 && !trunkNear(x, y)) {
+        scenery[y][x] = roll < 0.16 ? SC.ROCK_COAST : SC.ROCK_SMALL;
         solid[y][x] = 1;
         rocks++;
-      } else if (roll > 0.93 && roll < 0.95) {
-        g[y][x] = T.BUSH;
+        continue;
+      }
+      if (north && !coast && roll < 0.07 && !trunkNear(x, y)) {
+        scenery[y][x] = hash(x, y, 23) > 0.5 ? SC.ROCK : SC.ROCK_SMALL;
+        solid[y][x] = 1;
+        rocks++;
+        continue;
+      }
+      let treeChance = 0.05;
+      let kindA = SC.PINE_SNOW;
+      let kindB = SC.PINE_SNOW_B;
+      if (dark) {
+        treeChance = 0.16;
+        kindA = SC.PINE_DARK;
+        kindB = SC.PINE_DARK_B;
+      } else if (green) {
+        treeChance = 0.13;
+        kindA = SC.TREE_GREEN;
+        kindB = SC.TREE_GREEN_B;
+      } else if (north || farm) {
+        treeChance = 0.025;
+      }
+      if (roll < treeChance && !trunkNear(x, y)) {
+        scenery[y][x] = hash(x, y, 22) > 0.5 ? kindA : kindB;
+        solid[y][x] = 1;
+        trees++;
+        continue;
+      }
+      const bushChance = green ? 0.09 : dark ? 0.08 : farm ? 0.03 : 0.05;
+      if (roll > 1 - bushChance && !scenery[y][x]) {
+        scenery[y][x] = green ? SC.BUSH_GREEN : dark ? SC.BUSH_DARK : SC.BUSH_SNOW;
+        bushes++;
       }
     }
   }
-  void shore;
-  return { trees, rocks };
+  return { trees, rocks, bushes, grid: scenery };
 }
 
 function stampCity(g, solid, safe, road) {
@@ -1238,12 +1306,16 @@ function validate(outdoor, maps) {
   if (!mobs.includes('greymaw') || !mobs.includes('mira_palehand') || !mobs.includes('ysolde_black_ice')) {
     throw new Error(`named mobs missing: ${mobs.filter((id) => id === 'greymaw' || id === 'mira_palehand' || id === 'ysolde_black_ice').join(',')}`);
   }
-  if (scenery.trees < 400) throw new Error(`only ${scenery.trees} trees`);
+  if (scenery.trees < 800) throw new Error(`only ${scenery.trees} trees`);
+  if (scenery.bushes < 200) throw new Error(`only ${scenery.bushes} bushes`);
+  if (map.ground.some((row) => row.includes(T.TREE) || row.includes(T.TREE_B) || row.includes(T.BUSH))) {
+    throw new Error('scenery was painted into the ground');
+  }
   const floor = map.ground.some((row) => row.includes(T.FLOOR));
   if (floor) throw new Error('outdoor map shows an interior floor');
   const inn = maps.find((zone) => zone.id === 'inn');
   if (!inn.objects.some((obj) => obj.defId === 'hilda' && obj.kind === 'npc')) throw new Error('hilda not in the inn');
   console.log(
-    `frostmere shore ${Math.min(...shore)}-${Math.max(...shore)} trees ${scenery.trees} rocks ${scenery.rocks} mobs ${mobs.length} objects ${map.objects.length}`,
+    `frostmere shore ${Math.min(...shore)}-${Math.max(...shore)} trees ${scenery.trees} rocks ${scenery.rocks} bushes ${scenery.bushes} mobs ${mobs.length} objects ${map.objects.length}`,
   );
 }
