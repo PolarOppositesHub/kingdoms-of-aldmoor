@@ -343,6 +343,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     quests: emptyQuests(content),
     log: ['The gate of Hoffender is north. The Frostmere Wilds, and the wolves on their road, wait beyond it.'],
     bind: { ...map.bind },
+    bindZone: 'hoffender',
     dead: false,
     deathMs: 0,
     events: [],

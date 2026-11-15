@@ -20,6 +20,7 @@ import innRaw from '../assets/zones/inn.tmj?raw';
 import warriorRaw from '../assets/zones/warrior.tmj?raw';
 import wizardRaw from '../assets/zones/wizard.tmj?raw';
 import barrowRaw from '../assets/zones/barrow.tmj?raw';
+import frostfangRaw from '../assets/zones/frostfang.tmj?raw';
 import { parseTiledMap, type TiledJson } from './map';
 
 const content = loadContent();
@@ -638,10 +639,14 @@ describe('levels, rest, and ability icons', () => {
     expect(xpYield(1, 1, 38)).toBe(38);
     expect(xpYield(10, 7, 100)).toBe(50);
     expect(xpYield(20, 10, 280)).toBe(0);
-    for (const mob of Object.values(content.mobs)) {
-      expect(mob.level).toBeGreaterThanOrEqual(1);
-      expect(mob.level).toBeLessThanOrEqual(10);
+    const wilds = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+    for (const spawn of wilds.spawns) {
+      if (spawn.kind !== 'mob') continue;
+      const level = content.mobs[spawn.defId].level;
+      expect(level).toBeGreaterThanOrEqual(1);
+      expect(level).toBeLessThanOrEqual(10);
     }
+    expect(content.mobs.vargan_frostfang.level).toBe(20);
   });
 
   it('levels past 10 without handing out drills, and still reads an old save', () => {
@@ -725,6 +730,13 @@ describe('levels, rest, and ability icons', () => {
     applyIntent(state, { type: 'buy', itemId: 'scroll_wind' }, content, hall);
     expect(state.learned).not.toContain('second_wind');
     expect(state.copper).toBe(5000 - 220);
+    state.level = 18;
+    player.level = 18;
+    applyIntent(state, { type: 'buy', itemId: 'scroll_wind' }, content, hall);
+    expect(state.learned).toContain('second_wind');
+    expect(state.copper).toBe(5000 - 220 - 352);
+    expect(content.abilities.second_wind.level).toBe(18);
+    expect(content.abilities.shoulder_rush.level).toBe(12);
   });
 
   it('regens a trickle while standing and much faster while sitting', () => {
@@ -969,6 +981,207 @@ describe('old save item pictures', () => {
     }
     const fresh = captureSave(state);
     applySave(createWorld(content, map, 5), content, map, fresh);
+  });
+});
+
+describe('Frostfang Reach', () => {
+  const home = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+  const fang = parseTiledMap(JSON.parse(frostfangRaw) as TiledJson);
+
+  it('is a full zone on the far side of the Frostmere ridge, with a road back', () => {
+    expect(fang.width).toBeGreaterThanOrEqual(256);
+    expect(fang.height).toBeGreaterThanOrEqual(256);
+    expect(fang.zoneId).toBe('frostfang');
+    expect(fang.wildsName).toBe('Frostfang Reach');
+    expect(fang.townName).toBe('Hearthpass');
+    const outbound = home.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === 'frostfang');
+    const inbound = fang.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === 'hoffender');
+    expect(outbound?.toX).toBeTypeOf('number');
+    expect(inbound?.toX).toBeTypeOf('number');
+    expect(Math.hypot(outbound!.toX! - inbound!.x, outbound!.toY! - inbound!.y)).toBeGreaterThan(14);
+    expect(Math.hypot(inbound!.toX! - outbound!.x, inbound!.toY! - outbound!.y)).toBeGreaterThan(14);
+    expect(fang.spawns.some((spawn) => spawn.defId === 'kara')).toBe(true);
+    expect(fang.spawns.some((spawn) => spawn.defId === 'orm')).toBe(true);
+    expect(fang.spawns.some((spawn) => spawn.defId === 'vargan_frostfang')).toBe(true);
+    expect(content.mobs.vargan_frostfang.level).toBe(20);
+    expect(content.mobs.vargan_frostfang.named).toBe(true);
+    for (const id of ['grimhild', 'ashjaw', 'skarn']) {
+      expect(content.mobs[id].named, id).toBe(true);
+      expect(content.mobs[id].rare, id).toBe(true);
+    }
+    expect(content.tuning.rareRespawnMs).toBeGreaterThan(content.tuning.namedRespawnMs + content.tuning.namedRespawnJitterMs);
+
+    const tileY = (spawn: { y: number }) => Math.floor(spawn.y / fang.tileWidth);
+    const mobsAt = (pred: (y: number) => boolean) =>
+      fang.spawns.filter((spawn) => spawn.kind === 'mob' && pred(tileY(spawn)));
+    for (const spawn of mobsAt((y) => y > 210)) expect(content.mobs[spawn.defId].level).toBeLessThanOrEqual(12);
+    for (const spawn of mobsAt((y) => y < 40)) expect(content.mobs[spawn.defId].level).toBeGreaterThanOrEqual(18);
+    expect(conColor(10, content.mobs.highland_wolf.level)).toBe('white');
+    expect(conColor(10, content.mobs.ogre_scout.level)).toBe('yellow');
+    expect(conColor(10, content.mobs.ogre_raider.level)).toBe('red');
+    expect(conColor(15, content.mobs.ogre_clubber.level)).toBe('white');
+    expect(conColor(15, content.mobs.highland_wolf.level)).toBe('gray');
+    expect(conColor(18, content.mobs.rime_ogre.level)).toBe('white');
+    expect(conColor(18, content.mobs.fang_guard.level)).toBe('yellow');
+    expect(conColor(20, content.mobs.vargan_frostfang.level)).toBe('white');
+
+    const camp = fang.spawns.find((spawn) => spawn.defId === 'kara');
+    expect(placeName(fang, camp!.x, camp!.y)).toBe('Hearthpass');
+    const gate = fang.spawns.find((spawn) => spawn.kind === 'spawn');
+    expect(placeName(fang, gate!.x, gate!.y)).toBe('Frostfang Reach');
+
+    let xp = 0;
+    for (const spawn of fang.spawns) {
+      if (spawn.kind === 'mob') xp += content.mobs[spawn.defId].xp;
+    }
+    for (const quest of content.quests) {
+      if (['the_open_road', 'pass_wolves', 'ogre_scouts', 'grimhilds_toll', 'tarn_shards', 'one_tusk', 'the_fang'].includes(quest.id)) {
+        xp += quest.rewardXp ?? 0;
+      }
+    }
+    let need = 0;
+    for (let level = 10; level < 20; level++) need += xpToNext(content, level);
+    expect(xp).toBeGreaterThan(need);
+    expect(content.maps.hearthpass.zone).toBe('frostfang');
+    expect(content.maps.the_fang.w).toBeGreaterThan(16);
+    expect(content.merchant.vendors.find((vendor) => vendor.npcId === 'kara')?.stock.some((row) => row.itemId === 'chart_fang')).toBe(true);
+  });
+
+  it('walks an old save through the ridge and back', () => {
+    const outbound = home.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === 'frostfang');
+    const inbound = fang.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === 'hoffender');
+    expect(outbound && inbound).toBeTruthy();
+
+    const legacy = {
+      version: 1,
+      savedAt: 1,
+      zoneId: 'hoffender',
+      x: 200,
+      y: 200,
+      facing: 's' as const,
+      raceId: 'barbarian',
+      classId: 'warrior',
+      sex: 'male' as const,
+      level: 10,
+      xp: 40,
+      hp: 80,
+      mana: 0,
+      focus: 0,
+      copper: 30,
+      baseStats: { str: 14, sta: 12, agi: 10, dex: 10, wis: 8, int: 6, cha: 8 },
+      inventory: [{ itemId: 'wolf_pelt', qty: 2 }],
+      equipment: {
+        head: null,
+        chest: 'cracked_leather_tunic',
+        hands: null,
+        legs: null,
+        feet: 'cracked_leather_boots',
+        primary: 'worn_axe',
+        secondary: null,
+      },
+      quests: { wolf_pelts: { stage: 'active' as const, progress: 2 } },
+      learned: ['kick'],
+      loadout: ['kick', 'heavy_swing'],
+      factions: {},
+    };
+    const arrived = createWorld(content, home, 4);
+    applySave(arrived, content, home, legacy);
+    expect(arrived.quests.wolf_pelts.stage).toBe('active');
+    expect(arrived.quests.the_open_road.stage).toBe('none');
+    expect(arrived.bindZone).toBe('hoffender');
+    expect(arrived.level).toBe(10);
+    const spawn = home.spawns.find((entry) => entry.kind === 'spawn');
+    expect(getPlayer(arrived).x).toBe(spawn!.x);
+
+    const state = createWorld(content, home, 5);
+    const current = captureSave(state);
+    current.version = 3;
+    current.level = 10;
+    current.x = outbound!.x;
+    current.y = outbound!.y + 48;
+    delete current.bindZone;
+    delete current.bindX;
+    delete current.bindY;
+    applySave(state, content, home, current);
+    const player = getPlayer(state);
+    expect(player.x).toBe(outbound!.x);
+    expect(player.y).toBe(outbound!.y + 48);
+    expect(state.bindZone).toBe('hoffender');
+
+    player.x = outbound!.x;
+    player.y = outbound!.y;
+    state.portalLockMs = 0;
+    const leaving = step(state, content, home);
+    const gone = leaving.find((event) => event.type === 'zone');
+    expect(gone).toMatchObject({ type: 'zone', zoneId: 'frostfang' });
+    if (gone?.type !== 'zone') return;
+    commitZone(state, content, fang, gone.x, gone.y);
+    expect(state.zoneId).toBe('frostfang');
+    expect(state.actors.some((actor) => actor.defId === 'kara')).toBe(true);
+    expect(placeName(fang, getPlayer(state).x, getPlayer(state).y)).toBe('Frostfang Reach');
+
+    const hero = getPlayer(state);
+    hero.x = inbound!.x;
+    hero.y = inbound!.y;
+    state.portalLockMs = 0;
+    state.ui.panel = 'none';
+    const returning = step(state, content, fang);
+    expect(returning.find((event) => event.type === 'zone')).toMatchObject({ type: 'zone', zoneId: 'hoffender' });
+  });
+
+  it('lets Kara bind the fire, and a level 15 still stands up to a clubber', () => {
+    const state = createWorld(content, fang, 8);
+    const kara = state.actors.find((actor) => actor.defId === 'kara');
+    const player = getPlayer(state);
+    expect(kara).toBeTruthy();
+    player.x = kara!.x;
+    player.y = kara!.y + 12;
+    applyIntent(state, { type: 'talkTo', id: kara!.id }, content, fang);
+    const index = content.dialogue.kara.start.choices.findIndex((choice) => choice.action === 'bind');
+    expect(index).toBeGreaterThanOrEqual(0);
+    applyIntent(state, { type: 'choice', index }, content, fang);
+    expect(state.bindZone).toBe('frostfang');
+    expect(state.log.at(-1)).toMatch(/Hearthpass/);
+
+    state.zoneId = 'hoffender';
+    state.dead = true;
+    state.deathMs = 0;
+    const events = step(state, content, fang);
+    expect(events.find((event) => event.type === 'zone')).toMatchObject({ type: 'zone', zoneId: 'frostfang' });
+    expect(state.log.at(-1)).toMatch(/Hearthpass/);
+
+    const pit = arena();
+    const fight = createWorld(content, pit, 3);
+    fight.level = 15;
+    const hero = getPlayer(fight);
+    hero.level = 15;
+    refreshGear(fight, content);
+    hero.hp = hero.maxHp;
+    hero.x = 160;
+    hero.y = 176;
+    const def = content.mobs.ogre_clubber;
+    const mob = blankActor({
+      id: 'clubber',
+      kind: 'mob',
+      defId: 'ogre_clubber',
+      name: def.name,
+      sprite: 'ogre_brute',
+      x: 176,
+      y: 176,
+      hp: def.hp,
+      maxHp: def.hp,
+      level: def.level,
+      social: 'ogre',
+    });
+    fight.actors.push(mob);
+    fight.targetId = mob.id;
+    fight.autoAttack = true;
+    mob.hate = [{ id: hero.id, amount: 20 }];
+    hero.attackMs = 0;
+    for (let i = 0; i < 30 * 40; i++) step(fight, content, pit);
+    expect(mob.hp).toBeLessThan(def.hp);
+    expect(hero.alive).toBe(true);
+    expect(hero.hp).toBeGreaterThan(0);
   });
 });
 

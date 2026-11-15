@@ -1140,7 +1140,7 @@ function mapsHtml(state: GameState, api: GameApi): string {
   if (!state.charts.length) {
     return `<div class="sheet">
       <header><h2>Maps</h2></header>
-      <p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender, the near roads, and the bay. Nils Reed, north of the gate, sells the deep wilds. Neither of them sells every map.</p>
+      <p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender, the near roads, and the bay. Nils Reed, north of the gate, sells the deep wilds. Kara Holm, at Hearthpass in Frostfang Reach, sells the highlands. None of them sells every map.</p>
       <button type="button" class="close" data-action="close">Close</button>
     </div>`;
   }
@@ -1248,7 +1248,7 @@ function helpHtml(state: GameState, api: GameApi): string {
       <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
       <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf has its own window: health, Attack, Back off, Follow, Guard, and Dismiss. Call brings the wolf back.</li>
       <li>The layout lock is on while you play, so nothing slides under your thumb. Unlock it here, or with the lock button, and the windows grow an outline and a handle. Drag the bars, the target, the pet, either hotbar, the pad, sit, the map buttons, and the log. Reset puts them back. The choice is remembered on this device.</li>
-      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. Fall in combat and you wake in Hilda's yard. The wilds run through level 10. The climb goes on to 25.</li>
+      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. The ridge at the end of the north road is Frostfang Reach, for levels 10 to 20. Fall in combat and you wake in Hilda's yard, unless you have bound at Hearthpass. The climb goes on to 25.</li>
     </ul>
     <h3>Settings</h3>
     <div class="settings">

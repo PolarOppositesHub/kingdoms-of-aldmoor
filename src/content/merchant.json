@@ -515,6 +515,26 @@
         { "itemId": "ash_staff", "price": 18 },
         { "itemId": "hand_wraps", "price": 14 }
       ]
+    },
+    {
+      "npcId": "kara",
+      "title": "Hearthpass Stores",
+      "stock": [
+        { "itemId": "trail_ration", "price": 4 },
+        { "itemId": "wool_bandage", "price": 12 },
+        { "itemId": "yarrow_draught", "price": 48 },
+        { "itemId": "ridge_axe", "price": 200 },
+        { "itemId": "hearthpass_jerkin", "price": 180 },
+        { "itemId": "hardened_leather_cap", "price": 150 },
+        { "itemId": "hardened_leather_tunic", "price": 280 },
+        { "itemId": "hardened_leather_gloves", "price": 95 },
+        { "itemId": "hardened_leather_pants", "price": 190 },
+        { "itemId": "hardened_leather_boots", "price": 110 },
+        { "itemId": "chart_hearthpass", "price": 35 },
+        { "itemId": "chart_fangs", "price": 60 },
+        { "itemId": "chart_tarn", "price": 70 },
+        { "itemId": "chart_fang", "price": 95 }
+      ]
     }
   ]
 }

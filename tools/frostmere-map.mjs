@@ -208,6 +208,7 @@ function buildOutdoor() {
     [112, 24],
     [98, 14],
     [106, 4],
+    [106, 12],
   ];
   const toRime = [
     [110, 52],
@@ -424,11 +425,32 @@ function buildOutdoor() {
   });
   add('label', "Smugglers' Cove", cove.x + 4, cove.y - 2);
 
-  // Seams. A short fade, and the road is not open.
-  add('seam', 'Frostfang Reach', 106, 3, {
+  // The ridge road into Frostfang Reach. Arrival is north of that zone's return door.
+  for (let y = 4; y <= 12; y++) {
+    for (let x = 104; x <= 108; x++) {
+      if (g[y][x] === T.WATER || g[y][x] === T.WATER_B || g[y][x] === T.CLIFF) g[y][x] = T.PATH;
+      solid[y][x] = 0;
+      road[y][x] = 1;
+      scenery.grid[y][x] = 0;
+    }
+  }
+  g[6][104] = T.POST;
+  g[6][108] = T.POST;
+  solid[6][104] = 1;
+  solid[6][108] = 1;
+  add('door', 'Frostfang Reach', 106, 6, {
+    toZone: 'frostfang',
+    toX: 106 * TILE + 8,
+    toY: 244 * TILE + 14,
     sprite: 'sign_wilds',
-    text: 'The road to Frostfang Reach is not yet open. The Ogre Highlands lie beyond it, in the snow and the bare rock.',
   });
+  add('sign', 'Frostfang Reach', 110, 7, {
+    sprite: 'sign_wilds',
+    text: 'Frostfang Reach. The Ogre Highlands begin past this line: snow, bare rock, and the passes. Hearthpass keeps a fire a short walk in. The same road comes back.',
+  });
+  add('label', 'Frostfang Reach', 106, 16);
+
+  // Seams. A short fade, and the road is not open.
   add('seam', 'Wyrmrest', 252, 152, {
     sprite: 'sign_wilds',
     text: 'The road to Wyrmrest is not yet open. The pines thin here, and the stone of the foothills starts.',

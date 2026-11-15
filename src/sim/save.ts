@@ -38,6 +38,10 @@ export interface CharacterSave {
   /** Set when an older map layout cannot be trusted. Not written back out. */
   relocated?: boolean;
   note?: string;
+  /** Absent on saves from before Hearthpass. Those heroes still wake in Hoffender. */
+  bindZone?: string;
+  bindX?: number;
+  bindY?: number;
 }
 
 export function captureSave(state: GameState, savedAt = 0): CharacterSave {
@@ -69,6 +73,9 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
     petOrder: state.petOrder,
     petAway: state.petAway,
     factions: { ...state.factions },
+    bindZone: state.bindZone,
+    bindX: state.bind.x,
+    bindY: state.bind.y,
   };
 }
 
@@ -121,6 +128,9 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     petOrder: orders.includes(row.petOrder as PetOrder) ? (row.petOrder as PetOrder) : 'follow',
     petAway: row.petAway === true,
     factions: { ...(row.factions ?? {}) },
+    bindZone: typeof row.bindZone === 'string' ? row.bindZone : undefined,
+    bindX: typeof row.bindX === 'number' ? row.bindX : undefined,
+    bindY: typeof row.bindY === 'number' ? row.bindY : undefined,
   };
   if (save.raceId === 'barbarian' && save.classId === 'wizard') {
     save.classId = 'warrior';
@@ -155,6 +165,10 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   state.petOrder = save.petOrder;
   state.petAway = save.petAway === true;
   state.factions = { ...save.factions };
+  if (save.bindZone && typeof save.bindX === 'number' && typeof save.bindY === 'number') {
+    state.bindZone = save.bindZone;
+    state.bind = { x: save.bindX, y: save.bindY };
+  }
   player.level = save.level;
   player.defId = save.classId;
   player.sprite = save.sex === 'female' ? 'body_f' : 'body_m';

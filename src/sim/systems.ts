@@ -325,9 +325,9 @@ export function askPrice(npcId: string, list: number): number {
   return Math.max(1, Math.round(list * 0.8));
 }
 
-export function mobRespawnDelay(state: GameState, content: ContentDb, named: boolean): number {
-  const base = named ? content.tuning.namedRespawnMs : content.tuning.mobRespawnMs;
-  const jitter = named ? content.tuning.namedRespawnJitterMs : content.tuning.mobRespawnJitterMs;
+export function mobRespawnDelay(state: GameState, content: ContentDb, named: boolean, rare = false): number {
+  const base = rare ? content.tuning.rareRespawnMs : named ? content.tuning.namedRespawnMs : content.tuning.mobRespawnMs;
+  const jitter = rare ? content.tuning.rareRespawnJitterMs : named ? content.tuning.namedRespawnJitterMs : content.tuning.mobRespawnJitterMs;
   return base + Math.floor(roll(state) * Math.max(0, jitter));
 }
 
@@ -497,7 +497,7 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
   if (!def) return;
   grantXp(state, content, xpYield(state.level, def.level, def.xp), emit);
   dropLoot(state, content, map, target, emit);
-  if (!target.pet) target.respawnMs = mobRespawnDelay(state, content, def.named === true);
+  if (!target.pet) target.respawnMs = mobRespawnDelay(state, content, def.named === true, def.rare === true);
 }
 
 export function grantXp(state: GameState, content: ContentDb, amount: number, emit: Emit): void {
@@ -713,7 +713,45 @@ function sigrunNode(state: GameState, content: ContentDb): string {
   if (cairns.stage === 'active') return 'cairns_active';
   if (!rime || rime.stage === 'none') return 'after_cairns';
   if (rime.stage === 'active') return rime.progress >= need('rimeheart') ? 'rime_ready' : 'rime_active';
+  const road = state.quests.the_open_road;
+  if (!road || road.stage === 'none') return 'after_rime';
+  if (road.stage === 'active') return 'road_active';
   return 'done';
+}
+
+function karaNode(state: GameState, content: ContentDb): string {
+  const need = (id: string) => content.quests.find((quest) => quest.id === id)?.need ?? 1;
+  const quest = (id: string) => state.quests[id];
+  const road = quest('the_open_road');
+  if (road?.stage === 'active') return road.progress >= 1 ? 'road_ready' : 'start';
+  const wolves = quest('pass_wolves');
+  if (!wolves || wolves.stage === 'none') return 'start';
+  if (wolves.stage === 'active') return wolves.progress >= need('pass_wolves') ? 'wolves_ready' : 'wolves_active';
+  const scouts = quest('ogre_scouts');
+  if (!scouts || scouts.stage === 'none') return 'after_wolves';
+  if (scouts.stage === 'active') return scouts.progress >= need('ogre_scouts') ? 'scouts_ready' : 'scouts_active';
+  const toll = quest('grimhilds_toll');
+  if (!toll || toll.stage === 'none') return 'after_scouts';
+  if (toll.stage === 'active') return toll.progress >= need('grimhilds_toll') ? 'toll_ready' : 'toll_active';
+  const tarn = quest('tarn_shards');
+  if (!tarn || tarn.stage !== 'done') return 'after_toll';
+  const skarn = quest('one_tusk');
+  if (!skarn || skarn.stage === 'none') return 'after_tarn';
+  if (skarn.stage === 'active') return skarn.progress >= need('one_tusk') ? 'skarn_ready' : 'skarn_active';
+  const fang = quest('the_fang');
+  if (!fang || fang.stage === 'none') return 'after_skarn';
+  if (fang.stage === 'active') return fang.progress >= need('the_fang') ? 'fang_ready' : 'fang_active';
+  return 'done';
+}
+
+function ormNode(state: GameState, content: ContentDb): string {
+  const toll = state.quests.grimhilds_toll;
+  const tarn = state.quests.tarn_shards;
+  const need = content.quests.find((quest) => quest.id === 'tarn_shards')?.need ?? 6;
+  if (!toll || toll.stage !== 'done') return 'start';
+  if (!tarn || tarn.stage === 'none') return 'offer';
+  if (tarn.stage === 'active') return tarn.progress >= need ? 'tarn_ready' : 'tarn_active';
+  return 'after';
 }
 
 function yrsaNode(state: GameState, content: ContentDb): string {
@@ -729,6 +767,14 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
   if (!def) return;
   let nodeId = 'start';
   if (npc.defId === 'sigrun') nodeId = sigrunNode(state, content);
+  else if (npc.defId === 'kara') {
+    const road = state.quests.the_open_road;
+    if (road?.stage === 'active' && road.progress < 1) {
+      road.progress = 1;
+      _emit({ type: 'log', text: 'Kara has Sigrun\'s count. The pass is walked.' });
+    }
+    nodeId = karaNode(state, content);
+  } else if (npc.defId === 'orm') nodeId = ormNode(state, content);
   else if (npc.defId === 'brand') nodeId = state.quests.teeth_at_the_gate?.stage === 'active' ? 'quest' : 'start';
   else if (npc.defId === 'yrsa') nodeId = yrsaNode(state, content);
   else if (npc.defId === 'eirik') {
@@ -1097,10 +1143,14 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
     mob.hate = mob.hate.filter((hate) => hate.id !== player.id);
     if (mob.alive && dist(mob, { x: mob.homeX, y: mob.homeY }) > 8) mob.ai = 'return';
   }
-  if (state.zoneId !== 'hoffender') {
-    emit({ type: 'zone', zoneId: 'hoffender', x: state.bind.x, y: state.bind.y });
+  const home = state.bindZone || 'hoffender';
+  if (state.zoneId !== home) {
+    emit({ type: 'zone', zoneId: home, x: state.bind.x, y: state.bind.y });
   }
-  emit({ type: 'log', text: 'You wake in the yard of the Frosthearth Inn.' });
+  emit({
+    type: 'log',
+    text: home === 'hoffender' ? 'You wake in the yard of the Frosthearth Inn.' : 'You wake at the fire in Hearthpass.',
+  });
 }
 
 export function portals(state: GameState, content: ContentDb, map: MapData, emit: Emit): void {

@@ -20,6 +20,7 @@ import {
 } from './pixel.mjs';
 import { buildHeroArt, buildPeopleArt } from './hero-art.mjs';
 import { buildWorld, T } from './frostmere-map.mjs';
+import { buildFrostfang } from './frostfang-map.mjs';
 import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1793,6 +1794,16 @@ function buildActors() {
     widow: 31,
     mira: 32,
     witch: 33,
+    highland_wolf: 34,
+    lynx: 35,
+    ogre: 36,
+    ogre_brute: 37,
+    troll: 38,
+    vargan: 39,
+    grimhild: 40,
+    ashjaw: 41,
+    skarn: 42,
+    ram: 43,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1893,6 +1904,7 @@ function buildActors() {
     { row: 6, tint: wolfTint(WOLF, WOLF_HI, BELLY) },
     { row: 7, tint: wolfTint(hex('#5c534c'), hex('#8a8178'), hex('#c8c0b6')) },
     { row: 8, tint: wolfTint(hex('#8aa4b4'), hex('#d5e4ee'), hex('#f7fbfe')) },
+    { row: 34, tint: wolfTint(hex('#4a4038'), hex('#8a8178'), hex('#e7d3a4')) },
   ];
   const wolfDirs = [
     [WOLF_S, WOLF_S2],
@@ -1992,6 +2004,50 @@ function buildActors() {
       blob(9, 16, 1, 6, hex('#f4f1ea'));
       img.set(7, 6, hex('#1c1418'));
       img.set(9, 6, hex('#1c1418'));
+    } else if (kind === 'lynx') {
+      blob(6, 3, 2, 4, hex('#c48462'));
+      blob(9, 3, 2, 4, hex('#c48462'));
+      blob(4, 8, 8, 6, hex('#a86840'));
+      blob(11, 10, 4, 2, hex('#6b4030'));
+      blob(5, 14, 2, 5, hex('#8a5438'));
+      blob(9, 14, 2, 5, hex('#8a5438'));
+      img.set(6, 10, hex('#1c1418'));
+      img.set(8, 10, hex('#1c1418'));
+    } else if (kind === 'ram') {
+      blob(4, 6, 3, 4, hex('#d8d0c4'));
+      blob(9, 6, 3, 4, hex('#d8d0c4'));
+      blob(4, 10, 8, 6, hex('#8a8178'));
+      blob(5, 16, 2, 5, hex('#5c534c'));
+      blob(9, 16, 2, 5, hex('#5c534c'));
+      img.set(6, 12, hex('#1c1418'));
+      img.set(9, 12, hex('#1c1418'));
+    } else if (kind === 'ogre' || kind === 'ogre_brute' || kind === 'grimhild' || kind === 'skarn' || kind === 'vargan') {
+      const skin = kind === 'ogre_brute' || kind === 'vargan' ? hex('#3e5a34') : hex('#5e7a48');
+      const skinHi = kind === 'vargan' ? hex('#8eae72') : hex('#7f9a62');
+      blob(4, 3, 8, 6, skin);
+      blob(5, 9, 6, 7, kind === 'grimhild' ? hex('#6a2420') : kind === 'vargan' ? hex('#7a2430') : skinHi);
+      blob(4, 16, 3, 6, hex('#2a2820'));
+      blob(9, 16, 3, 6, hex('#2a2820'));
+      blob(11, 8, 3, 8, hex('#6b4428'));
+      img.set(6, 5, hex('#1c1418'));
+      img.set(9, 5, hex('#1c1418'));
+      if (kind !== 'skarn') img.set(5, 8, hex('#f4f0e6'));
+      img.set(10, 8, hex('#f4f0e6'));
+      if (kind === 'vargan') {
+        blob(4, 2, 8, 2, hex('#e6e0d4'));
+        img.set(7, 1, hex('#e6c15a'));
+      }
+    } else if (kind === 'troll' || kind === 'ashjaw') {
+      const hide = kind === 'ashjaw' ? hex('#4e5964') : hex('#3c86a2');
+      blob(3, 4, 10, 8, hide);
+      blob(1, 10, 4, 3, hide);
+      blob(11, 10, 4, 3, hide);
+      blob(4, 12, 8, 5, hex('#2a4254'));
+      blob(4, 17, 3, 5, hex('#1c2830'));
+      blob(9, 17, 3, 5, hex('#1c2830'));
+      img.set(6, 7, hex('#1c1418'));
+      img.set(9, 7, hex('#1c1418'));
+      if (kind === 'ashjaw') blob(5, 9, 6, 2, hex('#f4f1ea'));
     } else {
       blob(5, 4, 6, 5, hex('#3a241c'));
       blob(4, 9, 8, 7, kind === 'leader' ? hex('#6a2420') : kind === 'archer' ? hex('#2e4a38') : hex('#4a3428'));
@@ -2015,6 +2071,15 @@ function buildActors() {
     ['vetch', 30],
     ['widow', 31],
     ['mira', 32],
+    ['lynx', 35],
+    ['ogre', 36],
+    ['ogre_brute', 37],
+    ['troll', 38],
+    ['vargan', 39],
+    ['grimhild', 40],
+    ['ashjaw', 41],
+    ['skarn', 42],
+    ['ram', 43],
   ]) {
     const img = critter(name);
     for (let dir = 0; dir < 4; dir++) {
@@ -2299,6 +2364,59 @@ function drawIcon(size) {
 
 function iconCanvas() {
   return createImage(16, 16);
+}
+
+function iconBlob(dark, light) {
+  const img = iconCanvas();
+  for (let y = 3; y <= 13; y++) {
+    for (let x = 3; x <= 12; x++) img.set(x, y, hex(x < 8 ? dark : light));
+  }
+  img.set(6, 6, hex('#f4f0e6'));
+  return img;
+}
+
+function iconTusk(color) {
+  const img = iconCanvas();
+  for (let i = 0; i < 10; i++) {
+    img.set(4 + i, 3 + i, hex(color));
+    img.set(5 + i, 3 + i, hex('#8a8178'));
+  }
+  img.set(12, 12, hex('#5e7a48'));
+  return img;
+}
+
+function iconAxe(blade, haft) {
+  const img = iconCanvas();
+  for (let i = 2; i <= 13; i++) img.set(i, i, hex(haft));
+  for (let y = 2; y <= 7; y++) for (let x = 8; x <= 13; x++) img.set(x, y, hex(blade));
+  img.set(10, 4, hex('#f4f7fb'));
+  return img;
+}
+
+function iconJerkin(color) {
+  const img = iconCanvas();
+  for (let y = 3; y <= 13; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex(color));
+  img.set(6, 6, hex('#e6c15a'));
+  img.set(9, 6, hex('#e6c15a'));
+  return img;
+}
+
+function iconHelm(color) {
+  const img = iconCanvas();
+  for (let y = 3; y <= 11; y++) for (let x = 4; x <= 11; x++) img.set(x, y, hex(color));
+  img.set(6, 7, hex('#1c1418'));
+  img.set(9, 7, hex('#1c1418'));
+  img.set(11, 10, hex('#f4f0e6'));
+  return img;
+}
+
+function iconChart(paper, ink) {
+  const img = iconCanvas();
+  for (let y = 2; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex(paper));
+  for (let i = 4; i <= 11; i++) img.set(i, 8, hex(ink));
+  img.set(8, 5, hex(ink));
+  img.set(8, 11, hex(ink));
+  return img;
 }
 
 function drawGearIcons() {
@@ -2591,6 +2709,19 @@ function drawItemIcons() {
       img.set(8, 6, hex('#1c1418'));
       return img;
     })(),
+    highland_pelt: iconBlob('#6b5344', '#a08060'),
+    ogre_tusk: iconTusk('#e7dcc8'),
+    troll_hide: iconBlob('#2a4254', '#3c86a2'),
+    ridge_axe: iconAxe('#c5ced6', '#8d5a38'),
+    hearthpass_jerkin: iconJerkin('#6a3a28'),
+    toll_maul: iconAxe('#8b97a3', '#3a2418'),
+    tarn_cloak: iconJerkin('#1a4d66'),
+    one_tusk_helm: iconHelm('#5e7a48'),
+    frostfang_axe: iconAxe('#d5e6f0', '#7a2430'),
+    chart_hearthpass: iconChart('#e7d3a4', '#8d5a38'),
+    chart_fangs: iconChart('#c5ced6', '#5e7a48'),
+    chart_tarn: iconChart('#d5e6f0', '#1a4d66'),
+    chart_fang: iconChart('#8b97a3', '#7a2430'),
   };
   const abilities = JSON.parse(readFileSync(join(root, 'src', 'content', 'abilities.json'), 'utf8'));
   for (const ability of abilities) frames[ability.id] = paintAbilityIcon(ability.id);
@@ -2614,6 +2745,9 @@ async function main() {
   const people = buildPeopleArt();
   const props = buildProps();
   const world = buildWorld();
+  const fang = buildFrostfang();
+  world.maps.push(fang.map);
+  Object.assign(world.charts, fang.charts);
   const map = world.maps.find((zone) => zone.id === 'hoffender');
   const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };
   const itemIcons = drawItemIcons();
