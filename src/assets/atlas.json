@@ -43,7 +43,17 @@
       "vetch": 30,
       "widow": 31,
       "mira": 32,
-      "witch": 33
+      "witch": 33,
+      "highland_wolf": 34,
+      "lynx": 35,
+      "ogre": 36,
+      "ogre_brute": 37,
+      "troll": 38,
+      "vargan": 39,
+      "grimhild": 40,
+      "ashjaw": 41,
+      "skarn": 42,
+      "ram": 43
     }
   },
   "props": {
@@ -388,7 +398,9 @@
       "sigrun": 17,
       "brand": 18,
       "yrsa": 19,
-      "hjorvin": 20
+      "hjorvin": 20,
+      "kara": 21,
+      "orm": 22
     }
   }
 }

@@ -130,5 +130,19 @@
     "title": "mead-hall bard",
     "dialogue": "hjorvin",
     "race": "barbarian"
+  },
+  {
+    "id": "kara",
+    "name": "Kara Holm",
+    "title": "outpost keeper",
+    "dialogue": "kara",
+    "race": "barbarian"
+  },
+  {
+    "id": "orm",
+    "name": "Orm Keel",
+    "title": "highland scout",
+    "dialogue": "orm",
+    "race": "barbarian"
   }
 ]

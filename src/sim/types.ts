@@ -148,6 +148,8 @@ export interface MobDef {
   coinMax: number;
   /** Unique creatures wait longer than the common packs. */
   named?: boolean;
+  /** Named outcasts. They stay down longer than a camp boss. */
+  rare?: boolean;
   /** Future pets can bark a foe onto themselves. The snow wolf does not. */
   petTaunt?: boolean;
 }
@@ -164,7 +166,7 @@ export interface NpcDef {
 export interface DialogueChoice {
   label: string;
   next?: string;
-  action?: 'close' | 'merchant' | 'acceptQuest' | 'turnIn' | 'sellAll';
+  action?: 'close' | 'merchant' | 'acceptQuest' | 'turnIn' | 'sellAll' | 'bind';
   quest?: string;
   reward?: PeltReward;
   /** Item sold in bulk by a sellAll choice. */
@@ -255,6 +257,8 @@ export interface Tuning {
   mobRespawnJitterMs: number;
   namedRespawnMs: number;
   namedRespawnJitterMs: number;
+  rareRespawnMs: number;
+  rareRespawnJitterMs: number;
   invulnMs: number;
   levelCap: number;
   bagSlots: number;
@@ -466,6 +470,8 @@ export interface GameState {
   quests: Record<string, { stage: 'none' | 'active' | 'done'; progress: number }>;
   log: string[];
   bind: { x: number; y: number };
+  /** Zone the bind point belongs to. Old saves leave this unset and wake in Hoffender. */
+  bindZone: string;
   dead: boolean;
   deathMs: number;
   events: SimEvent[];

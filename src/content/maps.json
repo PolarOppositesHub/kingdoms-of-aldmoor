@@ -38,5 +38,25 @@
     "id": "barrow",
     "name": "The Barrow",
     "blurb": "The rooms under the cairn. The last of them is Torsten Crowe's."
+  },
+  {
+    "id": "hearthpass",
+    "name": "Hearthpass",
+    "blurb": "The ridge road out of the Frostmere Wilds, and Kara Holm's fire."
+  },
+  {
+    "id": "broken_fangs",
+    "name": "Broken Fangs",
+    "blurb": "The west rocks, the old stone ring, and the road that charges a toll."
+  },
+  {
+    "id": "tarn_shards",
+    "name": "Tarn of Shards",
+    "blurb": "Ice around black water. The trolls keep the shore."
+  },
+  {
+    "id": "the_fang",
+    "name": "The Fang",
+    "blurb": "The high cleft. Vargan Frostfang keeps the stone mouth at the end of it."
   }
 ]

@@ -30,6 +30,8 @@
   "mobRespawnJitterMs": 180000,
   "namedRespawnMs": 600000,
   "namedRespawnJitterMs": 420000,
+  "rareRespawnMs": 1500000,
+  "rareRespawnJitterMs": 900000,
   "invulnMs": 1500,
   "levelCap": 25,
   "bagSlots": 16,

@@ -193,6 +193,16 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           sellAllOf(state, content, choice.itemId, emit);
           return;
         }
+        if (choice.action === 'bind') {
+          state.bind = { x: npc.x, y: npc.y + 18 };
+          state.bindZone = state.zoneId;
+          emit({
+            type: 'log',
+            text: state.zoneId === 'frostfang' ? 'You bind at the Hearthpass fire. If you fall, you wake here.' : 'You bind here.',
+          });
+          state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
+          return;
+        }
         if (choice.action === 'close' || !choice.next) {
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
           return;

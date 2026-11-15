@@ -293,6 +293,8 @@ export const PEOPLE = [
   { id: 'brand', sex: 'male', hair: '#8a8078', hairHi: '#d8d0c4', beard: '#c8c0b6', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot', helm: 'helm_cap' },
   { id: 'yrsa', sex: 'female', hair: '#3a2018', hairHi: '#6b4030', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_axe' },
   { id: 'hjorvin', sex: 'male', hair: '#c4a060', hairHi: '#e6c15a', beard: '#8a5a30', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_boot' },
+  { id: 'kara', sex: 'female', hair: '#6a3030', hairHi: '#a84840', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot', helm: 'helm_cap', weapon: 'weapon_axe' },
+  { id: 'orm', sex: 'male', hair: '#8a8078', hairHi: '#d8d0c4', beard: '#6a645c', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', helm: 'helm_cap' },
 ];
 
 function compositePerson(w, h, person, dir, pose) {

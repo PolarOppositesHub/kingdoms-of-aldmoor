@@ -556,7 +556,7 @@
   },
   "nils": {
     "start": {
-      "text": "Nils Reed. Deep Frostmere, Whitepine, the Cairns, Rimeheart, and the Barrow. Sefa in the inn keeps the town and the bay. I do not.",
+      "text": "Nils Reed. Deep Frostmere, Whitepine, the Cairns, Rimeheart, and the Barrow. Sefa in the inn keeps the town and the bay. Frostfang Reach is Kara Holm's ink, at Hearthpass. I do not sell it.",
       "choices": [
         {
           "label": "Show me the charts.",
@@ -636,8 +636,19 @@
         { "label": "Another time.", "action": "close" }
       ]
     },
+    "after_rime": {
+      "text": "The wilds are quieter. The ridge north of them is not. Frostfang Reach, the Ogre Highlands, is open past the line on the north road. Kara Holm keeps a fire at Hearthpass. Tell her I still count the passes.",
+      "choices": [
+        { "label": "I'll take the ridge.", "action": "acceptQuest", "quest": "the_open_road" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "road_active": {
+      "text": "North road, past the cairns' fork, up to the posts. The line lets you through. Kara is a short walk beyond it. Come back only if the fire is out.",
+      "choices": [{ "label": "I'm going.", "action": "close" }]
+    },
     "done": {
-      "text": "The gate is quieter. It will not stay that way. You know the roads now.",
+      "text": "The ridge is walked. Hearthpass has a fire, and I still want this gate quiet.",
       "choices": [{ "label": "Captain.", "action": "close" }]
     }
   },
@@ -692,6 +703,7 @@
         { "label": "Who is the Shadow King?", "next": "king" },
         { "label": "Tell me about Greymaw.", "next": "grey" },
         { "label": "What is Rimeheart?", "next": "lake" },
+        { "label": "What is Frostfang?", "next": "fang" },
         { "label": "Another time.", "action": "close" }
       ]
     },
@@ -709,6 +721,212 @@
     "lake": {
       "text": "Rimeheart is the frozen lake at the end of the east fork. Scouts talk about blue light under the ice. I have not gone to see it. I am paid to sing, not to drown.",
       "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "fang": {
+      "text": "Frostfang Reach is the country past the north ridge. Ogres hold the passes. Jarl Freya did not send a war-band. She sent a fire, and Kara Holm to keep it. Vargan Frostfang is their war-chief. He is not Ysolde, and he is not the Shadow King's choir.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    }
+  },
+  "kara": {
+    "start": {
+      "text": "Kara Holm. This is Hearthpass. Jarl Freya wanted a fire on the ridge, not a war. The highland wolves on the south road are the first problem. Eight of them.",
+      "choices": [
+        { "label": "I'll thin the wolves.", "action": "acceptQuest", "quest": "pass_wolves" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "I have hides to sell.", "next": "sell" },
+        { "label": "What lies north?", "next": "lore" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "road_ready": {
+      "text": "You came over the ridge. Sigrun still counts the passes, and now I can tell her this one was walked. The wolves are the next work, when you want it.",
+      "choices": [
+        { "label": "The gate sent me.", "action": "turnIn", "quest": "the_open_road" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "wolves_active": {
+      "text": "Eight highland wolves. They stay south of the palisade if we are lucky. We are not always lucky.",
+      "choices": [
+        { "label": "I'm still hunting.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "wolves_ready": {
+      "text": "Eight. The south road will fill in again. That is the work. Next are the scouts who have been counting my fire the way I count them.",
+      "choices": [
+        { "label": "The wolves are down.", "action": "turnIn", "quest": "pass_wolves" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "after_wolves": {
+      "text": "Six ogre scouts. They linger just outside a safe walk from the gate. I want them gone before they decide we are supplies.",
+      "choices": [
+        { "label": "I'll find the scouts.", "action": "acceptQuest", "quest": "ogre_scouts" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "scouts_active": {
+      "text": "Six scouts. Tusks, if they drop, I buy. The count is the task.",
+      "choices": [
+        { "label": "Understood.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "scouts_ready": {
+      "text": "Six. The west road is the worse one. Grimhild the Toll sits on it. She is named, and she comes back. Once is enough for me.",
+      "choices": [
+        { "label": "The scouts are done.", "action": "turnIn", "quest": "ogre_scouts" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "after_scouts": {
+      "text": "Grimhild the Toll, on the west road through the Broken Fangs. She charges for the rocks. Stop charging.",
+      "choices": [
+        { "label": "I'll end the toll.", "action": "acceptQuest", "quest": "grimhilds_toll" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "toll_active": {
+      "text": "West, past the stone ring. If you do not see her, wait. The named ones take their time coming back, and she takes longer than most.",
+      "choices": [
+        { "label": "I'll wait her out.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "toll_ready": {
+      "text": "The west road is a road again. Orm Keel, by the banner, wants the tarn counted next. I will not name the cleft until he is done sketching.",
+      "choices": [
+        { "label": "The toll is paid.", "action": "turnIn", "quest": "grimhilds_toll" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "after_toll": {
+      "text": "Talk to Orm. The Tarn of Shards is his. When the trolls are off his ice, come back and we will talk about the climb.",
+      "choices": [
+        { "label": "I'll find Orm.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "after_tarn": {
+      "text": "Skarn One-Tusk walks the climb to the Fang. He is rare even for a named ogre. If you find him, do not assume he will be there tomorrow.",
+      "choices": [
+        { "label": "I'll look for Skarn.", "action": "acceptQuest", "quest": "one_tusk" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "skarn_active": {
+      "text": "The climb, north of the pass. One tusk. Long between sightings. That is the whole description I trust.",
+      "choices": [
+        { "label": "I'll keep looking.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "skarn_ready": {
+      "text": "Skarn is down. The cleft is left. Vargan Frostfang is the war-chief. He is not a witch and he does not serve the Shadow King. He just holds the Fang.",
+      "choices": [
+        { "label": "Skarn is done.", "action": "turnIn", "quest": "one_tusk" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "after_skarn": {
+      "text": "The Fang. North, where the rock closes in. Vargan Frostfang stands at the stone mouth. Bring him down. The axe, if it comes off him or off my bench, is yours.",
+      "choices": [
+        { "label": "I'll go to the cleft.", "action": "acceptQuest", "quest": "the_fang" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "fang_active": {
+      "text": "Vargan. The guards near him help each other. He does not need them, which is worse. Come back when the cleft is quiet.",
+      "choices": [
+        { "label": "I'm going.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "fang_ready": {
+      "text": "You came back from the Fang. The passes will notice. I have the axe I promised, if your bags can take it.",
+      "choices": [
+        { "label": "It is done.", "action": "turnIn", "quest": "the_fang" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "done": {
+      "text": "The cleft is quiet for now. Sit by the fire if you need it. The charts are still for sale, and the named ones still come back late.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "I have hides to sell.", "next": "sell" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "sell": {
+      "text": "Pelts, tusks, and hides. I pay what they are worth up here, which is more than Brenna sees in a morning.",
+      "choices": [
+        { "label": "Sell the pelts.", "action": "sellAll", "itemId": "highland_pelt" },
+        { "label": "Sell the tusks.", "action": "sellAll", "itemId": "ogre_tusk" },
+        { "label": "Sell the hides.", "action": "sellAll", "itemId": "troll_hide" },
+        { "label": "Back.", "action": "close" }
+      ]
+    },
+    "lore": {
+      "text": "South is the Frostmere Wilds, and Hoffender under that. West, the Broken Fangs and Grimhild. East, the Tarn of Shards, which is Orm's. North, the Fang, and Vargan. The ogres were here before Ysolde's cold pushed the wolves downhill. Do not mix the two wars.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Back.", "action": "close" }
+      ]
+    }
+  },
+  "orm": {
+    "start": {
+      "text": "Orm Keel. I sketch what the ridge is willing to hold still. The tarn is east. I do not send anyone there until Grimhild is off the west road. Kara has that count.",
+      "choices": [
+        { "label": "What is the tarn?", "next": "tarn" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "tarn": {
+      "text": "Ice you can walk, and a black middle you cannot. Frost trolls like the seam between the two. Ashjaw is the one with a name. He is not on my list. The common ones are.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "offer": {
+      "text": "Grimhild is down. I can use the quiet. Six frost trolls off the Tarn of Shards, and I will call the shore fit to draw.",
+      "choices": [
+        { "label": "I'll clear the shore.", "action": "acceptQuest", "quest": "tarn_shards" },
+        { "label": "Not today.", "action": "close" }
+      ]
+    },
+    "tarn_active": {
+      "text": "Six. Stay on the ice. The middle is water, and it does not care how levelled you are.",
+      "choices": [{ "label": "I'll stay on the ice.", "action": "close" }]
+    },
+    "tarn_ready": {
+      "text": "The shore is quiet enough to put ink on. Tell Kara. The climb is hers to name, not mine.",
+      "choices": [
+        { "label": "The trolls are down.", "action": "turnIn", "quest": "tarn_shards" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "after": {
+      "text": "The tarn is drawn. If Ashjaw is on the shore when you go back, that is your trouble and your cloak. I am paid to look, not to wrestle.",
+      "choices": [{ "label": "Keep your ink dry.", "action": "close" }]
     }
   }
 }

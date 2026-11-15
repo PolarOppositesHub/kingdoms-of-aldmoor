@@ -9,7 +9,7 @@ export default function App() {
     <Page title="Kingdoms of Aldmoor: Design Doc v0.2" summary="Plan for an EverQuest-style, top-down 16-bit RPG set in the world of Aldmoor, played on the iPhone Duo. v1 starts in the Barbarian town of Hoffender. Josh is creative director; Grok Bot and the Coding bot are the dev team." width="column">
       <TableOfContents items={[
         { label: "Vision and pillars" }, { label: "Locked decisions" }, { label: "Lore and world" }, { label: "Platform and engine" },
-        { label: "Core systems" }, { label: "Starter zone: Hoffender" }, { label: "Warrior v1 kit" },
+        { label: "Core systems" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "Warrior v1 kit" },
         { label: "Milestone roadmap" }, { label: "Multiplayer-ready architecture" }, { label: "Open questions for Josh" },
       ]} />
       <Section heading="Vision and pillars">
@@ -28,6 +28,7 @@ export default function App() {
           { label: "Races", value: "Human, Dwarf, High Elf, Barbarian; each gets its own starting zone later" },
           { label: "v1 starter town", value: "Hoffender, the Barbarian town, ruled by Jarl Freya Halvarddottir" },
           { label: "Frostmere Wilds", value: "The country outside Hoffender's north gate" },
+          { label: "Frostfang Reach", value: "The Ogre Highlands past the north ridge of the Frostmere Wilds. Levels 10–20. Hearthpass outpost. War-chief Vargan Frostfang." },
           { label: "First class", value: "Warrior" },
           { label: "Second class", value: "Wizard, playable as a Barbarian from the Hoffender gate, with mana, Shardbolt, and Rimefield" },
           { label: "Combat", value: "Real-time auto-attack, EverQuest-style" },
@@ -80,6 +81,16 @@ export default function App() {
           { title: "Frostmere Wilds", detail: "The country outside Hoffender's gate. Rats, snakes, young wolves, then gnolls or bandits deeper in; gray-to-blue spread for levels 1–8" },
           { title: "Camp boss", detail: "A named bandit chief or alpha wolf at a small camp, level 9–10, rare drop" },
           { title: "Starter quests", detail: "10 wolf teeth for the tailor, rat whiskers for the general merchant, deliver a letter, clear the snake den, then defeat the camp boss" },
+        ]} />
+      </Section>
+      <Section heading="Frostfang Reach">
+        <Text>The world map of the Frostmere Wilds already ended the north road at a closed line: Frostfang Reach, the Ogre Highlands, snow and bare rock beyond the ridge. That line is open. A traveler who has walked the wilds takes the same road north, between two posts, and can walk back the same way. Jarl Freya Halvarddottir did not send a war-band. She keeps a fire.</Text>
+        <Rows rows={[
+          { title: "Hearthpass", detail: "A small palisade a short walk past the ridge, levels 10–12 on the road around it. Kara Holm keeps the stores, the charts, and the fire. Orm Keel scouts from the same yard. Sitting inside the palisade is safe. Kara can bind a hero to the fire, so a fall wakes there instead of in Hilda Venn's yard. Old saves that never bind still wake in Hoffender." },
+          { title: "Broken Fangs", detail: "The west rocks, an older stone ring the ogres did not build, and their camps. Levels 13–15. Grimhild the Toll holds the west road. She is named, and she stays down longer than a common pack." },
+          { title: "Tarn of Shards", detail: "East of the ridge road. Ice you can walk, and a black middle you cannot. Frost trolls at levels 14–16. Ashjaw is the named troll on the shore, seen rarely." },
+          { title: "The Fang", detail: "The high cleft, levels 18–20, where the rock closes on the road. Skarn One-Tusk is the rare ogre on the climb. Vargan Frostfang, level 20, is war-chief of the highland ogres and stands at the stone mouth. He is not Ysolde of the Black Ice and he does not serve the Shadow King. The ogres were in these passes before her cold pushed the wolves down into the Frostmere Wilds." },
+          { title: "Charts", detail: "Kara sells Hearthpass, the Broken Fangs, the Tarn, and the Fang. Nils Reed does not. Sefa Chart does not. The purchased charts draw in the map case, with the hero marked while you are standing in that ink." },
         ]} />
       </Section>
       <Section heading="Warrior v1 kit">
