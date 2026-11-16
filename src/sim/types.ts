@@ -317,6 +317,10 @@ export interface RaceDef {
   mods: Stats;
   /** 1 is a human. Barbarians are larger. */
   scale: number;
+  /** Where a new hero of this race wakes. Absent means Hoffender. */
+  homeZone?: string;
+  homeX?: number;
+  homeY?: number;
 }
 
 export interface RosterClass {
@@ -526,6 +530,7 @@ export type Intent =
   | { type: 'openHelp' }
   | { type: 'close' }
   | { type: 'debugTeleport'; x: number; y: number }
+  | { type: 'debugZone'; zoneId: string; x: number; y: number }
   | { type: 'debugGrantXp'; amount: number };
 
 export interface Spawn {

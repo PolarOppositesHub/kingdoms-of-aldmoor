@@ -1,0 +1,307 @@
+{
+  "odda": {
+    "start": {
+      "text": "Odda Venn. Graymoor Hold is the last dry yard before the fields forget how to be fields. The boars are the first problem. Eight of them.",
+      "choices": [
+        { "label": "I'll thin the boars.", "action": "acceptQuest", "quest": "graymoor_boars" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" },
+        { "label": "What lies south?", "next": "south" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "south": {
+      "text": "South is Valdoria, and Blackpine Tower, where Osric still pretends a kingdom can be kept with one yard. North is Hoffender, if you miss the snow. The grass track to the east only comes back to the wilds. It does not skip this hold.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Back.", "action": "close" }
+      ]
+    },
+    "boars_active": {
+      "text": "Eight field boars. They like the fences. The fences do not like them back.",
+      "choices": [
+        { "label": "I'm still at it.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" }
+      ]
+    },
+    "boars_ready": {
+      "text": "Eight. The mud will grow more. Next is Hask. He used to collect for me. Now he collects for the band on the south road, and he does not stay down.",
+      "choices": [
+        { "label": "The boars are down.", "action": "turnIn", "quest": "graymoor_boars" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "after_boars": {
+      "text": "Hask the Reeve. South of the pond, with the bandits who still call him by the old title. End it.",
+      "choices": [
+        { "label": "I'll find Hask.", "action": "acceptQuest", "quest": "hask_the_reeve" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "hask_active": {
+      "text": "Hask is not a common bandit. If you leave him, the collection starts again before the mud dries.",
+      "choices": [
+        { "label": "Understood.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "hask_ready": {
+      "text": "The title is quiet. It will not stay quiet forever. That is the work, down here.",
+      "choices": [
+        { "label": "Hask is down.", "action": "turnIn", "quest": "hask_the_reeve" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "done": {
+      "text": "The hold stands. Sit if you need the yard. The charts are Thornhaven and the hold, not the whole south.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "nell": {
+    "start": {
+      "text": "Nell Ash. I walk the fences Odda worries about. The boars are hers to count. If you are going south, do not take the pines for a garden. Valdoria starts when the mud gives up.",
+      "choices": [
+        { "label": "I'll remember.", "action": "close" }
+      ]
+    }
+  },
+  "osric": {
+    "start": {
+      "text": "Osric Blackpine. The tower is the kingdom's, which these days means it is mine to keep standing. Brigands on the road are the count I can still make. Six of them.",
+      "choices": [
+        { "label": "I'll clear the road.", "action": "acceptQuest", "quest": "pine_road" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" },
+        { "label": "What is south of here?", "next": "south" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "south": {
+      "text": "South, the Eldenweald, and Eldenmoor in tiers beyond the trees. High elves. Queen Ellewynn XVI keeps the castle and does not keep the woods. North is Thornhaven, then snow.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Back.", "action": "close" }
+      ]
+    },
+    "road_active": {
+      "text": "Six road brigands. Stay on the road if you want them. They do not come into the yard.",
+      "choices": [
+        { "label": "I'm still walking it.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" }
+      ]
+    },
+    "road_ready": {
+      "text": "Six. The road will fill in. The one who will not fill in quickly is Captain Malrek, east of the tower, by the water.",
+      "choices": [
+        { "label": "The road is quieter.", "action": "turnIn", "quest": "pine_road" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "after_road": {
+      "text": "Captain Malrek. He camps where the pines meet the water and calls that a command. I want the command ended.",
+      "choices": [
+        { "label": "I'll find Malrek.", "action": "acceptQuest", "quest": "captain_malrek" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "malrek_active": {
+      "text": "Malrek does not come back with the common brigands. That is why he has the name.",
+      "choices": [
+        { "label": "Understood.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "malrek_ready": {
+      "text": "The pines are not his. They were never his. Take the quiet while it lasts.",
+      "choices": [
+        { "label": "Malrek is down.", "action": "turnIn", "quest": "captain_malrek" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
+    "done": {
+      "text": "The yard is yours if you bind here. The charts stop at the kingdom. Eldenmoor sells its own ink.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this yard.", "action": "bind" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "liriel": {
+    "start": {
+      "text": "Liriel Dawn. The Silver Stair. The beds are quiet and the fire does not ask which gate you came through. If you fall in the Eldenweald, and you have not bound somewhere else, you can wake in my yard.",
+      "choices": [
+        { "label": "Bind me to this inn.", "action": "bind" },
+        { "label": "What if I am new here?", "next": "new" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "new": {
+      "text": "Sere has the north gate. The wolves are the first work. Halden stands in the castle court if the queen's house has a word. Maeriel, in the White Pages, teaches what a wizard is allowed to buy. Nothing teaches itself.",
+      "choices": [
+        { "label": "Bind me here.", "action": "bind" },
+        { "label": "I'll start at the gate.", "action": "close" }
+      ]
+    }
+  },
+  "maeriel": {
+    "start": {
+      "text": "Maeriel Voss. The White Pages. A spell is a page you pay for, and it will not open until you are old enough for it. The list says the level. I do not skip lines.",
+      "choices": [
+        { "label": "Show me the pages.", "action": "merchant" },
+        { "label": "Who may study here?", "next": "who" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "who": {
+      "text": "High elves. Ingrid Mire keeps a hall in Hoffender for the day one of us walks that far. A barbarian still may not. The cold they carry is not this cold.",
+      "choices": [
+        { "label": "Show me the pages.", "action": "merchant" },
+        { "label": "Back.", "action": "close" }
+      ]
+    }
+  },
+  "tael": {
+    "start": {
+      "text": "Tael Linden. Rations, bandages, and the two charts I am allowed to sell: Eldenmoor, and the Eldenweald. Valdoria is Osric's ink. I do not draw the snow.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "sere": {
+    "start": {
+      "text": "Sere Alder. The north gate. Weald wolves have been counting the wall the way I count them. Eight.",
+      "choices": [
+        { "label": "I'll thin the wolves.", "action": "acceptQuest", "quest": "weald_wolves" },
+        { "label": "What is out there?", "next": "out" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "out": {
+      "text": "Hares and foxes by the wall. Wolves after that. Poachers where the trees thicken, and the Amber Hart if the wood feels like showing it. The road north leaves the weald for Valdoria. That road is not a first walk.",
+      "choices": [
+        { "label": "I'll take the wolves.", "action": "acceptQuest", "quest": "weald_wolves" },
+        { "label": "Back.", "action": "close" }
+      ]
+    },
+    "wolves_active": {
+      "text": "Eight weald wolves. They stay outside the wall if the gate is doing its work.",
+      "choices": [{ "label": "I'm still hunting.", "action": "close" }]
+    },
+    "wolves_ready": {
+      "text": "Eight. The gate can breathe. Lark the Poacher is the next name. North, where the bandits think the hart is a purse.",
+      "choices": [{ "label": "The wolves are down.", "action": "turnIn", "quest": "weald_wolves" }]
+    },
+    "after_wolves": {
+      "text": "Lark the Poacher. Not a wolf, and not the hart. The person selling what the hart walks past.",
+      "choices": [
+        { "label": "I'll find Lark.", "action": "acceptQuest", "quest": "lark_the_poacher" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "lark_active": {
+      "text": "Lark keeps to the north trees. Come back when the poaching stops.",
+      "choices": [{ "label": "I'm going.", "action": "close" }]
+    },
+    "lark_ready": {
+      "text": "The north is quieter. The hart is Halden's to ask about, not mine. I keep the gate.",
+      "choices": [{ "label": "Lark is down.", "action": "turnIn", "quest": "lark_the_poacher" }]
+    },
+    "done": {
+      "text": "The gate holds. If you go north out of the weald, go fed. Valdoria does not feed beginners.",
+      "choices": [{ "label": "I'll watch the road.", "action": "close" }]
+    }
+  },
+  "halden": {
+    "start": {
+      "text": "Halden Cour, steward to Her Majesty Queen Ellewynn XVI. The queen does not stand in the yard. I do. The Amber Hart has been seen in the deep of the Eldenweald. She would like it discouraged, not mounted.",
+      "choices": [
+        { "label": "I'll look for the hart.", "action": "acceptQuest", "quest": "amber_hart" },
+        { "label": "Who rules here?", "next": "queen" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "queen": {
+      "text": "Eldenmoor is built in rings. Travelers outside the wall. Trades in the first ring. The city in the second. The castle is hers. The woods are not a ring. They are a road that eventually remembers snow.",
+      "choices": [
+        { "label": "The hart, then.", "action": "acceptQuest", "quest": "amber_hart" },
+        { "label": "Back.", "action": "close" }
+      ]
+    },
+    "hart_active": {
+      "text": "The hart is not a pet and not a daily sight. If you do not find it, walk the north trees and wait. It comes back slower than a wolf.",
+      "choices": [{ "label": "I'll keep looking.", "action": "close" }]
+    },
+    "hart_ready": {
+      "text": "You found it. Her Majesty will hear that the wood was asked, and that it answered. That is the whole of the errand.",
+      "choices": [{ "label": "It is done.", "action": "turnIn", "quest": "amber_hart" }]
+    },
+    "done": {
+      "text": "The court is quiet. If you are a wizard, Maeriel has the pages. If you are walking north, the kingdom of Valdoria is the next true road, and it is not kind to the unready.",
+      "choices": [{ "label": "I'll remember.", "action": "close" }]
+    }
+  },
+  "anwen": {
+    "start": {
+      "text": "Anwen Pell. I came down the mouth looking for my brother and found a fire that was easier to keep than the way back. If Kara sent you, the crawlers are the first count. If she did not, go and let her name it.",
+      "choices": [
+        { "label": "What is under us?", "next": "under" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "under": {
+      "text": "The Shatter Gallery, then the vault. Magister Calden walks the gallery. Ysolde of the Black Ice keeps the vault. The thing on Rimeheart Lake wears her name and is not her. Vargan, up in the cleft, is not hers either.",
+      "choices": [{ "label": "Back.", "next": "start" }]
+    },
+    "mouth_active": {
+      "text": "Eight rime crawlers. They are the small cold. Count them, then come back to the fire.",
+      "choices": [{ "label": "I'm still counting.", "action": "close" }]
+    },
+    "mouth_ready": {
+      "text": "Eight. The mouth can be walked. The gallery is the next stair, and Calden is the reason it is not a hallway.",
+      "choices": [{ "label": "The crawlers are down.", "action": "turnIn", "quest": "cold_mouth" }]
+    },
+    "offer_gallery": {
+      "text": "Magister Calden. The middle of the Shatter Gallery. He stays down longer than the guards. I want that gap to start with you.",
+      "choices": [
+        { "label": "I'll go down.", "action": "acceptQuest", "quest": "gallery_magister" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "gallery_active": {
+      "text": "Calden. Do not mistake a sentry for him. He is the one the ice listens to.",
+      "choices": [{ "label": "I'll know him.", "action": "close" }]
+    },
+    "gallery_ready": {
+      "text": "The gallery is quiet enough to try the north stair. That stair is Ysolde. When she falls, tell Kara. I am not leaving this fire to carry the word.",
+      "choices": [{ "label": "Calden is down.", "action": "turnIn", "quest": "gallery_magister" }]
+    },
+    "offer_vault": {
+      "text": "Ysolde of the Black Ice, in the vault. End her. The reward Kara promised is at the Hearthpass fire, not here. I can only point at the stair.",
+      "choices": [
+        { "label": "I'll end it.", "action": "acceptQuest", "quest": "the_black_vault" },
+        { "label": "I need a moment.", "action": "close" }
+      ]
+    },
+    "vault_active": {
+      "text": "She is at the far end of the vault. The knights near her help each other. She does not need them.",
+      "choices": [{ "label": "I'm going.", "action": "close" }]
+    },
+    "after": {
+      "text": "You have the stair behind you and Kara ahead of you, if the vault is done. I keep the fire. That was the bargain I made with the cold.",
+      "choices": [{ "label": "Keep it.", "action": "close" }]
+    }
+  }
+}

@@ -5,7 +5,11 @@
     "level": 1,
     "cooldownMs": 8000,
     "range": 28,
-    "damage": { "n": 1, "sides": 4, "bonus": 3 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 3
+    },
     "hate": 6,
     "kind": "strike",
     "verb": "kick",
@@ -20,7 +24,11 @@
     "level": 1,
     "cooldownMs": 6000,
     "range": 28,
-    "damage": { "n": 1, "sides": 8, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 2
+    },
     "hate": 4,
     "kind": "strike",
     "verb": "swing",
@@ -34,7 +42,11 @@
     "level": 4,
     "cooldownMs": 9000,
     "range": 28,
-    "damage": { "n": 1, "sides": 10, "bonus": 4 },
+    "damage": {
+      "n": 1,
+      "sides": 10,
+      "bonus": 4
+    },
     "hate": 6,
     "kind": "strike",
     "verb": "chop",
@@ -48,7 +60,11 @@
     "level": 8,
     "cooldownMs": 12000,
     "range": 28,
-    "damage": { "n": 2, "sides": 6, "bonus": 4 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 4
+    },
     "hate": 8,
     "kind": "strike",
     "verb": "break",
@@ -62,7 +78,11 @@
     "level": 1,
     "cooldownMs": 1600,
     "range": 200,
-    "damage": { "n": 1, "sides": 8, "bonus": 4 },
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
     "hate": 4,
     "kind": "bolt",
     "verb": "pierce",
@@ -78,7 +98,11 @@
     "cooldownMs": 9000,
     "range": 180,
     "radius": 64,
-    "damage": { "n": 1, "sides": 3, "bonus": 0 },
+    "damage": {
+      "n": 1,
+      "sides": 3,
+      "bonus": 0
+    },
     "hate": 6,
     "kind": "field",
     "verb": "chill",
@@ -95,7 +119,11 @@
     "level": 4,
     "cooldownMs": 4000,
     "range": 200,
-    "damage": { "n": 2, "sides": 6, "bonus": 2 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 2
+    },
     "hate": 6,
     "kind": "bolt",
     "verb": "spike",
@@ -111,7 +139,11 @@
     "cooldownMs": 14000,
     "range": 180,
     "radius": 80,
-    "damage": { "n": 1, "sides": 6, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
     "hate": 8,
     "kind": "field",
     "verb": "blind",
@@ -128,7 +160,11 @@
     "level": 1,
     "cooldownMs": 5000,
     "range": 180,
-    "damage": { "n": 1, "sides": 4, "bonus": 1 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
     "hate": 4,
     "kind": "bolt",
     "verb": "bind",
@@ -145,7 +181,11 @@
     "level": 1,
     "cooldownMs": 8000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 14,
@@ -160,7 +200,11 @@
     "level": 1,
     "cooldownMs": 7000,
     "range": 160,
-    "damage": { "n": 1, "sides": 4, "bonus": 0 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 0
+    },
     "hate": 5,
     "kind": "dot",
     "verb": "sear",
@@ -178,7 +222,11 @@
     "cooldownMs": 12000,
     "range": 180,
     "radius": 70,
-    "damage": { "n": 1, "sides": 4, "bonus": 0 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 0
+    },
     "hate": 6,
     "kind": "field",
     "verb": "buffet",
@@ -195,7 +243,11 @@
     "level": 8,
     "cooldownMs": 18000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "power",
@@ -211,7 +263,11 @@
     "level": 1,
     "cooldownMs": 12000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "sneak",
@@ -227,7 +283,11 @@
     "level": 1,
     "cooldownMs": 6000,
     "range": 26,
-    "damage": { "n": 1, "sides": 10, "bonus": 6 },
+    "damage": {
+      "n": 1,
+      "sides": 10,
+      "bonus": 6
+    },
     "hate": 8,
     "kind": "backstab",
     "verb": "stab",
@@ -242,7 +302,11 @@
     "level": 1,
     "cooldownMs": 10000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "evade",
@@ -258,7 +322,11 @@
     "level": 5,
     "cooldownMs": 8000,
     "range": 26,
-    "damage": { "n": 1, "sides": 4, "bonus": 1 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
     "hate": 5,
     "kind": "dot",
     "verb": "nick",
@@ -275,7 +343,11 @@
     "level": 8,
     "cooldownMs": 20000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "sneak",
@@ -291,7 +363,11 @@
     "level": 1,
     "cooldownMs": 5000,
     "range": 28,
-    "damage": { "n": 1, "sides": 12, "bonus": 4 },
+    "damage": {
+      "n": 1,
+      "sides": 12,
+      "bonus": 4
+    },
     "hate": 8,
     "kind": "strike",
     "verb": "frenzy",
@@ -306,7 +382,11 @@
     "level": 1,
     "cooldownMs": 4000,
     "range": 28,
-    "damage": { "n": 1, "sides": 8, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 2
+    },
     "hate": 5,
     "kind": "strike",
     "verb": "cleave",
@@ -321,7 +401,11 @@
     "level": 6,
     "cooldownMs": 10000,
     "range": 28,
-    "damage": { "n": 2, "sides": 8, "bonus": 6 },
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
     "hate": 10,
     "kind": "strike",
     "verb": "execute",
@@ -336,7 +420,11 @@
     "level": 9,
     "cooldownMs": 16000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 28,
@@ -351,7 +439,11 @@
     "level": 1,
     "cooldownMs": 2500,
     "range": 26,
-    "damage": { "n": 1, "sides": 6, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
     "hate": 3,
     "kind": "strike",
     "verb": "strike",
@@ -365,7 +457,11 @@
     "level": 1,
     "cooldownMs": 8000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 12,
@@ -380,7 +476,11 @@
     "level": 1,
     "cooldownMs": 6000,
     "range": 160,
-    "damage": { "n": 1, "sides": 4, "bonus": 0 },
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 0
+    },
     "hate": 4,
     "kind": "bolt",
     "verb": "snare",
@@ -397,7 +497,11 @@
     "level": 5,
     "cooldownMs": 16000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "power",
@@ -413,7 +517,11 @@
     "level": 8,
     "cooldownMs": 14000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 26,
@@ -428,7 +536,11 @@
     "level": 12,
     "cooldownMs": 10000,
     "range": 28,
-    "damage": { "n": 2, "sides": 6, "bonus": 6 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 6
+    },
     "hate": 10,
     "kind": "strike",
     "verb": "rush",
@@ -442,7 +554,11 @@
     "level": 18,
     "cooldownMs": 40000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 42,
@@ -456,7 +572,11 @@
     "level": 24,
     "cooldownMs": 14000,
     "range": 28,
-    "damage": { "n": 3, "sides": 8, "bonus": 8 },
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
     "hate": 12,
     "kind": "strike",
     "verb": "cleave",
@@ -470,7 +590,11 @@
     "level": 12,
     "cooldownMs": 8000,
     "range": 180,
-    "damage": { "n": 1, "sides": 6, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
     "hate": 5,
     "kind": "bolt",
     "verb": "bind",
@@ -487,7 +611,11 @@
     "level": 18,
     "cooldownMs": 12000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 36,
@@ -503,7 +631,11 @@
     "cooldownMs": 16000,
     "range": 180,
     "radius": 72,
-    "damage": { "n": 2, "sides": 6, "bonus": 2 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 2
+    },
     "hate": 8,
     "kind": "field",
     "verb": "scorch",
@@ -520,7 +652,11 @@
     "level": 12,
     "cooldownMs": 9000,
     "range": 26,
-    "damage": { "n": 1, "sides": 6, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
     "hate": 5,
     "kind": "dot",
     "verb": "cut",
@@ -537,7 +673,11 @@
     "level": 18,
     "cooldownMs": 18000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "sneak",
@@ -553,7 +693,11 @@
     "level": 24,
     "cooldownMs": 12000,
     "range": 26,
-    "damage": { "n": 2, "sides": 10, "bonus": 8 },
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 8
+    },
     "hate": 10,
     "kind": "backstab",
     "verb": "pierce",
@@ -568,7 +712,11 @@
     "level": 12,
     "cooldownMs": 8000,
     "range": 28,
-    "damage": { "n": 2, "sides": 6, "bonus": 4 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 4
+    },
     "hate": 7,
     "kind": "strike",
     "verb": "sweep",
@@ -583,7 +731,11 @@
     "level": 18,
     "cooldownMs": 18000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 36,
@@ -598,7 +750,11 @@
     "level": 24,
     "cooldownMs": 16000,
     "range": 28,
-    "damage": { "n": 3, "sides": 8, "bonus": 8 },
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
     "hate": 12,
     "kind": "strike",
     "verb": "howl",
@@ -613,7 +769,11 @@
     "level": 12,
     "cooldownMs": 18000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "ward",
     "buff": "power",
@@ -629,7 +789,11 @@
     "level": 18,
     "cooldownMs": 10000,
     "range": 170,
-    "damage": { "n": 1, "sides": 8, "bonus": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 2
+    },
     "hate": 5,
     "kind": "bolt",
     "verb": "root",
@@ -646,7 +810,11 @@
     "level": 24,
     "cooldownMs": 16000,
     "range": 0,
-    "damage": { "n": 0, "sides": 1, "bonus": 0 },
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
     "hate": 0,
     "kind": "heal",
     "heal": 48,
@@ -661,7 +829,11 @@
     "level": 12,
     "cooldownMs": 2500,
     "range": 210,
-    "damage": { "n": 2, "sides": 6, "bonus": 3 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 3
+    },
     "hate": 5,
     "kind": "bolt",
     "verb": "pierce",
@@ -677,7 +849,11 @@
     "cooldownMs": 14000,
     "range": 180,
     "radius": 70,
-    "damage": { "n": 2, "sides": 4, "bonus": 2 },
+    "damage": {
+      "n": 2,
+      "sides": 4,
+      "bonus": 2
+    },
     "hate": 8,
     "kind": "field",
     "verb": "wall",
@@ -694,12 +870,252 @@
     "level": 24,
     "cooldownMs": 9000,
     "range": 220,
-    "damage": { "n": 3, "sides": 8, "bonus": 6 },
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 6
+    },
     "hate": 8,
     "kind": "bolt",
     "verb": "strike",
     "mana": 36,
     "classId": "wizard",
     "blurb": "One cold star, thrown. It is the expensive one."
+  },
+  {
+    "id": "iron_guard",
+    "name": "Iron Guard",
+    "short": "Guard",
+    "level": 27,
+    "cooldownMs": 20000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "warrior",
+    "blurb": "A braced guard. Blows land heavier for a while.",
+    "buff": "power",
+    "buffMs": 12000
+  },
+  {
+    "id": "cleaving_oath",
+    "name": "Cleaving Oath",
+    "short": "Cleave",
+    "level": 30,
+    "cooldownMs": 16000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 8
+    },
+    "hate": 14,
+    "kind": "strike",
+    "classId": "warrior",
+    "blurb": "The oath after the axe. Slow, and it means the last of it.",
+    "verb": "cleave"
+  },
+  {
+    "id": "bog_bolt",
+    "name": "Bog Bolt",
+    "short": "Bog",
+    "level": 27,
+    "cooldownMs": 7000,
+    "range": 180,
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 3
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "shaman",
+    "blurb": "A heavier peat. One foe, and the feet stay slow.",
+    "verb": "bind",
+    "mana": 18,
+    "slowMs": 5500,
+    "slowFactor": 0.35
+  },
+  {
+    "id": "winter_mend",
+    "name": "Winter Mend",
+    "short": "Winter",
+    "level": 30,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "shaman",
+    "blurb": "The deep knit, paid for in mana. It shows.",
+    "heal": 64,
+    "mana": 28
+  },
+  {
+    "id": "vein_cut",
+    "name": "Vein Cut",
+    "short": "Vein",
+    "level": 27,
+    "cooldownMs": 10000,
+    "range": 26,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 2
+    },
+    "hate": 6,
+    "kind": "dot",
+    "classId": "rogue",
+    "blurb": "A cut that keeps paying after the knife is gone.",
+    "verb": "cut",
+    "mana": 18,
+    "dotMs": 9000,
+    "dotAmount": 6
+  },
+  {
+    "id": "silent_end",
+    "name": "Silent End",
+    "short": "End",
+    "level": 30,
+    "cooldownMs": 14000,
+    "range": 26,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "backstab",
+    "classId": "rogue",
+    "blurb": "The quiet knife for a turned back. From the front it still refuses.",
+    "verb": "end",
+    "mana": 32
+  },
+  {
+    "id": "red_feast",
+    "name": "Red Feast",
+    "short": "Feast",
+    "level": 27,
+    "cooldownMs": 20000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "berserker",
+    "blurb": "Turn a belly of rage into blood. Smaller than a kill, sooner ready.",
+    "heal": 48,
+    "mana": 36
+  },
+  {
+    "id": "blood_howl",
+    "name": "Blood Howl",
+    "short": "Howl",
+    "level": 30,
+    "cooldownMs": 18000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 14,
+    "kind": "strike",
+    "classId": "berserker",
+    "blurb": "The howl that spends what you have been saving.",
+    "verb": "howl",
+    "mana": 48
+  },
+  {
+    "id": "pack_mend",
+    "name": "Pack Mend",
+    "short": "Pack",
+    "level": 27,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "warden",
+    "blurb": "The pack lends a knit. It costs more than a light mend.",
+    "heal": 58,
+    "mana": 26
+  },
+  {
+    "id": "elder_root",
+    "name": "Elder Root",
+    "short": "Root",
+    "level": 30,
+    "cooldownMs": 12000,
+    "range": 180,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 4
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "warden",
+    "blurb": "The old root. One foe, and the ground keeps them longer.",
+    "verb": "root",
+    "mana": 20,
+    "slowMs": 6500,
+    "slowFactor": 0.35
+  },
+  {
+    "id": "shard_lance",
+    "name": "Shard Lance",
+    "short": "Lance",
+    "level": 27,
+    "cooldownMs": 4000,
+    "range": 220,
+    "damage": {
+      "n": 3,
+      "sides": 6,
+      "bonus": 4
+    },
+    "hate": 7,
+    "kind": "bolt",
+    "classId": "wizard",
+    "blurb": "A longer spear of ice. It still costs.",
+    "verb": "lance",
+    "mana": 22
+  },
+  {
+    "id": "black_rime",
+    "name": "Black Rime",
+    "short": "Rime",
+    "level": 30,
+    "cooldownMs": 16000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 6,
+      "bonus": 4
+    },
+    "hate": 10,
+    "kind": "field",
+    "classId": "wizard",
+    "blurb": "The cold Ysolde would recognize. Everyone near the target stands in it.",
+    "verb": "rime",
+    "mana": 40,
+    "radius": 76,
+    "slowMs": 6000,
+    "slowFactor": 0.35
   }
 ]

@@ -1,0 +1,1172 @@
+[
+  {
+    "id": "field_boar",
+    "name": "field boar",
+    "level": 10,
+    "hp": 148,
+    "ac": 15,
+    "attack": 18,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 4
+    },
+    "delayMs": 2100,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "boar",
+    "xp": 196,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "boar_tusk",
+        "chance": 0.75,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.45,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 12,
+    "coinMax": 38,
+    "sprite": "boar"
+  },
+  {
+    "id": "mud_wolf",
+    "name": "mud wolf",
+    "level": 11,
+    "hp": 161,
+    "ac": 15,
+    "attack": 19,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 4
+    },
+    "delayMs": 2200,
+    "aggroRange": 101,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "wolf",
+    "xp": 214,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.7,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 13,
+    "coinMax": 41,
+    "sprite": "wolf"
+  },
+  {
+    "id": "slush_bandit",
+    "name": "slush bandit",
+    "level": 13,
+    "hp": 187,
+    "ac": 17,
+    "attack": 21,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 4
+    },
+    "delayMs": 2000,
+    "aggroRange": 103,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 250,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 15,
+    "coinMax": 47,
+    "sprite": "bandit"
+  },
+  {
+    "id": "hold_raider",
+    "name": "hold raider",
+    "level": 14,
+    "hp": 200,
+    "ac": 18,
+    "attack": 22,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 4
+    },
+    "delayMs": 2100,
+    "aggroRange": 104,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 268,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "shoots",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 16,
+    "coinMax": 50,
+    "sprite": "archer"
+  },
+  {
+    "id": "marsh_spider",
+    "name": "marsh spider",
+    "level": 15,
+    "hp": 213,
+    "ac": 19,
+    "attack": 23,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 5
+    },
+    "delayMs": 2200,
+    "aggroRange": 105,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "spider",
+    "xp": 286,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.15,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.2,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 17,
+    "coinMax": 53,
+    "sprite": "spider"
+  },
+  {
+    "id": "briar_bear",
+    "name": "briar bear",
+    "level": 16,
+    "hp": 226,
+    "ac": 20,
+    "attack": 24,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 5
+    },
+    "delayMs": 1900,
+    "aggroRange": 106,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bear",
+    "xp": 304,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 18,
+    "coinMax": 56,
+    "sprite": "bear"
+  },
+  {
+    "id": "hask",
+    "name": "Hask the Reeve",
+    "level": 17,
+    "hp": 634,
+    "ac": 21,
+    "attack": 25,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 5
+    },
+    "delayMs": 2000,
+    "aggroRange": 140,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 936,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "reeve_blade",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 19,
+    "coinMax": 59,
+    "sprite": "leader",
+    "named": true,
+    "rare": true
+  },
+  {
+    "id": "pine_stag",
+    "name": "pine stag",
+    "level": 16,
+    "hp": 226,
+    "ac": 20,
+    "attack": 24,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 5
+    },
+    "delayMs": 1900,
+    "aggroRange": 106,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "stag",
+    "xp": 304,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "pine_resin",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 18,
+    "coinMax": 56,
+    "sprite": "stag"
+  },
+  {
+    "id": "blackpine_wolf",
+    "name": "blackpine wolf",
+    "level": 18,
+    "hp": 252,
+    "ac": 22,
+    "attack": 26,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 5
+    },
+    "delayMs": 2100,
+    "aggroRange": 108,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "wolf",
+    "xp": 340,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.7,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 20,
+    "coinMax": 62,
+    "sprite": "wolf"
+  },
+  {
+    "id": "road_brigand",
+    "name": "road brigand",
+    "level": 20,
+    "hp": 278,
+    "ac": 24,
+    "attack": 28,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 1900,
+    "aggroRange": 110,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "brigand",
+    "xp": 376,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 22,
+    "coinMax": 68,
+    "sprite": "bandit"
+  },
+  {
+    "id": "tower_sentry",
+    "name": "tower sentry",
+    "level": 22,
+    "hp": 304,
+    "ac": 25,
+    "attack": 30,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 2100,
+    "aggroRange": 112,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "brigand",
+    "xp": 412,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "shoots",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 24,
+    "coinMax": 74,
+    "sprite": "archer"
+  },
+  {
+    "id": "pine_bear",
+    "name": "pine bear",
+    "level": 23,
+    "hp": 317,
+    "ac": 26,
+    "attack": 31,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 2200,
+    "aggroRange": 113,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bear",
+    "xp": 430,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 25,
+    "coinMax": 77,
+    "sprite": "bear"
+  },
+  {
+    "id": "malrek",
+    "name": "Captain Malrek",
+    "level": 24,
+    "hp": 858,
+    "ac": 27,
+    "attack": 32,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 1900,
+    "aggroRange": 140,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "brigand",
+    "xp": 1272,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "blackpine_edge",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 26,
+    "coinMax": 80,
+    "sprite": "leader",
+    "named": true,
+    "rare": true
+  },
+  {
+    "id": "meadow_hare",
+    "name": "meadow hare",
+    "level": 1,
+    "hp": 31,
+    "ac": 6,
+    "attack": 9,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "delayMs": 2000,
+    "aggroRange": 91,
+    "assistRange": 30,
+    "leash": 180,
+    "social": "",
+    "xp": 34,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "kicks",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 3,
+    "coinMax": 11,
+    "sprite": "hare"
+  },
+  {
+    "id": "glade_fox",
+    "name": "glade fox",
+    "level": 2,
+    "hp": 44,
+    "ac": 7,
+    "attack": 10,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "delayMs": 2100,
+    "aggroRange": 92,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "fox",
+    "xp": 52,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.45,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 4,
+    "coinMax": 14,
+    "sprite": "fox"
+  },
+  {
+    "id": "weald_wolf",
+    "name": "weald wolf",
+    "level": 4,
+    "hp": 70,
+    "ac": 9,
+    "attack": 12,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "delayMs": 1900,
+    "aggroRange": 94,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "wolf",
+    "xp": 88,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.7,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 6,
+    "coinMax": 20,
+    "sprite": "wolf"
+  },
+  {
+    "id": "glade_beetle",
+    "name": "glade beetle",
+    "level": 5,
+    "hp": 83,
+    "ac": 10,
+    "attack": 13,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 2000,
+    "aggroRange": 95,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "beetle",
+    "xp": 106,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "pine_resin",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 7,
+    "coinMax": 23,
+    "sprite": "beetle"
+  },
+  {
+    "id": "weald_spider",
+    "name": "weald spider",
+    "level": 6,
+    "hp": 96,
+    "ac": 11,
+    "attack": 14,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 2100,
+    "aggroRange": 96,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "spider",
+    "xp": 124,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.15,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.2,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 8,
+    "coinMax": 26,
+    "sprite": "spider"
+  },
+  {
+    "id": "weald_bandit",
+    "name": "weald poacher",
+    "level": 7,
+    "hp": 109,
+    "ac": 12,
+    "attack": 15,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 2200,
+    "aggroRange": 97,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 142,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 9,
+    "coinMax": 29,
+    "sprite": "bandit"
+  },
+  {
+    "id": "weald_bear",
+    "name": "weald bear",
+    "level": 8,
+    "hp": 122,
+    "ac": 13,
+    "attack": 16,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 1900,
+    "aggroRange": 98,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bear",
+    "xp": 160,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "glade_pelt",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 10,
+    "coinMax": 32,
+    "sprite": "bear"
+  },
+  {
+    "id": "lark_poacher",
+    "name": "Lark the Poacher",
+    "level": 9,
+    "hp": 378,
+    "ac": 14,
+    "attack": 17,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "delayMs": 2000,
+    "aggroRange": 140,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "bandit",
+    "xp": 552,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "pine_resin",
+        "chance": 0.25,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 11,
+    "coinMax": 35,
+    "sprite": "vetch",
+    "named": true
+  },
+  {
+    "id": "amber_hart",
+    "name": "the Amber Hart",
+    "level": 10,
+    "hp": 410,
+    "ac": 15,
+    "attack": 18,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 4
+    },
+    "delayMs": 2100,
+    "aggroRange": 140,
+    "assistRange": 30,
+    "leash": 180,
+    "social": "",
+    "xp": 600,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "pine_resin",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "hart_crown",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 12,
+    "coinMax": 38,
+    "sprite": "stag",
+    "named": true,
+    "rare": true
+  },
+  {
+    "id": "rime_crawler",
+    "name": "rime crawler",
+    "level": 21,
+    "hp": 291,
+    "ac": 24,
+    "attack": 29,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 2000,
+    "aggroRange": 111,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "rime",
+    "xp": 394,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 23,
+    "coinMax": 71,
+    "sprite": "crawler"
+  },
+  {
+    "id": "shard_lurker",
+    "name": "shard lurker",
+    "level": 22,
+    "hp": 304,
+    "ac": 25,
+    "attack": 30,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 2100,
+    "aggroRange": 112,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "rime",
+    "xp": 412,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 24,
+    "coinMax": 74,
+    "sprite": "widow"
+  },
+  {
+    "id": "rime_sentry",
+    "name": "rime sentry",
+    "level": 23,
+    "hp": 317,
+    "ac": 26,
+    "attack": 31,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 2200,
+    "aggroRange": 113,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "rime",
+    "xp": 430,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "claws",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 25,
+    "coinMax": 77,
+    "sprite": "bones"
+  },
+  {
+    "id": "warden_pell",
+    "name": "Warden Pell",
+    "level": 23,
+    "hp": 826,
+    "ac": 26,
+    "attack": 31,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 2200,
+    "aggroRange": 140,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "rime",
+    "xp": 1224,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 25,
+    "coinMax": 77,
+    "sprite": "leader",
+    "named": true,
+    "rare": true
+  },
+  {
+    "id": "gallery_guard",
+    "name": "gallery guard",
+    "level": 24,
+    "hp": 330,
+    "ac": 27,
+    "attack": 32,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "delayMs": 1900,
+    "aggroRange": 114,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "rime",
+    "xp": 448,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "claws",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 26,
+    "coinMax": 80,
+    "sprite": "mira"
+  },
+  {
+    "id": "blackice_knight",
+    "name": "blackice knight",
+    "level": 26,
+    "hp": 356,
+    "ac": 29,
+    "attack": 34,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 7
+    },
+    "delayMs": 2100,
+    "aggroRange": 116,
+    "assistRange": 120,
+    "leash": 180,
+    "social": "rime",
+    "xp": 484,
+    "speed": 54,
+    "wanderSpeed": 26,
+    "crit": 0.04,
+    "verb": "cleaves",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 28,
+    "coinMax": 86,
+    "sprite": "bones"
+  },
+  {
+    "id": "magister_calden",
+    "name": "Magister Calden",
+    "level": 25,
+    "hp": 890,
+    "ac": 28,
+    "attack": 33,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 7
+    },
+    "delayMs": 2000,
+    "aggroRange": 140,
+    "assistRange": 30,
+    "leash": 180,
+    "social": "",
+    "xp": 1320,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "freezes",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 27,
+    "coinMax": 83,
+    "sprite": "witch",
+    "named": true,
+    "rare": true
+  },
+  {
+    "id": "ysolde",
+    "name": "Ysolde of the Black Ice",
+    "level": 28,
+    "hp": 1200,
+    "ac": 34,
+    "attack": 48,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "delayMs": 2100,
+    "aggroRange": 140,
+    "assistRange": 30,
+    "leash": 180,
+    "social": "",
+    "xp": 2600,
+    "speed": 54,
+    "wanderSpeed": 16,
+    "crit": 0.06,
+    "verb": "freezes",
+    "loot": [
+      {
+        "itemId": "blackice_shard",
+        "chance": 1,
+        "min": 1,
+        "max": 2
+      },
+      {
+        "itemId": "blackice_staff",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "coinMin": 30,
+    "coinMax": 92,
+    "sprite": "ysolde",
+    "named": true
+  }
+]

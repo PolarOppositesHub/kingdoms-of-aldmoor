@@ -1,0 +1,65 @@
+[
+  {
+    "id": "odda",
+    "name": "Odda Venn",
+    "title": "keeper of Graymoor Hold",
+    "dialogue": "odda",
+    "race": "human"
+  },
+  {
+    "id": "nell",
+    "name": "Nell Ash",
+    "title": "field warden",
+    "dialogue": "nell",
+    "race": "human"
+  },
+  {
+    "id": "osric",
+    "name": "Osric Blackpine",
+    "title": "keeper of the tower",
+    "dialogue": "osric",
+    "race": "human"
+  },
+  {
+    "id": "liriel",
+    "name": "Liriel Dawn",
+    "title": "innkeeper",
+    "dialogue": "liriel",
+    "race": "high_elf"
+  },
+  {
+    "id": "maeriel",
+    "name": "Maeriel Voss",
+    "title": "wizard trainer",
+    "dialogue": "maeriel",
+    "race": "high_elf"
+  },
+  {
+    "id": "tael",
+    "name": "Tael Linden",
+    "title": "provisioner",
+    "dialogue": "tael",
+    "race": "high_elf"
+  },
+  {
+    "id": "sere",
+    "name": "Sere Alder",
+    "title": "gate warden",
+    "dialogue": "sere",
+    "race": "high_elf"
+  },
+  {
+    "id": "halden",
+    "name": "Halden Cour",
+    "title": "steward of the queen",
+    "dialogue": "halden",
+    "race": "high_elf"
+  },
+  {
+    "id": "anwen",
+    "name": "Anwen Pell",
+    "title": "the fire in the mouth",
+    "dialogue": "anwen",
+    "race": "human"
+  }
+]

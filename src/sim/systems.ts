@@ -741,7 +741,29 @@ function karaNode(state: GameState, content: ContentDb): string {
   const fang = quest('the_fang');
   if (!fang || fang.stage === 'none') return 'after_skarn';
   if (fang.stage === 'active') return fang.progress >= need('the_fang') ? 'fang_ready' : 'fang_active';
-  return 'done';
+  const mouth = quest('cold_mouth');
+  if (!mouth || mouth.stage === 'none') return 'after_fang';
+  if (mouth.stage === 'active') return 'mouth_active';
+  const vault = quest('the_black_vault');
+  if (vault?.stage === 'active' && vault.progress >= need('the_black_vault')) return 'vault_ready';
+  if (vault?.stage === 'done') return 'done';
+  return 'after_mouth';
+}
+
+function steppedNode(
+  state: GameState,
+  content: ContentDb,
+  steps: { id: string; active: string; ready: string; next: string }[],
+  done: string,
+): string {
+  const need = (id: string) => content.quests.find((quest) => quest.id === id)?.need ?? 1;
+  for (let i = 0; i < steps.length; i++) {
+    const step = steps[i];
+    const quest = state.quests[step.id];
+    if (!quest || quest.stage === 'none') return i === 0 ? 'start' : step.next;
+    if (quest.stage === 'active') return quest.progress >= need(step.id) ? step.ready : step.active;
+  }
+  return done;
 }
 
 function ormNode(state: GameState, content: ContentDb): string {
@@ -781,8 +803,33 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
     const quest = state.quests.wolf_pelts;
     if (quest.stage === 'done') nodeId = 'done';
     else if (quest.stage === 'active') nodeId = 'active';
-  } else if (npc.defId === 'ivar' && ivarIsBusy(state)) {
+  }   else if (npc.defId === 'ivar' && ivarIsBusy(state)) {
     nodeId = 'busy';
+  } else if (npc.defId === 'odda') {
+    nodeId = steppedNode(state, content, [
+      { id: 'graymoor_boars', active: 'boars_active', ready: 'boars_ready', next: 'after_boars' },
+      { id: 'hask_the_reeve', active: 'hask_active', ready: 'hask_ready', next: 'after_boars' },
+    ], 'done');
+  } else if (npc.defId === 'osric') {
+    nodeId = steppedNode(state, content, [
+      { id: 'pine_road', active: 'road_active', ready: 'road_ready', next: 'after_road' },
+      { id: 'captain_malrek', active: 'malrek_active', ready: 'malrek_ready', next: 'after_road' },
+    ], 'done');
+  } else if (npc.defId === 'sere') {
+    nodeId = steppedNode(state, content, [
+      { id: 'weald_wolves', active: 'wolves_active', ready: 'wolves_ready', next: 'after_wolves' },
+      { id: 'lark_the_poacher', active: 'lark_active', ready: 'lark_ready', next: 'after_wolves' },
+    ], 'done');
+  } else if (npc.defId === 'halden') {
+    nodeId = steppedNode(state, content, [
+      { id: 'amber_hart', active: 'hart_active', ready: 'hart_ready', next: 'start' },
+    ], 'done');
+  } else if (npc.defId === 'anwen') {
+    nodeId = steppedNode(state, content, [
+      { id: 'cold_mouth', active: 'mouth_active', ready: 'mouth_ready', next: 'start' },
+      { id: 'gallery_magister', active: 'gallery_active', ready: 'gallery_ready', next: 'offer_gallery' },
+      { id: 'the_black_vault', active: 'vault_active', ready: 'after', next: 'offer_vault' },
+    ], 'after');
   }
   state.ui = { panel: 'dialogue', npcId: npc.id, nodeId, title: null, body: null };
   state.input.dest = null;
@@ -1149,7 +1196,18 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
   }
   emit({
     type: 'log',
-    text: home === 'hoffender' ? 'You wake in the yard of the Frosthearth Inn.' : 'You wake at the fire in Hearthpass.',
+    text:
+      home === 'hoffender'
+        ? 'You wake in the yard of the Frosthearth Inn.'
+        : home === 'frostfang'
+          ? 'You wake at the fire in Hearthpass.'
+          : home === 'eldenmoor'
+            ? 'You wake in the yard of the Silver Stair.'
+            : home === 'thornhaven'
+              ? 'You wake in the yard of Graymoor Hold.'
+              : home === 'valdoria'
+                ? 'You wake in the yard of Blackpine Tower.'
+                : 'You wake where you last bound.',
   });
 }
 

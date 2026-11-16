@@ -384,9 +384,26 @@
           "itemId": "scroll_breaker",
           "price": 140
         },
-        { "itemId": "scroll_rush", "price": 220 },
-        { "itemId": "scroll_wind", "price": 352 },
-        { "itemId": "scroll_oath", "price": 412 }
+        {
+          "itemId": "scroll_rush",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_wind",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_oath",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_guard",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_cleave",
+          "price": 720
+        }
       ]
     },
     {
@@ -401,9 +418,26 @@
           "itemId": "scroll_white",
           "price": 148
         },
-        { "itemId": "scroll_needle", "price": 220 },
-        { "itemId": "scroll_wall", "price": 352 },
-        { "itemId": "scroll_star", "price": 412 }
+        {
+          "itemId": "scroll_needle",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_wall",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_star",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_lance",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_blackrime",
+          "price": 720
+        }
       ]
     },
     {
@@ -418,9 +452,26 @@
           "itemId": "scroll_ward",
           "price": 132
         },
-        { "itemId": "scroll_peat", "price": 220 },
-        { "itemId": "scroll_cinder", "price": 352 },
-        { "itemId": "scroll_ashen", "price": 412 }
+        {
+          "itemId": "scroll_peat",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_cinder",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_ashen",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_bog",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_winter",
+          "price": 720
+        }
       ]
     },
     {
@@ -435,9 +486,26 @@
           "itemId": "scroll_vanish",
           "price": 128
         },
-        { "itemId": "scroll_ham", "price": 220 },
-        { "itemId": "scroll_night", "price": 352 },
-        { "itemId": "scroll_bane", "price": 412 }
+        {
+          "itemId": "scroll_ham",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_night",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_bane",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_vein",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_silent",
+          "price": 720
+        }
       ]
     },
     {
@@ -452,9 +520,26 @@
           "itemId": "scroll_feast",
           "price": 155
         },
-        { "itemId": "scroll_sweep", "price": 220 },
-        { "itemId": "scroll_warblood", "price": 352 },
-        { "itemId": "scroll_howl", "price": 412 }
+        {
+          "itemId": "scroll_sweep",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_warblood",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_howl",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_redfeast",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_bloodhowl",
+          "price": 720
+        }
       ]
     },
     {
@@ -469,9 +554,26 @@
           "itemId": "scroll_deep",
           "price": 136
         },
-        { "itemId": "scroll_call", "price": 220 },
-        { "itemId": "scroll_root", "price": 352 },
-        { "itemId": "scroll_elder", "price": 412 }
+        {
+          "itemId": "scroll_call",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_root",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_elder",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_packmend",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_elderroot",
+          "price": 720
+        }
       ]
     },
     {
@@ -483,57 +585,254 @@
       "npcId": "sefa",
       "title": "Sefa's Charts",
       "stock": [
-        { "itemId": "chart_hoffender", "price": 15 },
-        { "itemId": "chart_frostmere_road", "price": 25 },
-        { "itemId": "chart_bay", "price": 20 }
+        {
+          "itemId": "chart_hoffender",
+          "price": 15
+        },
+        {
+          "itemId": "chart_frostmere_road",
+          "price": 25
+        },
+        {
+          "itemId": "chart_bay",
+          "price": 20
+        }
       ]
     },
     {
       "npcId": "nils",
       "title": "Reed's Charts",
       "stock": [
-        { "itemId": "chart_frostmere_deep", "price": 40 },
-        { "itemId": "chart_whitepine", "price": 35 },
-        { "itemId": "chart_cairns", "price": 50 },
-        { "itemId": "chart_rimeheart", "price": 70 },
-        { "itemId": "chart_barrow", "price": 55 }
+        {
+          "itemId": "chart_frostmere_deep",
+          "price": 40
+        },
+        {
+          "itemId": "chart_whitepine",
+          "price": 35
+        },
+        {
+          "itemId": "chart_cairns",
+          "price": 50
+        },
+        {
+          "itemId": "chart_rimeheart",
+          "price": 70
+        },
+        {
+          "itemId": "chart_barrow",
+          "price": 55
+        }
       ]
     },
     {
       "npcId": "brand",
       "title": "Brand's Pelts",
       "stock": [
-        { "itemId": "skinning_knife", "price": 12 },
-        { "itemId": "wool_bandage", "price": 4 }
+        {
+          "itemId": "skinning_knife",
+          "price": 12
+        },
+        {
+          "itemId": "wool_bandage",
+          "price": 4
+        }
       ]
     },
     {
       "npcId": "yrsa",
       "title": "Yrsa's Upgrades",
       "stock": [
-        { "itemId": "bearded_handaxe", "price": 28 },
-        { "itemId": "ash_staff", "price": 18 },
-        { "itemId": "hand_wraps", "price": 14 }
+        {
+          "itemId": "bearded_handaxe",
+          "price": 28
+        },
+        {
+          "itemId": "ash_staff",
+          "price": 18
+        },
+        {
+          "itemId": "hand_wraps",
+          "price": 14
+        }
       ]
     },
     {
       "npcId": "kara",
       "title": "Hearthpass Stores",
       "stock": [
-        { "itemId": "trail_ration", "price": 4 },
-        { "itemId": "wool_bandage", "price": 12 },
-        { "itemId": "yarrow_draught", "price": 48 },
-        { "itemId": "ridge_axe", "price": 200 },
-        { "itemId": "hearthpass_jerkin", "price": 180 },
-        { "itemId": "hardened_leather_cap", "price": 150 },
-        { "itemId": "hardened_leather_tunic", "price": 280 },
-        { "itemId": "hardened_leather_gloves", "price": 95 },
-        { "itemId": "hardened_leather_pants", "price": 190 },
-        { "itemId": "hardened_leather_boots", "price": 110 },
-        { "itemId": "chart_hearthpass", "price": 35 },
-        { "itemId": "chart_fangs", "price": 60 },
-        { "itemId": "chart_tarn", "price": 70 },
-        { "itemId": "chart_fang", "price": 95 }
+        {
+          "itemId": "trail_ration",
+          "price": 4
+        },
+        {
+          "itemId": "wool_bandage",
+          "price": 12
+        },
+        {
+          "itemId": "yarrow_draught",
+          "price": 48
+        },
+        {
+          "itemId": "ridge_axe",
+          "price": 200
+        },
+        {
+          "itemId": "hearthpass_jerkin",
+          "price": 180
+        },
+        {
+          "itemId": "hardened_leather_cap",
+          "price": 150
+        },
+        {
+          "itemId": "hardened_leather_tunic",
+          "price": 280
+        },
+        {
+          "itemId": "hardened_leather_gloves",
+          "price": 95
+        },
+        {
+          "itemId": "hardened_leather_pants",
+          "price": 190
+        },
+        {
+          "itemId": "hardened_leather_boots",
+          "price": 110
+        },
+        {
+          "itemId": "chart_hearthpass",
+          "price": 35
+        },
+        {
+          "itemId": "chart_fangs",
+          "price": 60
+        },
+        {
+          "itemId": "chart_tarn",
+          "price": 70
+        },
+        {
+          "itemId": "chart_fang",
+          "price": 95
+        },
+        {
+          "itemId": "chart_mouth",
+          "price": 110
+        },
+        {
+          "itemId": "chart_gallery",
+          "price": 140
+        },
+        {
+          "itemId": "chart_vault",
+          "price": 180
+        }
+      ]
+    },
+    {
+      "npcId": "maeriel",
+      "title": "White Pages",
+      "stock": [
+        {
+          "itemId": "scroll_spike",
+          "price": 72
+        },
+        {
+          "itemId": "scroll_white",
+          "price": 148
+        },
+        {
+          "itemId": "scroll_needle",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_wall",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_star",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_lance",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_blackrime",
+          "price": 720
+        }
+      ]
+    },
+    {
+      "npcId": "odda",
+      "title": "Graymoor Stores",
+      "stock": [
+        {
+          "itemId": "trail_ration",
+          "price": 4
+        },
+        {
+          "itemId": "wool_bandage",
+          "price": 8
+        },
+        {
+          "itemId": "chart_graymoor",
+          "price": 40
+        },
+        {
+          "itemId": "chart_thornhaven",
+          "price": 55
+        }
+      ]
+    },
+    {
+      "npcId": "osric",
+      "title": "Blackpine Stores",
+      "stock": [
+        {
+          "itemId": "trail_ration",
+          "price": 5
+        },
+        {
+          "itemId": "wool_bandage",
+          "price": 10
+        },
+        {
+          "itemId": "yarrow_draught",
+          "price": 48
+        },
+        {
+          "itemId": "chart_blackpine",
+          "price": 70
+        },
+        {
+          "itemId": "chart_valdoria",
+          "price": 90
+        }
+      ]
+    },
+    {
+      "npcId": "tael",
+      "title": "Linden Goods",
+      "stock": [
+        {
+          "itemId": "trail_ration",
+          "price": 3
+        },
+        {
+          "itemId": "wool_bandage",
+          "price": 6
+        },
+        {
+          "itemId": "chart_eldenmoor",
+          "price": 25
+        },
+        {
+          "itemId": "chart_eldenweald",
+          "price": 30
+        }
       ]
     }
   ]

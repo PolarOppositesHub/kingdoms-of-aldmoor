@@ -123,6 +123,10 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
     const race = roster.races.find((entry) => entry.id === id);
     if (!race?.playable) return;
     raceId = race.id;
+    const stillAllowed = roster.classes.some((cls) => cls.id === classId && cls.playable && cls.races.includes(raceId));
+    if (!stillAllowed) {
+      classId = roster.classes.find((cls) => cls.playable && cls.races.includes(raceId))?.id ?? classId;
+    }
     trimBonus();
     paint();
   });

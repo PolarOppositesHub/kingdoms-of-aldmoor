@@ -58,5 +58,50 @@
     "id": "the_fang",
     "name": "The Fang",
     "blurb": "The high cleft. Vargan Frostfang keeps the stone mouth at the end of it."
+  },
+  {
+    "id": "graymoor",
+    "name": "Graymoor Hold",
+    "blurb": "Odda's yard, where the snow becomes mud."
+  },
+  {
+    "id": "thornhaven_fields",
+    "name": "Thornhaven",
+    "blurb": "The fields south of Hoffender, and the road on to Valdoria."
+  },
+  {
+    "id": "blackpine",
+    "name": "Blackpine Tower",
+    "blurb": "The kingdom yard in the pines."
+  },
+  {
+    "id": "valdoria_road",
+    "name": "Valdoria",
+    "blurb": "The road between Thornhaven and the Eldenweald."
+  },
+  {
+    "id": "eldenmoor",
+    "name": "Eldenmoor",
+    "blurb": "The tiered city of the high elves. The ink stops at the wall."
+  },
+  {
+    "id": "eldenweald",
+    "name": "Eldenweald",
+    "blurb": "The woods and meadows outside Eldenmoor's north gate."
+  },
+  {
+    "id": "rime_mouth",
+    "name": "The Rime Mouth",
+    "blurb": "The first cavern of the Black Ice."
+  },
+  {
+    "id": "shatter_gallery",
+    "name": "The Shatter Gallery",
+    "blurb": "The middle cavern. Calden keeps it."
+  },
+  {
+    "id": "black_vault",
+    "name": "The Black Vault",
+    "blurb": "Ysolde's cavern, under the gallery."
   }
 ]

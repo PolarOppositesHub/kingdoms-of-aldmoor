@@ -626,6 +626,11 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private animateSnow(delta: number): void {
+    const calm = new Set(['eldenmoor', 'elden_inn', 'elden_wizard', 'elden_shop', 'valdoria', 'blackice1', 'blackice2', 'blackice3']);
+    if (calm.has(this.mapData.zoneId)) {
+      this.snow.clear();
+      return;
+    }
     const view = this.cam.worldView;
     this.snow.clear();
     this.snow.fillStyle(0xf7fbfe, 0.8);

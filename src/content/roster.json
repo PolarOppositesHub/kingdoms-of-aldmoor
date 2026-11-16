@@ -28,8 +28,11 @@
     {
       "id": "high_elf",
       "name": "High Elf",
-      "playable": false,
-      "blurb": "Coming soon. Eldenmoor's people.",
+      "playable": true,
+      "blurb": "Eldenmoor's own. A long memory, and a mind that likes the cold.",
+      "homeZone": "eldenmoor",
+      "homeX": 1256,
+      "homeY": 3278,
       "mods": { "str": -1, "sta": -1, "agi": 1, "dex": 1, "wis": 1, "int": 2, "cha": 0 },
       "scale": 1.05
     },
@@ -114,8 +117,8 @@
       "id": "wizard",
       "name": "Wizard",
       "playable": true,
-      "races": [],
-      "blurb": "A staff and a pool of mana. Not a path a Barbarian can walk."
+      "races": ["high_elf"],
+      "blurb": "A staff and a pool of mana. The path taught in Eldenmoor."
     }
   ]
 }

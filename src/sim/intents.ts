@@ -109,7 +109,15 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         return;
       }
       case 'createHero': {
-        applyHero(state, content, intent.raceId, intent.classId, intent.bonus, intent.sex ?? state.sex);
+        const made = applyHero(state, content, intent.raceId, intent.classId, intent.bonus, intent.sex ?? state.sex);
+        if (!made) return;
+        const race = content.roster.races.find((entry) => entry.id === intent.raceId);
+        if (race?.homeZone && race.homeX !== undefined && race.homeY !== undefined && race.homeZone !== state.zoneId) {
+          state.bindZone = race.homeZone;
+          state.bind = { x: race.homeX, y: race.homeY };
+          state.log = ['The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.'];
+          emit({ type: 'zone', zoneId: race.homeZone, x: race.homeX, y: race.homeY });
+        }
         return;
       }
       case 'talkTo': {
@@ -198,7 +206,16 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           state.bindZone = state.zoneId;
           emit({
             type: 'log',
-            text: state.zoneId === 'frostfang' ? 'You bind at the Hearthpass fire. If you fall, you wake here.' : 'You bind here.',
+            text:
+              state.zoneId === 'frostfang'
+                ? 'You bind at the Hearthpass fire. If you fall, you wake here.'
+                : state.zoneId === 'eldenmoor'
+                  ? 'You bind at the Silver Stair. If you fall, you wake in the yard.'
+                  : state.zoneId === 'thornhaven'
+                    ? 'You bind at Graymoor Hold. If you fall, you wake in the yard.'
+                    : state.zoneId === 'valdoria'
+                      ? 'You bind at Blackpine Tower. If you fall, you wake in the yard.'
+                      : 'You bind here.',
           });
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
           return;
@@ -467,6 +484,11 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       case 'close':
         state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
         return;
+      case 'debugZone': {
+        if (!state.debug) return;
+        emit({ type: 'zone', zoneId: intent.zoneId, x: intent.x, y: intent.y });
+        return;
+      }
       case 'debugTeleport': {
         if (!state.debug) return;
         player.x = intent.x;

@@ -53,7 +53,19 @@
       "grimhild": 40,
       "ashjaw": 41,
       "skarn": 42,
-      "ram": 43
+      "ram": 43,
+      "liriel": 44,
+      "maeriel": 45,
+      "tael": 46,
+      "sere": 47,
+      "halden": 48,
+      "odda": 49,
+      "nell": 50,
+      "osric": 51,
+      "anwen": 52,
+      "boar": 53,
+      "stag": 54,
+      "crawler": 55
     }
   },
   "props": {

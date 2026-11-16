@@ -619,13 +619,14 @@ describe('bags, charts, pets, and respawn', () => {
 const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
 
 describe('levels, rest, and ability icons', () => {
-  it('keeps the 1–9 curve and extends it through level 25', () => {
-    expect(content.tuning.levelCap).toBe(25);
+  it('keeps the 1–9 curve and extends it through level 30', () => {
+    expect(content.tuning.levelCap).toBe(30);
     expect(content.tuning.xpTable[9]).toBe(750);
     expect(xpToNext(content, 1)).toBe(70);
     expect(xpToNext(content, 10)).toBe(880);
     expect(xpToNext(content, 24)).toBe(3750);
-    expect(content.tuning.xpTable).toHaveLength(25);
+    expect(xpToNext(content, 29)).toBe(5250);
+    expect(content.tuning.xpTable).toHaveLength(30);
     const stats = content.classes.warrior.stats;
     expect(maxHp(content, 'warrior', 10, stats)).toBe(28 + 12 + 9 * 8);
     expect(maxHp(content, 'warrior', 11, stats)).toBe(28 + 12 + 10 * 8 + 4);
@@ -1182,6 +1183,202 @@ describe('Frostfang Reach', () => {
     expect(mob.hp).toBeLessThan(def.hp);
     expect(hero.alive).toBe(true);
     expect(hero.hp).toBeGreaterThan(0);
+  });
+});
+
+describe('Eldenmoor, the road south, and the Black Ice', () => {
+  const zoneDir = join(process.cwd(), 'src', 'assets', 'zones');
+  const maps = new Map<string, ReturnType<typeof parseTiledMap>>();
+  maps.set('hoffender', parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson));
+  for (const file of readdirSync(zoneDir).filter((name) => name.endsWith('.tmj'))) {
+    const map = parseTiledMap(JSON.parse(readFileSync(join(zoneDir, file), 'utf8')) as TiledJson);
+    maps.set(map.zoneId, map);
+  }
+
+  function reachable(start: string): Set<string> {
+    const seen = new Set<string>();
+    const queue = [start];
+    while (queue.length) {
+      const id = queue.pop();
+      if (!id || seen.has(id)) continue;
+      seen.add(id);
+      const map = maps.get(id);
+      if (!map) continue;
+      for (const spawn of map.spawns) {
+        if (spawn.kind === 'door' && spawn.toZone && maps.has(spawn.toZone)) queue.push(spawn.toZone);
+      }
+    }
+    return seen;
+  }
+
+  it('can be walked from Hoffender and from Eldenmoor, both ways', () => {
+    expect(maps.has('eldenmoor')).toBe(true);
+    expect(maps.has('thornhaven')).toBe(true);
+    expect(maps.has('valdoria')).toBe(true);
+    expect(maps.has('blackice1')).toBe(true);
+    expect(maps.has('blackice3')).toBe(true);
+    const fromHoffender = reachable('hoffender');
+    const fromElden = reachable('eldenmoor');
+    for (const id of maps.keys()) {
+      expect(fromHoffender.has(id), id).toBe(true);
+      expect(fromElden.has(id), id).toBe(true);
+    }
+    for (const map of maps.values()) {
+      for (const door of map.spawns) {
+        if (door.kind !== 'door' || !door.toZone || door.toX === undefined || door.toY === undefined) continue;
+        const dest = maps.get(door.toZone);
+        expect(dest, `${map.zoneId} -> ${door.toZone}`).toBeTruthy();
+        expect(bodyBlocked(dest!, door.toX, door.toY, 5, 3, false), `${door.name} lands blocked`).toBe(false);
+        for (const back of dest!.spawns) {
+          if (back.kind !== 'door' || back.toZone !== map.zoneId) continue;
+          expect(Math.hypot(back.x - door.toX, back.y - door.toY)).toBeGreaterThan(14);
+        }
+      }
+    }
+  });
+
+  it('keeps level bands that follow the roads', () => {
+    const levels = (zoneId: string, pred: (spawn: { y: number }) => boolean = () => true) =>
+      maps.get(zoneId)!.spawns.filter((spawn) => spawn.kind === 'mob' && pred(spawn)).map((spawn) => content.mobs[spawn.defId].level);
+    const elden = maps.get('eldenmoor')!;
+    for (const level of levels('eldenmoor', (spawn) => spawn.y < 150 * 16)) {
+      expect(level).toBeGreaterThanOrEqual(1);
+      expect(level).toBeLessThanOrEqual(10);
+    }
+    expect(levels('eldenmoor', (spawn) => spawn.y > 160 * 16)).toHaveLength(0);
+    for (const level of levels('thornhaven')) {
+      expect(level).toBeGreaterThanOrEqual(10);
+      expect(level).toBeLessThanOrEqual(18);
+    }
+    for (const level of levels('valdoria')) {
+      expect(level).toBeGreaterThanOrEqual(16);
+      expect(level).toBeLessThanOrEqual(26);
+    }
+    for (const level of levels('blackice1')) expect(level).toBeGreaterThanOrEqual(21);
+    for (const level of levels('blackice3')) expect(level).toBeGreaterThanOrEqual(23);
+    expect(content.mobs.ysolde.level).toBe(28);
+    expect(content.mobs.ysolde.name).toBe('Ysolde of the Black Ice');
+    expect(content.mobs.ysolde_black_ice.name).toBe('Rimeheart Shade');
+    expect(elden.zoneId).toBe('eldenmoor');
+    expect(elden.width).toBeGreaterThanOrEqual(256);
+    expect(maps.get('thornhaven')!.width).toBeGreaterThanOrEqual(256);
+    expect(maps.get('valdoria')!.width).toBeGreaterThanOrEqual(256);
+    expect(maps.get('blackice1')!.spawns.some((spawn) => spawn.defId === 'anwen')).toBe(true);
+    expect(maps.get('blackice3')!.spawns.some((spawn) => spawn.defId === 'ysolde')).toBe(true);
+    const race = content.roster.races.find((entry) => entry.id === 'high_elf');
+    expect(race?.playable).toBe(true);
+    expect(content.roster.classes.find((entry) => entry.id === 'wizard')?.races).toContain('high_elf');
+    const spawn = elden.spawns.find((entry) => entry.kind === 'spawn');
+    expect(spawn?.x).toBe(race?.homeX);
+    expect(spawn?.y).toBe(race?.homeY);
+  });
+
+  it('raises the cap to 30 without teaching the new drills, and keeps an old save', () => {
+    expect(xpLossFraction(10)).toBe(0.05);
+    expect(xpLossFraction(19)).toBe(0.05);
+    expect(xpLossFraction(20)).toBe(0.075);
+    expect(xpLossFraction(29)).toBe(0.075);
+    expect(xpLossFraction(30)).toBe(0.1);
+    expect(conColor(30, 30)).toBe('white');
+    expect(conColor(30, 26)).toBe('gray');
+    expect(conColor(30, 27)).toBe('green');
+    expect(conColor(30, 33)).toBe('red');
+    expect(maxHp(content, 'warrior', 30, content.classes.warrior.stats)).toBeGreaterThan(maxHp(content, 'warrior', 25, content.classes.warrior.stats));
+    expect(maxFocus(content, 'rogue', 30)).toBe(80 + 4 * 30);
+
+    const map = arena();
+    const state = createWorld(content, map, 4);
+    state.debug = true;
+    applyIntent(state, { type: 'debugGrantXp', amount: 500000 }, content, map);
+    expect(state.level).toBe(30);
+    expect(state.learned).not.toContain('cleaving_oath');
+    expect(state.learned).not.toContain('black_rime');
+
+    const legacy = {
+      version: 3,
+      savedAt: 4,
+      zoneId: 'hoffender',
+      x: 400,
+      y: 400,
+      facing: 's' as const,
+      raceId: 'barbarian',
+      classId: 'warrior',
+      sex: 'male' as const,
+      level: 12,
+      xp: 40,
+      hp: 90,
+      mana: 0,
+      focus: 0,
+      copper: 80,
+      baseStats: { str: 14, sta: 12, agi: 10, dex: 10, wis: 8, int: 6, cha: 8 },
+      bags: [{ itemId: 'bag_small', slots: [{ itemId: 'wolf_pelt', qty: 2 }, null, null, null] }],
+      equipment: {
+        head: null,
+        chest: 'cracked_leather_tunic',
+        hands: null,
+        legs: null,
+        feet: 'cracked_leather_boots',
+        primary: 'worn_axe',
+        secondary: null,
+        ranged: null,
+      },
+      quests: { wolf_pelts: { stage: 'done' as const, progress: 4 }, the_fang: { stage: 'active' as const, progress: 0 } },
+      learned: ['kick', 'shoulder_rush'],
+      loadout: ['kick', 'shoulder_rush'],
+      charts: ['hoffender'],
+      petOrder: 'follow' as const,
+      factions: {},
+      bindZone: 'hoffender',
+      bindX: 320,
+      bindY: 480,
+    };
+    const restored = createWorld(content, map, 8);
+    applySave(restored, content, map, legacy);
+    expect(restored.level).toBe(12);
+    expect(restored.xp).toBe(40);
+    expect(restored.bindZone).toBe('hoffender');
+    expect(restored.bind).toEqual({ x: 320, y: 480 });
+    expect(restored.learned).toEqual(['kick', 'shoulder_rush']);
+    expect(restored.quests.wolf_pelts.stage).toBe('done');
+    expect(restored.quests.the_fang.stage).toBe('active');
+    expect(restored.quests.cold_mouth.stage).toBe('none');
+    expect(restored.quests.weald_wolves.stage).toBe('none');
+    expect(restored.raceId).toBe('barbarian');
+
+    const born = createWorld(content, map, 3);
+    const events = applyIntent(born, {
+      type: 'createHero',
+      raceId: 'high_elf',
+      classId: 'wizard',
+      bonus: { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 },
+    }, content, map);
+    expect(born.raceId).toBe('high_elf');
+    expect(born.classId).toBe('wizard');
+    expect(born.bindZone).toBe('eldenmoor');
+    expect(events.find((event) => event.type === 'zone')).toMatchObject({ type: 'zone', zoneId: 'eldenmoor', x: 1256, y: 3278 });
+    expect(applyHero(createWorld(content, map, 1), content, 'barbarian', 'wizard', { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 })).toBe(false);
+
+    const hall = parseTiledMap(JSON.parse(warriorRaw) as TiledJson);
+    const buyer = createWorld(content, hall, 6);
+    const eirik = buyer.actors.find((actor) => actor.defId === 'eirik');
+    const player = getPlayer(buyer);
+    player.x = eirik!.x;
+    player.y = eirik!.y + 10;
+    buyer.level = 29;
+    player.level = 29;
+    buyer.copper = 5000;
+    applyIntent(buyer, { type: 'talkTo', id: eirik!.id }, content, hall);
+    applyIntent(buyer, { type: 'choice', index: 1 }, content, hall);
+    applyIntent(buyer, { type: 'buy', itemId: 'scroll_cleave' }, content, hall);
+    expect(buyer.learned).not.toContain('cleaving_oath');
+    expect(buyer.log.at(-1)).toMatch(/level 30/);
+    buyer.level = 30;
+    player.level = 30;
+    applyIntent(buyer, { type: 'buy', itemId: 'scroll_cleave' }, content, hall);
+    expect(buyer.learned).toContain('cleaving_oath');
+    expect(content.abilities.cleaving_oath.level).toBe(30);
+    expect(content.abilities.black_rime.level).toBe(30);
+    expect(content.abilities.iron_guard.classId).toBe('warrior');
   });
 });
 

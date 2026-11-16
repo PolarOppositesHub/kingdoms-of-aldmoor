@@ -306,6 +306,7 @@ export function mountHud(api: GameApi): void {
   let panelKey = '';
   let hintedFight = false;
   let hintedSell = false;
+  let hintedStart = false;
   let lastLevel = 1;
   const startItems = countQty(api.getState());
   bindBagDrag(panel, () => {
@@ -319,10 +320,16 @@ export function mountHud(api: GameApi): void {
       if (toast.textContent === text) toast.hidden = true;
     }, 4600);
   };
-  showToast('Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.');
-
   const tick = () => {
     const state = api.getState();
+    if (!hintedStart && state.tick > 0) {
+      hintedStart = true;
+      showToast(
+        state.raceId === 'high_elf'
+          ? 'Tap the ground to walk, or use the pad. North of the wall is the Eldenweald.'
+          : 'Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.',
+      );
+    }
     paintVitals(root, state, api);
     const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}|${bookSlot}|${openBag}`;
     if (key !== panelKey) {
@@ -1248,7 +1255,7 @@ function helpHtml(state: GameState, api: GameApi): string {
       <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
       <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf has its own window: health, Attack, Back off, Follow, Guard, and Dismiss. Call brings the wolf back.</li>
       <li>The layout lock is on while you play, so nothing slides under your thumb. Unlock it here, or with the lock button, and the windows grow an outline and a handle. Drag the bars, the target, the pet, either hotbar, the pad, sit, the map buttons, and the log. Reset puts them back. The choice is remembered on this device.</li>
-      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. The ridge at the end of the north road is Frostfang Reach, for levels 10 to 20. Fall in combat and you wake in Hilda's yard, unless you have bound at Hearthpass. The climb goes on to 25.</li>
+      <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds, then Frostfang Reach for levels 10 to 20, then the Black Ice. South is Thornhaven, Valdoria, and Eldenmoor, where high elves begin. Fall in combat and you wake at your bind: Hilda's yard, unless you have bound elsewhere. The climb goes on to 30. Spells and drills are bought, and they say the level they ask.</li>
     </ul>
     <h3>Settings</h3>
     <div class="settings">

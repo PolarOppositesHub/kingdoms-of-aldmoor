@@ -121,7 +121,7 @@
     "resource": "mana",
     "baseFocus": 0,
     "focusPerLevel": 0,
-    "blurb": "A staff and a pool of mana. Not a Barbarian path.",
+    "blurb": "A staff and a pool of mana. The path taught in Eldenmoor.",
     "abilities": ["shardbolt", "rimefield"],
     "kit": { "chest": "tattered_robe" }
   }
