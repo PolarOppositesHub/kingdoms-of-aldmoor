@@ -138,6 +138,19 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     save.loadout = ['kick', 'heavy_swing'];
     save.note = 'Barbarians cannot walk the wizard path. This hero continues as a Warrior. Wizard spells were set aside.';
   }
+  const elfOnly = ['wizard', 'cleric', 'enchanter', 'paladin', 'magician'];
+  if (save.raceId === 'high_elf' && !elfOnly.includes(save.classId)) {
+    save.classId = 'wizard';
+    save.learned = [];
+    save.loadout = ['shardbolt', 'rimefield'];
+    save.petAway = false;
+    for (const slot of ['head', 'chest', 'hands', 'legs', 'feet', 'secondary'] as const) {
+      const worn = save.equipment[slot];
+      if (!worn) continue;
+      save.equipment[slot] = null;
+    }
+    save.note = 'High elves do not walk that path. This hero continues as a Wizard. The other drills, and armor that was not a wizard\'s, were set aside.';
+  }
   return save;
 }
 

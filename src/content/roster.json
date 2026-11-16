@@ -82,21 +82,21 @@
       "id": "warrior",
       "name": "Warrior",
       "playable": true,
-      "races": ["barbarian", "high_elf"],
+      "races": ["barbarian"],
       "blurb": "An axe, a kick, and a heavy swing."
     },
     {
       "id": "shaman",
       "name": "Shaman",
       "playable": true,
-      "races": ["barbarian", "high_elf"],
+      "races": ["barbarian"],
       "blurb": "Mana. A slow, a mend, and a burn that stays."
     },
     {
       "id": "rogue",
       "name": "Rogue",
       "playable": true,
-      "races": ["barbarian", "high_elf"],
+      "races": ["barbarian"],
       "blurb": "Guile. Sneak, a knife in the back, and a step aside."
     },
     {
@@ -110,8 +110,8 @@
       "id": "warden",
       "name": "Warden",
       "playable": true,
-      "races": ["barbarian", "high_elf"],
-      "blurb": "Fists, wraps, or a staff, a wolf, and a light mend."
+      "races": ["barbarian"],
+      "blurb": "Fists, wraps, or a staff, a snow wolf, and a light mend."
     },
     {
       "id": "wizard",
@@ -119,6 +119,34 @@
       "playable": true,
       "races": ["high_elf"],
       "blurb": "A staff and a pool of mana. The path taught in Eldenmoor."
+    },
+    {
+      "id": "cleric",
+      "name": "Cleric",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "Plate and a quiet mend. The dead take it worse."
+    },
+    {
+      "id": "enchanter",
+      "name": "Enchanter",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "A hush, a slow, and a voice that borrows a foe."
+    },
+    {
+      "id": "paladin",
+      "name": "Paladin",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "A shield, a small grace, and a place in front."
+    },
+    {
+      "id": "magician",
+      "name": "Magician",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "A cinder bolt, and an ember that comes when called."
     }
   ]
 }

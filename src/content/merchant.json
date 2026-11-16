@@ -732,28 +732,168 @@
       ]
     },
     {
-      "npcId": "cael",
-      "title": "Warrior Drills",
-      "copyFrom": "eirik",
-      "stock": []
+      "npcId": "selne",
+      "title": "Chapel Pages",
+      "stock": [
+        {
+          "itemId": "scroll_quiet_mend",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_pale_spark",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_linger_light",
+          "price": 72
+        },
+        {
+          "itemId": "scroll_dawn_aegis",
+          "price": 148
+        },
+        {
+          "itemId": "scroll_grave_lamp",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_wellspring",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_last_light",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_hymn_mend",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_second_dawn",
+          "price": 720
+        }
+      ]
     },
     {
-      "npcId": "vaela",
-      "title": "Shaman Rites",
-      "copyFrom": "torunn",
-      "stock": []
+      "npcId": "miris",
+      "title": "Hush Pages",
+      "stock": [
+        {
+          "itemId": "scroll_hush",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_drift_slow",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_veil_spring",
+          "price": 72
+        },
+        {
+          "itemId": "scroll_glass_needle",
+          "price": 148
+        },
+        {
+          "itemId": "scroll_still_room",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_deep_veil",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_borrowed_will",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_hush_all",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_long_borrow",
+          "price": 720
+        }
+      ]
     },
     {
-      "npcId": "liss",
-      "title": "Rogue Drills",
-      "copyFrom": "sable",
-      "stock": []
+      "npcId": "adel",
+      "title": "Oath Pages",
+      "stock": [
+        {
+          "itemId": "scroll_oath_cut",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_small_grace",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_bell_stun",
+          "price": 72
+        },
+        {
+          "itemId": "scroll_challenge",
+          "price": 148
+        },
+        {
+          "itemId": "scroll_second_grace",
+          "price": 220
+        },
+        {
+          "itemId": "scroll_lamp_stun",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_vow_mend",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_bulwark",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_dawn_oath",
+          "price": 720
+        }
+      ]
     },
     {
-      "npcId": "oren",
-      "title": "Warden Rites",
-      "copyFrom": "bjorn",
-      "stock": []
+      "npcId": "quen",
+      "title": "Ember Pages",
+      "stock": [
+        {
+          "itemId": "scroll_cinder_bolt",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_call_ember",
+          "price": 48
+        },
+        {
+          "itemId": "scroll_hearth_crumb",
+          "price": 72
+        },
+        {
+          "itemId": "scroll_flare",
+          "price": 148
+        },
+        {
+          "itemId": "scroll_scorch_field",
+          "price": 352
+        },
+        {
+          "itemId": "scroll_bright_coal",
+          "price": 412
+        },
+        {
+          "itemId": "scroll_cinder_rain",
+          "price": 540
+        },
+        {
+          "itemId": "scroll_ember_star",
+          "price": 720
+        }
+      ]
     },
     {
       "npcId": "maeriel",

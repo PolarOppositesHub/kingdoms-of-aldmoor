@@ -369,24 +369,42 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         return;
       }
       case 'pet': {
-        if (state.classId !== 'warden') return;
+        const petClass = state.classId === 'warden' || state.classId === 'magician' || state.classId === 'enchanter';
+        if (!petClass) return;
+        const voice = state.classId === 'warden' ? 'Your wolf' : state.classId === 'magician' ? 'The ember' : 'The borrowed foe';
         if (intent.order === 'dismiss') {
+          const charmed = state.actors.find((actor) => actor.pet && actor.charmMs > 0);
+          if (charmed && state.classId === 'enchanter') {
+            charmed.pet = false;
+            charmed.charmMs = 0;
+            charmed.hate.push({ id: player.id, amount: 6 });
+            emit({ type: 'log', text: 'The hush breaks.' });
+            return;
+          }
           if (state.petAway) return;
           state.petAway = true;
           state.petHold = null;
           state.petFocus = null;
           state.petOrder = 'follow';
           state.actors = state.actors.filter((actor) => !actor.pet);
-          emit({ type: 'log', text: 'Your wolf slips back into the trees.' });
+          emit({ type: 'log', text: state.classId === 'warden' ? 'Your wolf slips back into the trees.' : 'The ember fades.' });
           return;
         }
         if (intent.order === 'call') {
+          if (state.classId === 'enchanter') {
+            emit({ type: 'log', text: 'A borrowed foe does not come when called.' });
+            return;
+          }
+          if (state.classId === 'magician' && !knownAbilities(state, content).includes('call_ember')) {
+            emit({ type: 'log', text: 'You have not learned to call the ember.' });
+            return;
+          }
           state.petAway = false;
           state.petHold = null;
           state.petFocus = null;
           state.petOrder = 'follow';
           syncCompanion(state, content);
-          emit({ type: 'log', text: 'Your wolf comes back to your side.' });
+          emit({ type: 'log', text: state.classId === 'warden' ? 'Your wolf comes back to your side.' : 'The ember takes shape again.' });
           return;
         }
         if (intent.order === 'taunt') {
@@ -399,11 +417,11 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           if (!pet || !def?.petTaunt) return;
           const target = findActor(state, state.targetId);
           if (!target || target.kind !== 'mob' || !target.alive || target.pet) {
-            emit({ type: 'log', text: 'Your wolf has nothing to taunt.' });
+            emit({ type: 'log', text: `${voice} has nothing to taunt.` });
             return;
           }
           addHate(state, content, map, target, pet.id, 40 + pet.level * 4, emit);
-          emit({ type: 'log', text: `Your wolf taunts ${target.name}.` });
+          emit({ type: 'log', text: `${voice} taunts ${target.name}.` });
           return;
         }
         if (state.petAway) {
@@ -417,18 +435,18 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (intent.order === 'attack') {
           const target = findActor(state, state.targetId);
           if (!target || target.kind !== 'mob' || !target.alive || target.pet) {
-            emit({ type: 'log', text: 'Your wolf has nothing to attack.' });
+            emit({ type: 'log', text: `${voice} has nothing to attack.` });
             state.petOrder = 'follow';
             state.petFocus = null;
             return;
           }
           state.petFocus = target.id;
-          emit({ type: 'log', text: `Your wolf goes for ${target.name}.` });
+          emit({ type: 'log', text: `${voice} goes for ${target.name}.` });
           return;
         }
         state.petFocus = null;
         const line =
-          intent.order === 'stay' ? 'Your wolf holds guard.' : intent.order === 'backoff' ? 'Your wolf backs off.' : 'Your wolf follows.';
+          intent.order === 'stay' ? `${voice} holds.` : intent.order === 'backoff' ? `${voice} backs off.` : `${voice} follows.`;
         emit({ type: 'log', text: line });
         return;
       }

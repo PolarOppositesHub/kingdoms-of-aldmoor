@@ -41,6 +41,11 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     dotMs: 0,
     dotAmount: 0,
     dotBank: 0,
+    stunMs: 0,
+    hotMs: 0,
+    hotAmount: 0,
+    hotBank: 0,
+    charmMs: 0,
     pet: false,
     dormant: false,
     scale: 1,
@@ -80,12 +85,15 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   state.loadout = cls.abilities.slice(0, LOADOUT_CAP);
   state.charts = [];
   state.petOrder = 'follow';
-  state.petAway = false;
+  state.petAway = classId === 'magician';
   state.petHold = null;
   state.petFocus = null;
   state.sneakMs = 0;
   state.evadeMs = 0;
   state.powerMs = 0;
+  state.aegisMs = 0;
+  state.anchorMs = 0;
+  state.flowMs = 0;
   const focusMax = maxFocus(content, cls.id, level);
   state.focusMax = focusMax;
   state.focus = cls.resource === 'rage' ? 0 : focusMax;
@@ -103,23 +111,34 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   syncCompanion(state, content);
 }
 
+export function companionMobId(state: GameState): string | null {
+  if (state.classId === 'warden') return 'warden_wolf';
+  if (state.classId === 'magician') return 'ember_wisp';
+  return null;
+}
+
 export function syncCompanion(state: GameState, content: ContentDb): void {
+  const charmed = state.actors.filter((actor) => actor.pet && actor.charmMs > 0);
   state.actors = state.actors.filter((actor) => !actor.pet);
-  if (state.classId !== 'warden' || state.petAway) return;
+  state.actors.push(...charmed);
+  const mobId = companionMobId(state);
+  if (!mobId || state.petAway || charmed.length > 0) return;
   const player = getPlayer(state);
-  const def = content.mobs.warden_wolf;
+  const def = content.mobs[mobId];
+  const level = Math.max(1, state.level);
+  const hp = (def?.hp ?? 36) + (level - 1) * 8;
   state.actors.push(
     blankActor({
-      id: 'pet_wolf',
+      id: mobId === 'warden_wolf' ? 'pet_wolf' : 'pet_ember',
       kind: 'mob',
-      defId: 'warden_wolf',
-      name: def?.name ?? 'snow wolf',
-      sprite: 'frost_wolf',
+      defId: mobId,
+      name: def?.name ?? 'companion',
+      sprite: mobId === 'warden_wolf' ? 'frost_wolf' : 'ember',
       x: player.x - 18,
       y: player.y + 8,
-      hp: def?.hp ?? 36,
-      maxHp: def?.hp ?? 36,
-      level: Math.max(1, state.level),
+      hp,
+      maxHp: hp,
+      level,
       social: '',
       pet: true,
       attackMs: def?.delayMs ?? 1800,
@@ -329,6 +348,9 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     sneakMs: 0,
     evadeMs: 0,
     powerMs: 0,
+    aegisMs: 0,
+    anchorMs: 0,
+    flowMs: 0,
     sex: 'male',
     autoAttack: false,
     sitting: false,

@@ -137,38 +137,38 @@
       ]
     }
   },
-  "cael": {
+  "selne": {
     "start": {
-      "text": "Cael Thorn. The axe hall. The drills are the same pages Eirik sells in Hoffender. They stay grey until the level on the line. I do not hand them out for growing older.",
+      "text": "Selne Aur. The chapel. A mend, a light that stays, a ward, and a spark that hates bones. Every page names its level. I do not give them away for growing older.",
       "choices": [
-        { "label": "Show me the drills.", "action": "merchant" },
+        { "label": "Show me the pages.", "action": "merchant" },
         { "label": "Another time.", "action": "close" }
       ]
     }
   },
-  "vaela": {
+  "miris": {
     "start": {
-      "text": "Vaela Moss. The rites Torunn keeps in Hoffender are sold here too. A slow, a mend, a burn. Each one names the level it asks. The page does not open early.",
+      "text": "Miris Vale. The hush hall. A held foe, a slow, a tide of mana, and a will you can borrow. The list says the level. Nothing arrives on its own.",
       "choices": [
-        { "label": "Show me the rites.", "action": "merchant" },
+        { "label": "Show me the pages.", "action": "merchant" },
         { "label": "Another time.", "action": "close" }
       ]
     }
   },
-  "liss": {
+  "adel": {
     "start": {
-      "text": "Liss Fen. Quiet work. Sable's drills, sold in this hall instead of the snow. Sneak, a knife, a step aside. The later ones wait for the level they name.",
+      "text": "Adel Cor. The oath hall. A cut, a small grace, a bell that stops a foe, and a challenge that makes them look at you. Buy the page. The level on it is the lock.",
       "choices": [
-        { "label": "Show me the drills.", "action": "merchant" },
+        { "label": "Show me the pages.", "action": "merchant" },
         { "label": "Another time.", "action": "close" }
       ]
     }
   },
-  "oren": {
+  "quen": {
     "start": {
-      "text": "Oren Hale. Wardens of the Eldenweald learn the same mend and the same wolf-calls Bjorn teaches in Hoffender. Nothing arrives on its own. The list says the level.",
+      "text": "Quen Ash. The ember hall. A cinder bolt, a call that shapes an ember beside you, and a ration you did not cook. The ember does not come until you have bought the call and spoken it.",
       "choices": [
-        { "label": "Show me the rites.", "action": "merchant" },
+        { "label": "Show me the pages.", "action": "merchant" },
         { "label": "Another time.", "action": "close" }
       ]
     }

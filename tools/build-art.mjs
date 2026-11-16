@@ -1817,10 +1817,11 @@ function buildActors() {
     boar: 53,
     stag: 54,
     crawler: 55,
-    cael: 56,
-    vaela: 57,
-    liss: 58,
-    oren: 59,
+    selne: 56,
+    miris: 57,
+    adel: 58,
+    quen: 59,
+    ember: 60,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -2058,6 +2059,12 @@ function buildActors() {
       blob(9, 15, 2, 5, hex('#6b4428'));
       img.set(6, 12, hex('#1c1418'));
       img.set(8, 12, hex('#1c1418'));
+    } else if (kind === 'ember') {
+      blob(5, 6, 6, 6, hex('#e6c15a'));
+      blob(6, 7, 4, 4, hex('#c45a50'));
+      blob(7, 4, 2, 2, hex('#f4fbff'));
+      img.set(7, 8, hex('#1c1418'));
+      img.set(9, 8, hex('#1c1418'));
     } else if (kind === 'crawler') {
       blob(4, 9, 8, 6, hex('#d5e6f0'));
       blob(5, 10, 6, 3, hex('#7ea8bc'));
@@ -2135,6 +2142,7 @@ function buildActors() {
     ['boar', 53],
     ['stag', 54],
     ['crawler', 55],
+    ['ember', 60],
   ]) {
     const img = critter(name);
     for (let dir = 0; dir < 4; dir++) {

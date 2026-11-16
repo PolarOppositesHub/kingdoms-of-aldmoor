@@ -400,11 +400,28 @@ export function abilityIds() {
   return Object.keys(DRAW);
 }
 
+function paintGlyph(image, id) {
+  let n = 2166136261;
+  for (let i = 0; i < id.length; i++) n = Math.imul(n ^ id.charCodeAt(i), 16777619) >>> 0;
+  const colors = ['#d5e6f0', '#e6c15a', '#c45a50', '#8eae72', '#b7c4e8', '#f4fbff', '#a33b32', '#7ec8e8', '#f0d9a0', '#3e6b40'];
+  const ink = colors[n % colors.length];
+  const mark = colors[(n >>> 8) % colors.length];
+  disc(image, 8, 8, 2 + (n % 3), ink);
+  for (let i = 0; i < 12; i++) {
+    const bit = (n >>> i) & 1;
+    if (!bit) continue;
+    image.set(3 + (i % 10), 3 + (i % 5) + ((n >>> (i + 3)) & 3), hex(mark));
+  }
+  line(image, 3, 13, 8, 4 + (n % 4), ink);
+  line(image, 13, 13, 8, 4, mark);
+  image.set(8, 8, hex('#1c1418'));
+}
+
 export function paintAbilityIcon(id) {
   const draw = DRAW[id];
-  if (!draw) throw new Error(`no ability icon for ${id}`);
   const image = img();
-  draw(image);
+  if (draw) draw(image);
+  else paintGlyph(image, id);
   return image;
 }
 

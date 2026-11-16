@@ -541,10 +541,10 @@ function buildEldenmoor() {
   const shopEntry = feet(8, 8);
   m.add('door', 'Silver Stair', 78, 196, { toZone: 'elden_inn', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_inn' });
   m.add('door', 'The White Pages', 180, 196, { toZone: 'elden_wizard', toX: wizardEntry.x, toY: wizardEntry.y, sprite: 'sign_hall' });
-  m.add('door', 'Axe Hall', 74, 216, { toZone: 'elden_warrior', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
-  m.add('door', 'Rogue Hall', 180, 216, { toZone: 'elden_rogue', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
-  m.add('door', 'Shaman Hall', 74, 239, { toZone: 'elden_shaman', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
-  m.add('door', 'Warden Hall', 156, 239, { toZone: 'elden_warden', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
+  m.add('door', 'Chapel', 74, 216, { toZone: 'elden_cleric', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
+  m.add('door', 'Hush Hall', 180, 216, { toZone: 'elden_enchanter', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
+  m.add('door', 'Oath Hall', 74, 239, { toZone: 'elden_paladin', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
+  m.add('door', 'Ember Hall', 156, 239, { toZone: 'elden_magician', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
   m.add('door', 'Linden Goods', 102, 242, { toZone: 'elden_shop', toX: shopEntry.x, toY: shopEntry.y, sprite: 'sign_inn' });
   m.add('door', 'To Valdoria', 128, 10, { toZone: 'valdoria', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
   m.add('spawn', 'gate', 78, 204);
@@ -557,7 +557,7 @@ function buildEldenmoor() {
   solid[201][96] = 1;
   m.add('sign', 'Eldenmoor', 112, 162, {
     sprite: 'sign_hall',
-    text: 'Eldenmoor. The outer court holds the halls: warriors with Cael, shamans with Vaela, rogues with Liss, wardens with Oren, wizards with Maeriel. The castle at the center is the house of Queen Ellewynn XVI. Her steward, Halden, stands in the court. The north gate is the Eldenweald.',
+    text: 'Eldenmoor. The outer court holds the halls: Selne for clerics, Miris for enchanters, Adel for paladins, Quen for magicians, Maeriel for wizards. The castle at the center is the house of Queen Ellewynn XVI. Her steward, Halden, stands in the court. The north gate is the Eldenweald.',
   });
   m.add('sign', 'North gate', 144, 150, {
     sprite: 'sign_wilds',
@@ -620,17 +620,17 @@ function buildEldenmoor() {
     interior('elden_wizard', 'The White Pages', feet(180, 202), [
       ['maeriel', 'maeriel', 6, 4],
     ]),
-    interior('elden_warrior', 'Axe Hall', feet(74, 220), [
-      ['cael', 'cael', 6, 4],
+    interior('elden_cleric', 'The Chapel', feet(74, 220), [
+      ['selne', 'selne', 6, 4],
     ]),
-    interior('elden_rogue', 'Rogue Hall', feet(180, 220), [
-      ['liss', 'liss', 6, 4],
+    interior('elden_enchanter', 'Hush Hall', feet(180, 220), [
+      ['miris', 'miris', 6, 4],
     ]),
-    interior('elden_shaman', 'Shaman Hall', feet(74, 242), [
-      ['vaela', 'vaela', 6, 4],
+    interior('elden_paladin', 'Oath Hall', feet(74, 242), [
+      ['adel', 'adel', 6, 4],
     ]),
-    interior('elden_warden', 'Warden Hall', feet(156, 242), [
-      ['oren', 'oren', 6, 4],
+    interior('elden_magician', 'Ember Hall', feet(156, 242), [
+      ['quen', 'quen', 6, 4],
     ]),
     interior('elden_shop', 'Linden Goods', feet(102, 244), [
       ['tael', 'tael', 5, 4],

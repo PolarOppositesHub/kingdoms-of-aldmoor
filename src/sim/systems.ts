@@ -2,7 +2,7 @@ import type { AbilityDef, Actor, ContentDb, Dice, GameState, MapData } from './t
 import type { Emit } from './events';
 import { dist, facingOf, hitChance, roll, rollDice, xpLossFraction, xpToNext, xpYield } from './formulas';
 import { bodyBlocked, findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
-import { findActor, getPlayer, nextEntityId, refreshGear, refreshMobActivity } from './state';
+import { findActor, getPlayer, nextEntityId, refreshGear, refreshMobActivity, syncCompanion } from './state';
 import { addItem, countItem, takeItems } from './bags';
 import { TICK_MS, type PeltReward } from './types';
 
@@ -34,6 +34,12 @@ export function weaponProfile(state: GameState, content: ContentDb): { dice: Dic
 function spellDice(state: GameState, ability: AbilityDef): Dice {
   const intellect = Math.floor((state.stats.int - 10) / 4);
   return { n: ability.damage.n, sides: ability.damage.sides, bonus: ability.damage.bonus + intellect };
+}
+
+function undeadDice(state: GameState, ability: AbilityDef, target: Actor): Dice {
+  const dice = spellDice(state, ability);
+  if (ability.vsUndead && target.social === 'bones') dice.bonus += ability.vsUndead;
+  return dice;
 }
 
 function spellAttack(state: GameState): number {
@@ -111,7 +117,7 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
   standUp(state, emit);
   const player = getPlayer(state);
   const kind = ability.kind ?? 'strike';
-  const self = kind === 'heal' || kind === 'ward';
+  const self = kind === 'heal' || kind === 'ward' || kind === 'summon' || kind === 'conjure';
   if (!self && isSafe(map, player.x, player.y)) {
     emit({ type: 'log', text: "You can't start a fight inside the palisade." });
     return;
@@ -120,9 +126,37 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
   if (self) {
     if (!payCost(state, content, cost, emit)) return;
     state.cooldowns[ability.id] = ability.cooldownMs;
+    if (kind === 'summon') {
+      for (const actor of state.actors) {
+        if (actor.charmMs > 0) {
+          actor.pet = false;
+          actor.charmMs = 0;
+        }
+      }
+      state.petAway = false;
+      state.petOrder = 'follow';
+      state.petFocus = null;
+      syncCompanion(state, content);
+      emit({ type: 'log', text: `${ability.name}. The ember takes shape beside you.` });
+      return;
+    }
+    if (kind === 'conjure') {
+      const itemId = ability.conjure?.itemId ?? 'trail_ration';
+      const qty = ability.conjure?.qty ?? 1;
+      addItem(state, content, itemId, qty);
+      const name = content.items[itemId]?.name ?? 'rations';
+      emit({ type: 'log', text: `${ability.name} leaves ${qty} ${name} in your pack.` });
+      return;
+    }
     if (kind === 'heal') {
       const amount = Math.min(ability.heal ?? 8, player.maxHp - player.hp);
       player.hp += Math.max(0, amount);
+      if (ability.hotMs) {
+        player.hotMs = Math.max(player.hotMs, ability.hotMs);
+        player.hotAmount = ability.hotAmount ?? 2;
+        player.hotBank = 0;
+      }
+      if (ability.buff === 'anchor') state.anchorMs = Math.max(state.anchorMs, ability.buffMs ?? 60000);
       emit({ type: 'heal', targetId: player.id, amount: Math.max(0, amount) });
       emit({ type: 'log', text: `${ability.name} restores ${Math.max(0, amount)} health.` });
       return;
@@ -137,6 +171,15 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
     } else if (ability.buff === 'evade') {
       state.evadeMs = ms;
       emit({ type: 'log', text: 'You loosen your stance and watch the next blow.' });
+    } else if (ability.buff === 'aegis') {
+      state.aegisMs = ms;
+      emit({ type: 'log', text: 'A pale ward settles over you.' });
+    } else if (ability.buff === 'anchor') {
+      state.anchorMs = ms;
+      emit({ type: 'log', text: 'A last light waits, if you fall.' });
+    } else if (ability.buff === 'flow') {
+      state.flowMs = ms;
+      emit({ type: 'log', text: 'Mana comes easier for a while.' });
     } else {
       state.powerMs = ms;
       emit({ type: 'log', text: 'A hard warmth sits in your arms.' });
@@ -160,7 +203,29 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
     emit({ type: 'log', text: 'They are not turned away.' });
     return;
   }
+  if (kind === 'charm') {
+    if (!payCost(state, content, cost, emit)) return;
+    state.cooldowns[ability.id] = ability.cooldownMs;
+    for (const actor of state.actors) {
+      if (actor.pet && actor.charmMs > 0 && actor.id !== target.id) {
+        actor.pet = false;
+        actor.charmMs = 0;
+      }
+    }
+    target.pet = true;
+    target.charmMs = ability.buffMs ?? 16000;
+    target.hate = [];
+    target.stunMs = 0;
+    state.petOrder = 'follow';
+    state.petFocus = null;
+    state.petAway = false;
+    emit({ type: 'log', text: `${target.name} listens, for a while.` });
+    return;
+  }
   if (!payCost(state, content, cost, emit)) return;
+  if (ability.stunMs || kind === 'stun') {
+    target.stunMs = Math.max(target.stunMs, ability.stunMs ?? ability.buffMs ?? 3000);
+  }
   state.cooldowns[ability.id] = ability.cooldownMs;
   state.sneakMs = 0;
   player.facing = target.x < player.x ? 'w' : target.x > player.x ? 'e' : player.facing;
@@ -184,7 +249,8 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
         mob.slowMs = Math.max(mob.slowMs, ability.slowMs);
         mob.slowRate = ability.slowFactor ?? 0.5;
       }
-      resolveStrike(state, content, map, player, mob, spellDice(state, ability), spellAttack(state), false, ability.verb ?? 'chill', emit);
+      if (ability.stunMs) mob.stunMs = Math.max(mob.stunMs, ability.stunMs);
+      resolveStrike(state, content, map, player, mob, undeadDice(state, ability, mob), spellAttack(state), false, ability.verb ?? 'chill', emit);
       if (mob.alive) addHate(state, content, map, mob, player.id, ability.hate, emit);
     }
     emit({ type: 'log', text: `${ability.name} catches ${victims.length === 1 ? 'one foe' : `${victims.length} foes`}.` });
@@ -196,7 +262,7 @@ export function performAbility(state: GameState, content: ContentDb, map: MapDat
       target.slowMs = Math.max(target.slowMs, ability.slowMs);
       target.slowRate = ability.slowFactor ?? 0.5;
     }
-    resolveStrike(state, content, map, player, target, spellDice(state, ability), spellAttack(state), false, ability.verb ?? 'pierce', emit);
+    resolveStrike(state, content, map, player, target, undeadDice(state, ability, target), spellAttack(state), false, ability.verb ?? 'pierce', emit);
   } else if (kind === 'dot') {
     target.dotMs = Math.max(target.dotMs, ability.dotMs ?? 5000);
     target.dotAmount = ability.dotAmount ?? 2;
@@ -421,6 +487,7 @@ export function resolveStrike(
   let damage = rollDice(state, dice) - Math.floor(acOf(state, content, target) / content.tuning.acMitigate);
   if (source.kind === 'player' && state.powerMs > 0) damage += 3;
   if (damage < 1) damage = 1;
+  if (target.kind === 'player' && state.aegisMs > 0) damage = Math.max(1, Math.floor(damage * 0.7));
   const critChance =
     source.kind === 'player'
       ? content.tuning.critBase + state.stats.dex * content.tuning.critPerDex
@@ -465,6 +532,15 @@ function finishKill(state: GameState, content: ContentDb, map: MapData, source: 
   target.path = [];
   emit({ type: 'death', actorId: target.id });
   if (target.kind === 'player') {
+    if (state.anchorMs > 0) {
+      state.anchorMs = 0;
+      target.alive = true;
+      target.hp = Math.max(1, Math.floor(target.maxHp * 0.4));
+      target.hate = [];
+      emit({ type: 'heal', targetId: target.id, amount: target.hp });
+      emit({ type: 'log', text: 'The last light pulls you back.' });
+      return;
+    }
     state.dead = true;
     state.deathMs = content.tuning.respawnDelayMs;
     state.autoAttack = false;
@@ -864,6 +940,18 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
       mob.respawnMs -= TICK_MS;
       continue;
     }
+    if (mob.stunMs > 0) mob.stunMs = Math.max(0, mob.stunMs - TICK_MS);
+    if (mob.charmMs > 0) {
+      mob.charmMs = Math.max(0, mob.charmMs - TICK_MS);
+      if (mob.charmMs === 0 && mob.pet) {
+        mob.pet = false;
+        if (!mob.hate.some((hate) => hate.id === player.id)) mob.hate.push({ id: player.id, amount: 6 });
+      }
+    }
+    if (mob.stunMs > 0) {
+      mob.path = [];
+      continue;
+    }
     if (mob.pet) {
       // Pets are not hostiles. Safe tiles block mobs, which left the wolf stuck in the yard and unable to follow anyone out of Hoffender.
       const speed = Math.max(def.speed ?? 60, tuning.playerSpeed + 8) * (TICK_MS / 1000);
@@ -1055,11 +1143,20 @@ export function regen(state: GameState, content: ContentDb, map: MapData): void 
   const fighting = state.actors.some((actor) => actor.kind === 'mob' && !actor.pet && actor.alive && actor.hate.some((hate) => hate.id === player.id));
   if (fighting) state.outOfCombatMs = 0;
   else state.outOfCombatMs += TICK_MS;
-  const manaRate = postureRate(state, content, map, content.tuning.sitManaPerSec, content.tuning.standManaPerSec);
+  const manaRate = postureRate(state, content, map, content.tuning.sitManaPerSec, content.tuning.standManaPerSec) * (state.flowMs > 0 ? 1.5 : 1);
   tickResources(state, content, map, fighting, manaRate);
   regenPool(state, manaRate, () => state.mana, (value) => {
     state.mana = value;
   }, state.maxMana, 'manaRegenBank');
+  if (player.hotMs > 0) {
+    player.hotBank += TICK_MS;
+    if (player.hotBank >= 1000) {
+      player.hotBank -= 1000;
+      player.hotMs = Math.max(0, player.hotMs - 1000);
+      const amount = Math.min(player.hotAmount, player.maxHp - player.hp);
+      if (amount > 0) player.hp += amount;
+    }
+  }
   if (player.hp >= player.maxHp) return;
   const hpRate = postureRate(state, content, map, content.tuning.sitHpPerSec, content.tuning.standHpPerSec);
   state.regenBank += (hpRate * TICK_MS) / 1000;
@@ -1075,6 +1172,9 @@ function tickResources(state: GameState, content: ContentDb, map: MapData, fight
   if (state.sneakMs > 0) state.sneakMs = Math.max(0, state.sneakMs - TICK_MS);
   if (state.evadeMs > 0) state.evadeMs = Math.max(0, state.evadeMs - TICK_MS);
   if (state.powerMs > 0) state.powerMs = Math.max(0, state.powerMs - TICK_MS);
+  if (state.aegisMs > 0) state.aegisMs = Math.max(0, state.aegisMs - TICK_MS);
+  if (state.anchorMs > 0) state.anchorMs = Math.max(0, state.anchorMs - TICK_MS);
+  if (state.flowMs > 0) state.flowMs = Math.max(0, state.flowMs - TICK_MS);
   const kind = content.classes[state.classId]?.resource;
   if (kind === 'guile' && state.focus < state.focusMax) {
     state.manaRegenBank += (manaRate * TICK_MS) / 1000;

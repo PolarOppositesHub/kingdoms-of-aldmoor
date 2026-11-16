@@ -56,31 +56,31 @@
     "race": "high_elf"
   },
   {
-    "id": "cael",
-    "name": "Cael Thorn",
-    "title": "warrior trainer",
-    "dialogue": "cael",
+    "id": "selne",
+    "name": "Selne Aur",
+    "title": "cleric trainer",
+    "dialogue": "selne",
     "race": "high_elf"
   },
   {
-    "id": "vaela",
-    "name": "Vaela Moss",
-    "title": "shaman trainer",
-    "dialogue": "vaela",
+    "id": "miris",
+    "name": "Miris Vale",
+    "title": "enchanter trainer",
+    "dialogue": "miris",
     "race": "high_elf"
   },
   {
-    "id": "liss",
-    "name": "Liss Fen",
-    "title": "rogue trainer",
-    "dialogue": "liss",
+    "id": "adel",
+    "name": "Adel Cor",
+    "title": "paladin trainer",
+    "dialogue": "adel",
     "race": "high_elf"
   },
   {
-    "id": "oren",
-    "name": "Oren Hale",
-    "title": "warden trainer",
-    "dialogue": "oren",
+    "id": "quen",
+    "name": "Quen Ash",
+    "title": "magician trainer",
+    "dialogue": "quen",
     "race": "high_elf"
   },
   {

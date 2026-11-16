@@ -1311,5 +1311,474 @@
     "stack": 1,
     "blurb": "The last cavern. Ysolde is marked, and the stair back.",
     "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "scroll_quiet_mend",
+    "name": "quiet mend",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "quiet_mend",
+    "blurb": "A small, clean mend. The chapel sells it first. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_pale_spark",
+    "name": "pale spark",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "pale_spark",
+    "blurb": "A thin spark. Bones take it worse than the living. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_linger_light",
+    "name": "linger light",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "linger_light",
+    "blurb": "A mend that keeps working after the word is done. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_dawn_aegis",
+    "name": "dawn aegis",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "dawn_aegis",
+    "blurb": "A pale ward. Blows land lighter for a while. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_grave_lamp",
+    "name": "grave lamp",
+    "kind": "scroll",
+    "value": 220,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "grave_lamp",
+    "blurb": "A harder spark, and crueler to bones. Level 12.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_wellspring",
+    "name": "wellspring",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "wellspring",
+    "blurb": "The deep mend. It spends more of the light. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_last_light",
+    "name": "last light",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "last_light",
+    "blurb": "A light that waits. If you fall while it holds, it pulls you back. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hymn_mend",
+    "name": "hymn mend",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hymn_mend",
+    "blurb": "A mend and a lingering light together. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_second_dawn",
+    "name": "second dawn",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "second_dawn",
+    "blurb": "The last page. A large mend, and the light that pulls you back. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hush",
+    "name": "hush",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hush",
+    "blurb": "A word that stops one foe where they stand. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_drift_slow",
+    "name": "drift",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "drift_slow",
+    "blurb": "Feet that forget their hurry. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_veil_spring",
+    "name": "veil spring",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "veil_spring",
+    "blurb": "Mana comes easier for a while. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_glass_needle",
+    "name": "glass needle",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "glass_needle",
+    "blurb": "A thin, mean point of force. It is not the point of the hall. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_still_room",
+    "name": "still room",
+    "kind": "scroll",
+    "value": 220,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "still_room",
+    "blurb": "A longer hush. One foe, held. Level 12.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_deep_veil",
+    "name": "deep veil",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "deep_veil",
+    "blurb": "A thicker tide of mana. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_borrowed_will",
+    "name": "borrowed will",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "borrowed_will",
+    "blurb": "One foe follows you, for a while. Then they remember themselves. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hush_all",
+    "name": "hush all",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hush_all",
+    "blurb": "A short hush on everyone near the target. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_long_borrow",
+    "name": "long borrow",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "long_borrow",
+    "blurb": "The long version. One foe stays yours longer. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_oath_cut",
+    "name": "oath cut",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "oath_cut",
+    "blurb": "A cut with the oath blade. No mana. It just arrives. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_small_grace",
+    "name": "small grace",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "small_grace",
+    "blurb": "A small mend, for the one holding the shield. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bell_stun",
+    "name": "bell",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bell_stun",
+    "blurb": "A ring off the shield. One foe stops. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_challenge",
+    "name": "challenge",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "challenge",
+    "blurb": "Make them look at you. The cut is small. The hate is not. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_second_grace",
+    "name": "second grace",
+    "kind": "scroll",
+    "value": 220,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "second_grace",
+    "blurb": "A larger mend than the first grace. Level 12.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_lamp_stun",
+    "name": "lamp stun",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "lamp_stun",
+    "blurb": "A brighter stop. One foe, held longer. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_vow_mend",
+    "name": "vow mend",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "vow_mend",
+    "blurb": "The oath turned inward. A deep mend. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bulwark",
+    "name": "bulwark",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bulwark",
+    "blurb": "The shield remembers. Blows land lighter. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_dawn_oath",
+    "name": "dawn oath",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "dawn_oath",
+    "blurb": "The last oath. A heavy cut, and the foe stops. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_cinder_bolt",
+    "name": "cinder bolt",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "cinder_bolt",
+    "blurb": "A thrown cinder. It is the first page. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_call_ember",
+    "name": "call ember",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "call_ember",
+    "blurb": "Shape an ember beside you. It takes Attack, Follow, Stay, and Dismiss. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hearth_crumb",
+    "name": "hearth crumb",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hearth_crumb",
+    "blurb": "Two trail rations, from nothing you were carrying. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_flare",
+    "name": "flare",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "flare",
+    "blurb": "A hotter cinder. It still costs. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_scorch_field",
+    "name": "scorch",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "scorch_field",
+    "blurb": "Cinders on everyone near the target. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bright_coal",
+    "name": "bright coal",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bright_coal",
+    "blurb": "Four trail rations. The ember hall calls this practical. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_cinder_rain",
+    "name": "cinder rain",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "cinder_rain",
+    "blurb": "A meaner bolt. One foe, and it shows. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_ember_star",
+    "name": "ember star",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "ember_star",
+    "blurb": "The expensive one. One star of cinder. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "chapel_staff",
+    "name": "chapel staff",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 18,
+    "weight": 2.4,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2400,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
+    "bonuses": {
+      "wis": 1
+    },
+    "blurb": "A pale staff from the chapel. It mends nothing by itself.",
+    "effects": "Melee. A cleric weapon."
+  },
+  {
+    "id": "hush_rod",
+    "name": "hush rod",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 16,
+    "weight": 1.6,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2200,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 0
+    },
+    "bonuses": {
+      "cha": 1
+    },
+    "blurb": "A thin rod. The quiet is in the hand that holds it.",
+    "effects": "Melee. An enchanter weapon."
+  },
+  {
+    "id": "oath_blade",
+    "name": "oath blade",
+    "kind": "weapon",
+    "grip": "blade",
+    "value": 22,
+    "weight": 2.8,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2000,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "bonuses": {
+      "sta": 1
+    },
+    "blurb": "A straight blade for an oath. The edge is honest.",
+    "effects": "Melee. A paladin weapon."
+  },
+  {
+    "id": "ember_staff",
+    "name": "ember staff",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 18,
+    "weight": 2.2,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2300,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
+    "bonuses": {
+      "int": 1
+    },
+    "blurb": "A staff with a coal set in the head. It is warm, not kind.",
+    "effects": "Melee. A magician weapon."
   }
 ]

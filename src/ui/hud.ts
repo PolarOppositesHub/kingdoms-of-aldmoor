@@ -691,15 +691,16 @@ let petShown: boolean | null = null;
 
 function paintPet(root: HTMLElement, state: GameState, api: GameApi, panel: HTMLElement | null): void {
   if (!panel) return;
-  const warden = state.classId === 'warden';
-  panel.hidden = !warden;
-  if (petShown !== warden) {
-    petShown = warden;
+  const petClass = state.classId === 'warden' || state.classId === 'magician' || state.classId === 'enchanter';
+  panel.hidden = !petClass;
+  if (petShown !== petClass) {
+    petShown = petClass;
     layoutCtl?.refresh();
   }
-  if (!warden) return;
+  if (!petClass) return;
   const pet = state.actors.find((actor) => actor.pet);
-  const def = api.content.mobs.warden_wolf;
+  const fallback = state.classId === 'magician' ? 'ember_wisp' : 'warden_wolf';
+  const def = pet ? api.content.mobs[pet.defId] : api.content.mobs[fallback];
   const name = root.querySelector('#pet-name');
   const level = root.querySelector('#pet-level');
   const fill = root.querySelector<HTMLElement>('#pet-fill');

@@ -1168,5 +1168,33 @@
     "coinMax": 92,
     "sprite": "ysolde",
     "named": true
+  },
+  {
+    "id": "ember_wisp",
+    "name": "ember wisp",
+    "level": 1,
+    "hp": 42,
+    "ac": 8,
+    "attack": 12,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "delayMs": 1700,
+    "aggroRange": 0,
+    "assistRange": 0,
+    "leash": 200,
+    "social": "",
+    "xp": 0,
+    "speed": 72,
+    "wanderSpeed": 20,
+    "crit": 0.04,
+    "verb": "scorches",
+    "loot": [],
+    "coinMin": 0,
+    "coinMax": 0,
+    "sprite": "ember",
+    "petTaunt": false
   }
 ]
