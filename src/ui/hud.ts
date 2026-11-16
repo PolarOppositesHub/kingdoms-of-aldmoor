@@ -102,7 +102,7 @@ export function mountHud(api: GameApi): void {
         <button type="button" data-pet="dismiss" data-pet-role="recall">Dismiss</button>
       </div>
     </section>
-    <div id="log" class="hud-widget" data-hud="log" aria-live="polite">${dragHandle('Move log')}<span id="log-line"></span></div>
+    <div id="log" class="hud-widget" data-hud="log">${dragHandle('Move log')}<div id="log-lines" aria-live="polite"></div></div>
     <div class="pad hud-widget" id="pad" data-hud="pad" data-scheme="stick" role="group" aria-label="Move">
       ${dragHandle('Move movement pad')}
       <span class="pad-arm up"></span>
@@ -116,7 +116,8 @@ export function mountHud(api: GameApi): void {
       <button type="button" class="dir down" data-dir="s" aria-label="Down">▼</button>
     </div>
     <div class="actions combat-dock">
-      <div class="util-row">
+      <div class="util-row hud-widget" data-hud="util">
+        ${dragHandle('Move action buttons')}
         <button type="button" class="atk util-atk" aria-pressed="false">ATK</button>
         <button type="button" id="next">Next</button>
         <button type="button" id="talk">Look</button>
@@ -163,7 +164,7 @@ export function mountHud(api: GameApi): void {
     </div>
     <button type="button" id="mute" class="mute" aria-label="Mute">Sound</button>
     <button type="button" id="scheme" class="help-btn scheme-btn" aria-label="Movement scheme">Pad</button>
-    <button type="button" id="hud-lock" class="lock-btn" aria-pressed="true" aria-label="Layout locked. Unlock to move windows."><span class="lock-glyph" aria-hidden="true"></span></button>
+    <button type="button" id="hud-lock" class="lock-btn" aria-pressed="true" aria-label="Layout locked. Unlock to move or resize windows."><span class="lock-glyph" aria-hidden="true"></span></button>
     <button type="button" id="help" class="help-btn" aria-label="Help">?</button>
     <div id="death" class="death" hidden>The cold takes you.</div>
   `;
@@ -266,7 +267,7 @@ export function mountHud(api: GameApi): void {
       return;
     }
     const button = (event.target as HTMLElement).closest('button');
-    if (!button) return;
+    if (!button || button.classList.contains('resize-handle') || button.classList.contains('drag-handle')) return;
     const action = button.dataset.action;
     if (action === 'close') {
       detail = null;
@@ -570,6 +571,22 @@ function bindPad(pad: HTMLElement): void {
   pad.addEventListener('pointercancel', end);
 }
 
+function paintLog(host: HTMLElement, lines: string[]): void {
+  const shown = lines.slice(-8);
+  const text = shown.join('\n');
+  if (host.dataset.text === text) return;
+  host.dataset.text = text;
+  host.replaceChildren(
+    ...shown.map((line) => {
+      const span = document.createElement('span');
+      span.className = 'log-line';
+      span.textContent = line;
+      return span;
+    }),
+  );
+  if (host.closest('#log')?.classList.contains('is-sized')) host.scrollTop = host.scrollHeight;
+}
+
 function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const player = state.actors.find((actor) => actor.id === state.playerId);
   if (!player) return;
@@ -578,7 +595,7 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   const coin = root.querySelector('#coin');
   const hpNum = root.querySelector('#hp-num');
   const hpFill = root.querySelector<HTMLElement>('#hp-fill');
-  const log = root.querySelector('#log-line');
+  const log = root.querySelector<HTMLElement>('#log-lines');
   const spells = [...root.querySelectorAll<HTMLButtonElement>('.spell')];
   const actions = root.querySelector<HTMLElement>('.actions');
   const petPanel = root.querySelector<HTMLElement>('#pet-panel');
@@ -623,7 +640,7 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
   root.querySelectorAll<HTMLElement>('.xp-fill').forEach((node) => {
     node.style.width = `${Math.round(progress.ratio * 100)}%`;
   });
-  log.textContent = state.log[state.log.length - 1] ?? '';
+  paintLog(log, state.log);
 
   paintAttack(root, state, api);
   const selected = Number(root.dataset.selected ?? '0');
@@ -785,6 +802,8 @@ function paintPanel(
   else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookSlot);
   else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
   else panel.innerHTML = helpHtml(state, api);
+  const sheet = panel.querySelector<HTMLElement>('.sheet');
+  if (sheet) layoutCtl?.mountSheet(sheet, state.ui.panel);
 }
 
 function bookHtml(state: GameState, api: GameApi, armed: number): string {
@@ -1247,7 +1266,7 @@ function helpHtml(state: GameState, api: GameApi): string {
       ${caster ? spells : '<li>Kick is immediate, then it needs a breath.</li>'}
       <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
       <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf has its own window: health, Attack, Back off, Follow, Guard, and Dismiss. Call brings the wolf back.</li>
-      <li>The layout lock is on while you play, so nothing slides under your thumb. Unlock it here, or with the lock button, and the windows grow an outline and a handle. Drag the bars, the target, the pet, either hotbar, the pad, sit, the map buttons, and the log. Reset puts them back. The choice is remembered on this device.</li>
+      <li>The layout lock is on while you play, so nothing slides under your thumb. Unlock it here, or with the lock button, and the windows grow an outline, a handle, and a corner. Drag to move. Drag the corner to resize. Inventory, the book, quests, maps, and a merchant can be resized too. Reset puts position and size back. The choice is remembered on this device.</li>
       <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds. The ridge at the end of the north road is Frostfang Reach, for levels 10 to 20. Fall in combat and you wake in Hilda's yard, unless you have bound at Hearthpass. The climb goes on to 25.</li>
     </ul>
     <h3>Settings</h3>
