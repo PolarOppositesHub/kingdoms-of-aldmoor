@@ -56,6 +56,34 @@
     "race": "high_elf"
   },
   {
+    "id": "cael",
+    "name": "Cael Thorn",
+    "title": "warrior trainer",
+    "dialogue": "cael",
+    "race": "high_elf"
+  },
+  {
+    "id": "vaela",
+    "name": "Vaela Moss",
+    "title": "shaman trainer",
+    "dialogue": "vaela",
+    "race": "high_elf"
+  },
+  {
+    "id": "liss",
+    "name": "Liss Fen",
+    "title": "rogue trainer",
+    "dialogue": "liss",
+    "race": "high_elf"
+  },
+  {
+    "id": "oren",
+    "name": "Oren Hale",
+    "title": "warden trainer",
+    "dialogue": "oren",
+    "race": "high_elf"
+  },
+  {
     "id": "anwen",
     "name": "Anwen Pell",
     "title": "the fire in the mouth",

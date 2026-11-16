@@ -732,6 +732,30 @@
       ]
     },
     {
+      "npcId": "cael",
+      "title": "Warrior Drills",
+      "copyFrom": "eirik",
+      "stock": []
+    },
+    {
+      "npcId": "vaela",
+      "title": "Shaman Rites",
+      "copyFrom": "torunn",
+      "stock": []
+    },
+    {
+      "npcId": "liss",
+      "title": "Rogue Drills",
+      "copyFrom": "sable",
+      "stock": []
+    },
+    {
+      "npcId": "oren",
+      "title": "Warden Rites",
+      "copyFrom": "bjorn",
+      "stock": []
+    },
+    {
       "npcId": "maeriel",
       "title": "White Pages",
       "stock": [

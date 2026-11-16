@@ -1380,6 +1380,65 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     expect(content.abilities.black_rime.level).toBe(30);
     expect(content.abilities.iron_guard.classId).toBe('warrior');
   });
+
+  it('lets a high elf of each open class be created, reach an Eldenmoor trainer, and keep the save', () => {
+    const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
+    const open = ['warrior', 'shaman', 'rogue', 'warden', 'wizard'] as const;
+    const trainers: Record<string, string> = {
+      warrior: 'cael',
+      shaman: 'vaela',
+      rogue: 'liss',
+      warden: 'oren',
+      wizard: 'maeriel',
+    };
+    expect(content.roster.classes.find((entry) => entry.id === 'berserker')?.races).toEqual(['barbarian']);
+    expect(applyHero(createWorld(content, arena(), 1), content, 'high_elf', 'berserker', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 1), content, 'barbarian', 'warrior', bonus)).toBe(true);
+
+    const city = maps.get('eldenmoor');
+    expect(city).toBeTruthy();
+    for (const classId of open) {
+      expect(content.roster.classes.find((entry) => entry.id === classId)?.races).toContain('high_elf');
+      const door = city!.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === `elden_${classId}`);
+      expect(door?.toX, classId).toBeTypeOf('number');
+      const hall = maps.get(`elden_${classId}`);
+      expect(hall, classId).toBeTruthy();
+      const state = createWorld(content, arena(), 4);
+      const events = applyIntent(state, { type: 'createHero', raceId: 'high_elf', classId, bonus }, content, arena());
+      expect(events.find((event) => event.type === 'zone')).toMatchObject({ type: 'zone', zoneId: 'eldenmoor' });
+      expect(state.raceId).toBe('high_elf');
+      expect(state.classId).toBe(classId);
+      expect(state.bindZone).toBe('eldenmoor');
+      commitZone(state, content, hall!, door!.toX!, door!.toY!);
+      const trainer = state.actors.find((actor) => actor.defId === trainers[classId]);
+      expect(trainer, trainers[classId]).toBeTruthy();
+      const player = getPlayer(state);
+      player.x = trainer!.x;
+      player.y = trainer!.y + 8;
+      applyIntent(state, { type: 'talkTo', id: trainer!.id }, content, hall!);
+      applyIntent(state, { type: 'choice', index: 0 }, content, hall!);
+      expect(state.ui.panel).toBe('merchant');
+      const vendor = content.merchant.vendors.find((entry) => entry.npcId === trainers[classId]);
+      const gated = vendor?.stock
+        .map((row) => content.items[row.itemId])
+        .find((item) => item?.teaches && (content.abilities[item.teaches]?.level ?? 0) > state.level);
+      expect(gated?.teaches, classId).toBeTruthy();
+      expect(content.abilities[gated!.teaches!].classId).toBe(classId);
+      expect(state.learned).not.toContain(gated!.teaches);
+      state.copper = 8000;
+      applyIntent(state, { type: 'buy', itemId: gated!.id }, content, hall!);
+      expect(state.learned).not.toContain(gated!.teaches);
+      expect(state.log.at(-1)).toMatch(/level/);
+      const save = captureSave(state);
+      const restored = createWorld(content, hall!, 9);
+      applySave(restored, content, hall!, save);
+      expect(restored.raceId).toBe('high_elf');
+      expect(restored.classId).toBe(classId);
+      expect(restored.bindZone).toBe('eldenmoor');
+      expect(restored.bind).toEqual({ x: 1256, y: 3278 });
+      expect(restored.learned).not.toContain(gated!.teaches);
+    }
+  });
 });
 
 describe('sim boundary', () => {

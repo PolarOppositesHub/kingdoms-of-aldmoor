@@ -103,6 +103,8 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
       })
       .join('');
     blurb.textContent = roster.classes.find((cls) => cls.id === classId)?.blurb ?? '';
+    const enter = document.getElementById('enter');
+    if (enter) enter.textContent = raceId === 'high_elf' ? 'Enter Eldenmoor' : 'Enter Hoffender';
     points.textContent = `Bonus points left: ${roster.points - spent()}`;
     list.innerHTML = STATS.map((key) => {
       const total = baseOf(key) + bonus[key];

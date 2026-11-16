@@ -1817,6 +1817,10 @@ function buildActors() {
     boar: 53,
     stag: 54,
     crawler: 55,
+    cael: 56,
+    vaela: 57,
+    liss: 58,
+    oren: 59,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1906,6 +1910,10 @@ function buildActors() {
     { row: 50, tint: clothTint(hex('#4a4038'), hex('#8a8178'), hex('#2a2420'), hex('#6b4030'), hex('#c48462')), overlay: () => (img) => img },
     { row: 51, tint: clothTint(hex('#24361e'), hex('#3e6b40'), hex('#142016'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
     { row: 52, tint: clothTint(hex('#4a3428'), hex('#a87848'), hex('#2a1c16'), hex('#d8d0c4'), hex('#f4f1ea')), overlay: () => (img) => img },
+    { row: 56, tint: clothTint(hex('#8a3034'), hex('#d5dee6'), hex('#4a1420'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 57, tint: clothTint(hex('#2e4a38'), hex('#d7f0c0'), hex('#1c3024'), hex('#f4f7fb'), hex('#d5e6f0')), overlay: () => (img) => img },
+    { row: 58, tint: clothTint(hex('#241c28'), hex('#c8c0b4'), hex('#120e14'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 59, tint: clothTint(hex('#1e4030'), hex('#8eae72'), hex('#142016'), hex('#e6c15a'), hex('#fff6d4')), overlay: () => (img) => img },
   ];
 
   for (const person of people) {

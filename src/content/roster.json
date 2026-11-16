@@ -82,21 +82,21 @@
       "id": "warrior",
       "name": "Warrior",
       "playable": true,
-      "races": ["barbarian"],
+      "races": ["barbarian", "high_elf"],
       "blurb": "An axe, a kick, and a heavy swing."
     },
     {
       "id": "shaman",
       "name": "Shaman",
       "playable": true,
-      "races": ["barbarian"],
+      "races": ["barbarian", "high_elf"],
       "blurb": "Mana. A slow, a mend, and a burn that stays."
     },
     {
       "id": "rogue",
       "name": "Rogue",
       "playable": true,
-      "races": ["barbarian"],
+      "races": ["barbarian", "high_elf"],
       "blurb": "Guile. Sneak, a knife in the back, and a step aside."
     },
     {
@@ -110,8 +110,8 @@
       "id": "warden",
       "name": "Warden",
       "playable": true,
-      "races": ["barbarian"],
-      "blurb": "Fists, wraps, or a staff, a snow wolf, and a light mend."
+      "races": ["barbarian", "high_elf"],
+      "blurb": "Fists, wraps, or a staff, a wolf, and a light mend."
     },
     {
       "id": "wizard",

@@ -137,6 +137,42 @@
       ]
     }
   },
+  "cael": {
+    "start": {
+      "text": "Cael Thorn. The axe hall. The drills are the same pages Eirik sells in Hoffender. They stay grey until the level on the line. I do not hand them out for growing older.",
+      "choices": [
+        { "label": "Show me the drills.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "vaela": {
+    "start": {
+      "text": "Vaela Moss. The rites Torunn keeps in Hoffender are sold here too. A slow, a mend, a burn. Each one names the level it asks. The page does not open early.",
+      "choices": [
+        { "label": "Show me the rites.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "liss": {
+    "start": {
+      "text": "Liss Fen. Quiet work. Sable's drills, sold in this hall instead of the snow. Sneak, a knife, a step aside. The later ones wait for the level they name.",
+      "choices": [
+        { "label": "Show me the drills.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "oren": {
+    "start": {
+      "text": "Oren Hale. Wardens of the Eldenweald learn the same mend and the same wolf-calls Bjorn teaches in Hoffender. Nothing arrives on its own. The list says the level.",
+      "choices": [
+        { "label": "Show me the rites.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
   "liriel": {
     "start": {
       "text": "Liriel Dawn. The Silver Stair. The beds are quiet and the fire does not ask which gate you came through. If you fall in the Eldenweald, and you have not bound somewhere else, you can wake in my yard.",
