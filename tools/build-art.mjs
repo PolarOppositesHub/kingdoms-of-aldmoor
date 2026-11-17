@@ -21,6 +21,7 @@ import {
 import { buildHeroArt, buildPeopleArt } from './hero-art.mjs';
 import { buildWorld, T } from './frostmere-map.mjs';
 import { buildFrostfang } from './frostfang-map.mjs';
+import { buildSouthlands } from './south-map.mjs';
 import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1804,6 +1805,23 @@ function buildActors() {
     ashjaw: 41,
     skarn: 42,
     ram: 43,
+    liriel: 44,
+    maeriel: 45,
+    tael: 46,
+    sere: 47,
+    halden: 48,
+    odda: 49,
+    nell: 50,
+    osric: 51,
+    anwen: 52,
+    boar: 53,
+    stag: 54,
+    crawler: 55,
+    selne: 56,
+    miris: 57,
+    adel: 58,
+    quen: 59,
+    ember: 60,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1884,6 +1902,19 @@ function buildActors() {
     { row: 18, tint: clothTint(hex('#2a4038'), hex('#4e7a68'), hex('#1a2822'), hex('#c8c0b6'), hex('#f4f1ea')), overlay: () => (img) => img },
     { row: 19, tint: clothTint(hex('#3a3230'), hex('#6a5a50'), hex('#241c1a'), hex('#5c4030'), hex('#a86840')), overlay: () => (img) => img },
     { row: 33, tint: clothTint(hex('#163044'), hex('#3c86a2'), hex('#0c1c28'), hex('#d5e6f0'), hex('#f4fbff')), overlay: (dir) => witchOverlay(dir) },
+    { row: 44, tint: clothTint(hex('#d5dee6'), hex('#f4f7fb'), hex('#8aa0b4'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 45, tint: clothTint(hex('#2c2458'), hex('#b7c4e8'), hex('#161228'), hex('#f4f7fb'), hex('#d5e6f0')), overlay: () => (img) => img },
+    { row: 46, tint: clothTint(hex('#2e4a38'), hex('#8eae72'), hex('#1c3024'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 47, tint: clothTint(hex('#3d5e78'), hex('#d5dee6'), hex('#1a3348'), hex('#f4f7fb'), hex('#e6c15a')), overlay: () => (img) => img },
+    { row: 48, tint: clothTint(hex('#f4f1ea'), hex('#fffaf2'), hex('#c8c0b4'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 49, tint: clothTint(hex('#6b4428'), hex('#a87848'), hex('#3a2418'), hex('#5c4030'), hex('#8a5a32')), overlay: () => (img) => img },
+    { row: 50, tint: clothTint(hex('#4a4038'), hex('#8a8178'), hex('#2a2420'), hex('#6b4030'), hex('#c48462')), overlay: () => (img) => img },
+    { row: 51, tint: clothTint(hex('#24361e'), hex('#3e6b40'), hex('#142016'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
+    { row: 52, tint: clothTint(hex('#4a3428'), hex('#a87848'), hex('#2a1c16'), hex('#d8d0c4'), hex('#f4f1ea')), overlay: () => (img) => img },
+    { row: 56, tint: clothTint(hex('#8a3034'), hex('#d5dee6'), hex('#4a1420'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 57, tint: clothTint(hex('#2e4a38'), hex('#d7f0c0'), hex('#1c3024'), hex('#f4f7fb'), hex('#d5e6f0')), overlay: () => (img) => img },
+    { row: 58, tint: clothTint(hex('#241c28'), hex('#c8c0b4'), hex('#120e14'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 59, tint: clothTint(hex('#1e4030'), hex('#8eae72'), hex('#142016'), hex('#e6c15a'), hex('#fff6d4')), overlay: () => (img) => img },
   ];
 
   for (const person of people) {
@@ -2013,6 +2044,34 @@ function buildActors() {
       blob(9, 14, 2, 5, hex('#8a5438'));
       img.set(6, 10, hex('#1c1418'));
       img.set(8, 10, hex('#1c1418'));
+    } else if (kind === 'boar') {
+      blob(3, 10, 10, 5, hex('#6b4428'));
+      blob(11, 9, 3, 3, hex('#c48462'));
+      blob(4, 15, 2, 4, hex('#3a241c'));
+      blob(9, 15, 2, 4, hex('#3a241c'));
+      img.set(5, 11, hex('#1c1418'));
+      img.set(7, 11, hex('#1c1418'));
+    } else if (kind === 'stag') {
+      blob(5, 6, 2, 5, hex('#c6a56a'));
+      blob(9, 6, 2, 5, hex('#e6c15a'));
+      blob(4, 10, 8, 5, hex('#a87848'));
+      blob(5, 15, 2, 5, hex('#6b4428'));
+      blob(9, 15, 2, 5, hex('#6b4428'));
+      img.set(6, 12, hex('#1c1418'));
+      img.set(8, 12, hex('#1c1418'));
+    } else if (kind === 'ember') {
+      blob(5, 6, 6, 6, hex('#e6c15a'));
+      blob(6, 7, 4, 4, hex('#c45a50'));
+      blob(7, 4, 2, 2, hex('#f4fbff'));
+      img.set(7, 8, hex('#1c1418'));
+      img.set(9, 8, hex('#1c1418'));
+    } else if (kind === 'crawler') {
+      blob(4, 9, 8, 6, hex('#d5e6f0'));
+      blob(5, 10, 6, 3, hex('#7ea8bc'));
+      blob(3, 14, 2, 4, hex('#8aa4b4'));
+      blob(11, 14, 2, 4, hex('#8aa4b4'));
+      img.set(6, 11, hex('#1c1418'));
+      img.set(9, 11, hex('#163044'));
     } else if (kind === 'ram') {
       blob(4, 6, 3, 4, hex('#d8d0c4'));
       blob(9, 6, 3, 4, hex('#d8d0c4'));
@@ -2080,6 +2139,10 @@ function buildActors() {
     ['ashjaw', 41],
     ['skarn', 42],
     ['ram', 43],
+    ['boar', 53],
+    ['stag', 54],
+    ['crawler', 55],
+    ['ember', 60],
   ]) {
     const img = critter(name);
     for (let dir = 0; dir < 4; dir++) {
@@ -2726,6 +2789,17 @@ function drawItemIcons() {
   const abilities = JSON.parse(readFileSync(join(root, 'src', 'content', 'abilities.json'), 'utf8'));
   for (const ability of abilities) frames[ability.id] = paintAbilityIcon(ability.id);
   Object.assign(frames, drawArmorIcons(), drawGearIcons());
+  const catalog = JSON.parse(readFileSync(join(root, 'src', 'content', 'items.json'), 'utf8'));
+  const inks = ['#3e6b40', '#1a4d66', '#7a2430', '#5c3a28', '#2c2458', '#8d5a38', '#4a4038', '#6a3030'];
+  for (const item of catalog) {
+    if (frames[item.id]) continue;
+    const n = [...item.id].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+    if (item.kind === 'chart') frames[item.id] = iconChart('#e7d3a4', inks[n % inks.length]);
+    else if (item.grip === 'staff') frames[item.id] = iconAxe('#d5e6f0', '#5c3a28');
+    else if (item.grip === 'blade') frames[item.id] = iconAxe('#d7dee6', inks[n % inks.length]);
+    else if (item.slot === 'head') frames[item.id] = iconHelm(inks[n % inks.length]);
+    else frames[item.id] = iconBlob(inks[n % inks.length], '#f4f7fb');
+  }
   const order = Object.keys(frames);
   const sheet = createImage(order.length * 16, 16);
   const meta = {};
@@ -2748,6 +2822,9 @@ async function main() {
   const fang = buildFrostfang();
   world.maps.push(fang.map);
   Object.assign(world.charts, fang.charts);
+  const south = buildSouthlands();
+  world.maps.push(...south.maps);
+  Object.assign(world.charts, south.charts);
   const map = world.maps.find((zone) => zone.id === 'hoffender');
   const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };
   const itemIcons = drawItemIcons();

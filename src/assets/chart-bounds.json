@@ -82,5 +82,68 @@
     "y": 8,
     "w": 130,
     "h": 78
+  },
+  "graymoor": {
+    "zone": "thornhaven",
+    "x": 100,
+    "y": 20,
+    "w": 60,
+    "h": 56
+  },
+  "thornhaven_fields": {
+    "zone": "thornhaven",
+    "x": 16,
+    "y": 80,
+    "w": 224,
+    "h": 160
+  },
+  "blackpine": {
+    "zone": "valdoria",
+    "x": 150,
+    "y": 90,
+    "w": 80,
+    "h": 70
+  },
+  "valdoria_road": {
+    "zone": "valdoria",
+    "x": 16,
+    "y": 16,
+    "w": 224,
+    "h": 220
+  },
+  "eldenmoor": {
+    "zone": "eldenmoor",
+    "x": 60,
+    "y": 150,
+    "w": 140,
+    "h": 100
+  },
+  "eldenweald": {
+    "zone": "eldenmoor",
+    "x": 16,
+    "y": 8,
+    "w": 224,
+    "h": 140
+  },
+  "rime_mouth": {
+    "zone": "blackice1",
+    "x": 4,
+    "y": 8,
+    "w": 88,
+    "h": 84
+  },
+  "shatter_gallery": {
+    "zone": "blackice2",
+    "x": 4,
+    "y": 8,
+    "w": 88,
+    "h": 84
+  },
+  "black_vault": {
+    "zone": "blackice3",
+    "x": 4,
+    "y": 12,
+    "w": 88,
+    "h": 78
   }
 }

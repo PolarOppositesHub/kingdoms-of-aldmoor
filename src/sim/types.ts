@@ -187,17 +187,26 @@ export interface AbilityDef {
   range: number;
   damage: Dice;
   hate: number;
-  kind?: 'strike' | 'bolt' | 'field' | 'heal' | 'ward' | 'dot' | 'backstab';
+  kind?: 'strike' | 'bolt' | 'field' | 'heal' | 'ward' | 'dot' | 'backstab' | 'stun' | 'charm' | 'summon' | 'conjure';
   verb?: string;
   mana?: number;
   radius?: number;
   slowMs?: number;
   slowFactor?: number;
   heal?: number;
-  buff?: 'evade' | 'sneak' | 'power';
+  buff?: 'evade' | 'sneak' | 'power' | 'aegis' | 'anchor' | 'flow';
   buffMs?: number;
   dotMs?: number;
   dotAmount?: number;
+  /** Extra damage against bones and other undead. */
+  vsUndead?: number;
+  /** How long a stun holds, when this spell stuns. */
+  stunMs?: number;
+  /** Heal over time, in addition to any instant heal. */
+  hotMs?: number;
+  hotAmount?: number;
+  /** Item placed in the bags by a conjure. */
+  conjure?: { itemId: string; qty: number };
   blurb?: string;
   classId?: string;
 }
@@ -222,6 +231,8 @@ export interface ClassDef {
   baseFocus: number;
   focusPerLevel: number;
   kit?: Partial<Equipment>;
+  /** Companion mob id. Wardens bring theirs. Magicians call theirs. */
+  petMob?: string;
 }
 
 export interface Tuning {
@@ -317,6 +328,10 @@ export interface RaceDef {
   mods: Stats;
   /** 1 is a human. Barbarians are larger. */
   scale: number;
+  /** Where a new hero of this race wakes. Absent means Hoffender. */
+  homeZone?: string;
+  homeX?: number;
+  homeY?: number;
 }
 
 export interface RosterClass {
@@ -381,6 +396,12 @@ export interface Actor {
   dotMs: number;
   dotAmount: number;
   dotBank: number;
+  stunMs: number;
+  hotMs: number;
+  hotAmount: number;
+  hotBank: number;
+  /** While this is running, a charmed foe counts as the pet. */
+  charmMs: number;
   pet: boolean;
   /** Far from the player. Skipped by AI and hidden by the renderer. */
   dormant: boolean;
@@ -443,6 +464,9 @@ export interface GameState {
   sneakMs: number;
   evadeMs: number;
   powerMs: number;
+  aegisMs: number;
+  anchorMs: number;
+  flowMs: number;
   sex: 'male' | 'female';
   autoAttack: boolean;
   /** Resting. Standing is the trickle; sitting is the fast regen. Not written to the save. */
@@ -526,6 +550,7 @@ export type Intent =
   | { type: 'openHelp' }
   | { type: 'close' }
   | { type: 'debugTeleport'; x: number; y: number }
+  | { type: 'debugZone'; zoneId: string; x: number; y: number }
   | { type: 'debugGrantXp'; amount: number };
 
 export interface Spawn {

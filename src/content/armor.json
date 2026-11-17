@@ -11,7 +11,9 @@
     "value": 58,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Rusty iron helm. The plates are pitted and the straps are newer than the iron.",
     "effects": "Plate armor, worn on the head."
@@ -28,7 +30,9 @@
     "value": 164,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Iron helm. Hammered iron. You hear yourself walk.",
     "effects": "Plate armor, worn on the head."
@@ -45,7 +49,9 @@
     "value": 355,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Bronze helm. Bronze, fitted and polished. The forge smiled at the price.",
     "effects": "Plate armor, worn on the head."
@@ -62,7 +68,9 @@
     "value": 112,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Rusty iron breastplate. The plates are pitted and the straps are newer than the iron.",
     "effects": "Plate armor, worn on the chest."
@@ -79,7 +87,9 @@
     "value": 318,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Iron breastplate. Hammered iron. You hear yourself walk.",
     "effects": "Plate armor, worn on the chest."
@@ -96,7 +106,9 @@
     "value": 690,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Bronze breastplate. Bronze, fitted and polished. The forge smiled at the price.",
     "effects": "Plate armor, worn on the chest."
@@ -113,7 +125,9 @@
     "value": 34,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Rusty iron gauntlets. The plates are pitted and the straps are newer than the iron.",
     "effects": "Plate armor, worn on the hands."
@@ -130,7 +144,9 @@
     "value": 96,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Iron gauntlets. Hammered iron. You hear yourself walk.",
     "effects": "Plate armor, worn on the hands."
@@ -147,7 +163,9 @@
     "value": 214,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Bronze gauntlets. Bronze, fitted and polished. The forge smiled at the price.",
     "effects": "Plate armor, worn on the hands."
@@ -164,7 +182,9 @@
     "value": 73,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Rusty iron greaves. The plates are pitted and the straps are newer than the iron.",
     "effects": "Plate armor, worn on the legs."
@@ -181,7 +201,9 @@
     "value": 207,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Iron greaves. Hammered iron. You hear yourself walk.",
     "effects": "Plate armor, worn on the legs."
@@ -198,7 +220,9 @@
     "value": 448,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Bronze greaves. Bronze, fitted and polished. The forge smiled at the price.",
     "effects": "Plate armor, worn on the legs."
@@ -215,7 +239,9 @@
     "value": 41,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Rusty iron sabatons. The plates are pitted and the straps are newer than the iron.",
     "effects": "Plate armor, worn on the feet."
@@ -232,7 +258,9 @@
     "value": 118,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Iron sabatons. Hammered iron. You hear yourself walk.",
     "effects": "Plate armor, worn on the feet."
@@ -249,7 +277,9 @@
     "value": 262,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Bronze sabatons. Bronze, fitted and polished. The forge smiled at the price.",
     "effects": "Plate armor, worn on the feet."
@@ -266,7 +296,9 @@
     "value": 66,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Rusty iron shield. The plates are pitted and the straps are newer than the iron.",
     "effects": "Plate armor, worn on the secondary."
@@ -283,7 +315,9 @@
     "value": 186,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Iron shield. Hammered iron. You hear yourself walk.",
     "effects": "Plate armor, worn on the secondary."
@@ -300,7 +334,9 @@
     "value": 402,
     "stack": 1,
     "wearers": [
-      "warrior"
+      "warrior",
+      "cleric",
+      "paladin"
     ],
     "blurb": "Bronze shield. Bronze, fitted and polished. The forge smiled at the price.",
     "effects": "Plate armor, worn on the secondary."
@@ -1022,7 +1058,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Tattered hood. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the head."
@@ -1042,7 +1080,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Linen hood. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the head."
@@ -1062,7 +1102,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Wool hood. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the head."
@@ -1082,7 +1124,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Tattered robe. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the chest."
@@ -1102,7 +1146,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Linen robe. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the chest."
@@ -1122,7 +1168,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Wool robe. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the chest."
@@ -1142,7 +1190,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Tattered gloves. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the hands."
@@ -1162,7 +1212,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Linen gloves. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the hands."
@@ -1182,7 +1234,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Wool gloves. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the hands."
@@ -1202,7 +1256,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Tattered trousers. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the legs."
@@ -1222,7 +1278,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Linen trousers. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the legs."
@@ -1242,7 +1300,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Wool trousers. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the legs."
@@ -1262,7 +1322,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Tattered shoes. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the feet."
@@ -1282,7 +1344,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Linen shoes. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the feet."
@@ -1302,7 +1366,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Wool shoes. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the feet."
@@ -1322,7 +1388,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Tattered sash. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the secondary."
@@ -1342,7 +1410,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Linen sash. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the secondary."
@@ -1362,7 +1432,9 @@
       "shaman",
       "rogue",
       "warden",
-      "wizard"
+      "wizard",
+      "enchanter",
+      "magician"
     ],
     "blurb": "Wool sash. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the secondary."

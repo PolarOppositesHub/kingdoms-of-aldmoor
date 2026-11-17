@@ -103,6 +103,8 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
       })
       .join('');
     blurb.textContent = roster.classes.find((cls) => cls.id === classId)?.blurb ?? '';
+    const enter = document.getElementById('enter');
+    if (enter) enter.textContent = raceId === 'high_elf' ? 'Enter Eldenmoor' : 'Enter Hoffender';
     points.textContent = `Bonus points left: ${roster.points - spent()}`;
     list.innerHTML = STATS.map((key) => {
       const total = baseOf(key) + bonus[key];
@@ -123,6 +125,10 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
     const race = roster.races.find((entry) => entry.id === id);
     if (!race?.playable) return;
     raceId = race.id;
+    const stillAllowed = roster.classes.some((cls) => cls.id === classId && cls.playable && cls.races.includes(raceId));
+    if (!stillAllowed) {
+      classId = roster.classes.find((cls) => cls.playable && cls.races.includes(raceId))?.id ?? classId;
+    }
     trimBonus();
     paint();
   });

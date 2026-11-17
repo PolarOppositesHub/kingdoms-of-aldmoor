@@ -7,6 +7,10 @@ const CLASS_NAME: Record<string, string> = {
   shaman: 'Shaman',
   warden: 'Warden',
   wizard: 'Wizard',
+  cleric: 'Cleric',
+  enchanter: 'Enchanter',
+  paladin: 'Paladin',
+  magician: 'Magician',
 };
 
 export function classLabel(id: string): string {

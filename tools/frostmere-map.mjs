@@ -455,13 +455,39 @@ function buildOutdoor() {
     sprite: 'sign_wilds',
     text: 'The road to Wyrmrest is not yet open. The pines thin here, and the stone of the foothills starts.',
   });
-  add('seam', 'Thornhaven', 140, 253, {
+  for (const [tx, ty] of [
+    [140, 244],
+    [140, 246],
+    [140, 248],
+    [240, 228],
+    [242, 230],
+    [244, 232],
+  ]) {
+    if (g[ty][tx] === T.WATER || g[ty][tx] === T.WATER_B) continue;
+    g[ty][tx] = T.PATH;
+    solid[ty][tx] = 0;
+    road[ty][tx] = 1;
+    scenery.grid[ty][tx] = 0;
+  }
+  add('door', 'Thornhaven', 140, 253, {
+    toZone: 'thornhaven',
+    toX: 128 * TILE + 8,
+    toY: 16 * TILE + 14,
     sprite: 'sign_wilds',
-    text: 'The road south to Graymoor Hold and Thornhaven is not yet open. The snow is already slush, and the first fields are mud.',
   });
-  add('seam', 'Valdoria', 248, 236, {
+  add('sign', 'Thornhaven', 144, 248, {
     sprite: 'sign_wilds',
-    text: 'The track to the Kingdom of Valdoria and Blackpine Tower is not yet open. The snow has given way to pine and grass.',
+    text: 'Thornhaven. Graymoor Hold keeps a yard a short walk south, where the snow is slush and the first fields are mud. The same road comes back. Valdoria is further on.',
+  });
+  add('door', 'The grass track', 248, 236, {
+    toZone: 'thornhaven',
+    toX: 236 * TILE + 8,
+    toY: 108 * TILE + 14,
+    sprite: 'sign_wilds',
+  });
+  add('sign', 'Valdoria', 244, 232, {
+    sprite: 'sign_wilds',
+    text: 'The grass track enters Thornhaven from the side. It does not skip Graymoor Hold. Valdoria and Blackpine Tower are south of the hold, where the mud dries and the pines start.',
   });
 
   // Mobs.
