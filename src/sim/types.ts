@@ -4,7 +4,7 @@ export const TICK_MS = 1000 / 30;
 
 export type Dir = 's' | 'n' | 'e' | 'w';
 export type ConColor = 'gray' | 'green' | 'lightblue' | 'blue' | 'white' | 'yellow' | 'red';
-export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect' | 'journal' | 'book' | 'maps';
+export type Panel = 'none' | 'dialogue' | 'merchant' | 'pack' | 'help' | 'inspect' | 'journal' | 'book' | 'maps' | 'settings';
 
 export const BAG_HOLDERS = 8;
 export const LOADOUT_CAP = 5;
@@ -211,6 +211,8 @@ export interface AbilityDef {
   conjure?: { itemId: string; qty: number };
   blurb?: string;
   classId?: string;
+  /** Every class that can use this. When omitted, classId is the only one. */
+  classes?: string[];
 }
 
 export interface ClassDef {
@@ -554,6 +556,7 @@ export type Intent =
   | { type: 'openJournal' }
   | { type: 'abandonQuest'; id: string }
   | { type: 'openHelp' }
+  | { type: 'openSettings' }
   | { type: 'close' }
   | { type: 'debugTeleport'; x: number; y: number }
   | { type: 'debugZone'; zoneId: string; x: number; y: number }

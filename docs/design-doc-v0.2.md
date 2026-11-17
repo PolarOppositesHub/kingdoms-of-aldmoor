@@ -9,7 +9,7 @@ export default function App() {
     <Page title="Kingdoms of Aldmoor: Design Doc v0.2" summary="Plan for an EverQuest-style, top-down 16-bit RPG set in the world of Aldmoor, played on the iPhone Duo. v1 starts in the Barbarian town of Hoffender. Josh is creative director; Grok Bot and the Coding bot are the dev team." width="column">
       <TableOfContents items={[
         { label: "Vision and pillars" }, { label: "Locked decisions" }, { label: "Lore and world" }, { label: "Platform and engine" },
-        { label: "Core systems" }, { label: "World map" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "The Black Ice" }, { label: "The road south" }, { label: "Brightforge" }, { label: "Eldenmoor" }, { label: "Wyrmrest" }, { label: "Ironhollow" }, { label: "Canipure" }, { label: "Grokthul" }, { label: "Warrior v1 kit" },
+        { label: "Core systems" }, { label: "World map" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "The Black Ice" }, { label: "The road south" }, { label: "Brightforge" }, { label: "Eldenmoor" }, { label: "Wyrmrest" }, { label: "Ironhollow" }, { label: "Canipure" }, { label: "Grokthul" }, { label: "Warrior v1 kit" }, { label: "Touch HUD" },
         { label: "Milestone roadmap" }, { label: "Multiplayer-ready architecture" }, { label: "Open questions for Josh" },
       ]} />
       <Section heading="Vision and pillars">
@@ -162,7 +162,11 @@ export default function App() {
           ["8", "Shout of Challenge", "Small area hate to nearby mobs"],
           ["10", "Second Wind", "Restore some HP, long cooldown"],
         ]} />
-        <Text>That table is the old v1 plan. In the game, every class buys later drills from its guild trainer, including Cleric, Enchanter, Paladin, Magician, Druid, and Ranger, and the dwarf, wood elf, and ogre halls sell the lists for the classes those peoples may walk. The lists run through level 50. Leveling does not grant them. Until the level is reached the line reads Requires level N. Pets grow with the hero: more health, a harder swing.</Text>
+        <Text>That table is the old v1 plan. In the game, every class buys later drills from its guild trainer, including Cleric, Enchanter, Paladin, Magician, Druid, and Ranger, and the dwarf, wood elf, and ogre halls sell the lists for the classes those peoples may walk. The lists run through level 50. Leveling does not grant them. Until the level is reached the line reads Requires level N. A spell or ability for sale names every class that can use it, for example Classes: Cleric, Paladin. Pets grow with the hero: more health, a harder swing.</Text>
+      </Section>
+      <Section heading="Touch HUD">
+        <Text>Combat buttons stay ATK, Next, Interact, and the ration. Journal, Spells (Abilities when the hero does not use mana), and Settings are a compact menu so a phone does not grow a second row of tiny labels. Interact talks to a person or opens a sign. Journal lists active and completed quests and their objectives. The spell book lists every spell and ability the hero knows, with icon, name, cost, and description. Tap one, then a hotbar slot, to assign it. A larger screen can drag. Slots can be rearranged or cleared, and the bar is saved with the character. An old save with no bar is filled from spells the hero already knows.</Text>
+        <Text>Settings holds the hotbar style, ability names, the layout lock, and Fill the screen. Fill is off by default, so the letterboxed layout with black side bars stays. Turning it on scales the game to the edges of a larger screen and calls the Fullscreen API when the browser has it. Home-screen web apps that cannot enter fullscreen still fill the page. Every window, including shops, the journal, the book, inventory, dialogue, and settings, has a close mark pinned to the top-right of the header, at least 44 by 44 CSS pixels, that stays put while the body scrolls. The windows can still be moved and resized when the layout is unlocked.</Text>
       </Section>
       <Section heading="Milestone roadmap">
         <Steps steps={[

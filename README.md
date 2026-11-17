@@ -44,12 +44,12 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 - Character creation at the gate. The roster lists every planned race and class. Barbarian can be a warrior, shaman, rogue, berserker, or warden, and starts in Hoffender. High Elf can be a wizard, cleric, enchanter, paladin, or magician, and starts in Eldenmoor. Dwarf can be a warrior, cleric, paladin, rogue, or berserker, and starts in Brightforge. Six bonus points go into the stats. The choice is remembered on this device.
 - Warrior combat: real-time auto-attack on a weapon delay, plus Kick on a cooldown. Tap a wolf, then ATK.
 - Wizard combat: a mana bar, Shardbolt at range, and Rimefield, which slows every wolf near your target. The staff still swings if a wolf gets close.
-- Pinch the map, or use the mouse wheel, to zoom. The Pad button swaps the stick for a D-pad. Look talks to someone or reads a sign.
+- Pinch the map, or use the mouse wheel, to zoom. The Pad button swaps the stick for a D-pad. Interact talks to someone or reads a sign.
 - Eirik Stonehand, inside the warrior guild, trades four wolf pelts for coin, a little experience, and your choice of a wolf-head helm or a wolf-hide jerkin. Both show on the hero.
 - Worn armor, helms, gloves, boots, and the weapon in your hand are drawn on the hero in every facing. Hand-wraps show as wrapped fists. Townsfolk use the same model; barbarians stand taller than humans.
 - Most guild folk stand inside their halls. Ivar works an outdoor forge and sometimes will not look up; Marta, inside, sells the same armor at the listed price. Buy from Ivar when he will talk and the price is lower.
 - The pack is eight bag holders. Bags of four, six, and eight slots are sold by Brenna and by Signe. Drag items between pockets. The pack button sits with the map button, off the action bar.
-- The action bar holds five abilities. The book chooses which ones sit there. A warden's wolf follows, attacks the current target, and takes Attack, Back off, Stay, and Follow.
+- The action bar holds five abilities. Journal, Spells (Abilities on a melee hero), and Settings sit in a compact menu so the combat buttons stay clear. Tap a spell, then a slot, to place it. Clear empties a slot. The bar is saved with the hero. A trainer's list names the classes that can use each spell. Settings can fill the screen; the black side bars stay until you turn that on. Every window has a close mark in the top corner. A warden's wolf follows, attacks the current target, and takes Attack, Back off, Stay, and Follow.
 - You start with no maps. Sefa, in the inn, sells Hoffender and the road. Nils, north of the gate, sells the deep wilds and the Barrow. Neither sells every chart.
 - Common creatures return after at least five minutes, plus a random wait. Named creatures in the Frostmere Wilds take longer.
 - Loot and coin. Copper, silver, gold, and platinum, at 10 to 1. Drops land on the snow and are picked up when you step close.
@@ -64,12 +64,15 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 | Target | Tap a creature, or Next | Tab |
 | Auto-attack | ATK | F |
 | Abilities | The five slots on the bar | 1 through 5 |
-| Look | Look, a person, or a sign | E |
+| Interact | Interact, a person, or a sign | E |
 | Zoom | Pinch the map | Mouse wheel |
 | Pack | The pack icon, top left | I |
 | Maps | The globe icon, top left | M |
+| Quest journal | Journal | — |
+| Spell book | Spells, or Abilities | B |
+| Settings | Settings | — |
 | Use a ration | The food button | — |
-| Close a panel | Close | Esc |
+| Close a panel | The × in the window header | Esc |
 
 ## Checks
 

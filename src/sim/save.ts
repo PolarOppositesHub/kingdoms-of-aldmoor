@@ -1,4 +1,4 @@
-import type { ContentDb, Equipment, GameState, HeldBag, ItemStack, MapData, PetOrder } from './types';
+import { LOADOUT_CAP, type ContentDb, type Equipment, type GameState, type HeldBag, type ItemStack, type MapData, type PetOrder } from './types';
 import { emptyQuests, refreshGear, syncCompanion } from './state';
 import { bodySprite, raceScale } from './appearance';
 import { bagsFromLegacy, normalizeBags } from './bags';
@@ -28,7 +28,8 @@ export interface CharacterSave {
   equipment: Equipment;
   quests: GameState['quests'];
   learned: string[];
-  loadout: string[];
+  /** Absent on saves from before slotted hotbars. Those heroes get their known spells. */
+  loadout?: string[];
   charts: string[];
   petOrder: PetOrder;
   /** Absent on saves from before the pet window. Those heroes still have their wolf. */
@@ -123,7 +124,7 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     nodeReady: { ...(row.nodeReady ?? {}) },
     relocated: (row.version ?? 1) < SAVE_VERSION,
     learned: [...(row.learned ?? [])],
-    loadout: [...(row.loadout ?? [])].slice(0, 5),
+    loadout: Array.isArray(row.loadout) ? row.loadout.filter((id): id is string => typeof id === 'string').slice(0, LOADOUT_CAP) : undefined,
     charts: [...(row.charts ?? [])],
     petOrder: orders.includes(row.petOrder as PetOrder) ? (row.petOrder as PetOrder) : 'follow',
     petAway: row.petAway === true,
@@ -154,6 +155,25 @@ export function migrateSave(raw: unknown): CharacterSave | null {
   return save;
 }
 
+/** Keep a saved bar. A save with no loadout field is filled from spells the hero already knows. */
+export function normalizeLoadout(raw: string[] | undefined, content: ContentDb, classId: string, learned: string[]): string[] {
+  const starters = content.classes[classId]?.abilities ?? [];
+  const extras = learned.filter((id) => content.abilities[id] && !starters.includes(id));
+  const source = raw ?? [...starters, ...extras].slice(0, LOADOUT_CAP);
+  const slots: string[] = [];
+  const seen = new Set<string>();
+  for (const id of source.slice(0, LOADOUT_CAP)) {
+    if (!id || !content.abilities[id] || seen.has(id)) {
+      slots.push('');
+      continue;
+    }
+    seen.add(id);
+    slots.push(id);
+  }
+  while (slots.length < LOADOUT_CAP) slots.push('');
+  return slots;
+}
+
 export function applySave(state: GameState, content: ContentDb, map: MapData, raw: unknown): string | null {
   const save = migrateSave(raw);
   if (!save) return null;
@@ -173,7 +193,7 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   for (const [id, quest] of Object.entries(save.quests)) state.quests[id] = { ...quest };
   state.nodeReady = { ...(save.nodeReady ?? {}) };
   state.learned = [...save.learned];
-  state.loadout = [...save.loadout].slice(0, 5);
+  state.loadout = normalizeLoadout(save.loadout, content, save.classId, save.learned);
   state.charts = [...save.charts];
   state.petOrder = save.petOrder;
   state.petAway = save.petAway === true;
