@@ -494,7 +494,7 @@ function buildValdoria() {
   m.add('npc', 'pike', 176, 160, { defId: 'pike', sprite: 'soren' });
   m.add('npc', 'cress', 204, 160, { defId: 'cress', sprite: 'freya' });
   m.add('npc', 'wynn', 168, 120, { defId: 'wynn', sprite: 'signe' });
-  m.add('npc', 'joren', 228, 116, { defId: 'joren', sprite: 'tael' });
+  m.add('npc', 'joren', 228, 116, { defId: 'joren', sprite: 'joren' });
   m.add('bind', 'blackpine-yard', 196, 136);
   m.add('prop', 'banner', 192, 128, { sprite: 'banner' });
   m.add('prop', 'crate', 176, 136, { sprite: 'crate' });

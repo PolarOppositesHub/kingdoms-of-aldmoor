@@ -21,7 +21,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "cloth": [
       "shaman",
@@ -29,7 +30,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "scale": [
       "warrior",

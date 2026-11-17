@@ -923,7 +923,38 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
       { id: 'skreeva_matriarch', active: 'skreeva_active', ready: 'skreeva_ready', next: 'after_korrag' },
       { id: 'vyrmathax_elder', active: 'elder_active', ready: 'elder_ready', next: 'after_skreeva' },
     ], 'done');
+  } else if (npc.defId === 'sylven') {
+    nodeId = steppedNode(state, content, [
+      { id: 'green_wolves', active: 'wolves_active', ready: 'wolves_ready', next: 'start' },
+      { id: 'puck_snare', active: 'puck_active', ready: 'puck_ready', next: 'after_wolves' },
+    ], 'done');
+  } else if (npc.defId === 'vaela') {
+    nodeId = steppedNode(state, content, [
+      { id: 'mossantler', active: 'hart_active', ready: 'hart_ready', next: 'start' },
+    ], 'done');
+  } else if (npc.defId === 'oswin') {
+    nodeId = steppedNode(state, content, [
+      { id: 'hill_pack', active: 'wolves_active', ready: 'wolves_ready', next: 'start' },
+      { id: 'rusk_hollow', active: 'rusk_active', ready: 'rusk_ready', next: 'after_wolves' },
+    ], 'done');
+  } else if (npc.defId === 'edric') {
+    nodeId = steppedNode(state, content, [
+      { id: 'old_marrow', active: 'marrow_active', ready: 'marrow_ready', next: 'start' },
+    ], 'done');
+  } else if (npc.defId === 'grukka') {
+    nodeId = steppedNode(state, content, [
+      { id: 'valley_wolves', active: 'wolves_active', ready: 'wolves_ready', next: 'start' },
+      { id: 'brug_toll', active: 'brug_active', ready: 'brug_ready', next: 'after_wolves' },
+    ], 'done');
+  } else if (npc.defId === 'skaal') {
+    nodeId = steppedNode(state, content, [
+      { id: 'ash_drakes', active: 'drakes_active', ready: 'drakes_ready', next: 'start' },
+      { id: 'cindermaw', active: 'maw_active', ready: 'maw_ready', next: 'after_drakes' },
+    ], 'done');
   }
+  const tree = content.dialogue[def.dialogue];
+  const elf = state.raceId === 'wood_elf' || state.raceId === 'high_elf';
+  if (tree?.outsider && !elf && nodeId === 'start') nodeId = 'outsider';
   state.ui = { panel: 'dialogue', npcId: npc.id, nodeId, title: null, body: null };
   state.input.dest = null;
   state.input.pendingInteract = null;

@@ -1,0 +1,932 @@
+[
+  {
+    "id": "reach_hare",
+    "name": "reach hare",
+    "level": 1,
+    "hp": 40,
+    "ac": 5,
+    "attack": 7,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 32,
+    "coinMin": 2,
+    "coinMax": 10,
+    "delayMs": 2000,
+    "aggroRange": 0,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "hare",
+    "speed": 48,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "kicks",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "hare"
+  },
+  {
+    "id": "reach_beetle",
+    "name": "reach beetle",
+    "level": 2,
+    "hp": 56,
+    "ac": 5,
+    "attack": 8,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 46,
+    "coinMin": 4,
+    "coinMax": 20,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "beetle",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "nips",
+    "loot": [
+      {
+        "itemId": "green_sap",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "beetle"
+  },
+  {
+    "id": "green_fox",
+    "name": "green fox",
+    "level": 3,
+    "hp": 72,
+    "ac": 6,
+    "attack": 9,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 60,
+    "coinMin": 6,
+    "coinMax": 30,
+    "delayMs": 2000,
+    "aggroRange": 70,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "fox",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "nips",
+    "loot": [
+      {
+        "itemId": "green_sap",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "fox"
+  },
+  {
+    "id": "green_wolf",
+    "name": "green wolf",
+    "level": 5,
+    "hp": 104,
+    "ac": 7,
+    "attack": 12,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 88,
+    "coinMin": 10,
+    "coinMax": 50,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "wolf",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "green_pelt",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "wolf"
+  },
+  {
+    "id": "reach_spider",
+    "name": "reach spider",
+    "level": 6,
+    "hp": 120,
+    "ac": 8,
+    "attack": 13,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 102,
+    "coinMin": 12,
+    "coinMax": 60,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "spider",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "green_sap",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "spider"
+  },
+  {
+    "id": "reach_boar",
+    "name": "reach boar",
+    "level": 8,
+    "hp": 152,
+    "ac": 9,
+    "attack": 15,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 130,
+    "coinMin": 16,
+    "coinMax": 80,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "boar",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "boar"
+  },
+  {
+    "id": "puck",
+    "name": "Puck the Snare",
+    "level": 9,
+    "hp": 353,
+    "ac": 15,
+    "attack": 22,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 302,
+    "coinMin": 18,
+    "coinMax": 90,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "snare_cord",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "sprite": "bandit"
+  },
+  {
+    "id": "mossantler",
+    "name": "Mossantler",
+    "level": 10,
+    "hp": 423,
+    "ac": 16,
+    "attack": 23,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 6
+    },
+    "xp": 348,
+    "coinMin": 20,
+    "coinMax": 100,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "moss_antler",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "green_pelt",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "rare": true,
+    "sprite": "stag"
+  },
+  {
+    "id": "hill_wolf",
+    "name": "hill wolf",
+    "level": 18,
+    "hp": 336,
+    "ac": 16,
+    "attack": 26,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 4
+    },
+    "xp": 270,
+    "coinMin": 36,
+    "coinMax": 180,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "wolf",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "hill_pelt",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "wolf"
+  },
+  {
+    "id": "hill_boar",
+    "name": "hill boar",
+    "level": 20,
+    "hp": 384,
+    "ac": 17,
+    "attack": 28,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "xp": 298,
+    "coinMin": 40,
+    "coinMax": 200,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "boar",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "boar"
+  },
+  {
+    "id": "hill_brigand",
+    "name": "hill brigand",
+    "level": 22,
+    "hp": 432,
+    "ac": 18,
+    "attack": 30,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "xp": 326,
+    "coinMin": 44,
+    "coinMax": 220,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "bandit",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "hill_token",
+        "chance": 0.45,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "bandit"
+  },
+  {
+    "id": "hill_bear",
+    "name": "hill bear",
+    "level": 25,
+    "hp": 504,
+    "ac": 20,
+    "attack": 34,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 5
+    },
+    "xp": 368,
+    "coinMin": 50,
+    "coinMax": 250,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "bear",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "hill_pelt",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "bear"
+  },
+  {
+    "id": "rusk",
+    "name": "Rusk the Hollow",
+    "level": 26,
+    "hp": 1162,
+    "ac": 26,
+    "attack": 41,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 5
+    },
+    "xp": 840,
+    "coinMin": 52,
+    "coinMax": 260,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "hollow_blade",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "hill_token",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "sprite": "leader"
+  },
+  {
+    "id": "old_marrow",
+    "name": "Old Marrow",
+    "level": 28,
+    "hp": 1440,
+    "ac": 27,
+    "attack": 43,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 9
+    },
+    "xp": 902,
+    "coinMin": 56,
+    "coinMax": 280,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "marrow_tooth",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "hill_pelt",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "rare": true,
+    "scale": 1.2,
+    "sprite": "bear"
+  },
+  {
+    "id": "hold_hare",
+    "name": "valley hare",
+    "level": 1,
+    "hp": 40,
+    "ac": 5,
+    "attack": 7,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 32,
+    "coinMin": 2,
+    "coinMax": 10,
+    "delayMs": 2000,
+    "aggroRange": 0,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "hare",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "kicks",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "hare"
+  },
+  {
+    "id": "hold_beetle",
+    "name": "valley beetle",
+    "level": 2,
+    "hp": 56,
+    "ac": 5,
+    "attack": 8,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 46,
+    "coinMin": 4,
+    "coinMax": 20,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "beetle",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "nips",
+    "loot": [
+      {
+        "itemId": "tusk_chip",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "beetle"
+  },
+  {
+    "id": "hold_wolf",
+    "name": "valley wolf",
+    "level": 4,
+    "hp": 88,
+    "ac": 7,
+    "attack": 10,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "xp": 74,
+    "coinMin": 8,
+    "coinMax": 40,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "wolf",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "tusk_chip",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "wolf"
+  },
+  {
+    "id": "hold_boar",
+    "name": "valley boar",
+    "level": 7,
+    "hp": 136,
+    "ac": 9,
+    "attack": 14,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 116,
+    "coinMin": 14,
+    "coinMax": 70,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "boar",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.45,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "boar"
+  },
+  {
+    "id": "hold_bear",
+    "name": "valley bear",
+    "level": 8,
+    "hp": 152,
+    "ac": 9,
+    "attack": 15,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 130,
+    "coinMin": 16,
+    "coinMax": 80,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "bear",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "tusk_chip",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "bear"
+  },
+  {
+    "id": "brug",
+    "name": "Brug the Toll",
+    "level": 9,
+    "hp": 353,
+    "ac": 15,
+    "attack": 22,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 302,
+    "coinMin": 18,
+    "coinMax": 90,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "clubs",
+    "loot": [
+      {
+        "itemId": "toll_tooth",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "sprite": "leader"
+  },
+  {
+    "id": "old_tusk",
+    "name": "Old Tusk",
+    "level": 10,
+    "hp": 423,
+    "ac": 16,
+    "attack": 23,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 6
+    },
+    "xp": 348,
+    "coinMin": 20,
+    "coinMax": 100,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "gores",
+    "loot": [
+      {
+        "itemId": "old_tusk",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "rare": true,
+    "scale": 1.25,
+    "sprite": "boar"
+  },
+  {
+    "id": "peak_wolf",
+    "name": "peak wolf",
+    "level": 28,
+    "hp": 576,
+    "ac": 22,
+    "attack": 37,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 5
+    },
+    "xp": 410,
+    "coinMin": 56,
+    "coinMax": 280,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "wolf",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "cinder_chip",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "ash_wolf"
+  },
+  {
+    "id": "wyrm_pup",
+    "name": "wyrm pup",
+    "level": 30,
+    "hp": 624,
+    "ac": 24,
+    "attack": 39,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "xp": 438,
+    "coinMin": 60,
+    "coinMax": 300,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "drake",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "scorches",
+    "loot": [
+      {
+        "itemId": "cinder_chip",
+        "chance": 0.55,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 1.05,
+    "sprite": "drake"
+  },
+  {
+    "id": "ash_drake",
+    "name": "ash drake",
+    "level": 32,
+    "hp": 672,
+    "ac": 25,
+    "attack": 41,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "xp": 466,
+    "coinMin": 64,
+    "coinMax": 320,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "drake",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "scorches",
+    "loot": [
+      {
+        "itemId": "drake_scale",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cinder_chip",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 1.2,
+    "sprite": "drake"
+  },
+  {
+    "id": "ridge_cultist",
+    "name": "ridge cultist",
+    "level": 33,
+    "hp": 696,
+    "ac": 25,
+    "attack": 42,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 6
+    },
+    "xp": 480,
+    "coinMin": 66,
+    "coinMax": 330,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "cult",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "cult_token",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "cultist"
+  },
+  {
+    "id": "cindermaw",
+    "name": "Cindermaw",
+    "level": 35,
+    "hp": 1934,
+    "ac": 32,
+    "attack": 51,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 10
+    },
+    "xp": 1118,
+    "coinMin": 70,
+    "coinMax": 350,
+    "delayMs": 2000,
+    "aggroRange": 100,
+    "assistRange": 120,
+    "leash": 190,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 22,
+    "crit": 0.07,
+    "verb": "burns",
+    "loot": [
+      {
+        "itemId": "cinder_fang",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "drake_scale",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "rare": true,
+    "scale": 1.55,
+    "sprite": "drake"
+  }
+]

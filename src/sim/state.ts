@@ -2,7 +2,7 @@ import type { Actor, ContentDb, Equipment, GameState, MapData, Stats } from './t
 import { LOADOUT_CAP } from './types';
 import { maxFocus, maxHp, maxMana } from './formulas';
 import { addItem, emptyBags } from './bags';
-import { raceScale } from './appearance';
+import { bodySprite, raceScale } from './appearance';
 
 export function getPlayer(state: GameState): Actor {
   const player = state.actors.find((actor) => actor.id === state.playerId);
@@ -103,7 +103,7 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
       if (piece) state.equipment[slot] = piece;
     }
   }
-  player.sprite = state.sex === 'female' ? 'body_f' : 'body_m';
+  player.sprite = bodySprite(state.raceId, state.sex);
   player.scale = raceScale(content, state.raceId);
   addItem(state, content, 'threadbare_sack', 1);
   for (const stack of content.player.items) addItem(state, content, stack.itemId, stack.qty);
@@ -233,7 +233,7 @@ export function applyHero(
   refreshGear(state, content);
   const player = getPlayer(state);
   player.scale = raceScale(content, state.raceId);
-  player.sprite = state.sex === 'female' ? 'body_f' : 'body_m';
+  player.sprite = bodySprite(state.raceId, state.sex);
   player.hp = player.maxHp;
   state.mana = state.maxMana;
   return true;

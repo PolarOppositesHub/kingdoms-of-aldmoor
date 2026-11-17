@@ -1,5 +1,5 @@
 {
-  "sheetW": 7232,
+  "sheetW": 8544,
   "sheetH": 16,
   "frames": {
     "wolf_pelt": {
@@ -1094,1622 +1094,2114 @@
       "w": 16,
       "h": 16
     },
-    "rusty_iron_helm": {
+    "briar_mend": {
       "x": 2912,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_helm": {
+    "thorn_bolt": {
       "x": 2928,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_helm": {
+    "creeping_rot": {
       "x": 2944,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_iron_breastplate": {
+    "rootbind": {
       "x": 2960,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_breastplate": {
+    "barkskin": {
       "x": 2976,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_breastplate": {
+    "seed_mend": {
       "x": 2992,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_iron_gauntlets": {
+    "bramble_field": {
       "x": 3008,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_gauntlets": {
+    "vine_lash": {
       "x": 3024,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_gauntlets": {
+    "grove_mend": {
       "x": 3040,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_iron_greaves": {
+    "spore_cloud": {
       "x": 3056,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_greaves": {
+    "living_bark": {
       "x": 3072,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_greaves": {
+    "thorn_rain": {
       "x": 3088,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_iron_sabatons": {
+    "old_growth": {
       "x": 3104,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_sabatons": {
+    "green_crown": {
       "x": 3120,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_sabatons": {
+    "quick_shot": {
       "x": 3136,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_iron_shield": {
+    "knife_jab": {
       "x": 3152,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_shield": {
+    "marked_trail": {
       "x": 3168,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_shield": {
+    "pinning_shot": {
       "x": 3184,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_chain_coif": {
+    "sidestep": {
       "x": 3200,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_chain_coif": {
+    "volley": {
       "x": 3216,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_chain_coif": {
+    "calm_beast": {
       "x": 3232,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_chain_hauberk": {
+    "hunters_eye": {
       "x": 3248,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_chain_hauberk": {
+    "thicket_step": {
       "x": 3264,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_chain_hauberk": {
+    "arrow_rain": {
       "x": 3280,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_chain_mittens": {
+    "second_mark": {
       "x": 3296,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_chain_mittens": {
+    "wild_knit": {
       "x": 3312,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_chain_mittens": {
+    "long_shot": {
       "x": 3328,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_chain_leggings": {
+    "last_arrow": {
       "x": 3344,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_chain_leggings": {
+    "grove_root": {
       "x": 3360,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_chain_leggings": {
+    "low_shot": {
       "x": 3376,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_chain_boots": {
+    "rusty_iron_helm": {
       "x": 3392,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_chain_boots": {
+    "iron_helm": {
       "x": 3408,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_chain_boots": {
+    "bronze_helm": {
       "x": 3424,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "rusty_chain_buckler": {
+    "rusty_iron_breastplate": {
       "x": 3440,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "iron_chain_buckler": {
+    "iron_breastplate": {
       "x": 3456,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bronze_chain_buckler": {
+    "bronze_breastplate": {
       "x": 3472,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cracked_leather_cap": {
+    "rusty_iron_gauntlets": {
       "x": 3488,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_cap": {
+    "iron_gauntlets": {
       "x": 3504,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hardened_leather_cap": {
+    "bronze_gauntlets": {
       "x": 3520,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cracked_leather_tunic": {
+    "rusty_iron_greaves": {
       "x": 3536,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_tunic": {
+    "iron_greaves": {
       "x": 3552,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hardened_leather_tunic": {
+    "bronze_greaves": {
       "x": 3568,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cracked_leather_gloves": {
+    "rusty_iron_sabatons": {
       "x": 3584,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_gloves": {
+    "iron_sabatons": {
       "x": 3600,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hardened_leather_gloves": {
+    "bronze_sabatons": {
       "x": 3616,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cracked_leather_pants": {
+    "rusty_iron_shield": {
       "x": 3632,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_pants": {
+    "iron_shield": {
       "x": 3648,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hardened_leather_pants": {
+    "bronze_shield": {
       "x": 3664,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cracked_leather_boots": {
+    "rusty_chain_coif": {
       "x": 3680,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_boots": {
+    "iron_chain_coif": {
       "x": 3696,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hardened_leather_boots": {
+    "bronze_chain_coif": {
       "x": 3712,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cracked_leather_buckler": {
+    "rusty_chain_hauberk": {
       "x": 3728,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_buckler": {
+    "iron_chain_hauberk": {
       "x": 3744,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hardened_leather_buckler": {
+    "bronze_chain_hauberk": {
       "x": 3760,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "tattered_hood": {
+    "rusty_chain_mittens": {
       "x": 3776,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "linen_hood": {
+    "iron_chain_mittens": {
       "x": 3792,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wool_hood": {
+    "bronze_chain_mittens": {
       "x": 3808,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "tattered_robe": {
+    "rusty_chain_leggings": {
       "x": 3824,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "linen_robe": {
+    "iron_chain_leggings": {
       "x": 3840,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wool_robe": {
+    "bronze_chain_leggings": {
       "x": 3856,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "tattered_gloves": {
+    "rusty_chain_boots": {
       "x": 3872,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "linen_gloves": {
+    "iron_chain_boots": {
       "x": 3888,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wool_gloves": {
+    "bronze_chain_boots": {
       "x": 3904,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "tattered_trousers": {
+    "rusty_chain_buckler": {
       "x": 3920,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "linen_trousers": {
+    "iron_chain_buckler": {
       "x": 3936,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wool_trousers": {
+    "bronze_chain_buckler": {
       "x": 3952,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "tattered_shoes": {
+    "cracked_leather_cap": {
       "x": 3968,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "linen_shoes": {
+    "leather_cap": {
       "x": 3984,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wool_shoes": {
+    "hardened_leather_cap": {
       "x": 4000,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "tattered_sash": {
+    "cracked_leather_tunic": {
       "x": 4016,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "linen_sash": {
+    "leather_tunic": {
       "x": 4032,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wool_sash": {
+    "hardened_leather_tunic": {
       "x": 4048,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "plate_t4_head": {
+    "cracked_leather_gloves": {
       "x": 4064,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "plate_t4_chest": {
+    "leather_gloves": {
       "x": 4080,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "plate_t4_hands": {
+    "hardened_leather_gloves": {
       "x": 4096,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "plate_t4_legs": {
+    "cracked_leather_pants": {
       "x": 4112,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "plate_t4_feet": {
+    "leather_pants": {
       "x": 4128,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "plate_t4_secondary": {
+    "hardened_leather_pants": {
       "x": 4144,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chain_t4_head": {
+    "cracked_leather_boots": {
       "x": 4160,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chain_t4_chest": {
+    "leather_boots": {
       "x": 4176,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chain_t4_hands": {
+    "hardened_leather_boots": {
       "x": 4192,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chain_t4_legs": {
+    "cracked_leather_buckler": {
       "x": 4208,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chain_t4_feet": {
+    "leather_buckler": {
       "x": 4224,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chain_t4_secondary": {
+    "hardened_leather_buckler": {
       "x": 4240,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_t4_head": {
+    "tattered_hood": {
       "x": 4256,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_t4_chest": {
+    "linen_hood": {
       "x": 4272,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_t4_hands": {
+    "wool_hood": {
       "x": 4288,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_t4_legs": {
+    "tattered_robe": {
       "x": 4304,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_t4_feet": {
+    "linen_robe": {
       "x": 4320,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "leather_t4_secondary": {
+    "wool_robe": {
       "x": 4336,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cloth_t4_head": {
+    "tattered_gloves": {
       "x": 4352,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cloth_t4_chest": {
+    "linen_gloves": {
       "x": 4368,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cloth_t4_hands": {
+    "wool_gloves": {
       "x": 4384,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cloth_t4_legs": {
+    "tattered_trousers": {
       "x": 4400,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cloth_t4_feet": {
+    "linen_trousers": {
       "x": 4416,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cloth_t4_secondary": {
+    "wool_trousers": {
       "x": 4432,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "bone_staff": {
+    "tattered_shoes": {
       "x": 4448,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "skinning_knife": {
+    "linen_shoes": {
       "x": 4464,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "paired_hatchets": {
+    "wool_shoes": {
       "x": 4480,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hand_wraps": {
+    "tattered_sash": {
       "x": 4496,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_sunder": {
+    "linen_sash": {
       "x": 4512,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_breaker": {
+    "wool_sash": {
       "x": 4528,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_gale": {
+    "plate_t4_head": {
       "x": 4544,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_ward": {
+    "plate_t4_chest": {
       "x": 4560,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_poison": {
+    "plate_t4_hands": {
       "x": 4576,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_vanish": {
+    "plate_t4_legs": {
       "x": 4592,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_execute": {
+    "plate_t4_feet": {
       "x": 4608,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_feast": {
+    "plate_t4_secondary": {
       "x": 4624,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_heart": {
+    "chain_t4_head": {
       "x": 4640,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_deep": {
+    "chain_t4_chest": {
       "x": 4656,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_spike": {
+    "chain_t4_hands": {
       "x": 4672,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_white": {
+    "chain_t4_legs": {
       "x": 4688,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_rush": {
+    "chain_t4_feet": {
       "x": 4704,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_wind": {
+    "chain_t4_secondary": {
       "x": 4720,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_oath": {
+    "leather_t4_head": {
       "x": 4736,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_peat": {
+    "leather_t4_chest": {
       "x": 4752,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_cinder": {
+    "leather_t4_hands": {
       "x": 4768,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_ashen": {
+    "leather_t4_legs": {
       "x": 4784,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_ham": {
+    "leather_t4_feet": {
       "x": 4800,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_night": {
+    "leather_t4_secondary": {
       "x": 4816,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bane": {
+    "cloth_t4_head": {
       "x": 4832,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_sweep": {
+    "cloth_t4_chest": {
       "x": 4848,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_warblood": {
+    "cloth_t4_hands": {
       "x": 4864,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_howl": {
+    "cloth_t4_legs": {
       "x": 4880,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_call": {
+    "cloth_t4_feet": {
       "x": 4896,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_root": {
+    "cloth_t4_secondary": {
       "x": 4912,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_elder": {
+    "bone_staff": {
       "x": 4928,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_needle": {
+    "skinning_knife": {
       "x": 4944,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_wall": {
+    "paired_hatchets": {
       "x": 4960,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_star": {
+    "hand_wraps": {
       "x": 4976,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_guard": {
+    "scroll_sunder": {
       "x": 4992,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_cleave": {
+    "scroll_breaker": {
       "x": 5008,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bog": {
+    "scroll_gale": {
       "x": 5024,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_winter": {
+    "scroll_ward": {
       "x": 5040,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_vein": {
+    "scroll_poison": {
       "x": 5056,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_silent": {
+    "scroll_vanish": {
       "x": 5072,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_redfeast": {
+    "scroll_execute": {
       "x": 5088,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bloodhowl": {
+    "scroll_feast": {
       "x": 5104,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_packmend": {
+    "scroll_heart": {
       "x": 5120,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_elderroot": {
+    "scroll_deep": {
       "x": 5136,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_lance": {
+    "scroll_spike": {
       "x": 5152,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_blackrime": {
+    "scroll_white": {
       "x": 5168,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_quiet_mend": {
+    "scroll_rush": {
       "x": 5184,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_pale_spark": {
+    "scroll_wind": {
       "x": 5200,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_linger_light": {
+    "scroll_oath": {
       "x": 5216,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_dawn_aegis": {
+    "scroll_peat": {
       "x": 5232,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_grave_lamp": {
+    "scroll_cinder": {
       "x": 5248,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_wellspring": {
+    "scroll_ashen": {
       "x": 5264,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_last_light": {
+    "scroll_ham": {
       "x": 5280,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_hymn_mend": {
+    "scroll_night": {
       "x": 5296,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_second_dawn": {
+    "scroll_bane": {
       "x": 5312,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_hush": {
+    "scroll_sweep": {
       "x": 5328,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_drift_slow": {
+    "scroll_warblood": {
       "x": 5344,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_veil_spring": {
+    "scroll_howl": {
       "x": 5360,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_glass_needle": {
+    "scroll_call": {
       "x": 5376,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_still_room": {
+    "scroll_root": {
       "x": 5392,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_deep_veil": {
+    "scroll_elder": {
       "x": 5408,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_borrowed_will": {
+    "scroll_needle": {
       "x": 5424,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_hush_all": {
+    "scroll_wall": {
       "x": 5440,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_long_borrow": {
+    "scroll_star": {
       "x": 5456,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_oath_cut": {
+    "scroll_guard": {
       "x": 5472,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_small_grace": {
+    "scroll_cleave": {
       "x": 5488,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bell_stun": {
+    "scroll_bog": {
       "x": 5504,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_challenge": {
+    "scroll_winter": {
       "x": 5520,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_second_grace": {
+    "scroll_vein": {
       "x": 5536,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_lamp_stun": {
+    "scroll_silent": {
       "x": 5552,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_vow_mend": {
+    "scroll_redfeast": {
       "x": 5568,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bulwark": {
+    "scroll_bloodhowl": {
       "x": 5584,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_dawn_oath": {
+    "scroll_packmend": {
       "x": 5600,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_cinder_bolt": {
+    "scroll_elderroot": {
       "x": 5616,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_call_ember": {
+    "scroll_lance": {
       "x": 5632,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_hearth_crumb": {
+    "scroll_blackrime": {
       "x": 5648,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_flare": {
+    "scroll_quiet_mend": {
       "x": 5664,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_scorch_field": {
+    "scroll_pale_spark": {
       "x": 5680,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bright_coal": {
+    "scroll_linger_light": {
       "x": 5696,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_cinder_rain": {
+    "scroll_dawn_aegis": {
       "x": 5712,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_ember_star": {
+    "scroll_grave_lamp": {
       "x": 5728,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_iron_line": {
+    "scroll_wellspring": {
       "x": 5744,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_shield_break": {
+    "scroll_last_light": {
       "x": 5760,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_hold_the_gate": {
+    "scroll_hymn_mend": {
       "x": 5776,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_war_step": {
+    "scroll_second_dawn": {
       "x": 5792,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_last_wall": {
+    "scroll_hush": {
       "x": 5808,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_peat_lance": {
+    "scroll_drift_slow": {
       "x": 5824,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_blood_knit": {
+    "scroll_veil_spring": {
       "x": 5840,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_ash_tide": {
+    "scroll_glass_needle": {
       "x": 5856,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_winter_hex": {
+    "scroll_still_room": {
       "x": 5872,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_old_cold": {
+    "scroll_deep_veil": {
       "x": 5888,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_quiet_vein": {
+    "scroll_borrowed_will": {
       "x": 5904,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_side_step": {
+    "scroll_hush_all": {
       "x": 5920,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_throat_cut": {
+    "scroll_long_borrow": {
       "x": 5936,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_smoke_step": {
+    "scroll_oath_cut": {
       "x": 5952,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_last_knife": {
+    "scroll_small_grace": {
       "x": 5968,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_red_line": {
+    "scroll_bell_stun": {
       "x": 5984,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_gut_howl": {
+    "scroll_challenge": {
       "x": 6000,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_blood_price": {
+    "scroll_second_grace": {
       "x": 6016,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_twin_ruin": {
+    "scroll_lamp_stun": {
       "x": 6032,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_red_end": {
+    "scroll_vow_mend": {
       "x": 6048,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_den_mend": {
+    "scroll_bulwark": {
       "x": 6064,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_wolf_snare": {
+    "scroll_dawn_oath": {
       "x": 6080,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_pack_ward": {
+    "scroll_cinder_bolt": {
       "x": 6096,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_old_fang": {
+    "scroll_call_ember": {
       "x": 6112,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_den_mother": {
+    "scroll_hearth_crumb": {
       "x": 6128,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_glass_spear": {
+    "scroll_flare": {
       "x": 6144,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_rime_crown": {
+    "scroll_scorch_field": {
       "x": 6160,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_pale_needle": {
+    "scroll_bright_coal": {
       "x": 6176,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_star_well": {
+    "scroll_cinder_rain": {
       "x": 6192,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_last_winter": {
+    "scroll_ember_star": {
       "x": 6208,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_grave_light": {
+    "scroll_iron_line": {
       "x": 6224,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_quiet_ward": {
+    "scroll_shield_break": {
       "x": 6240,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_last_rite": {
+    "scroll_hold_the_gate": {
       "x": 6256,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_bone_lamp": {
+    "scroll_war_step": {
       "x": 6272,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_dawn_mend": {
+    "scroll_last_wall": {
       "x": 6288,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_soft_word": {
+    "scroll_peat_lance": {
       "x": 6304,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_thin_will": {
+    "scroll_blood_knit": {
       "x": 6320,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_hush_field": {
+    "scroll_ash_tide": {
       "x": 6336,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_borrowed_step": {
+    "scroll_winter_hex": {
       "x": 6352,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_long_hush": {
+    "scroll_old_cold": {
       "x": 6368,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_oath_strike": {
+    "scroll_quiet_vein": {
       "x": 6384,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_small_dawn": {
+    "scroll_side_step": {
       "x": 6400,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_oath_bell": {
+    "scroll_throat_cut": {
       "x": 6416,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_vow_ward": {
+    "scroll_smoke_step": {
       "x": 6432,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_kept_oath": {
+    "scroll_last_knife": {
       "x": 6448,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_cinder_lance": {
+    "scroll_red_line": {
       "x": 6464,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_ember_field": {
+    "scroll_gut_howl": {
       "x": 6480,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_second_ration": {
+    "scroll_blood_price": {
       "x": 6496,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_star_cinder": {
+    "scroll_twin_ruin": {
       "x": 6512,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scroll_cinder_crown": {
+    "scroll_red_end": {
       "x": 6528,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "boar_tusk": {
+    "scroll_den_mend": {
       "x": 6544,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "glade_pelt": {
+    "scroll_wolf_snare": {
       "x": 6560,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "pine_resin": {
+    "scroll_pack_ward": {
       "x": 6576,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "blackice_shard": {
+    "scroll_old_fang": {
       "x": 6592,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "blackice_staff": {
+    "scroll_den_mother": {
       "x": 6608,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "reeve_blade": {
+    "scroll_glass_spear": {
       "x": 6624,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "blackpine_edge": {
+    "scroll_rime_crown": {
       "x": 6640,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hart_crown": {
+    "scroll_pale_needle": {
       "x": 6656,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_graymoor": {
+    "scroll_star_well": {
       "x": 6672,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_thornhaven": {
+    "scroll_last_winter": {
       "x": 6688,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_blackpine": {
+    "scroll_grave_light": {
       "x": 6704,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_valdoria": {
+    "scroll_quiet_ward": {
       "x": 6720,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_eldenmoor": {
+    "scroll_last_rite": {
       "x": 6736,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_eldenweald": {
+    "scroll_bone_lamp": {
       "x": 6752,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_mouth": {
+    "scroll_dawn_mend": {
       "x": 6768,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_gallery": {
+    "scroll_soft_word": {
       "x": 6784,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_vault": {
+    "scroll_thin_will": {
       "x": 6800,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chapel_staff": {
+    "scroll_hush_field": {
       "x": 6816,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "hush_rod": {
+    "scroll_borrowed_step": {
       "x": 6832,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "oath_blade": {
+    "scroll_long_hush": {
       "x": 6848,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "ember_staff": {
+    "scroll_oath_strike": {
       "x": 6864,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cinder_coal": {
+    "scroll_small_dawn": {
       "x": 6880,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "slope_pelt": {
+    "scroll_oath_bell": {
       "x": 6896,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "ash_fang": {
+    "scroll_vow_ward": {
       "x": 6912,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "cult_token": {
+    "scroll_kept_oath": {
       "x": 6928,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "drake_scale": {
+    "scroll_cinder_lance": {
       "x": 6944,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "kobold_tooth": {
+    "scroll_ember_field": {
       "x": 6960,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "ash_brand": {
+    "scroll_second_ration": {
       "x": 6976,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "slate_tooth": {
+    "scroll_star_cinder": {
       "x": 6992,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scorched_axe": {
+    "scroll_cinder_crown": {
       "x": 7008,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "matriarch_pick": {
+    "scroll_briar_mend": {
       "x": 7024,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "elder_fang": {
+    "scroll_thorn_bolt": {
       "x": 7040,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "ashforged_axe": {
+    "scroll_creeping_rot": {
       "x": 7056,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "scalded_blade": {
+    "scroll_rootbind": {
       "x": 7072,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "wyrm_staff": {
+    "scroll_barkskin": {
       "x": 7088,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_brightforge": {
+    "scroll_seed_mend": {
       "x": 7104,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_brightforge_slopes": {
+    "scroll_bramble_field": {
       "x": 7120,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_wyrmrest": {
+    "scroll_vine_lash": {
       "x": 7136,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_ashfall": {
+    "scroll_grove_mend": {
       "x": 7152,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_emberwatch": {
+    "scroll_spore_cloud": {
       "x": 7168,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_scalded": {
+    "scroll_living_bark": {
       "x": 7184,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_thanes_rest": {
+    "scroll_thorn_rain": {
       "x": 7200,
       "y": 0,
       "w": 16,
       "h": 16
     },
-    "chart_spires": {
+    "scroll_old_growth": {
       "x": 7216,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_green_crown": {
+      "x": 7232,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_quick_shot": {
+      "x": 7248,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_knife_jab": {
+      "x": 7264,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_marked_trail": {
+      "x": 7280,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_pinning_shot": {
+      "x": 7296,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_sidestep": {
+      "x": 7312,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_volley": {
+      "x": 7328,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_calm_beast": {
+      "x": 7344,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_hunters_eye": {
+      "x": 7360,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_thicket_step": {
+      "x": 7376,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_arrow_rain": {
+      "x": 7392,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_second_mark": {
+      "x": 7408,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_wild_knit": {
+      "x": 7424,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_long_shot": {
+      "x": 7440,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_last_arrow": {
+      "x": 7456,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_grove_root": {
+      "x": 7472,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scroll_low_shot": {
+      "x": 7488,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "boar_tusk": {
+      "x": 7504,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "glade_pelt": {
+      "x": 7520,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "pine_resin": {
+      "x": 7536,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "blackice_shard": {
+      "x": 7552,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "blackice_staff": {
+      "x": 7568,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "reeve_blade": {
+      "x": 7584,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "blackpine_edge": {
+      "x": 7600,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hart_crown": {
+      "x": 7616,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_graymoor": {
+      "x": 7632,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_thornhaven": {
+      "x": 7648,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_blackpine": {
+      "x": 7664,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_valdoria": {
+      "x": 7680,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_eldenmoor": {
+      "x": 7696,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_eldenweald": {
+      "x": 7712,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_mouth": {
+      "x": 7728,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_gallery": {
+      "x": 7744,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_vault": {
+      "x": 7760,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chapel_staff": {
+      "x": 7776,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hush_rod": {
+      "x": 7792,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "oath_blade": {
+      "x": 7808,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "ember_staff": {
+      "x": 7824,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cinder_coal": {
+      "x": 7840,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "slope_pelt": {
+      "x": 7856,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "ash_fang": {
+      "x": 7872,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cult_token": {
+      "x": 7888,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "drake_scale": {
+      "x": 7904,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "kobold_tooth": {
+      "x": 7920,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "ash_brand": {
+      "x": 7936,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "slate_tooth": {
+      "x": 7952,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scorched_axe": {
+      "x": 7968,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "matriarch_pick": {
+      "x": 7984,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "elder_fang": {
+      "x": 8000,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "ashforged_axe": {
+      "x": 8016,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "scalded_blade": {
+      "x": 8032,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wyrm_staff": {
+      "x": 8048,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_brightforge": {
+      "x": 8064,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_brightforge_slopes": {
+      "x": 8080,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_wyrmrest": {
+      "x": 8096,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_ashfall": {
+      "x": 8112,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_emberwatch": {
+      "x": 8128,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_scalded": {
+      "x": 8144,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_thanes_rest": {
+      "x": 8160,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_spires": {
+      "x": 8176,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "green_sap": {
+      "x": 8192,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "green_pelt": {
+      "x": 8208,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "snare_cord": {
+      "x": 8224,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "moss_antler": {
+      "x": 8240,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hill_pelt": {
+      "x": 8256,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hill_token": {
+      "x": 8272,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "tusk_chip": {
+      "x": 8288,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "toll_tooth": {
+      "x": 8304,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "old_tusk": {
+      "x": 8320,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cinder_chip": {
+      "x": 8336,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "grove_staff": {
+      "x": 8352,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "wood_bow": {
+      "x": 8368,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "hollow_blade": {
+      "x": 8384,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "cinder_fang": {
+      "x": 8400,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "marrow_tooth": {
+      "x": 8416,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_ironhollow": {
+      "x": 8432,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_ironhollow_hills": {
+      "x": 8448,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_canipure": {
+      "x": 8464,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_greenreach": {
+      "x": 8480,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_grokthul": {
+      "x": 8496,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_grokthul_valley": {
+      "x": 8512,
+      "y": 0,
+      "w": 16,
+      "h": 16
+    },
+    "chart_grokthul_peaks": {
+      "x": 8528,
       "y": 0,
       "w": 16,
       "h": 16

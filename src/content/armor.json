@@ -681,7 +681,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Cracked leather cap. The hide split once and was waxed shut.",
     "effects": "Leather armor, worn on the head."
@@ -702,7 +703,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Leather cap. Oiled hide. It creaks when you kneel.",
     "effects": "Leather armor, worn on the head."
@@ -723,7 +725,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Hardened leather cap. Boiled and shaped until it turns a light blade.",
     "effects": "Leather armor, worn on the head."
@@ -744,7 +747,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Cracked leather tunic. The hide split once and was waxed shut.",
     "effects": "Leather armor, worn on the chest."
@@ -765,7 +769,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Leather tunic. Oiled hide. It creaks when you kneel.",
     "effects": "Leather armor, worn on the chest."
@@ -786,7 +791,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Hardened leather tunic. Boiled and shaped until it turns a light blade.",
     "effects": "Leather armor, worn on the chest."
@@ -807,7 +813,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Cracked leather gloves. The hide split once and was waxed shut.",
     "effects": "Leather armor, worn on the hands."
@@ -828,7 +835,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Leather gloves. Oiled hide. It creaks when you kneel.",
     "effects": "Leather armor, worn on the hands."
@@ -849,7 +857,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Hardened leather gloves. Boiled and shaped until it turns a light blade.",
     "effects": "Leather armor, worn on the hands."
@@ -870,7 +879,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Cracked leather pants. The hide split once and was waxed shut.",
     "effects": "Leather armor, worn on the legs."
@@ -891,7 +901,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Leather pants. Oiled hide. It creaks when you kneel.",
     "effects": "Leather armor, worn on the legs."
@@ -912,7 +923,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Hardened leather pants. Boiled and shaped until it turns a light blade.",
     "effects": "Leather armor, worn on the legs."
@@ -933,7 +945,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Cracked leather boots. The hide split once and was waxed shut.",
     "effects": "Leather armor, worn on the feet."
@@ -954,7 +967,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Leather boots. Oiled hide. It creaks when you kneel.",
     "effects": "Leather armor, worn on the feet."
@@ -975,7 +989,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Hardened leather boots. Boiled and shaped until it turns a light blade.",
     "effects": "Leather armor, worn on the feet."
@@ -996,7 +1011,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Cracked leather buckler. The hide split once and was waxed shut.",
     "effects": "Leather armor, worn on the secondary."
@@ -1017,7 +1033,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Leather buckler. Oiled hide. It creaks when you kneel.",
     "effects": "Leather armor, worn on the secondary."
@@ -1038,7 +1055,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "Hardened leather buckler. Boiled and shaped until it turns a light blade.",
     "effects": "Leather armor, worn on the secondary."
@@ -1060,7 +1078,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Tattered hood. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the head."
@@ -1082,7 +1101,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Linen hood. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the head."
@@ -1104,7 +1124,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Wool hood. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the head."
@@ -1126,7 +1147,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Tattered robe. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the chest."
@@ -1148,7 +1170,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Linen robe. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the chest."
@@ -1170,7 +1193,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Wool robe. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the chest."
@@ -1192,7 +1216,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Tattered gloves. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the hands."
@@ -1214,7 +1239,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Linen gloves. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the hands."
@@ -1236,7 +1262,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Wool gloves. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the hands."
@@ -1258,7 +1285,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Tattered trousers. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the legs."
@@ -1280,7 +1308,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Linen trousers. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the legs."
@@ -1302,7 +1331,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Wool trousers. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the legs."
@@ -1324,7 +1354,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Tattered shoes. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the feet."
@@ -1346,7 +1377,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Linen shoes. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the feet."
@@ -1368,7 +1400,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Wool shoes. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the feet."
@@ -1390,7 +1423,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Tattered sash. More mend than cloth. It covers you, and that is the claim.",
     "effects": "Cloth armor, worn on the secondary."
@@ -1412,7 +1446,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Linen sash. Washed linen, stitched for a mild day.",
     "effects": "Cloth armor, worn on the secondary."
@@ -1434,7 +1469,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "Wool sash. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the secondary."
@@ -1683,7 +1719,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "wyrmhide cap. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Leather armor."
@@ -1704,7 +1741,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "wyrmhide tunic. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Leather armor."
@@ -1725,7 +1763,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "wyrmhide gloves. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Leather armor."
@@ -1746,7 +1785,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "wyrmhide pants. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Leather armor."
@@ -1767,7 +1807,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "wyrmhide boots. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Leather armor."
@@ -1788,7 +1829,8 @@
       "berserker",
       "rogue",
       "shaman",
-      "warden"
+      "warden",
+      "ranger"
     ],
     "blurb": "wyrmhide buckler. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Leather armor."
@@ -1810,7 +1852,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "cinder hood. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Cloth armor."
@@ -1832,7 +1875,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "cinder robe. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Cloth armor."
@@ -1854,7 +1898,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "cinder gloves. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Cloth armor."
@@ -1876,7 +1921,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "cinder trousers. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Cloth armor."
@@ -1898,7 +1944,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "cinder shoes. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Cloth armor."
@@ -1920,7 +1967,8 @@
       "warden",
       "wizard",
       "enchanter",
-      "magician"
+      "magician",
+      "druid"
     ],
     "blurb": "cinder sash. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
     "effects": "Cloth armor."

@@ -5,8 +5,8 @@
  */
 import { T, TILE } from './frostmere-map.mjs';
 
-const W = 256;
-const H = 256;
+export const W = 256;
+export const H = 256;
 
 const SC = {
   PINE_SNOW: 1,
@@ -22,17 +22,17 @@ const SC = {
   BUSH_DARK: 12,
 };
 
-function grid(w, h, fill) {
+export function grid(w, h, fill) {
   return Array.from({ length: h }, () => Array(w).fill(fill));
 }
 
-function hash(x, y, salt = 0) {
+export function hash(x, y, salt = 0) {
   let n = Math.imul(x + 1 + salt * 131, 0x9e3779b1) ^ Math.imul(y + 1, 0x85ebca6b);
   n = Math.imul(n ^ (n >>> 16), 0xc2b2ae35);
   return ((n >>> 0) % 10000) / 10000;
 }
 
-function feet(tx, ty) {
+export function feet(tx, ty) {
   return { x: tx * TILE + 8, y: ty * TILE + 14 };
 }
 
@@ -49,7 +49,7 @@ function stampRoad(g, solid, road, scenery, x, y) {
   if (scenery) scenery[y][x] = 0;
 }
 
-function stroke(g, solid, road, scenery, points, radius) {
+export function stroke(g, solid, road, scenery, points, radius) {
   const w = g[0].length;
   const h = g.length;
   for (let i = 0; i < points.length - 1; i++) {
@@ -91,7 +91,7 @@ function pond(g, solid, cx, cy, rx, ry) {
   }
 }
 
-function wallBox(g, solid, safe, x0, y0, x1, y1, wallTile, floorTile, gates) {
+export function wallBox(g, solid, safe, x0, y0, x1, y1, wallTile, floorTile, gates) {
   for (let y = y0; y <= y1; y++) {
     for (let x = x0; x <= x1; x++) {
       const edge = x === x0 || x === x1 || y === y0 || y === y1;
@@ -109,7 +109,7 @@ function wallBox(g, solid, safe, x0, y0, x1, y1, wallTile, floorTile, gates) {
   }
 }
 
-function stoneHouse(g, solid, x, y, w, h) {
+export function stoneHouse(g, solid, x, y, w, h) {
   for (let yy = y; yy < y + h; yy++) {
     for (let xx = x; xx < x + w; xx++) {
       if (!g[yy]) continue;
@@ -120,7 +120,7 @@ function stoneHouse(g, solid, x, y, w, h) {
   }
 }
 
-function border(g, solid) {
+export function border(g, solid) {
   const w = g[0].length;
   const h = g.length;
   for (let x = 0; x < w; x++) {
@@ -160,7 +160,7 @@ function assertClear(g, solid, objects) {
   }
 }
 
-function paintScenery(g, solid, road, safe, pick) {
+export function paintScenery(g, solid, road, safe, pick) {
   const h = g.length;
   const w = g[0].length;
   const scenery = grid(w, h, 0);
@@ -186,7 +186,7 @@ function paintScenery(g, solid, road, safe, pick) {
   return { grid: scenery, rocks };
 }
 
-function maker(id, town, wilds) {
+export function maker(id, town, wilds) {
   return {
     id,
     objects: [],
@@ -206,7 +206,7 @@ function maker(id, town, wilds) {
   };
 }
 
-function clearPatch(scenery, x0, y0, x1, y1) {
+export function clearPatch(scenery, x0, y0, x1, y1) {
   for (let y = y0; y <= y1; y++) {
     for (let x = x0; x <= x1; x++) {
       if (scenery?.grid[y]) scenery.grid[y][x] = 0;
@@ -214,7 +214,7 @@ function clearPatch(scenery, x0, y0, x1, y1) {
   }
 }
 
-function placeMobs(m, g, solid, safe, road, scenery, list) {
+export function placeMobs(m, g, solid, safe, road, scenery, list) {
   const placed = [];
   const taken = new Set();
   const blocked = new Set([T.WATER, T.WATER_B, T.CLIFF, T.WALL, T.STONE, T.PALISADE, T.ROOF, T.STONE_FRONT, T.POST, T.DOCK]);
@@ -249,7 +249,7 @@ function placeMobs(m, g, solid, safe, road, scenery, list) {
   return placed;
 }
 
-function interior(id, title, exitZone, exit, occupants, blurb) {
+export function interior(id, title, exitZone, exit, occupants, blurb) {
   const w = 16;
   const h = 12;
   const g = grid(w, h, T.FLOOR);
@@ -337,8 +337,8 @@ function buildBrightforge() {
   m.add('bind', 'brightforge-yard', 116, 74);
   m.add('npc', 'durgan', 128, 64, { defId: 'durgan', sprite: 'durgan' });
   m.add('npc', 'sella', 128, 104, { defId: 'sella', sprite: 'sella' });
-  m.add('npc', 'dunn', 112, 108, { defId: 'dunn', sprite: 'brim' });
-  m.add('npc', 'otta', 144, 108, { defId: 'otta', sprite: 'kelda' });
+  m.add('npc', 'dunn', 112, 108, { defId: 'dunn', sprite: 'dunn' });
+  m.add('npc', 'otta', 144, 108, { defId: 'otta', sprite: 'otta' });
   m.add('prop', 'fire', 116, 68, { sprite: 'firepit' });
   m.add('prop', 'banner', 140, 46, { sprite: 'banner' });
   m.add('sign', 'Brightforge', 100, 44, {
@@ -407,7 +407,7 @@ function buildBrightforge() {
   return { map, halls, mobs };
 }
 
-function outpost(g, solid, safe, scenery, x0, y0, x1, y1, gates) {
+export function outpost(g, solid, safe, scenery, x0, y0, x1, y1, gates) {
   wallBox(g, solid, safe, x0, y0, x1, y1, T.PALISADE, T.PATH, gates);
   clearPatch(scenery, x0 + 1, y0 + 1, x1 - 1, y1 - 1);
 }
@@ -444,8 +444,8 @@ function buildWyrmrest() {
   m.add('door', 'To the Ashfall Moors', 128, 10, { toZone: 'ashfall', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
   m.add('spawn', 'court', 110, 120);
   m.add('bind', 'wyrmrest-court', 104, 124);
-  m.add('npc', 'brynn', 128, 110, { defId: 'brynn', sprite: 'osric' });
-  m.add('npc', 'vess', 150, 128, { defId: 'vess', sprite: 'sigrid' });
+  m.add('npc', 'brynn', 128, 110, { defId: 'brynn', sprite: 'brynn' });
+  m.add('npc', 'vess', 150, 128, { defId: 'vess', sprite: 'vess' });
   m.add('npc', 'wry_warrior', 96, 100, { defId: 'wry_warrior', sprite: 'eirik' });
   m.add('npc', 'wry_shaman', 112, 100, { defId: 'wry_shaman', sprite: 'torunn' });
   m.add('npc', 'wry_rogue', 160, 100, { defId: 'wry_rogue', sprite: 'sable' });
@@ -455,9 +455,11 @@ function buildWyrmrest() {
   m.add('npc', 'wry_cleric', 160, 140, { defId: 'wry_cleric', sprite: 'selne' });
   m.add('npc', 'wry_enchanter', 176, 140, { defId: 'wry_enchanter', sprite: 'miris' });
   m.add('npc', 'wry_paladin', 120, 160, { defId: 'wry_paladin', sprite: 'adel' });
-  m.add('npc', 'wry_magician', 148, 168, { defId: 'wry_magician', sprite: 'quen' });
-  m.add('npc', 'gate_holm', 84, 140, { defId: 'gate_holm', sprite: 'soren' });
-  m.add('npc', 'gate_moss', 84, 148, { defId: 'gate_moss', sprite: 'freya' });
+  m.add('npc', 'wry_magician', 148, 168, { defId: 'wry_magician', sprite: 'wry_magician' });
+  m.add('npc', 'wry_druid', 104, 168, { defId: 'wry_druid', sprite: 'wry_druid' });
+  m.add('npc', 'wry_ranger', 168, 176, { defId: 'wry_ranger', sprite: 'wry_ranger' });
+  m.add('npc', 'gate_holm', 84, 140, { defId: 'gate_holm', sprite: 'gate_holm' });
+  m.add('npc', 'gate_moss', 84, 148, { defId: 'gate_moss', sprite: 'gate_moss' });
   m.add('prop', 'banner', 128, 86, { sprite: 'banner' });
   m.add('prop', 'fire', 104, 118, { sprite: 'firepit' });
   m.add('sign', 'Wyrmrest', 96, 80, {
@@ -502,8 +504,8 @@ function buildAshfall() {
   m.add('door', 'To Wyrmrest', 128, 248, { toZone: 'wyrmrest', toX: feet(128, 20).x, toY: feet(128, 20).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Scalded Vale', 128, 8, { toZone: 'scalded', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
   m.add('spawn', 'south', 128, 230);
-  m.add('npc', 'ember_keel', 128, 210, { defId: 'ember_keel', sprite: 'odda' });
-  m.add('npc', 'ember_scout', 140, 214, { defId: 'ember_scout', sprite: 'soren' });
+  m.add('npc', 'ember_keel', 128, 210, { defId: 'ember_keel', sprite: 'ember_keel' });
+  m.add('npc', 'ember_scout', 140, 214, { defId: 'ember_scout', sprite: 'ember_scout' });
   m.add('bind', 'emberwatch', 116, 216);
   m.add('prop', 'fire', 116, 208, { sprite: 'firepit' });
   m.add('sign', 'Emberwatch', 108, 228, {
@@ -573,7 +575,7 @@ function buildScalded() {
   m.add('door', 'To the Ashfall Moors', 128, 248, { toZone: 'ashfall', toX: feet(128, 16).x, toY: feet(128, 16).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Wyrmrest Spires', 128, 8, { toZone: 'spires', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
   m.add('spawn', 'south', 128, 220);
-  m.add('npc', 'thane_rest', 128, 200, { defId: 'thane_rest', sprite: 'durgan' });
+  m.add('npc', 'thane_rest', 128, 200, { defId: 'thane_rest', sprite: 'thane_rest' });
   m.add('bind', 'thanes-rest', 140, 206);
   m.add('prop', 'fire', 116, 204, { sprite: 'firepit' });
   m.add('sign', "Thane's Rest", 108, 220, {

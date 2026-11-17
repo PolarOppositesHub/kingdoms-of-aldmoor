@@ -23,6 +23,7 @@ import { buildWorld, T } from './frostmere-map.mjs';
 import { buildFrostfang } from './frostfang-map.mjs';
 import { buildSouthlands } from './south-map.mjs';
 import { buildCanon, clearCrossings } from './canon-map.mjs';
+import { buildPhase2, linkPhase2 } from './phase2-map.mjs';
 import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -2889,6 +2890,10 @@ async function main() {
   const canon = buildCanon();
   world.maps.push(...canon.maps);
   Object.assign(world.charts, canon.charts);
+  const phase2 = buildPhase2();
+  world.maps.push(...phase2.maps);
+  Object.assign(world.charts, phase2.charts);
+  linkPhase2(world.maps);
   clearCrossings(world.maps);
   const map = world.maps.find((zone) => zone.id === 'hoffender');
   const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };

@@ -338,5 +338,69 @@
       "chest": "tattered_robe",
       "feet": "tattered_shoes"
     }
+  },
+  {
+    "id": "druid",
+    "name": "Druid",
+    "race": "wood_elf",
+    "stats": {
+      "str": 8,
+      "sta": 10,
+      "agi": 10,
+      "dex": 9,
+      "wis": 16,
+      "int": 12,
+      "cha": 10
+    },
+    "ac": 3,
+    "baseHp": 18,
+    "hpPerLevel": 5,
+    "hpPerSta": 1,
+    "weapon": "grove_staff",
+    "sprite": "body_m",
+    "baseMana": 22,
+    "manaPerLevel": 6,
+    "manaPerInt": 1,
+    "resource": "mana",
+    "baseFocus": 0,
+    "focusPerLevel": 0,
+    "blurb": "Roots, a mend, a rot that stays, and bark you put on yourself.",
+    "abilities": [],
+    "kit": {
+      "chest": "tattered_robe",
+      "feet": "tattered_shoes"
+    }
+  },
+  {
+    "id": "ranger",
+    "name": "Ranger",
+    "race": "wood_elf",
+    "stats": {
+      "str": 10,
+      "sta": 10,
+      "agi": 14,
+      "dex": 16,
+      "wis": 10,
+      "int": 8,
+      "cha": 8
+    },
+    "ac": 4,
+    "baseHp": 20,
+    "hpPerLevel": 5,
+    "hpPerSta": 1,
+    "weapon": "wood_bow",
+    "sprite": "body_m",
+    "baseMana": 14,
+    "manaPerLevel": 4,
+    "manaPerInt": 1,
+    "resource": "mana",
+    "baseFocus": 0,
+    "focusPerLevel": 0,
+    "blurb": "A bow, a light knife, a trail you can read, and a kindness toward beasts.",
+    "abilities": [],
+    "kit": {
+      "chest": "cracked_leather_tunic",
+      "feet": "cracked_leather_boots"
+    }
   }
 ]
