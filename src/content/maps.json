@@ -62,7 +62,7 @@
   {
     "id": "graymoor",
     "name": "Graymoor Hold",
-    "blurb": "Odda's yard, where the snow becomes mud."
+    "blurb": "Odda's castle, inland of the Thornhaven port."
   },
   {
     "id": "thornhaven_fields",
@@ -72,12 +72,12 @@
   {
     "id": "blackpine",
     "name": "Blackpine Tower",
-    "blurb": "The kingdom yard in the pines."
+    "blurb": "Osric's castle in the central pines, and the east dock."
   },
   {
     "id": "valdoria_road",
     "name": "Valdoria",
-    "blurb": "The road between Thornhaven and the Eldenweald."
+    "blurb": "The pines between Thornhaven and the east dock. Eldenmoor is the ship, not the south road."
   },
   {
     "id": "eldenmoor",
@@ -87,7 +87,7 @@
   {
     "id": "eldenweald",
     "name": "Eldenweald",
-    "blurb": "The woods and meadows outside Eldenmoor's north gate."
+    "blurb": "The woods outside Eldenmoor's north gate, on Vaelmoor. They do not walk to Valdoria."
   },
   {
     "id": "rime_mouth",

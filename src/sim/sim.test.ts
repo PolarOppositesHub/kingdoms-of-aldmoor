@@ -3,13 +3,13 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadContent } from './content';
 import { PNG } from 'pngjs';
-import { conColor, formatCoin, maxFocus, maxHp, xpLossFraction, xpToNext, xpYield } from './formulas';
+import { conColor, formatCoin, maxFocus, maxHp, petStrike, xpLossFraction, xpToNext, xpYield } from './formulas';
 import { applyIntent } from './intents';
 import { askPrice, ivarIsBusy, mobRespawnDelay, resolveStrike, turnInPelts } from './systems';
 import { addItem, countItem, findStack, moveItem } from './bags';
 import { applySave, captureSave, migrateSave } from './save';
 import { itemIconKey } from './icons';
-import { bodyBlocked, placeName } from './map';
+import { bodyBlocked, nearestStand, placeName } from './map';
 import { applyHero, blankActor, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
 import abilitiesJson from '../content/abilities.json';
 import iconMeta from '../assets/icons.json';
@@ -370,12 +370,12 @@ describe('armor shops', () => {
   const armor = Object.values(content.items).filter((item) => item.armorType);
   const slots = ['head', 'chest', 'hands', 'legs', 'feet', 'secondary'];
 
-  it('stocks three tiers of plate, chain, leather, and cloth, and no scale yet', () => {
+  it('stocks four tiers of plate, chain, leather, and cloth, and no scale yet', () => {
     expect(armor.some((item) => item.armorType === 'scale')).toBe(false);
     for (const type of ['plate', 'chain', 'leather', 'cloth'] as const) {
       for (const slot of slots) {
         const line = armor.filter((item) => item.armorType === type && item.slot === slot).sort((a, b) => (a.tier ?? 0) - (b.tier ?? 0));
-        expect(line.map((item) => item.tier)).toEqual([1, 2, 3]);
+        expect(line.map((item) => item.tier)).toEqual([1, 2, 3, 4]);
         for (let i = 1; i < line.length; i++) {
           expect(line[i].ac ?? 0).toBeGreaterThanOrEqual(line[i - 1].ac ?? 0);
           expect(line[i].weight).toBeGreaterThan(line[i - 1].weight);
@@ -619,14 +619,16 @@ describe('bags, charts, pets, and respawn', () => {
 const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
 
 describe('levels, rest, and ability icons', () => {
-  it('keeps the 1–9 curve and extends it through level 30', () => {
-    expect(content.tuning.levelCap).toBe(30);
+  it('keeps the 1–9 curve and extends it through level 50', () => {
+    expect(content.tuning.levelCap).toBe(50);
     expect(content.tuning.xpTable[9]).toBe(750);
     expect(xpToNext(content, 1)).toBe(70);
     expect(xpToNext(content, 10)).toBe(880);
     expect(xpToNext(content, 24)).toBe(3750);
     expect(xpToNext(content, 29)).toBe(5250);
-    expect(content.tuning.xpTable).toHaveLength(30);
+    expect(xpToNext(content, 49)).toBe(13750);
+    expect(xpToNext(content, 49)).toBeGreaterThan(xpToNext(content, 29));
+    expect(content.tuning.xpTable).toHaveLength(50);
     const stats = content.classes.warrior.stats;
     expect(maxHp(content, 'warrior', 10, stats)).toBe(28 + 12 + 9 * 8);
     expect(maxHp(content, 'warrior', 11, stats)).toBe(28 + 12 + 10 * 8 + 4);
@@ -1273,12 +1275,16 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     expect(spawn?.y).toBe(race?.homeY);
   });
 
-  it('raises the cap to 30 without teaching the new drills, and keeps an old save', () => {
+  it('raises the cap to 50 without teaching the new drills, and keeps an old save', () => {
     expect(xpLossFraction(10)).toBe(0.05);
     expect(xpLossFraction(19)).toBe(0.05);
     expect(xpLossFraction(20)).toBe(0.075);
     expect(xpLossFraction(29)).toBe(0.075);
     expect(xpLossFraction(30)).toBe(0.1);
+    expect(xpLossFraction(39)).toBe(0.1);
+    expect(xpLossFraction(40)).toBe(0.125);
+    expect(xpLossFraction(49)).toBe(0.125);
+    expect(xpLossFraction(50)).toBe(0.15);
     expect(conColor(30, 30)).toBe('white');
     expect(conColor(30, 26)).toBe('gray');
     expect(conColor(30, 27)).toBe('green');
@@ -1290,9 +1296,11 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     const state = createWorld(content, map, 4);
     state.debug = true;
     applyIntent(state, { type: 'debugGrantXp', amount: 500000 }, content, map);
-    expect(state.level).toBe(30);
+    expect(state.level).toBe(50);
     expect(state.learned).not.toContain('cleaving_oath');
     expect(state.learned).not.toContain('black_rime');
+    expect(state.learned).not.toContain('last_wall');
+    expect(state.learned).not.toContain('last_winter');
 
     const legacy = {
       version: 3,
@@ -1390,8 +1398,12 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
       ['paladin', 'adel', 'scroll_small_grace', 'scroll_vow_mend'],
       ['magician', 'quen', 'scroll_cinder_bolt', 'scroll_ember_star'],
     ] as const;
+    expect(content.roster.classes.find((entry) => entry.id === 'shaman')?.races).toEqual(['barbarian']);
+    expect(content.roster.classes.find((entry) => entry.id === 'warden')?.races).toEqual(['barbarian']);
+    for (const id of ['warrior', 'rogue', 'berserker']) {
+      expect(content.roster.classes.find((entry) => entry.id === id)?.races).toEqual(['barbarian', 'dwarf']);
+    }
     for (const closed of ['warrior', 'shaman', 'rogue', 'warden', 'berserker']) {
-      expect(content.roster.classes.find((entry) => entry.id === closed)?.races).toEqual(['barbarian']);
       expect(applyHero(createWorld(content, arena(), 1), content, 'high_elf', closed, bonus)).toBe(false);
     }
     expect(applyHero(createWorld(content, arena(), 1), content, 'barbarian', 'warrior', bonus)).toBe(true);
@@ -1443,7 +1455,8 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     const city = maps.get('eldenmoor');
     expect(city).toBeTruthy();
     for (const [classId, trainerId, starterScroll, laterScroll] of open) {
-      expect(content.roster.classes.find((entry) => entry.id === classId)?.races).toEqual(['high_elf']);
+      const races = classId === 'cleric' || classId === 'paladin' ? ['high_elf', 'dwarf'] : ['high_elf'];
+      expect(content.roster.classes.find((entry) => entry.id === classId)?.races).toEqual(races);
       const door = city!.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === `elden_${classId}`);
       expect(door?.toX, classId).toBeTypeOf('number');
       const hall = maps.get(`elden_${classId}`);
@@ -1540,6 +1553,238 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     applyIntent(cleric, { type: 'ability', id: 'quiet_mend' }, content, map);
     expect(body.hp).toBeGreaterThan(5);
     expect(cleric.equipment.chest).toBe('rusty_iron_breastplate');
+  });
+});
+
+describe('Brightforge, Wyrmrest, and the cap at 50', () => {
+  const zoneDir = join(process.cwd(), 'src', 'assets', 'zones');
+  const maps = new Map<string, ReturnType<typeof parseTiledMap>>();
+  maps.set('hoffender', parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson));
+  for (const file of readdirSync(zoneDir).filter((name) => name.endsWith('.tmj'))) {
+    const map = parseTiledMap(JSON.parse(readFileSync(join(zoneDir, file), 'utf8')) as TiledJson);
+    maps.set(map.zoneId, map);
+  }
+  const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
+
+  it('opens Brightforge to dwarves and keeps the other race rules', () => {
+    const race = content.roster.races.find((entry) => entry.id === 'dwarf');
+    expect(race?.playable).toBe(true);
+    expect(race?.homeZone).toBe('brightforge');
+    const city = maps.get('brightforge');
+    expect(city?.width).toBeGreaterThanOrEqual(256);
+    const spawn = city?.spawns.find((entry) => entry.kind === 'spawn');
+    expect(spawn?.x).toBe(race?.homeX);
+    expect(spawn?.y).toBe(race?.homeY);
+    for (const id of ['warrior', 'cleric', 'paladin', 'rogue', 'berserker']) {
+      expect(applyHero(createWorld(content, arena(), 2), content, 'dwarf', id, bonus)).toBe(true);
+    }
+    for (const id of ['shaman', 'warden', 'wizard', 'enchanter', 'magician']) {
+      expect(applyHero(createWorld(content, arena(), 3), content, 'dwarf', id, bonus)).toBe(false);
+    }
+    expect(applyHero(createWorld(content, arena(), 4), content, 'barbarian', 'cleric', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 5), content, 'barbarian', 'paladin', bonus)).toBe(false);
+    const born = createWorld(content, arena(), 6);
+    const events = applyIntent(born, { type: 'createHero', raceId: 'dwarf', classId: 'warrior', bonus }, content, arena());
+    expect(born.bindZone).toBe('brightforge');
+    expect(events.find((event) => event.type === 'zone')).toMatchObject({ type: 'zone', zoneId: 'brightforge' });
+    const slopes = city!.spawns.filter((spawn) => spawn.kind === 'mob').map((spawn) => content.mobs[spawn.defId].level);
+    expect(slopes.length).toBeGreaterThan(10);
+    for (const level of slopes) {
+      expect(level).toBeGreaterThanOrEqual(1);
+      expect(level).toBeLessThanOrEqual(10);
+    }
+    expect(content.mobs.kragg.named).toBe(true);
+    expect(content.mobs.old_slate.rare).toBe(true);
+    expect(maps.get('brightforge')!.spawns.some((spawn) => spawn.kind === 'seam' && spawn.name === 'Ashdeep')).toBe(true);
+    expect(maps.get('brightforge')!.spawns.some((spawn) => spawn.kind === 'seam' && spawn.name === 'Veilspire')).toBe(true);
+  });
+
+  it('sails to Eldenmoor and climbs from Wyrmrest to Vyrmathax', () => {
+    const valdoria = maps.get('valdoria')!;
+    const elden = maps.get('eldenmoor')!;
+    expect(valdoria.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'eldenmoor')).toBe(true);
+    expect(elden.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'valdoria')).toBe(true);
+    expect(valdoria.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'eldenmoor' && spawn.y < 140 * 16)).toBe(true);
+    expect(elden.spawns.some((spawn) => spawn.toZone === 'valdoria' && spawn.y < 40 * 16)).toBe(false);
+    const hoffender = maps.get('hoffender')!;
+    expect(hoffender.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'wyrmrest')).toBe(true);
+    expect(hoffender.spawns.some((spawn) => spawn.kind === 'seam' && spawn.name === 'Wyrmrest')).toBe(false);
+    for (const [zone, lo, hi] of [
+      ['ashfall', 30, 37],
+      ['scalded', 36, 43],
+      ['spires', 42, 50],
+    ] as const) {
+      const levels = maps.get(zone)!.spawns.filter((spawn) => spawn.kind === 'mob').map((spawn) => content.mobs[spawn.defId].level);
+      expect(levels.length, zone).toBeGreaterThan(8);
+      for (const level of levels) {
+        expect(level, zone).toBeGreaterThanOrEqual(lo);
+        expect(level, zone).toBeLessThanOrEqual(hi);
+      }
+      expect(maps.get(zone)!.width).toBeGreaterThanOrEqual(256);
+    }
+    expect(content.mobs.korrag.name).toBe('Korrag the Scorched');
+    expect(content.mobs.skreeva.name).toBe('Skreeva');
+    expect(content.mobs.vyrmathax.level).toBe(50);
+    expect(content.mobs.vyrmathax.name).toBe('Vyrmathax the Elder');
+    expect(maps.get('spires')!.spawns.some((spawn) => spawn.kind === 'seam' && spawn.name === 'Deeper Lair')).toBe(true);
+    expect(maps.get('wyrmrest')!.width).toBeGreaterThanOrEqual(256);
+    expect(maps.get('ashfall')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'scalded')).toBe(true);
+    expect(maps.get('scalded')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'spires')).toBe(true);
+    const safe = (zone: string) => maps.get(zone)!.safe.some((cell) => cell !== 0);
+    expect(safe('wyrmrest')).toBe(true);
+    expect(safe('ashfall')).toBe(true);
+    expect(safe('scalded')).toBe(true);
+    expect(safe('thornhaven')).toBe(true);
+    expect(safe('valdoria')).toBe(true);
+  });
+
+  it('sells a level 50 drill only after the level, and scales a pet', () => {
+    const hall = maps.get('bright_warrior');
+    expect(hall).toBeTruthy();
+    const buyer = createWorld(content, hall!, 6);
+    applyIntent(buyer, { type: 'createHero', raceId: 'dwarf', classId: 'warrior', bonus }, content, hall!);
+    commitZone(buyer, content, hall!, hall!.spawns.find((spawn) => spawn.kind === 'spawn')!.x, hall!.spawns.find((spawn) => spawn.kind === 'spawn')!.y);
+    const trainer = buyer.actors.find((actor) => actor.defId === 'brim');
+    expect(trainer).toBeTruthy();
+    const player = getPlayer(buyer);
+    player.x = trainer!.x;
+    player.y = trainer!.y + 8;
+    buyer.level = 49;
+    player.level = 49;
+    buyer.copper = 5000;
+    applyIntent(buyer, { type: 'talkTo', id: trainer!.id }, content, hall!);
+    applyIntent(buyer, { type: 'choice', index: 0 }, content, hall!);
+    expect(buyer.ui.panel).toBe('merchant');
+    applyIntent(buyer, { type: 'buy', itemId: 'scroll_last_wall' }, content, hall!);
+    expect(buyer.learned).not.toContain('last_wall');
+    expect(buyer.log.at(-1)).toMatch(/level 50/);
+    buyer.level = 50;
+    player.level = 50;
+    applyIntent(buyer, { type: 'buy', itemId: 'scroll_last_wall' }, content, hall!);
+    expect(buyer.learned).toContain('last_wall');
+    expect(content.abilities.last_wall.level).toBe(50);
+    for (const classId of ['warrior', 'shaman', 'rogue', 'berserker', 'warden', 'wizard', 'cleric', 'enchanter', 'paladin', 'magician']) {
+      const top = Object.values(content.abilities).filter((ability) => ability.classId === classId).map((ability) => ability.level);
+      expect(Math.max(...top), classId).toBe(50);
+    }
+    const wolf = content.mobs.warden_wolf;
+    const young = petStrike(wolf.damage, wolf.attack, 1);
+    const grown = petStrike(wolf.damage, wolf.attack, 50);
+    expect(grown.attack).toBeGreaterThan(young.attack);
+    expect(grown.damage.bonus).toBeGreaterThan(young.damage.bonus);
+    const warden = createWorld(content, arena(), 8);
+    applyIntent(warden, { type: 'createHero', raceId: 'barbarian', classId: 'warden', bonus }, content, arena());
+    const cub = warden.actors.find((actor) => actor.pet);
+    expect(cub?.level).toBe(1);
+    warden.level = 20;
+    getPlayer(warden).level = 20;
+    warden.xp = 0;
+    // Level-up from 20 is not how the pet hears it; grant the rest of the climb.
+    warden.debug = true;
+    applyIntent(warden, { type: 'debugGrantXp', amount: 500000 }, content, arena());
+    const elder = warden.actors.find((actor) => actor.pet);
+    expect(elder?.level).toBe(50);
+    expect(elder!.maxHp).toBeGreaterThan(cub!.maxHp);
+  });
+
+  it('moves a hero off a removed tile and keeps old saves', () => {
+    const map = maps.get('thornhaven')!;
+    let blockedX = 0;
+    let blockedY = 0;
+    for (let ty = 2; ty < map.height - 2 && blockedX === 0; ty++) {
+      for (let tx = 2; tx < map.width - 2; tx++) {
+        const x = tx * map.tileWidth + 8;
+        const y = ty * map.tileWidth + 14;
+        if (bodyBlocked(map, x, y, 5, 3, false)) {
+          blockedX = x;
+          blockedY = y;
+          break;
+        }
+      }
+    }
+    expect(blockedX).toBeGreaterThan(0);
+    const legacy = {
+      version: 3,
+      savedAt: 9,
+      zoneId: 'thornhaven',
+      x: blockedX,
+      y: blockedY,
+      facing: 's' as const,
+      raceId: 'barbarian',
+      classId: 'warrior',
+      sex: 'male' as const,
+      level: 14,
+      xp: 12,
+      hp: 80,
+      mana: 0,
+      focus: 0,
+      copper: 40,
+      baseStats: { str: 14, sta: 12, agi: 10, dex: 10, wis: 8, int: 6, cha: 8 },
+      bags: [{ itemId: 'threadbare_sack', slots: [null, null, null, null] }],
+      equipment: {
+        head: null,
+        chest: 'cracked_leather_tunic',
+        hands: null,
+        legs: null,
+        feet: null,
+        primary: 'worn_axe',
+        secondary: null,
+      },
+      quests: { wolf_pelts: { stage: 'done' as const, progress: 4 } },
+      learned: ['kick'],
+      loadout: ['kick'],
+      charts: ['hoffender'],
+      petOrder: 'follow' as const,
+      factions: {},
+      bindZone: 'thornhaven',
+      bindX: 320,
+      bindY: 480,
+    };
+    const moved = createWorld(content, map, 11);
+    applySave(moved, content, map, legacy);
+    const body = getPlayer(moved);
+    expect(bodyBlocked(map, body.x, body.y, 5, 3, false)).toBe(false);
+    expect(nearestStand(map, blockedX, blockedY)).toEqual({ x: body.x, y: body.y });
+    expect(moved.level).toBe(14);
+    expect(moved.raceId).toBe('barbarian');
+    expect(moved.bindZone).toBe('thornhaven');
+
+    const v1 = migrateSave({
+      version: 1,
+      savedAt: 1,
+      zoneId: 'hoffender',
+      x: 100,
+      y: 100,
+      facing: 's',
+      raceId: 'barbarian',
+      classId: 'warrior',
+      sex: 'male',
+      level: 3,
+      xp: 5,
+      hp: 40,
+      mana: 0,
+      focus: 0,
+      copper: 10,
+      baseStats: { str: 14, sta: 12, agi: 10, dex: 10, wis: 8, int: 6, cha: 8 },
+      inventory: [{ itemId: 'wolf_pelt', qty: 1 }],
+      equipment: {
+        head: null,
+        chest: null,
+        hands: null,
+        legs: null,
+        feet: null,
+        primary: 'worn_axe',
+        secondary: null,
+      },
+      quests: {},
+      learned: [],
+      loadout: ['kick'],
+      charts: [],
+      factions: {},
+    });
+    expect(v1?.classId).toBe('warrior');
+    expect(v1?.raceId).toBe('barbarian');
+    expect(v1?.level).toBe(3);
   });
 });
 

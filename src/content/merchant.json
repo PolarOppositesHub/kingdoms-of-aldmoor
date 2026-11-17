@@ -403,6 +403,26 @@
         {
           "itemId": "scroll_cleave",
           "price": 720
+        },
+        {
+          "itemId": "scroll_iron_line",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_shield_break",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_hold_the_gate",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_war_step",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_last_wall",
+          "price": 2400
         }
       ]
     },
@@ -437,6 +457,26 @@
         {
           "itemId": "scroll_blackrime",
           "price": 720
+        },
+        {
+          "itemId": "scroll_glass_spear",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_rime_crown",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_pale_needle",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_star_well",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_last_winter",
+          "price": 2400
         }
       ]
     },
@@ -471,6 +511,26 @@
         {
           "itemId": "scroll_winter",
           "price": 720
+        },
+        {
+          "itemId": "scroll_peat_lance",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_blood_knit",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_ash_tide",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_winter_hex",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_old_cold",
+          "price": 2400
         }
       ]
     },
@@ -505,6 +565,26 @@
         {
           "itemId": "scroll_silent",
           "price": 720
+        },
+        {
+          "itemId": "scroll_quiet_vein",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_side_step",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_throat_cut",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_smoke_step",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_last_knife",
+          "price": 2400
         }
       ]
     },
@@ -539,6 +619,26 @@
         {
           "itemId": "scroll_bloodhowl",
           "price": 720
+        },
+        {
+          "itemId": "scroll_red_line",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_gut_howl",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_blood_price",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_twin_ruin",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_red_end",
+          "price": 2400
         }
       ]
     },
@@ -573,6 +673,26 @@
         {
           "itemId": "scroll_elderroot",
           "price": 720
+        },
+        {
+          "itemId": "scroll_den_mend",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_wolf_snare",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_pack_ward",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_old_fang",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_den_mother",
+          "price": 2400
         }
       ]
     },
@@ -770,6 +890,26 @@
         {
           "itemId": "scroll_second_dawn",
           "price": 720
+        },
+        {
+          "itemId": "scroll_grave_light",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_quiet_ward",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_last_rite",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_bone_lamp",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_dawn_mend",
+          "price": 2400
         }
       ]
     },
@@ -812,6 +952,26 @@
         {
           "itemId": "scroll_long_borrow",
           "price": 720
+        },
+        {
+          "itemId": "scroll_soft_word",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_thin_will",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_hush_field",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_borrowed_step",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_long_hush",
+          "price": 2400
         }
       ]
     },
@@ -854,6 +1014,26 @@
         {
           "itemId": "scroll_dawn_oath",
           "price": 720
+        },
+        {
+          "itemId": "scroll_oath_strike",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_small_dawn",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_oath_bell",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_vow_ward",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_kept_oath",
+          "price": 2400
         }
       ]
     },
@@ -892,6 +1072,26 @@
         {
           "itemId": "scroll_ember_star",
           "price": 720
+        },
+        {
+          "itemId": "scroll_cinder_lance",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_ember_field",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_second_ration",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_star_cinder",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_cinder_crown",
+          "price": 2400
         }
       ]
     },
@@ -926,6 +1126,26 @@
         {
           "itemId": "scroll_blackrime",
           "price": 720
+        },
+        {
+          "itemId": "scroll_glass_spear",
+          "price": 980
+        },
+        {
+          "itemId": "scroll_rime_crown",
+          "price": 1280
+        },
+        {
+          "itemId": "scroll_pale_needle",
+          "price": 1620
+        },
+        {
+          "itemId": "scroll_star_well",
+          "price": 1980
+        },
+        {
+          "itemId": "scroll_last_winter",
+          "price": 2400
         }
       ]
     },
@@ -948,6 +1168,14 @@
         {
           "itemId": "chart_thornhaven",
           "price": 55
+        },
+        {
+          "itemId": "chart_brightforge",
+          "price": 40
+        },
+        {
+          "itemId": "chart_brightforge_slopes",
+          "price": 45
         }
       ]
     },

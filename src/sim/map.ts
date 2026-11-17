@@ -111,6 +111,50 @@ export function isSafe(map: MapData, x: number, y: number): boolean {
   return safeTile(map, tx, ty);
 }
 
+/**
+ * A saved hero standing on a tile this map no longer has walks to the nearest
+ * open ground, preferring a safe yard when one is close.
+ */
+export function nearestStand(map: MapData, x: number, y: number): { x: number; y: number } | null {
+  const startTx = Math.max(0, Math.min(map.width - 1, Math.floor(x / map.tileWidth)));
+  const startTy = Math.max(0, Math.min(map.height - 1, Math.floor(y / map.tileWidth)));
+  let bestX = 0;
+  let bestY = 0;
+  let bestD = Number.POSITIVE_INFINITY;
+  let safeX = 0;
+  let safeY = 0;
+  let safeD = Number.POSITIVE_INFINITY;
+  let have = false;
+  let haveSafe = false;
+  for (let r = 0; r <= 48; r++) {
+    for (let ty = startTy - r; ty <= startTy + r; ty++) {
+      for (let tx = startTx - r; tx <= startTx + r; tx++) {
+        if (Math.max(Math.abs(tx - startTx), Math.abs(ty - startTy)) !== r) continue;
+        const px = tx * map.tileWidth + map.tileWidth / 2;
+        const py = ty * map.tileWidth + map.tileWidth / 2;
+        if (bodyBlocked(map, px, py, 5, 3, false)) continue;
+        const d = (tx - startTx) ** 2 + (ty - startTy) ** 2;
+        if (d < bestD) {
+          bestD = d;
+          bestX = px;
+          bestY = py;
+          have = true;
+        }
+        if (safeTile(map, tx, ty) && d < safeD) {
+          safeD = d;
+          safeX = px;
+          safeY = py;
+          haveSafe = true;
+        }
+      }
+    }
+    if (haveSafe && r >= 8) return { x: safeX, y: safeY };
+  }
+  if (haveSafe) return { x: safeX, y: safeY };
+  if (have) return { x: bestX, y: bestY };
+  return null;
+}
+
 export function bodyBlocked(map: MapData, x: number, y: number, rx: number, ry: number, forMob: boolean): boolean {
   const points: Array<[number, number]> = [
     [x - rx, y - ry],

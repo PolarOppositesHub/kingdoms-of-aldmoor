@@ -30,6 +30,12 @@ import southMobs from '../content/south-mobs.json';
 import southNpcs from '../content/south-npcs.json';
 import southQuests from '../content/south-quests.json';
 import southDialogue from '../content/south-dialogue.json';
+import canonMobs from '../content/canon-mobs.json';
+import canonNpcs from '../content/canon-npcs.json';
+import canonQuests from '../content/canon-quests.json';
+import canonDialogue from '../content/canon-dialogue.json';
+import canonMaps from '../content/canon-maps.json';
+import canonVendors from '../content/canon-vendors.json';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -56,7 +62,10 @@ export function loadContent(): ContentDb {
       throw new Error(`${item.id} wearers do not match the ${item.armorType} rule`);
     }
   }
-  const maps = indexById(mapsJson as MapChart[]);
+  const maps = indexById([...(mapsJson as MapChart[]), ...(canonMaps as MapChart[])]);
+  if (Object.keys(maps).length !== (mapsJson as MapChart[]).length + (canonMaps as MapChart[]).length) {
+    throw new Error('canon chart ids collide with existing charts');
+  }
   const bounds = chartBounds as Record<string, { zone: string; x: number; y: number; w: number; h: number }>;
   for (const chart of Object.values(maps)) {
     const box = bounds[chart.id];
@@ -67,20 +76,19 @@ export function loadContent(): ContentDb {
     chart.w = box.w;
     chart.h = box.h;
   }
-  const vendors: VendorDef[] = (merchantJson.vendors as VendorDef[]).map((vendor) => {
+  const vendorRows = [...(merchantJson.vendors as VendorDef[]), ...(canonVendors as VendorDef[])];
+  const vendors: VendorDef[] = vendorRows.map((vendor) => {
     if (!vendor.copyFrom) return vendor;
-    const source = (merchantJson.vendors as VendorDef[]).find((entry) => entry.npcId === vendor.copyFrom);
+    const source = vendorRows.find((entry) => entry.npcId === vendor.copyFrom);
     if (!source) throw new Error(`${vendor.npcId} copies missing vendor ${vendor.copyFrom}`);
     return { ...vendor, stock: source.stock.map((row) => ({ ...row })) };
   });
-  const mobs = indexById([...(mobsJson as MobDef[]), ...(southMobs as MobDef[])]);
-  if (Object.keys(mobs).length !== (mobsJson as MobDef[]).length + (southMobs as MobDef[]).length) {
-    throw new Error('south mob ids collide with existing mobs');
-  }
-  const npcs = indexById([...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[])]);
-  if (Object.keys(npcs).length !== (npcsJson as NpcDef[]).length + (southNpcs as NpcDef[]).length) {
-    throw new Error('south npc ids collide with existing npcs');
-  }
+  const mobRows = [...(mobsJson as MobDef[]), ...(southMobs as MobDef[]), ...(canonMobs as MobDef[])];
+  const mobs = indexById(mobRows);
+  if (Object.keys(mobs).length !== mobRows.length) throw new Error('mob ids collide');
+  const npcRows = [...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[]), ...(canonNpcs as NpcDef[])];
+  const npcs = indexById(npcRows);
+  if (Object.keys(npcs).length !== npcRows.length) throw new Error('npc ids collide');
   const abilities = indexById(abilitiesJson as AbilityDef[]);
   const classes = indexById(classesJson as ClassDef[]);
   for (const vendor of vendors) {
@@ -99,7 +107,11 @@ export function loadContent(): ContentDb {
     items,
     mobs,
     npcs,
-    dialogue: { ...(dialogueJson as ContentDb['dialogue']), ...(southDialogue as ContentDb['dialogue']) },
+    dialogue: {
+      ...(dialogueJson as ContentDb['dialogue']),
+      ...(southDialogue as ContentDb['dialogue']),
+      ...(canonDialogue as ContentDb['dialogue']),
+    },
     abilities,
     classes,
     tuning: tuningJson as ContentDb['tuning'],
@@ -107,7 +119,7 @@ export function loadContent(): ContentDb {
     economy: economyJson,
     player: playerJson,
     roster: rosterJson as Roster,
-    quests: [...(questsJson as QuestDef[]), ...(southQuests as QuestDef[])],
+    quests: [...(questsJson as QuestDef[]), ...(southQuests as QuestDef[]), ...(canonQuests as QuestDef[])],
     maps,
   };
 }

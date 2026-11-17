@@ -1,6 +1,6 @@
 import type { AbilityDef, Actor, ContentDb, Dice, GameState, MapData } from './types';
 import type { Emit } from './events';
-import { dist, facingOf, hitChance, roll, rollDice, xpLossFraction, xpToNext, xpYield } from './formulas';
+import { dist, facingOf, hitChance, petStrike, roll, rollDice, xpLossFraction, xpToNext, xpYield } from './formulas';
 import { bodyBlocked, findPath, isSafe, lineOfSight, tileOf, tryMove } from './map';
 import { findActor, getPlayer, nextEntityId, refreshGear, refreshMobActivity, syncCompanion } from './state';
 import { addItem, countItem, takeItems } from './bags';
@@ -589,6 +589,7 @@ export function grantXp(state: GameState, content: ContentDb, amount: number, em
     player.hp = player.maxHp;
     state.mana = state.maxMana;
     if (content.classes[state.classId]?.resource === 'guile') state.focus = state.focusMax;
+    syncCompanion(state, content);
     emit({ type: 'level', level: state.level });
     emit({ type: 'log', text: `You reach level ${state.level}. The cold feels a little thinner.` });
   }
@@ -906,6 +907,22 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
       { id: 'gallery_magister', active: 'gallery_active', ready: 'gallery_ready', next: 'offer_gallery' },
       { id: 'the_black_vault', active: 'vault_active', ready: 'after', next: 'offer_vault' },
     ], 'after');
+  } else if (npc.defId === 'sella') {
+    nodeId = steppedNode(state, content, [
+      { id: 'slope_wolves', active: 'wolves_active', ready: 'wolves_ready', next: 'start' },
+      { id: 'kragg_ashhand', active: 'kragg_active', ready: 'kragg_ready', next: 'after_wolves' },
+    ], 'done');
+  } else if (npc.defId === 'durgan') {
+    nodeId = steppedNode(state, content, [
+      { id: 'old_slate', active: 'slate_active', ready: 'slate_ready', next: 'start' },
+    ], 'done');
+  } else if (npc.defId === 'brynn') {
+    nodeId = steppedNode(state, content, [
+      { id: 'ash_pack', active: 'ash_active', ready: 'ash_ready', next: 'start' },
+      { id: 'korrag_scorched', active: 'korrag_active', ready: 'korrag_ready', next: 'after_ash' },
+      { id: 'skreeva_matriarch', active: 'skreeva_active', ready: 'skreeva_ready', next: 'after_korrag' },
+      { id: 'vyrmathax_elder', active: 'elder_active', ready: 'elder_ready', next: 'after_skreeva' },
+    ], 'done');
   }
   state.ui = { panel: 'dialogue', npcId: npc.id, nodeId, title: null, body: null };
   state.input.dest = null;
@@ -990,7 +1007,8 @@ export function ai(state: GameState, content: ContentDb, map: MapData, emit: Emi
           mob.facing = facingOf(foe.x - mob.x, foe.y - mob.y, mob.facing);
           if (mob.attackMs <= 0) {
             mob.attackMs = def.delayMs;
-            resolveStrike(state, content, map, mob, foe, def.damage, def.attack, false, def.verb, emit);
+            const swing = petStrike(def.damage, def.attack, mob.level);
+            resolveStrike(state, content, map, mob, foe, swing.damage, swing.attack, false, def.verb, emit);
           }
         }
       } else if (dist(mob, player) > 26) {
@@ -1294,21 +1312,19 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
   if (state.zoneId !== home) {
     emit({ type: 'zone', zoneId: home, x: state.bind.x, y: state.bind.y });
   }
-  emit({
-    type: 'log',
-    text:
-      home === 'hoffender'
-        ? 'You wake in the yard of the Frosthearth Inn.'
-        : home === 'frostfang'
-          ? 'You wake at the fire in Hearthpass.'
-          : home === 'eldenmoor'
-            ? 'You wake in the yard of the Silver Stair.'
-            : home === 'thornhaven'
-              ? 'You wake in the yard of Graymoor Hold.'
-              : home === 'valdoria'
-                ? 'You wake in the yard of Blackpine Tower.'
-                : 'You wake where you last bound.',
-  });
+  const wakeText: Record<string, string> = {
+    hoffender: 'You wake in the yard of the Frosthearth Inn.',
+    frostfang: 'You wake at the fire in Hearthpass.',
+    eldenmoor: 'You wake in the yard of the Silver Stair.',
+    thornhaven: 'You wake in the yard of Graymoor Hold.',
+    valdoria: 'You wake in the yard of Blackpine Tower.',
+    brightforge: 'You wake in the yard of Brightforge.',
+    wyrmrest: 'You wake in the court of Wyrmrest.',
+    ashfall: 'You wake in the yard of Emberwatch.',
+    scalded: "You wake in the yard of Thane's Rest.",
+    spires: 'You wake on the Last Step.',
+  };
+  emit({ type: 'log', text: wakeText[home] ?? 'You wake where you last bound.' });
 }
 
 export function portals(state: GameState, content: ContentDb, map: MapData, emit: Emit): void {

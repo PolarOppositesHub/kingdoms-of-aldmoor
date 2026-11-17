@@ -1,0 +1,797 @@
+{
+  "durgan": {
+    "start": {
+      "text": "Durgan Ashbeard. Brightforge is the Lightbrune hold, the nearest of the mountain clans to Graymoor. The deep doors to Ashdeep and Veilspire are shut. Old Slate is not. The bear is rarely on the slope. I would like it met.",
+      "choices": [
+        {
+          "label": "I will look for Old Slate.",
+          "action": "acceptQuest",
+          "quest": "old_slate"
+        },
+        {
+          "label": "What woke the east?",
+          "next": "dragons"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "slate_active": {
+      "text": "Old Slate. South, where the slope forgets the road. It does not come often.",
+      "choices": [
+        {
+          "label": "I am still looking.",
+          "action": "close"
+        }
+      ]
+    },
+    "slate_ready": {
+      "text": "You met it. That is the word I wanted.",
+      "choices": [
+        {
+          "label": "Old Slate is down.",
+          "action": "turnIn",
+          "quest": "old_slate"
+        }
+      ]
+    },
+    "done": {
+      "text": "The slopes will grow another bear. The doors below us stay shut until I say otherwise.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "dragons": {
+      "text": "Wyrmrest was named for dragons laid under the northern peaks after an old war. Ysolde's cold kept them asleep. The Black Ice is broken. They are hungry. That castle is northeast of Hoffender, on the kingdom's northern border. The pass north of here reaches it only by going through Graymoor and the wilds.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "sella": {
+    "start": {
+      "text": "Sella Flint. I keep the south gate. The slopes are a young road: hares, beetles, then wolves. Eight bright wolves, before you go looking for names.",
+      "choices": [
+        {
+          "label": "I will thin the wolves.",
+          "action": "acceptQuest",
+          "quest": "slope_wolves"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Where do the roads go?",
+          "next": "roads"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "wolves_active": {
+      "text": "Eight bright wolves. They like the wall. The wall does not like them back.",
+      "choices": [
+        {
+          "label": "Still working.",
+          "action": "close"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        }
+      ]
+    },
+    "wolves_ready": {
+      "text": "Eight. Next is Kragg Ashhand. He takes a toll on the south slope and he does not stay down like the others.",
+      "choices": [
+        {
+          "label": "The wolves are down.",
+          "action": "turnIn",
+          "quest": "slope_wolves"
+        }
+      ]
+    },
+    "after_wolves": {
+      "text": "Kragg Ashhand. South of the road, with the bandits who still pay him. End the toll.",
+      "choices": [
+        {
+          "label": "I will find Kragg.",
+          "action": "acceptQuest",
+          "quest": "kragg_ashhand"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "kragg_active": {
+      "text": "Kragg is still taking the toll. He stays down longer than a common bandit.",
+      "choices": [
+        {
+          "label": "I am on it.",
+          "action": "close"
+        }
+      ]
+    },
+    "kragg_ready": {
+      "text": "The toll is ended. The king can have the bear, if you want a rarer job. I am done with mine.",
+      "choices": [
+        {
+          "label": "Kragg is down.",
+          "action": "turnIn",
+          "quest": "kragg_ashhand"
+        }
+      ]
+    },
+    "done": {
+      "text": "The gate holds. North is Graymoor. South is the slope, and it will fill in again.",
+      "choices": [
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "roads": {
+      "text": "North, the Lightbrune Pass, then Graymoor Hold and Thornhaven. Hoffender is beyond that, and the east road out of the Frostmere Wilds is Wyrmrest. Ashdeep and Veilspire are the mine doors in the south. Both are shut.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "dunn": {
+    "start": {
+      "text": "Dunn Keel. The gate is shut to trouble and open to you. North is Graymoor. Do not take the slopes for a yard.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "otta": {
+    "start": {
+      "text": "Otta Venn. I watch the south gate. Sella counts the wolves. I count who comes back.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "brim": {
+    "start": {
+      "text": "Brim Ash. The anvil hall sells the same drills Eirik sells in Hoffender. Nothing is learned by getting older. The list says the level.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "kelda": {
+    "start": {
+      "text": "Kelda Flint. The lamp hall. Plate, a mend, and the drills a cleric buys. Dwarves and high elves both walk this path. The list still waits on your level.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "orrin": {
+    "start": {
+      "text": "Orrin Keel. Oaths, a shield, and the drills Adel sells in Eldenmoor. I sell the same list. Level is the lock.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "nala": {
+    "start": {
+      "text": "Nala Venn. Speak quietly. The stair sells what Sable sells. If the line says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "bram": {
+    "start": {
+      "text": "Bram Keld. Rage is a tool. The red gallery sells Hroth's list, through the last of it.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "henge": {
+    "start": {
+      "text": "Henge Ash. Rations, the two Brightforge charts, and Lightbrune plate. The deep clans do not sell here. Their doors are shut.",
+      "choices": [
+        {
+          "label": "Show me your goods.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "merric": {
+    "start": {
+      "text": "Merric Holt. Graymoor Hold is a castle, not a camp. The court is safe. The fields are not. Odda is warden. I just keep the gate.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "edda": {
+    "start": {
+      "text": "Edda Venn. East is the Lightbrune Pass and Brightforge. West is the harbor. South is Valdoria. North is the snow. None of those are the same road.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "harl": {
+    "start": {
+      "text": "Harl Smith. I work the castle forge. Plate and chain, at the price on the slate. Ivar in Hoffender is a cousin of the trade, not of the blood.",
+      "choices": [
+        {
+          "label": "Show me the steel.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "tova": {
+    "start": {
+      "text": "Tova Quay. This is the west harbor of Thornhaven. The golden trade route is not this water. That ship leaves the east dock of Valdoria and crosses to Eldenmoor, on Vaelmoor, by way of the Wood Elf coast.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "pike": {
+    "start": {
+      "text": "Pike Rowan. Blackpine Tower is the castle in the central pines. The court is safe. The ring of free passage is the wood elves' word, and it is not a wall you can see.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "cress": {
+    "start": {
+      "text": "Cress Rowan. South is not Eldenmoor. South is pines, and Saltmere is shut. The ship is east.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wynn": {
+    "start": {
+      "text": "Wynn Linden. Cloth and leather for the castle. Osric keeps the charts and the yard. I keep the needle.",
+      "choices": [
+        {
+          "label": "Show me the cloth.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "joren": {
+    "start": {
+      "text": "Joren Quill. The ship at this dock is the golden trade route. It crosses to Vaelmoor and lands at Eldenmoor. Step on it when you mean to go. It comes back the same way.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "brynn": {
+    "start": {
+      "text": "Brynn Holt, castellan of Wyrmrest. The castle sits on the northern border, under the peaks, northeast of Hoffender. The dragons were laid to rest here after an old war. Ysolde's cold held them. The Black Ice is broken, and the heath is burned. Eight ash wolves, first.",
+      "choices": [
+        {
+          "label": "I will take the ash pack.",
+          "action": "acceptQuest",
+          "quest": "ash_pack"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Show me the charts.",
+          "action": "merchant"
+        },
+        {
+          "label": "What is north?",
+          "next": "north"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "ash_active": {
+      "text": "Eight ash wolves. They are the easy part of the heath, which is not a comfort.",
+      "choices": [
+        {
+          "label": "Still at it.",
+          "action": "close"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        }
+      ]
+    },
+    "ash_ready": {
+      "text": "Eight. Korrag the Scorched is next. He leads the cult and he stays down longer than they do.",
+      "choices": [
+        {
+          "label": "The wolves are down.",
+          "action": "turnIn",
+          "quest": "ash_pack"
+        }
+      ]
+    },
+    "after_ash": {
+      "text": "Korrag the Scorched, north of Emberwatch. End him.",
+      "choices": [
+        {
+          "label": "I will find Korrag.",
+          "action": "acceptQuest",
+          "quest": "korrag_scorched"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "korrag_active": {
+      "text": "Korrag is still on the moors. Emberwatch can point you. I want him ended.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "korrag_ready": {
+      "text": "The cult is thinner. The vale is next. Skreeva rules the kobolds who mine for the dragons.",
+      "choices": [
+        {
+          "label": "Korrag is down.",
+          "action": "turnIn",
+          "quest": "korrag_scorched"
+        }
+      ]
+    },
+    "after_korrag": {
+      "text": "Skreeva, in the Scalded Vale. She is the matriarch. Thane's Rest is the safe yard at the south of that canyon.",
+      "choices": [
+        {
+          "label": "I will find Skreeva.",
+          "action": "acceptQuest",
+          "quest": "skreeva_matriarch"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "skreeva_active": {
+      "text": "Skreeva is not a miner. She stays down. The canyon is hers until you change that.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "skreeva_ready": {
+      "text": "The vale can breathe. The spires cannot. Vyrmathax the Elder is the oldest of the ones the cold woke. The door behind him stays sealed.",
+      "choices": [
+        {
+          "label": "Skreeva is down.",
+          "action": "turnIn",
+          "quest": "skreeva_matriarch"
+        }
+      ]
+    },
+    "after_skreeva": {
+      "text": "Vyrmathax the Elder, level with the top of this road. End him. Do not pry the sealed door. That lair is not this year's work.",
+      "choices": [
+        {
+          "label": "I will face the elder.",
+          "action": "acceptQuest",
+          "quest": "vyrmathax_elder"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "elder_active": {
+      "text": "The elder is still on the roost. The Last Step is safe. Past it is not.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "elder_ready": {
+      "text": "You came back. The fang the castle owes you is here, whether or not the roost dropped another.",
+      "choices": [
+        {
+          "label": "Vyrmathax is down.",
+          "action": "turnIn",
+          "quest": "vyrmathax_elder"
+        }
+      ]
+    },
+    "done": {
+      "text": "The peaks are quieter, not kind. Bind here if you mean to keep climbing. The sealed door can wait.",
+      "choices": [
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Show me the charts.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "north": {
+      "text": "North of the castle: Ashfall Moors and Emberwatch, then the Scalded Vale and Thane's Rest, then the Wyrmrest Spires. The levels climb with the road. West is the Frostmere Wilds, and Hoffender, and from there the south road to Thornhaven and Valdoria.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "vess": {
+    "start": {
+      "text": "Vess Ash. Quartermaster. Ashforged plate, scorched chain, wyrmhide, cinder cloth, and the weapons that belong above level thirty. The drills are the captains in the court, not me.",
+      "choices": [
+        {
+          "label": "Show me the stores.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "ember_keel": {
+    "start": {
+      "text": "Keel Ash. Emberwatch is the yard on the burned heath. Dwarves and a barbarian scout. South is Wyrmrest. North is Korrag's country. Sit here if the moors are where you expect to fall.",
+      "choices": [
+        {
+          "label": "Show me the stores.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "ember_scout": {
+    "start": {
+      "text": "Soren Holm, out of Hoffender's gate and a long way from it. The ash wolves run in packs. The cultists do not run. The young drakes are the ones that still think they are large.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "thane_rest": {
+    "start": {
+      "text": "They call me Old Thane because the waystation is older than the name I had. Thane's Rest is safe. The kobolds are not. Skreeva sits the north of the canyon and calls it a mine for the dragons.",
+      "choices": [
+        {
+          "label": "Show me what you have.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "gate_holm": {
+    "start": {
+      "text": "Holm, on the west gate. The road out is the Frostmere Wilds. Hoffender is at the other end of that cold. Do not confuse it with the north gate. North is the burned heath.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "gate_moss": {
+    "start": {
+      "text": "Moss, on the same gate. Wyrmrest is a castle, not a camp. The court is safe. The peaks are why the castle is here.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_warrior": {
+    "start": {
+      "text": "Captain Darr. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_shaman": {
+    "start": {
+      "text": "Svala Peat. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_rogue": {
+    "start": {
+      "text": "Isk Quill. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_berserker": {
+    "start": {
+      "text": "Red Hroth. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_warden": {
+    "start": {
+      "text": "Pell Den. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_wizard": {
+    "start": {
+      "text": "Ilen Page. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_cleric": {
+    "start": {
+      "text": "Sera Lamp. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_enchanter": {
+    "start": {
+      "text": "Vale Hush. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_paladin": {
+    "start": {
+      "text": "Cor Oath. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_magician": {
+    "start": {
+      "text": "Ash Ember. The high drills, the same list as the hall that first taught them, through level 50. Nothing on that list arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  }
+}

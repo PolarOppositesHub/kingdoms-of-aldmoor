@@ -1,0 +1,42 @@
+[
+  {
+    "id": "brightforge",
+    "name": "Brightforge",
+    "blurb": "The Lightbrune hold. The ink stops at the wall."
+  },
+  {
+    "id": "brightforge_slopes",
+    "name": "Lightbrune Slopes",
+    "blurb": "The mountains outside Brightforge, from the wall to the shut mine doors."
+  },
+  {
+    "id": "wyrmrest",
+    "name": "Wyrmrest",
+    "blurb": "The castle on the northern border, under the Ogre Highlands."
+  },
+  {
+    "id": "ashfall",
+    "name": "Ashfall Moors",
+    "blurb": "The burned heath north of Wyrmrest."
+  },
+  {
+    "id": "emberwatch",
+    "name": "Emberwatch",
+    "blurb": "The scout yard on the Ashfall Moors."
+  },
+  {
+    "id": "scalded",
+    "name": "The Scalded Vale",
+    "blurb": "The steaming canyon, and the kobolds who mine it."
+  },
+  {
+    "id": "thanes_rest",
+    "name": "Thane's Rest",
+    "blurb": "The ruined dwarf waystation at the south of the vale."
+  },
+  {
+    "id": "spires",
+    "name": "Wyrmrest Spires",
+    "blurb": "The roosts. Vyrmathax keeps the north of them. The deeper door is sealed."
+  }
+]

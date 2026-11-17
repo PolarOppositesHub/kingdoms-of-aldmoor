@@ -115,7 +115,11 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (race?.homeZone && race.homeX !== undefined && race.homeY !== undefined && race.homeZone !== state.zoneId) {
           state.bindZone = race.homeZone;
           state.bind = { x: race.homeX, y: race.homeY };
-          state.log = ['The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.'];
+          state.log = [
+            race.id === 'dwarf'
+              ? 'Brightforge is at your back. The Lightbrune Slopes, and whatever keeps to the rock, wait past the south gate.'
+              : 'The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.',
+          ];
           emit({ type: 'zone', zoneId: race.homeZone, x: race.homeX, y: race.homeY });
         }
         return;
@@ -204,19 +208,18 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (choice.action === 'bind') {
           state.bind = { x: npc.x, y: npc.y + 18 };
           state.bindZone = state.zoneId;
-          emit({
-            type: 'log',
-            text:
-              state.zoneId === 'frostfang'
-                ? 'You bind at the Hearthpass fire. If you fall, you wake here.'
-                : state.zoneId === 'eldenmoor'
-                  ? 'You bind at the Silver Stair. If you fall, you wake in the yard.'
-                  : state.zoneId === 'thornhaven'
-                    ? 'You bind at Graymoor Hold. If you fall, you wake in the yard.'
-                    : state.zoneId === 'valdoria'
-                      ? 'You bind at Blackpine Tower. If you fall, you wake in the yard.'
-                      : 'You bind here.',
-          });
+          const bindText: Record<string, string> = {
+            frostfang: 'You bind at the Hearthpass fire. If you fall, you wake here.',
+            eldenmoor: 'You bind at the Silver Stair. If you fall, you wake in the yard.',
+            thornhaven: 'You bind at Graymoor Hold. If you fall, you wake in the yard.',
+            valdoria: 'You bind at Blackpine Tower. If you fall, you wake in the yard.',
+            brightforge: 'You bind at Brightforge. If you fall, you wake in the yard.',
+            wyrmrest: 'You bind at Wyrmrest. If you fall, you wake in the court.',
+            ashfall: 'You bind at Emberwatch. If you fall, you wake in the yard.',
+            scalded: "You bind at Thane's Rest. If you fall, you wake in the yard.",
+            spires: 'You bind on the Last Step. If you fall, you wake here.',
+          };
+          emit({ type: 'log', text: bindText[state.zoneId] ?? 'You bind here.' });
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
           return;
         }

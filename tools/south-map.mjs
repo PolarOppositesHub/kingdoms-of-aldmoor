@@ -246,7 +246,7 @@ function clearPatch(scenery, solid, x0, y0, x1, y1) {
 function placeMobs(m, g, solid, safe, road, scenery, list) {
   const placed = [];
   const taken = new Set();
-  const blocked = new Set([T.WATER, T.WATER_B, T.CLIFF, T.WALL, T.STONE, T.PALISADE, T.ROOF, T.STONE_FRONT, T.POST]);
+  const blocked = new Set([T.WATER, T.WATER_B, T.CLIFF, T.WALL, T.STONE, T.PALISADE, T.ROOF, T.STONE_FRONT, T.POST, T.DOCK]);
   const ok = (x, y) => {
     const tile = g[y]?.[x];
     if (tile === undefined || safe[y]?.[x] || road[y]?.[x] || blocked.has(tile)) return false;
@@ -314,41 +314,74 @@ function buildThornhaven() {
     [210, 90],
     [248, 108],
   ], 1);
-  wallBox(g, solid, safe, 108, 28, 152, 68, T.PALISADE, T.PATH, [
-    [124, 68, 10, 1],
-    [124, 28, 10, 1],
+  // West-coast port. The water stays off the north and south roads.
+  for (let y = 24; y < 236; y++) {
+    const edge = 12 + Math.floor(hash(y, 2, 14) * 6);
+    for (let x = 1; x < edge; x++) {
+      g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
+      solid[y][x] = 1;
+      scenery.grid[y][x] = 0;
+    }
+  }
+  for (let y = 128; y <= 138; y++) {
+    for (let x = 14; x <= 28; x++) {
+      g[y][x] = T.DOCK;
+      solid[y][x] = 0;
+      scenery.grid[y][x] = 0;
+      road[y][x] = 1;
+    }
+  }
+  wallBox(g, solid, safe, 88, 16, 184, 92, T.STONE, T.PATH, [
+    [120, 16, 16, 1],
+    [120, 92, 16, 1],
+    [184, 44, 1, 12],
   ]);
-  clearPatch(scenery, solid, 109, 29, 151, 67);
-  house(g, solid, 116, 36, 10, 8);
-  house(g, solid, 136, 36, 10, 8);
+  clearPatch(scenery, solid, 89, 17, 183, 91);
+  stoneHouse(g, solid, 96, 28, 16, 10);
+  stoneHouse(g, solid, 156, 28, 16, 10);
+  stoneHouse(g, solid, 100, 64, 14, 10);
+  stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
   const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
   m.add('spawn', 'north', 128, 16);
   m.add('door', 'From the grass track', 248, 108, { toZone: 'hoffender', toX: feet(240, 228).x, toY: feet(240, 228).y, sprite: 'sign_wilds' });
   m.add('spawn', 'east', 236, 108);
   m.add('door', 'To Valdoria', 128, 248, { toZone: 'valdoria', toX: feet(128, 16).x, toY: feet(128, 16).y, sprite: 'sign_wilds' });
+  m.add('door', 'To Brightforge', 248, 48, { toZone: 'brightforge', toX: feet(128, 20).x, toY: feet(128, 20).y, sprite: 'sign_wilds' });
   m.add('npc', 'odda', 130, 48, { defId: 'odda', sprite: 'odda' });
   m.add('npc', 'nell', 142, 52, { defId: 'nell', sprite: 'nell' });
+  m.add('npc', 'merric', 118, 86, { defId: 'merric', sprite: 'soren' });
+  m.add('npc', 'edda', 146, 86, { defId: 'edda', sprite: 'freya' });
+  m.add('npc', 'harl', 164, 44, { defId: 'harl', sprite: 'ivar' });
+  m.add('npc', 'tova', 22, 132, { defId: 'tova', sprite: 'signe' });
   m.add('bind', 'graymoor-yard', 124, 56);
   m.add('prop', 'fire', 124, 50, { sprite: 'firepit' });
   m.add('prop', 'banner', 128, 34, { sprite: 'banner' });
-  m.add('sign', 'Graymoor Hold', 118, 62, {
+  m.add('sign', 'Graymoor Hold', 108, 40, {
     sprite: 'sign_hall',
-    text: 'Graymoor Hold. Odda keeps the yard. The snow of Hoffender is the road north. South, the fields dry out and the kingdom of Valdoria begins. Sit here if you want a fall to bring you back.',
+    text: 'Graymoor Hold, castle of the mud country, just inland of the port. Odda Venn is warden. The court is safe. North is Hoffender. South is Valdoria and Blackpine Tower. East, the Lightbrune Pass goes to Brightforge. West, Thornhaven harbor faces the sea. Sit here if you want a fall to bring you back.',
   });
   m.add('sign', 'North road', 134, 12, {
     sprite: 'sign_wilds',
-    text: 'Hoffender and the Frostmere Wilds. The cold starts again past this line. The same road comes back.',
+    text: 'Hoffender and the Frostmere Wilds. The cold starts again past this line. The same road comes back. Wyrmrest is the east road out of those wilds, under the Ogre Highlands.',
   });
   m.add('sign', 'East track', 236, 102, {
     sprite: 'sign_wilds',
     text: 'The grass track back to the southeast of the Frostmere Wilds. It does not skip the hold. It only comes in from the side.',
   });
+  m.add('sign', 'Lightbrune Pass', 220, 42, {
+    sprite: 'sign_wilds',
+    text: 'The Lightbrune Pass. Brightforge, hold of the Lightbrune clan, is through this gate. The slopes outside it are a young road. Ashdeep and Veilspire are deeper, and those mine doors are shut.',
+  });
+  m.add('sign', 'Thornhaven harbor', 30, 124, {
+    sprite: 'sign_wilds',
+    text: 'Thornhaven harbor, on the west coast. Tova keeps the quay. This water is not the golden trade route. That ship leaves the east dock of Valdoria, toward the Wood Elf coast, and crosses to Vaelmoor.',
+  });
   m.add('sign', 'South road', 136, 230, {
     sprite: 'sign_wilds',
-    text: 'Valdoria, and Blackpine Tower, lie south. The mud thins. The pines do not.',
+    text: 'Valdoria, and Blackpine Tower, lie south. The mud thins. The pines do not. Eldenmoor is not this road. It is across the water.',
   });
-  m.add('label', 'Thornhaven', 128, 180);
+  m.add('label', 'Thornhaven', 80, 180);
   m.add('label', 'Graymoor Hold', 128, 24);
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['field_boar', 'boar', 48, 88],
@@ -428,29 +461,59 @@ function buildValdoria() {
     [168, 118],
     [188, 124],
   ], 1);
-  wallBox(g, solid, safe, 168, 100, 214, 146, T.STONE, T.PATH, [[186, 146, 10, 1]]);
-  clearPatch(scenery, solid, 169, 101, 213, 145);
-  stoneHouse(g, solid, 180, 108, 16, 14);
+  for (let y = 78; y <= 150; y++) {
+    for (let x = 238; x < W - 1; x++) {
+      g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
+      solid[y][x] = 1;
+      scenery.grid[y][x] = 0;
+    }
+  }
+  for (let y = 108; y <= 118; y++) {
+    for (let x = 222; x <= 236; x++) {
+      g[y][x] = T.DOCK;
+      solid[y][x] = 0;
+      scenery.grid[y][x] = 0;
+      road[y][x] = 1;
+      safe[y][x] = 1;
+    }
+  }
+  wallBox(g, solid, safe, 150, 78, 220, 168, T.STONE, T.PATH, [
+    [180, 78, 14, 1],
+    [186, 168, 12, 1],
+    [220, 108, 1, 12],
+  ]);
+  clearPatch(scenery, solid, 151, 79, 219, 167);
+  stoneHouse(g, solid, 160, 96, 16, 12);
+  stoneHouse(g, solid, 188, 96, 18, 14);
+  stroke(g, solid, road, scenery.grid, [[220, 114], [228, 112]], 1);
   const m = maker('valdoria', 'Blackpine Tower', 'Valdoria');
   m.add('door', 'To Thornhaven', 128, 8, { toZone: 'thornhaven', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
   m.add('spawn', 'north', 128, 16);
-  m.add('door', 'To Eldenmoor', 128, 248, { toZone: 'eldenmoor', toX: feet(128, 20).x, toY: feet(128, 20).y, sprite: 'sign_wilds' });
+  m.add('door', 'Trade ship', 232, 112, { toZone: 'eldenmoor', toX: feet(218, 214).x, toY: feet(218, 214).y, sprite: 'sign_wilds' });
   m.add('npc', 'osric', 190, 132, { defId: 'osric', sprite: 'osric' });
+  m.add('npc', 'pike', 176, 160, { defId: 'pike', sprite: 'soren' });
+  m.add('npc', 'cress', 204, 160, { defId: 'cress', sprite: 'freya' });
+  m.add('npc', 'wynn', 168, 120, { defId: 'wynn', sprite: 'signe' });
+  m.add('npc', 'joren', 228, 116, { defId: 'joren', sprite: 'tael' });
   m.add('bind', 'blackpine-yard', 196, 136);
   m.add('prop', 'banner', 192, 128, { sprite: 'banner' });
   m.add('prop', 'crate', 176, 136, { sprite: 'crate' });
   solid[136][176] = 1;
-  m.add('sign', 'Blackpine Tower', 184, 142, {
+  m.add('sign', 'Blackpine Tower', 164, 150, {
     sprite: 'sign_hall',
-    text: 'Blackpine Tower. Osric keeps the yard for the kingdom of Valdoria. North is Thornhaven and the mud. South, the grass changes its mind and becomes the Eldenweald. The tower is safe. The pines are not.',
+    text: 'Blackpine Tower, castle in the central pines, inside the wood-elf free-passage ring. Osric Blackpine is warden. The court is safe. North is Thornhaven. The east dock is the golden trade route: a ship to Vaelmoor, and to Eldenmoor. You do not walk to the elves. South, the pines go on toward Saltmere. That coast is not open.',
   });
   m.add('sign', 'North road', 136, 14, {
     sprite: 'sign_wilds',
-    text: 'Thornhaven, Graymoor Hold, and beyond them the snow of Hoffender. The road is the same one you walked down.',
+    text: 'Thornhaven, Graymoor Hold, and beyond them the snow of Hoffender. The road is the same one you walked down. Brightforge is the mountain pass east of Graymoor.',
   });
   m.add('sign', 'South road', 136, 230, {
     sprite: 'sign_wilds',
-    text: 'Eldenmoor, the high elf capital, stands in tiers past the Eldenweald. The woods outside the wall are a young road. The pines behind you are not.',
+    text: 'The pines continue. Saltmere Castle is on the south coast, and that road is not open. Eldenmoor is not this way. The ship is at the east dock.',
+  });
+  m.add('sign', 'Golden route', 224, 104, {
+    sprite: 'sign_wilds',
+    text: 'The golden trade route. The ship crosses the water east of Maerthun, by the Wood Elf coast and Canipure, and lands at Eldenmoor on Vaelmoor. The same ship comes back.',
   });
   m.add('label', 'Valdoria', 80, 80);
   m.add('label', 'Blackpine Tower', 192, 96);
@@ -518,7 +581,10 @@ function buildEldenmoor() {
     [128, 156],
   ], 1);
   // Outer wall, the foreigners' ring. North gate opens on the Eldenweald.
-  wallBox(g, solid, safe, 64, 156, 192, 246, T.STONE, T.PATH, [[120, 156, 16, 1]]);
+  wallBox(g, solid, safe, 64, 156, 192, 246, T.STONE, T.PATH, [
+    [120, 156, 16, 1],
+    [192, 204, 1, 10],
+  ]);
   clearPatch(scenery, solid, 65, 157, 191, 245);
   // Second ring: trades and the guild.
   wallBox(g, solid, safe, 86, 176, 170, 230, T.STONE, T.PATH_B, [
@@ -535,6 +601,28 @@ function buildEldenmoor() {
   house(g, solid, 96, 232, 12, 8);
   house(g, solid, 68, 232, 12, 6);
   house(g, solid, 150, 232, 12, 6);
+  for (let y = 198; y <= 236; y++) {
+    for (let x = 234; x < W - 1; x++) {
+      g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
+      solid[y][x] = 1;
+    }
+  }
+  for (let x = 193; x <= 232; x++) {
+    g[208][x] = T.DOCK;
+    g[209][x] = T.DOCK;
+    solid[208][x] = 0;
+    solid[209][x] = 0;
+    safe[208][x] = 1;
+    safe[209][x] = 1;
+  }
+  for (let y = 210; y <= 220; y++) {
+    g[y][226] = T.DOCK;
+    g[y][227] = T.DOCK;
+    solid[y][226] = 0;
+    solid[y][227] = 0;
+    safe[y][226] = 1;
+    safe[y][227] = 1;
+  }
   const m = maker('eldenmoor', 'Eldenmoor', 'Eldenweald');
   const innEntry = feet(8, 8);
   const wizardEntry = feet(8, 8);
@@ -546,7 +634,7 @@ function buildEldenmoor() {
   m.add('door', 'Oath Hall', 74, 239, { toZone: 'elden_paladin', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
   m.add('door', 'Ember Hall', 156, 239, { toZone: 'elden_magician', toX: innEntry.x, toY: innEntry.y, sprite: 'sign_hall' });
   m.add('door', 'Linden Goods', 102, 242, { toZone: 'elden_shop', toX: shopEntry.x, toY: shopEntry.y, sprite: 'sign_inn' });
-  m.add('door', 'To Valdoria', 128, 10, { toZone: 'valdoria', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
+  m.add('door', 'Trade ship', 226, 214, { toZone: 'valdoria', toX: feet(228, 112).x, toY: feet(228, 112).y, sprite: 'sign_wilds' });
   m.add('spawn', 'gate', 78, 204);
   m.add('bind', 'inn-yard', 84, 206);
   m.add('npc', 'sere', 140, 164, { defId: 'sere', sprite: 'sere' });
@@ -561,11 +649,15 @@ function buildEldenmoor() {
   });
   m.add('sign', 'North gate', 144, 150, {
     sprite: 'sign_wilds',
-    text: 'The Eldenweald. Hares and foxes near the wall. Wolves, then poachers, then the Amber Hart where the trees thicken. The road north leaves the woods for Valdoria.',
+    text: 'The Eldenweald. Hares and foxes near the wall. Wolves, then poachers, then the Amber Hart where the trees thicken. The woods end. They do not become Valdoria. Maerthun is across the water.',
   });
   m.add('sign', 'The road north', 136, 24, {
     sprite: 'sign_wilds',
-    text: 'Valdoria and Blackpine Tower. Past them, Thornhaven, and past that the snow of Hoffender. It is a long walk, and the middle of it is not a beginner\'s road.',
+    text: 'The Eldenweald thins and stops. There is no road from here to Valdoria. The golden trade ship is at the east dock of the city.',
+  });
+  m.add('sign', 'Vaelmoor dock', 210, 208, {
+    sprite: 'sign_wilds',
+    text: 'Eldenmoor dock, on Vaelmoor. The ship is the golden trade route. It crosses to the Wood Elf coast of Maerthun and lands at the east dock of Valdoria. You do not walk to Blackpine Tower.',
   });
   m.add('label', 'Eldenmoor', 128, 222);
   m.add('label', 'Eldenweald', 80, 60);

@@ -451,9 +451,24 @@ function buildOutdoor() {
   add('label', 'Frostfang Reach', 106, 16);
 
   // Seams. A short fade, and the road is not open.
-  add('seam', 'Wyrmrest', 252, 152, {
+  for (let y = 148; y <= 156; y++) {
+    for (let x = 236; x <= 252; x++) {
+      if (g[y][x] === T.WATER || g[y][x] === T.WATER_B) continue;
+      g[y][x] = T.PATH;
+      solid[y][x] = 0;
+      road[y][x] = 1;
+      scenery.grid[y][x] = 0;
+    }
+  }
+  add('door', 'Wyrmrest', 248, 152, {
+    toZone: 'wyrmrest',
+    toX: 20 * TILE + 8,
+    toY: 140 * TILE + 14,
     sprite: 'sign_wilds',
-    text: 'The road to Wyrmrest is not yet open. The pines thin here, and the stone of the foothills starts.',
+  });
+  add('sign', 'Wyrmrest', 242, 146, {
+    sprite: 'sign_wilds',
+    text: 'Wyrmrest. The castle on the northern border of the kingdom, under the Ogre Highlands, northeast of Hoffender. The road is open. The dragons under those peaks were asleep in Ysolde\'s cold. The Black Ice is broken, and they are awake. The same road comes back.',
   });
   for (const [tx, ty] of [
     [140, 244],

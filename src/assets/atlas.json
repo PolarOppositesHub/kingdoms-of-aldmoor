@@ -70,7 +70,21 @@
       "miris": 57,
       "adel": 58,
       "quen": 59,
-      "ember": 60
+      "ember": 60,
+      "durgan": 61,
+      "brim": 62,
+      "kelda": 63,
+      "orrin": 64,
+      "nala": 65,
+      "bram": 66,
+      "henge": 67,
+      "sella": 68,
+      "drake": 69,
+      "wyvern": 70,
+      "kobold": 71,
+      "cultist": 72,
+      "dragonkin": 73,
+      "ash_wolf": 74
     }
   },
   "props": {

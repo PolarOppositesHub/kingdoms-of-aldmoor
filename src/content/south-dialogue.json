@@ -11,7 +11,7 @@
       ]
     },
     "south": {
-      "text": "South is Valdoria, and Blackpine Tower, where Osric still pretends a kingdom can be kept with one yard. North is Hoffender, if you miss the snow. The grass track to the east only comes back to the wilds. It does not skip this hold.",
+      "text": "South is Valdoria, and Blackpine Tower, a castle in the pines. North is Hoffender. East of this court, the Lightbrune Pass goes to Brightforge. The grass track further east only comes back to the wilds. The west quay is Thornhaven's harbor. Eldenmoor is not a walk from here. It is a ship from Valdoria.",
       "choices": [
         { "label": "Show me your goods.", "action": "merchant" },
         { "label": "Back.", "action": "close" }
@@ -84,7 +84,7 @@
       ]
     },
     "south": {
-      "text": "South, the Eldenweald, and Eldenmoor in tiers beyond the trees. High elves. Queen Ellewynn XVI keeps the castle and does not keep the woods. North is Thornhaven, then snow.",
+      "text": "South, the pines go on toward Saltmere, and that coast is shut. Eldenmoor is not south. It is across the water. The ship at the east dock is the golden trade route, by the Wood Elf coast, to Vaelmoor. North is Thornhaven, then snow. Wyrmrest is the castle northeast of Hoffender, under the peaks.",
       "choices": [
         { "label": "Show me your goods.", "action": "merchant" },
         { "label": "Back.", "action": "close" }
@@ -226,7 +226,7 @@
       ]
     },
     "out": {
-      "text": "Hares and foxes by the wall. Wolves after that. Poachers where the trees thicken, and the Amber Hart if the wood feels like showing it. The road north leaves the weald for Valdoria. That road is not a first walk.",
+      "text": "Hares and foxes by the wall. Wolves after that. Poachers where the trees thicken, and the Amber Hart if the wood feels like showing it. The woods end. They do not become Valdoria. The ship at the east dock is the way to Maerthun.",
       "choices": [
         { "label": "I'll take the wolves.", "action": "acceptQuest", "quest": "weald_wolves" },
         { "label": "Back.", "action": "close" }
@@ -256,7 +256,7 @@
       "choices": [{ "label": "Lark is down.", "action": "turnIn", "quest": "lark_the_poacher" }]
     },
     "done": {
-      "text": "The gate holds. If you go north out of the weald, go fed. Valdoria does not feed beginners.",
+      "text": "The gate holds. The woods north of it are a young road, and they stop. Valdoria is the ship, not the trees.",
       "choices": [{ "label": "I'll watch the road.", "action": "close" }]
     }
   },
@@ -270,7 +270,7 @@
       ]
     },
     "queen": {
-      "text": "Eldenmoor is built in rings. Travelers outside the wall. Trades in the first ring. The city in the second. The castle is hers. The woods are not a ring. They are a road that eventually remembers snow.",
+      "text": "Eldenmoor is built in rings, on Vaelmoor, not on the walk south of Valdoria. Travelers outside the wall. Trades in the first ring. The city in the second. The castle is hers. The woods are the Eldenweald. The ship at the east dock is the golden route back to Maerthun.",
       "choices": [
         { "label": "The hart, then.", "action": "acceptQuest", "quest": "amber_hart" },
         { "label": "Back.", "action": "close" }
@@ -285,7 +285,7 @@
       "choices": [{ "label": "It is done.", "action": "turnIn", "quest": "amber_hart" }]
     },
     "done": {
-      "text": "The court is quiet. If you are a wizard, Maeriel has the pages. If you are walking north, the kingdom of Valdoria is the next true road, and it is not kind to the unready.",
+      "text": "The court is quiet. If you are a wizard, Maeriel has the pages. Maerthun is the ship at the east dock. The woods north of the gate are not that road.",
       "choices": [{ "label": "I'll remember.", "action": "close" }]
     }
   },

@@ -1438,5 +1438,491 @@
     ],
     "blurb": "Wool sash. Fulled wool. The wind has to work for it.",
     "effects": "Cloth armor, worn on the secondary."
+  },
+  {
+    "id": "plate_t4_head",
+    "name": "ashforged helm",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 4,
+    "slot": "head",
+    "ac": 14,
+    "weight": 6.2,
+    "value": 852,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "cleric",
+      "paladin"
+    ],
+    "craftedBy": "dwarf",
+    "blurb": "ashforged helm. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Plate armor."
+  },
+  {
+    "id": "plate_t4_chest",
+    "name": "ashforged breastplate",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 4,
+    "slot": "chest",
+    "ac": 24,
+    "weight": 19.6,
+    "value": 1656,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "cleric",
+      "paladin"
+    ],
+    "craftedBy": "dwarf",
+    "blurb": "ashforged breastplate. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Plate armor."
+  },
+  {
+    "id": "plate_t4_hands",
+    "name": "ashforged gauntlets",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 4,
+    "slot": "hands",
+    "ac": 10,
+    "weight": 4.4,
+    "value": 514,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "cleric",
+      "paladin"
+    ],
+    "craftedBy": "dwarf",
+    "blurb": "ashforged gauntlets. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Plate armor."
+  },
+  {
+    "id": "plate_t4_legs",
+    "name": "ashforged greaves",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 4,
+    "slot": "legs",
+    "ac": 16,
+    "weight": 12.1,
+    "value": 1075,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "cleric",
+      "paladin"
+    ],
+    "craftedBy": "dwarf",
+    "blurb": "ashforged greaves. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Plate armor."
+  },
+  {
+    "id": "plate_t4_feet",
+    "name": "ashforged sabatons",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 4,
+    "slot": "feet",
+    "ac": 10,
+    "weight": 6.4,
+    "value": 629,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "cleric",
+      "paladin"
+    ],
+    "craftedBy": "dwarf",
+    "blurb": "ashforged sabatons. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Plate armor."
+  },
+  {
+    "id": "plate_t4_secondary",
+    "name": "ashforged shield",
+    "kind": "armor",
+    "armorType": "plate",
+    "tier": 4,
+    "slot": "secondary",
+    "ac": 12,
+    "weight": 8.4,
+    "value": 965,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "cleric",
+      "paladin"
+    ],
+    "craftedBy": "dwarf",
+    "blurb": "ashforged shield. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Plate armor."
+  },
+  {
+    "id": "chain_t4_head",
+    "name": "scorched coif",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 4,
+    "slot": "head",
+    "ac": 11,
+    "weight": 3.7,
+    "value": 391,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "scorched coif. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Chain armor."
+  },
+  {
+    "id": "chain_t4_chest",
+    "name": "scorched hauberk",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 4,
+    "slot": "chest",
+    "ac": 20,
+    "weight": 13,
+    "value": 749,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "scorched hauberk. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Chain armor."
+  },
+  {
+    "id": "chain_t4_hands",
+    "name": "scorched mittens",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 4,
+    "slot": "hands",
+    "ac": 8,
+    "weight": 2.6,
+    "value": 245,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "scorched mittens. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Chain armor."
+  },
+  {
+    "id": "chain_t4_legs",
+    "name": "scorched leggings",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 4,
+    "slot": "legs",
+    "ac": 13,
+    "weight": 8,
+    "value": 475,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "scorched leggings. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Chain armor."
+  },
+  {
+    "id": "chain_t4_feet",
+    "name": "scorched boots",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 4,
+    "slot": "feet",
+    "ac": 8,
+    "weight": 3.9,
+    "value": 290,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "scorched boots. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Chain armor."
+  },
+  {
+    "id": "chain_t4_secondary",
+    "name": "scorched buckler",
+    "kind": "armor",
+    "armorType": "chain",
+    "tier": 4,
+    "slot": "secondary",
+    "ac": 9,
+    "weight": 4.8,
+    "value": 442,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker"
+    ],
+    "blurb": "scorched buckler. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Chain armor."
+  },
+  {
+    "id": "leather_t4_head",
+    "name": "wyrmhide cap",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 4,
+    "slot": "head",
+    "ac": 9,
+    "weight": 2.1,
+    "value": 161,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "wyrmhide cap. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Leather armor."
+  },
+  {
+    "id": "leather_t4_chest",
+    "name": "wyrmhide tunic",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 4,
+    "slot": "chest",
+    "ac": 16,
+    "weight": 5.4,
+    "value": 298,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "wyrmhide tunic. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Leather armor."
+  },
+  {
+    "id": "leather_t4_hands",
+    "name": "wyrmhide gloves",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 4,
+    "slot": "hands",
+    "ac": 6,
+    "weight": 1.5,
+    "value": 98,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "wyrmhide gloves. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Leather armor."
+  },
+  {
+    "id": "leather_t4_legs",
+    "name": "wyrmhide pants",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 4,
+    "slot": "legs",
+    "ac": 10,
+    "weight": 3.6,
+    "value": 206,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "wyrmhide pants. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Leather armor."
+  },
+  {
+    "id": "leather_t4_feet",
+    "name": "wyrmhide boots",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 4,
+    "slot": "feet",
+    "ac": 6,
+    "weight": 2,
+    "value": 110,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "wyrmhide boots. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Leather armor."
+  },
+  {
+    "id": "leather_t4_secondary",
+    "name": "wyrmhide buckler",
+    "kind": "armor",
+    "armorType": "leather",
+    "tier": 4,
+    "slot": "secondary",
+    "ac": 7,
+    "weight": 2.7,
+    "value": 178,
+    "stack": 1,
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
+    "blurb": "wyrmhide buckler. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Leather armor."
+  },
+  {
+    "id": "cloth_t4_head",
+    "name": "cinder hood",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 4,
+    "slot": "head",
+    "ac": 6,
+    "weight": 1.2,
+    "value": 62,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard",
+      "enchanter",
+      "magician"
+    ],
+    "blurb": "cinder hood. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Cloth armor."
+  },
+  {
+    "id": "cloth_t4_chest",
+    "name": "cinder robe",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 4,
+    "slot": "chest",
+    "ac": 12,
+    "weight": 2.4,
+    "value": 115,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard",
+      "enchanter",
+      "magician"
+    ],
+    "blurb": "cinder robe. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Cloth armor."
+  },
+  {
+    "id": "cloth_t4_hands",
+    "name": "cinder gloves",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 4,
+    "slot": "hands",
+    "ac": 4,
+    "weight": 0.9,
+    "value": 38,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard",
+      "enchanter",
+      "magician"
+    ],
+    "blurb": "cinder gloves. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Cloth armor."
+  },
+  {
+    "id": "cloth_t4_legs",
+    "name": "cinder trousers",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 4,
+    "slot": "legs",
+    "ac": 7,
+    "weight": 1.7,
+    "value": 79,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard",
+      "enchanter",
+      "magician"
+    ],
+    "blurb": "cinder trousers. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Cloth armor."
+  },
+  {
+    "id": "cloth_t4_feet",
+    "name": "cinder shoes",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 4,
+    "slot": "feet",
+    "ac": 4,
+    "weight": 1.1,
+    "value": 43,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard",
+      "enchanter",
+      "magician"
+    ],
+    "blurb": "cinder shoes. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Cloth armor."
+  },
+  {
+    "id": "cloth_t4_secondary",
+    "name": "cinder sash",
+    "kind": "armor",
+    "armorType": "cloth",
+    "tier": 4,
+    "slot": "secondary",
+    "ac": 4,
+    "weight": 1,
+    "value": 50,
+    "stack": 1,
+    "wearers": [
+      "shaman",
+      "rogue",
+      "warden",
+      "wizard",
+      "enchanter",
+      "magician"
+    ],
+    "blurb": "cinder sash. Made for the years from thirty to fifty. Heavier than the bronze, and meant to be.",
+    "effects": "Cloth armor."
   }
 ]

@@ -2,7 +2,7 @@ import type { ContentDb, Equipment, GameState, HeldBag, ItemStack, MapData, PetO
 import { emptyQuests, refreshGear, syncCompanion } from './state';
 import { raceScale } from './appearance';
 import { bagsFromLegacy, normalizeBags } from './bags';
-import { bodyBlocked } from './map';
+import { bodyBlocked, nearestStand } from './map';
 
 export const SAVE_VERSION = 3;
 
@@ -196,9 +196,13 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   const outOfBounds = save.x < 0 || save.y < 0 || save.x > map.width * map.tileWidth || save.y > map.height * map.tileWidth;
   const blocked = outOfBounds || bodyBlocked(map, save.x, save.y, 5, 3, false);
   const wrongZone = save.zoneId !== map.zoneId && map.zoneId !== 'test';
-  if (save.relocated || blocked || wrongZone) {
+  if (save.relocated || wrongZone) {
     player.x = fallback.x;
     player.y = fallback.y;
+  } else if (blocked) {
+    const near = nearestStand(map, save.x, save.y);
+    player.x = near?.x ?? fallback.x;
+    player.y = near?.y ?? fallback.y;
   } else {
     player.x = save.x;
     player.y = save.y;

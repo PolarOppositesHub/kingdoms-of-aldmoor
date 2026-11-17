@@ -1,0 +1,247 @@
+[
+  {
+    "id": "durgan",
+    "name": "Durgan Ashbeard",
+    "title": "king of Brightforge",
+    "dialogue": "durgan",
+    "race": "dwarf"
+  },
+  {
+    "id": "sella",
+    "name": "Sella Flint",
+    "title": "gate warden of Brightforge",
+    "dialogue": "sella",
+    "race": "dwarf"
+  },
+  {
+    "id": "dunn",
+    "name": "Dunn Keel",
+    "title": "gate guard",
+    "dialogue": "dunn",
+    "race": "dwarf"
+  },
+  {
+    "id": "otta",
+    "name": "Otta Venn",
+    "title": "gate guard",
+    "dialogue": "otta",
+    "race": "dwarf"
+  },
+  {
+    "id": "brim",
+    "name": "Brim Ash",
+    "title": "warrior trainer",
+    "dialogue": "brim",
+    "race": "dwarf"
+  },
+  {
+    "id": "kelda",
+    "name": "Kelda Flint",
+    "title": "cleric trainer",
+    "dialogue": "kelda",
+    "race": "dwarf"
+  },
+  {
+    "id": "orrin",
+    "name": "Orrin Keel",
+    "title": "paladin trainer",
+    "dialogue": "orrin",
+    "race": "dwarf"
+  },
+  {
+    "id": "nala",
+    "name": "Nala Venn",
+    "title": "rogue trainer",
+    "dialogue": "nala",
+    "race": "dwarf"
+  },
+  {
+    "id": "bram",
+    "name": "Bram Keld",
+    "title": "berserker trainer",
+    "dialogue": "bram",
+    "race": "dwarf"
+  },
+  {
+    "id": "henge",
+    "name": "Henge Ash",
+    "title": "provisioner",
+    "dialogue": "henge",
+    "race": "dwarf"
+  },
+  {
+    "id": "merric",
+    "name": "Merric Holt",
+    "title": "gate guard of Graymoor",
+    "dialogue": "merric",
+    "race": "human"
+  },
+  {
+    "id": "edda",
+    "name": "Edda Venn",
+    "title": "gate guard of Graymoor",
+    "dialogue": "edda",
+    "race": "human"
+  },
+  {
+    "id": "harl",
+    "name": "Harl Smith",
+    "title": "castle smith",
+    "dialogue": "harl",
+    "race": "human"
+  },
+  {
+    "id": "tova",
+    "name": "Tova Quay",
+    "title": "harbormaster",
+    "dialogue": "tova",
+    "race": "human"
+  },
+  {
+    "id": "pike",
+    "name": "Pike Rowan",
+    "title": "gate guard of Blackpine",
+    "dialogue": "pike",
+    "race": "human"
+  },
+  {
+    "id": "cress",
+    "name": "Cress Rowan",
+    "title": "gate guard of Blackpine",
+    "dialogue": "cress",
+    "race": "human"
+  },
+  {
+    "id": "wynn",
+    "name": "Wynn Linden",
+    "title": "castle clothier",
+    "dialogue": "wynn",
+    "race": "human"
+  },
+  {
+    "id": "joren",
+    "name": "Joren Quill",
+    "title": "dock clerk",
+    "dialogue": "joren",
+    "race": "human"
+  },
+  {
+    "id": "brynn",
+    "name": "Brynn Holt",
+    "title": "castellan of Wyrmrest",
+    "dialogue": "brynn",
+    "race": "human"
+  },
+  {
+    "id": "vess",
+    "name": "Vess Ash",
+    "title": "quartermaster",
+    "dialogue": "vess",
+    "race": "dwarf"
+  },
+  {
+    "id": "ember_keel",
+    "name": "Keel Ash",
+    "title": "keeper of Emberwatch",
+    "dialogue": "ember_keel",
+    "race": "dwarf"
+  },
+  {
+    "id": "ember_scout",
+    "name": "Soren Holm",
+    "title": "barbarian scout",
+    "dialogue": "ember_scout",
+    "race": "barbarian"
+  },
+  {
+    "id": "thane_rest",
+    "name": "Old Thane",
+    "title": "keeper of the rest",
+    "dialogue": "thane_rest",
+    "race": "dwarf"
+  },
+  {
+    "id": "gate_holm",
+    "name": "Holm Gate",
+    "title": "west gate",
+    "dialogue": "gate_holm",
+    "race": "human"
+  },
+  {
+    "id": "gate_moss",
+    "name": "Moss Gate",
+    "title": "west gate",
+    "dialogue": "gate_moss",
+    "race": "human"
+  },
+  {
+    "id": "wry_warrior",
+    "name": "Captain Darr",
+    "title": "high drills, warrior",
+    "dialogue": "wry_warrior",
+    "race": "human"
+  },
+  {
+    "id": "wry_shaman",
+    "name": "Svala Peat",
+    "title": "high drills, shaman",
+    "dialogue": "wry_shaman",
+    "race": "human"
+  },
+  {
+    "id": "wry_rogue",
+    "name": "Isk Quill",
+    "title": "high drills, rogue",
+    "dialogue": "wry_rogue",
+    "race": "human"
+  },
+  {
+    "id": "wry_berserker",
+    "name": "Red Hroth",
+    "title": "high drills, berserker",
+    "dialogue": "wry_berserker",
+    "race": "human"
+  },
+  {
+    "id": "wry_warden",
+    "name": "Pell Den",
+    "title": "high drills, warden",
+    "dialogue": "wry_warden",
+    "race": "human"
+  },
+  {
+    "id": "wry_wizard",
+    "name": "Ilen Page",
+    "title": "high drills, wizard",
+    "dialogue": "wry_wizard",
+    "race": "high_elf"
+  },
+  {
+    "id": "wry_cleric",
+    "name": "Sera Lamp",
+    "title": "high drills, cleric",
+    "dialogue": "wry_cleric",
+    "race": "high_elf"
+  },
+  {
+    "id": "wry_enchanter",
+    "name": "Vale Hush",
+    "title": "high drills, enchanter",
+    "dialogue": "wry_enchanter",
+    "race": "high_elf"
+  },
+  {
+    "id": "wry_paladin",
+    "name": "Cor Oath",
+    "title": "high drills, paladin",
+    "dialogue": "wry_paladin",
+    "race": "high_elf"
+  },
+  {
+    "id": "wry_magician",
+    "name": "Ash Ember",
+    "title": "high drills, magician",
+    "dialogue": "wry_magician",
+    "race": "high_elf"
+  }
+]

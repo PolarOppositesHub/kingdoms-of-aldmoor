@@ -1810,5 +1810,989 @@
     "blurb": "The expensive one. One star of cinder.",
     "mana": 36,
     "verb": "star"
+  },
+  {
+    "id": "iron_line",
+    "name": "Iron Line",
+    "short": "Line",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "warrior",
+    "blurb": "A longer cut. It asks for the room.",
+    "verb": "cut"
+  },
+  {
+    "id": "shield_break",
+    "name": "Shield Break",
+    "short": "Break",
+    "level": 38,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "warrior",
+    "blurb": "The blow that finds the gap in a guard.",
+    "verb": "break"
+  },
+  {
+    "id": "hold_the_gate",
+    "name": "Hold the Gate",
+    "short": "Hold",
+    "level": 42,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "warrior",
+    "blurb": "You brace. Blows land heavier for a while.",
+    "buff": "power",
+    "buffMs": 14000
+  },
+  {
+    "id": "war_step",
+    "name": "War Step",
+    "short": "Step",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "warrior",
+    "blurb": "One step, and the axe is already there.",
+    "verb": "step"
+  },
+  {
+    "id": "last_wall",
+    "name": "Last Wall",
+    "short": "Wall",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "warrior",
+    "blurb": "The last of the guard. Slow, and it means it.",
+    "verb": "wall"
+  },
+  {
+    "id": "peat_lance",
+    "name": "Peat Lance",
+    "short": "Lance",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "shaman",
+    "blurb": "A heavier peat, thrown.",
+    "mana": 22,
+    "verb": "lance",
+    "slowMs": 4000,
+    "slowFactor": 0.5
+  },
+  {
+    "id": "blood_knit",
+    "name": "Blood Knit",
+    "short": "Knit",
+    "level": 38,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "shaman",
+    "blurb": "The deep knit, paid in mana.",
+    "mana": 30,
+    "heal": 80
+  },
+  {
+    "id": "ash_tide",
+    "name": "Ash Tide",
+    "short": "Tide",
+    "level": 42,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "shaman",
+    "blurb": "Ash on everyone near the target.",
+    "mana": 36,
+    "verb": "tide",
+    "radius": 70
+  },
+  {
+    "id": "winter_hex",
+    "name": "Winter Hex",
+    "short": "Hex",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "shaman",
+    "blurb": "One foe, and the cold stays on the feet.",
+    "mana": 28,
+    "verb": "hex",
+    "slowMs": 7000,
+    "slowFactor": 0.35
+  },
+  {
+    "id": "old_cold",
+    "name": "The Old Cold",
+    "short": "Cold",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "shaman",
+    "blurb": "The cold the peaks remember. Everyone near the target stands in it.",
+    "mana": 44,
+    "verb": "freeze",
+    "radius": 80,
+    "slowMs": 6000,
+    "slowFactor": 0.4
+  },
+  {
+    "id": "quiet_vein",
+    "name": "Quiet Vein",
+    "short": "Vein",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "dot",
+    "classId": "rogue",
+    "blurb": "A cut that keeps paying.",
+    "mana": 16,
+    "verb": "cut",
+    "dotMs": 10000,
+    "dotAmount": 8
+  },
+  {
+    "id": "side_step",
+    "name": "Side Step",
+    "short": "Side",
+    "level": 38,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "rogue",
+    "blurb": "You are not where the blow lands.",
+    "mana": 18,
+    "buff": "evade",
+    "buffMs": 8000
+  },
+  {
+    "id": "throat_cut",
+    "name": "Throat Cut",
+    "short": "Throat",
+    "level": 42,
+    "cooldownMs": 12000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 12,
+    "kind": "backstab",
+    "classId": "rogue",
+    "blurb": "From behind, it ends more than it starts. From the front it still refuses.",
+    "mana": 28,
+    "verb": "cut"
+  },
+  {
+    "id": "smoke_step",
+    "name": "Smoke Step",
+    "short": "Smoke",
+    "level": 46,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "rogue",
+    "blurb": "You go quiet. The next step is not announced.",
+    "mana": 16,
+    "buff": "sneak",
+    "buffMs": 20000
+  },
+  {
+    "id": "last_knife",
+    "name": "The Last Knife",
+    "short": "Knife",
+    "level": 50,
+    "cooldownMs": 12000,
+    "range": 28,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "backstab",
+    "classId": "rogue",
+    "blurb": "The quiet knife at the end of the list.",
+    "mana": 36,
+    "verb": "end"
+  },
+  {
+    "id": "red_line",
+    "name": "Red Line",
+    "short": "Line",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "berserker",
+    "blurb": "A cut that spends rage.",
+    "mana": 24,
+    "verb": "cut"
+  },
+  {
+    "id": "gut_howl",
+    "name": "Gut Howl",
+    "short": "Gut",
+    "level": 38,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "berserker",
+    "blurb": "The howl and the axe together.",
+    "mana": 30,
+    "verb": "howl"
+  },
+  {
+    "id": "blood_price",
+    "name": "Blood Price",
+    "short": "Price",
+    "level": 42,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "berserker",
+    "blurb": "Turn rage into blood. It is not free.",
+    "mana": 40,
+    "heal": 70
+  },
+  {
+    "id": "twin_ruin",
+    "name": "Twin Ruin",
+    "short": "Twin",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "berserker",
+    "blurb": "Both axes, one breath.",
+    "mana": 36,
+    "verb": "ruin"
+  },
+  {
+    "id": "red_end",
+    "name": "The Red End",
+    "short": "End",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "berserker",
+    "blurb": "The last of the rage, spent on one foe.",
+    "mana": 50,
+    "verb": "end"
+  },
+  {
+    "id": "den_mend",
+    "name": "Den Mend",
+    "short": "Den",
+    "level": 34,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "warden",
+    "blurb": "The den lends a knit.",
+    "mana": 28,
+    "heal": 78
+  },
+  {
+    "id": "wolf_snare",
+    "name": "Wolf Snare",
+    "short": "Snare",
+    "level": 38,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "warden",
+    "blurb": "The ground takes a foe's feet.",
+    "mana": 20,
+    "verb": "snare",
+    "slowMs": 7000,
+    "slowFactor": 0.4
+  },
+  {
+    "id": "pack_ward",
+    "name": "Pack Ward",
+    "short": "Ward",
+    "level": 42,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "warden",
+    "blurb": "The pack stands in front of the next blow.",
+    "mana": 24,
+    "buff": "aegis",
+    "buffMs": 12000
+  },
+  {
+    "id": "old_fang",
+    "name": "Old Fang",
+    "short": "Fang",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "warden",
+    "blurb": "One fang, thrown a long way.",
+    "mana": 26,
+    "verb": "bite"
+  },
+  {
+    "id": "den_mother",
+    "name": "Den Mother",
+    "short": "Den",
+    "level": 50,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "warden",
+    "blurb": "The deep mend, and it keeps mending.",
+    "mana": 36,
+    "heal": 90,
+    "hotMs": 8000,
+    "hotAmount": 8
+  },
+  {
+    "id": "glass_spear",
+    "name": "Glass Spear",
+    "short": "Glass",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "wizard",
+    "blurb": "A spear of ice with no patience.",
+    "mana": 24,
+    "verb": "spear"
+  },
+  {
+    "id": "rime_crown",
+    "name": "Rime Crown",
+    "short": "Crown",
+    "level": 38,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "wizard",
+    "blurb": "A crown of rime on everyone near the target.",
+    "mana": 36,
+    "verb": "crown",
+    "radius": 72,
+    "slowMs": 5000,
+    "slowFactor": 0.45
+  },
+  {
+    "id": "pale_needle",
+    "name": "Pale Needle",
+    "short": "Needle",
+    "level": 42,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "wizard",
+    "blurb": "Thin, fast, and it still costs.",
+    "mana": 22,
+    "verb": "pierce"
+  },
+  {
+    "id": "star_well",
+    "name": "Star Well",
+    "short": "Well",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "wizard",
+    "blurb": "Cold stars, and they land on the crowd.",
+    "mana": 42,
+    "verb": "fall",
+    "radius": 80
+  },
+  {
+    "id": "last_winter",
+    "name": "The Last Winter",
+    "short": "Winter",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "wizard",
+    "blurb": "The expensive cold. One foe, and it shows.",
+    "mana": 48,
+    "verb": "freeze"
+  },
+  {
+    "id": "grave_light",
+    "name": "Grave Light",
+    "short": "Grave",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "cleric",
+    "blurb": "A light that hates bones.",
+    "mana": 22,
+    "verb": "sear",
+    "vsUndead": 12
+  },
+  {
+    "id": "quiet_ward",
+    "name": "Quiet Ward",
+    "short": "Ward",
+    "level": 38,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "cleric",
+    "blurb": "A ward, held quietly.",
+    "mana": 26,
+    "buff": "aegis",
+    "buffMs": 14000
+  },
+  {
+    "id": "last_rite",
+    "name": "Last Rite",
+    "short": "Rite",
+    "level": 42,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "cleric",
+    "blurb": "The mend you keep for when the first one was not enough.",
+    "mana": 34,
+    "heal": 100
+  },
+  {
+    "id": "bone_lamp",
+    "name": "Bone Lamp",
+    "short": "Lamp",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "cleric",
+    "blurb": "Brighter than the grave light. Bones take it worse.",
+    "mana": 28,
+    "verb": "burn",
+    "vsUndead": 18
+  },
+  {
+    "id": "dawn_mend",
+    "name": "Dawn Mend",
+    "short": "Dawn",
+    "level": 50,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "cleric",
+    "blurb": "The last light. It pulls a great deal of you back.",
+    "mana": 42,
+    "heal": 140
+  },
+  {
+    "id": "soft_word",
+    "name": "Soft Word",
+    "short": "Soft",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "stun",
+    "classId": "enchanter",
+    "blurb": "A word, and the foe stops.",
+    "mana": 22,
+    "verb": "hush",
+    "stunMs": 4000
+  },
+  {
+    "id": "thin_will",
+    "name": "Thin Will",
+    "short": "Will",
+    "level": 38,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "stun",
+    "classId": "enchanter",
+    "blurb": "A shorter stop, sooner ready.",
+    "mana": 18,
+    "verb": "hold",
+    "stunMs": 2500
+  },
+  {
+    "id": "hush_field",
+    "name": "Hush Field",
+    "short": "Field",
+    "level": 42,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "enchanter",
+    "blurb": "The hush spreads. Feet slow.",
+    "mana": 34,
+    "verb": "hush",
+    "radius": 70,
+    "slowMs": 6000,
+    "slowFactor": 0.4
+  },
+  {
+    "id": "borrowed_step",
+    "name": "Borrowed Step",
+    "short": "Step",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "stun",
+    "classId": "enchanter",
+    "blurb": "You borrow the next moment. They do not get it.",
+    "mana": 26,
+    "verb": "take",
+    "stunMs": 3500
+  },
+  {
+    "id": "long_hush",
+    "name": "The Long Hush",
+    "short": "Hush",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "stun",
+    "classId": "enchanter",
+    "blurb": "The last hush. It holds.",
+    "mana": 36,
+    "verb": "silence",
+    "stunMs": 6000
+  },
+  {
+    "id": "oath_strike",
+    "name": "Oath Strike",
+    "short": "Oath",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "paladin",
+    "blurb": "The oath, in the blade.",
+    "mana": 16,
+    "verb": "strike"
+  },
+  {
+    "id": "small_dawn",
+    "name": "Small Dawn",
+    "short": "Dawn",
+    "level": 38,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "paladin",
+    "blurb": "A grace, larger than the first.",
+    "mana": 24,
+    "heal": 70
+  },
+  {
+    "id": "oath_bell",
+    "name": "Oath Bell",
+    "short": "Bell",
+    "level": 42,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 12,
+    "kind": "stun",
+    "classId": "paladin",
+    "blurb": "The bell. One foe stops.",
+    "mana": 22,
+    "verb": "stun",
+    "stunMs": 3500
+  },
+  {
+    "id": "vow_ward",
+    "name": "Vow Ward",
+    "short": "Vow",
+    "level": 46,
+    "cooldownMs": 16000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "paladin",
+    "blurb": "The vow stands up in front of you.",
+    "mana": 24,
+    "buff": "aegis",
+    "buffMs": 14000
+  },
+  {
+    "id": "kept_oath",
+    "name": "The Kept Oath",
+    "short": "Kept",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "strike",
+    "classId": "paladin",
+    "blurb": "The oath you kept for the end of the list.",
+    "mana": 28,
+    "verb": "cleave"
+  },
+  {
+    "id": "cinder_lance",
+    "name": "Cinder Lance",
+    "short": "Lance",
+    "level": 34,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 7
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "magician",
+    "blurb": "A longer cinder.",
+    "mana": 22,
+    "verb": "lance"
+  },
+  {
+    "id": "ember_field",
+    "name": "Ember Field",
+    "short": "Field",
+    "level": 38,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 8
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "magician",
+    "blurb": "Cinders on everyone near the target.",
+    "mana": 34,
+    "verb": "burst",
+    "radius": 70
+  },
+  {
+    "id": "second_ration",
+    "name": "Second Ration",
+    "short": "Ration",
+    "level": 42,
+    "cooldownMs": 9000,
+    "range": 28,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "hate": 12,
+    "kind": "conjure",
+    "classId": "magician",
+    "blurb": "Trail rations, again, from nothing you carried.",
+    "mana": 12,
+    "conjure": {
+      "itemId": "trail_ration",
+      "qty": 3
+    }
+  },
+  {
+    "id": "star_cinder",
+    "name": "Star Cinder",
+    "short": "Star",
+    "level": 46,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 11
+    },
+    "hate": 12,
+    "kind": "bolt",
+    "classId": "magician",
+    "blurb": "One bright cinder. It costs.",
+    "mana": 30,
+    "verb": "strike"
+  },
+  {
+    "id": "cinder_crown",
+    "name": "Cinder Crown",
+    "short": "Crown",
+    "level": 50,
+    "cooldownMs": 9000,
+    "range": 200,
+    "damage": {
+      "n": 4,
+      "sides": 10,
+      "bonus": 12
+    },
+    "hate": 12,
+    "kind": "field",
+    "classId": "magician",
+    "blurb": "The last of the ember hall. It lands on the crowd.",
+    "mana": 46,
+    "verb": "crown",
+    "radius": 80
   }
 ]

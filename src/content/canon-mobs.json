@@ -1,0 +1,711 @@
+[
+  {
+    "id": "slope_hare",
+    "name": "slope hare",
+    "level": 1,
+    "hp": 40,
+    "ac": 7,
+    "attack": 9,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 36,
+    "coinMin": 3,
+    "coinMax": 14,
+    "delayMs": 2100,
+    "aggroRange": 0,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "hare",
+    "speed": 48,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "kicks",
+    "loot": [
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "hare"
+  },
+  {
+    "id": "cinder_beetle",
+    "name": "cinder beetle",
+    "level": 2,
+    "hp": 56,
+    "ac": 7,
+    "attack": 10,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 52,
+    "coinMin": 6,
+    "coinMax": 28,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "beetle",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "nips",
+    "loot": [
+      {
+        "itemId": "cinder_coal",
+        "chance": 0.7,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "beetle"
+  },
+  {
+    "id": "bright_wolf",
+    "name": "bright wolf",
+    "level": 4,
+    "hp": 88,
+    "ac": 9,
+    "attack": 13,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "xp": 84,
+    "coinMin": 12,
+    "coinMax": 56,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "wolf",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "slope_pelt",
+        "chance": 0.7,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "stringy_meat",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "wolf"
+  },
+  {
+    "id": "ridge_bandit",
+    "name": "ridge bandit",
+    "level": 7,
+    "hp": 136,
+    "ac": 11,
+    "attack": 16,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "xp": 132,
+    "coinMin": 21,
+    "coinMax": 98,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "bandit",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "cinder_coal",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "bandit"
+  },
+  {
+    "id": "slate_bear",
+    "name": "slate bear",
+    "level": 8,
+    "hp": 152,
+    "ac": 12,
+    "attack": 17,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "xp": 148,
+    "coinMin": 24,
+    "coinMax": 112,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "bear",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "slope_pelt",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "bear"
+  },
+  {
+    "id": "kragg",
+    "name": "Kragg Ashhand",
+    "level": 9,
+    "hp": 353,
+    "ac": 18,
+    "attack": 26,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 3
+    },
+    "xp": 344,
+    "coinMin": 27,
+    "coinMax": 126,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.07,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "ash_brand",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cinder_coal",
+        "chance": 0.8,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "sprite": "leader"
+  },
+  {
+    "id": "old_slate",
+    "name": "Old Slate",
+    "level": 10,
+    "hp": 423,
+    "ac": 19,
+    "attack": 28,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "xp": 414,
+    "coinMin": 30,
+    "coinMax": 140,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.07,
+    "verb": "mauls",
+    "loot": [
+      {
+        "itemId": "slate_tooth",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "slope_pelt",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "rare": true,
+    "sprite": "bear"
+  },
+  {
+    "id": "ash_wolf",
+    "name": "ash wolf",
+    "level": 31,
+    "hp": 662,
+    "ac": 28,
+    "attack": 44,
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 8
+    },
+    "xp": 684,
+    "coinMin": 93,
+    "coinMax": 434,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "ash_wolf",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "bites",
+    "loot": [
+      {
+        "itemId": "ash_fang",
+        "chance": 0.65,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "ash_wolf"
+  },
+  {
+    "id": "ash_cultist",
+    "name": "ash cultist",
+    "level": 33,
+    "hp": 738,
+    "ac": 29,
+    "attack": 46,
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 8
+    },
+    "xp": 732,
+    "coinMin": 99,
+    "coinMax": 462,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "cult",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "cuts",
+    "loot": [
+      {
+        "itemId": "cult_token",
+        "chance": 0.55,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "sprite": "cultist"
+  },
+  {
+    "id": "young_drake",
+    "name": "young drake",
+    "level": 36,
+    "hp": 852,
+    "ac": 31,
+    "attack": 49,
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 9
+    },
+    "xp": 804,
+    "coinMin": 108,
+    "coinMax": 504,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "drake",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "scorches",
+    "loot": [
+      {
+        "itemId": "drake_scale",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 1.15,
+    "sprite": "drake"
+  },
+  {
+    "id": "korrag",
+    "name": "Korrag the Scorched",
+    "level": 37,
+    "hp": 1958,
+    "ac": 38,
+    "attack": 59,
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 9
+    },
+    "xp": 1822,
+    "coinMin": 111,
+    "coinMax": 518,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.07,
+    "verb": "scorches",
+    "loot": [
+      {
+        "itemId": "scorched_axe",
+        "chance": 0.35,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cult_token",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "sprite": "cultist"
+  },
+  {
+    "id": "kobold_miner",
+    "name": "kobold miner",
+    "level": 36,
+    "hp": 852,
+    "ac": 31,
+    "attack": 49,
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 9
+    },
+    "xp": 804,
+    "coinMin": 108,
+    "coinMax": 504,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "kobold",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "picks",
+    "loot": [
+      {
+        "itemId": "kobold_tooth",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cinder_coal",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 0.86,
+    "sprite": "kobold"
+  },
+  {
+    "id": "kobold_digger",
+    "name": "kobold digger",
+    "level": 39,
+    "hp": 966,
+    "ac": 33,
+    "attack": 53,
+    "damage": {
+      "n": 2,
+      "sides": 10,
+      "bonus": 9
+    },
+    "xp": 876,
+    "coinMin": 117,
+    "coinMax": 546,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "kobold",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "claws",
+    "loot": [
+      {
+        "itemId": "kobold_tooth",
+        "chance": 0.55,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 0.86,
+    "sprite": "kobold"
+  },
+  {
+    "id": "kobold_guard",
+    "name": "kobold guard",
+    "level": 42,
+    "hp": 1080,
+    "ac": 35,
+    "attack": 56,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "xp": 948,
+    "coinMin": 126,
+    "coinMax": 588,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "kobold",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "stabs",
+    "loot": [
+      {
+        "itemId": "kobold_tooth",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 0.9,
+    "sprite": "kobold"
+  },
+  {
+    "id": "skreeva",
+    "name": "Skreeva",
+    "level": 43,
+    "hp": 2571,
+    "ac": 42,
+    "attack": 65,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "xp": 2236,
+    "coinMin": 129,
+    "coinMax": 602,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.07,
+    "verb": "shrieks",
+    "loot": [
+      {
+        "itemId": "matriarch_pick",
+        "chance": 0.4,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "kobold_tooth",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "scale": 1.05,
+    "sprite": "kobold"
+  },
+  {
+    "id": "roost_wyvern",
+    "name": "roost wyvern",
+    "level": 43,
+    "hp": 1118,
+    "ac": 36,
+    "attack": 57,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 10
+    },
+    "xp": 972,
+    "coinMin": 129,
+    "coinMax": 602,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "wyvern",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "rakes",
+    "loot": [
+      {
+        "itemId": "drake_scale",
+        "chance": 0.45,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 1.25,
+    "sprite": "wyvern"
+  },
+  {
+    "id": "spire_drake",
+    "name": "spire drake",
+    "level": 46,
+    "hp": 1232,
+    "ac": 38,
+    "attack": 61,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 11
+    },
+    "xp": 1044,
+    "coinMin": 138,
+    "coinMax": 644,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "drake",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "scorches",
+    "loot": [
+      {
+        "itemId": "drake_scale",
+        "chance": 0.6,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 1.3,
+    "sprite": "drake"
+  },
+  {
+    "id": "dragonkin",
+    "name": "dragonkin",
+    "level": 48,
+    "hp": 1308,
+    "ac": 40,
+    "attack": 63,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 11
+    },
+    "xp": 1092,
+    "coinMin": 144,
+    "coinMax": 672,
+    "delayMs": 2100,
+    "aggroRange": 110,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "dragonkin",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.04,
+    "verb": "rakes",
+    "loot": [
+      {
+        "itemId": "drake_scale",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "cult_token",
+        "chance": 0.3,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "scale": 1.15,
+    "sprite": "dragonkin"
+  },
+  {
+    "id": "vyrmathax",
+    "name": "Vyrmathax the Elder",
+    "level": 50,
+    "hp": 4982,
+    "ac": 47,
+    "attack": 74,
+    "damage": {
+      "n": 3,
+      "sides": 10,
+      "bonus": 18
+    },
+    "xp": 2736,
+    "coinMin": 150,
+    "coinMax": 700,
+    "delayMs": 2400,
+    "aggroRange": 160,
+    "assistRange": 130,
+    "leash": 200,
+    "social": "",
+    "speed": 52,
+    "wanderSpeed": 24,
+    "crit": 0.07,
+    "verb": "burns",
+    "loot": [
+      {
+        "itemId": "elder_fang",
+        "chance": 0.5,
+        "min": 1,
+        "max": 1
+      },
+      {
+        "itemId": "drake_scale",
+        "chance": 1,
+        "min": 1,
+        "max": 1
+      }
+    ],
+    "named": true,
+    "scale": 1.85,
+    "sprite": "drake"
+  }
+]
