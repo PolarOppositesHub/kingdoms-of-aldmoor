@@ -282,6 +282,7 @@ export function actorsFromMap(content: ContentDb, map: MapData): Actor[] {
           maxHp: def.hp,
           level: def.level,
           social: def.social,
+          scale: def.scale ?? 1,
           attackMs: def.delayMs,
           wanderMs: 400 + mobIndex * 180,
         }),

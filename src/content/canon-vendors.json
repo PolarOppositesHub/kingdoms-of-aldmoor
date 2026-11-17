@@ -1,0 +1,362 @@
+[
+  {
+    "npcId": "brim",
+    "title": "Anvil Drills",
+    "copyFrom": "eirik",
+    "stock": []
+  },
+  {
+    "npcId": "kelda",
+    "title": "Lamp Drills",
+    "copyFrom": "selne",
+    "stock": []
+  },
+  {
+    "npcId": "orrin",
+    "title": "Oath Drills",
+    "copyFrom": "adel",
+    "stock": []
+  },
+  {
+    "npcId": "nala",
+    "title": "Quiet Drills",
+    "copyFrom": "sable",
+    "stock": []
+  },
+  {
+    "npcId": "bram",
+    "title": "Red Drills",
+    "copyFrom": "hroth",
+    "stock": []
+  },
+  {
+    "npcId": "henge",
+    "title": "Lightbrune Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 1
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 4
+      },
+      {
+        "itemId": "chart_brightforge",
+        "price": 40
+      },
+      {
+        "itemId": "chart_brightforge_slopes",
+        "price": 45
+      },
+      {
+        "itemId": "plate_t4_head",
+        "price": 852
+      },
+      {
+        "itemId": "plate_t4_chest",
+        "price": 1656
+      },
+      {
+        "itemId": "plate_t4_hands",
+        "price": 514
+      },
+      {
+        "itemId": "plate_t4_legs",
+        "price": 1075
+      },
+      {
+        "itemId": "plate_t4_feet",
+        "price": 629
+      },
+      {
+        "itemId": "plate_t4_secondary",
+        "price": 965
+      }
+    ]
+  },
+  {
+    "npcId": "harl",
+    "title": "Graymoor Forge",
+    "copyFrom": "ivar",
+    "stock": []
+  },
+  {
+    "npcId": "wynn",
+    "title": "Blackpine Cloth",
+    "copyFrom": "signe",
+    "stock": []
+  },
+  {
+    "npcId": "vess",
+    "title": "Wyrmrest Stores",
+    "stock": [
+      {
+        "itemId": "plate_t4_head",
+        "price": 852
+      },
+      {
+        "itemId": "plate_t4_chest",
+        "price": 1656
+      },
+      {
+        "itemId": "plate_t4_hands",
+        "price": 514
+      },
+      {
+        "itemId": "plate_t4_legs",
+        "price": 1075
+      },
+      {
+        "itemId": "plate_t4_feet",
+        "price": 629
+      },
+      {
+        "itemId": "plate_t4_secondary",
+        "price": 965
+      },
+      {
+        "itemId": "chain_t4_head",
+        "price": 391
+      },
+      {
+        "itemId": "chain_t4_chest",
+        "price": 749
+      },
+      {
+        "itemId": "chain_t4_hands",
+        "price": 245
+      },
+      {
+        "itemId": "chain_t4_legs",
+        "price": 475
+      },
+      {
+        "itemId": "chain_t4_feet",
+        "price": 290
+      },
+      {
+        "itemId": "chain_t4_secondary",
+        "price": 442
+      },
+      {
+        "itemId": "leather_t4_head",
+        "price": 161
+      },
+      {
+        "itemId": "leather_t4_chest",
+        "price": 298
+      },
+      {
+        "itemId": "leather_t4_hands",
+        "price": 98
+      },
+      {
+        "itemId": "leather_t4_legs",
+        "price": 206
+      },
+      {
+        "itemId": "leather_t4_feet",
+        "price": 110
+      },
+      {
+        "itemId": "leather_t4_secondary",
+        "price": 178
+      },
+      {
+        "itemId": "cloth_t4_head",
+        "price": 62
+      },
+      {
+        "itemId": "cloth_t4_chest",
+        "price": 115
+      },
+      {
+        "itemId": "cloth_t4_hands",
+        "price": 38
+      },
+      {
+        "itemId": "cloth_t4_legs",
+        "price": 79
+      },
+      {
+        "itemId": "cloth_t4_feet",
+        "price": 43
+      },
+      {
+        "itemId": "cloth_t4_secondary",
+        "price": 50
+      },
+      {
+        "itemId": "ashforged_axe",
+        "price": 880
+      },
+      {
+        "itemId": "scalded_blade",
+        "price": 860
+      },
+      {
+        "itemId": "wyrm_staff",
+        "price": 900
+      },
+      {
+        "itemId": "elder_fang",
+        "price": 1400
+      },
+      {
+        "itemId": "trail_ration",
+        "price": 1
+      },
+      {
+        "itemId": "yarrow_draught",
+        "price": 11
+      }
+    ]
+  },
+  {
+    "npcId": "brynn",
+    "title": "Wyrmrest Charts",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 1
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 4
+      },
+      {
+        "itemId": "chart_wyrmrest",
+        "price": 80
+      },
+      {
+        "itemId": "chart_ashfall",
+        "price": 90
+      },
+      {
+        "itemId": "chart_emberwatch",
+        "price": 70
+      },
+      {
+        "itemId": "chart_scalded",
+        "price": 110
+      },
+      {
+        "itemId": "chart_thanes_rest",
+        "price": 80
+      },
+      {
+        "itemId": "chart_spires",
+        "price": 140
+      }
+    ]
+  },
+  {
+    "npcId": "ember_keel",
+    "title": "Emberwatch Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 1
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 4
+      },
+      {
+        "itemId": "chart_ashfall",
+        "price": 90
+      },
+      {
+        "itemId": "chart_emberwatch",
+        "price": 70
+      }
+    ]
+  },
+  {
+    "npcId": "thane_rest",
+    "title": "Thane's Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 1
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 4
+      },
+      {
+        "itemId": "yarrow_draught",
+        "price": 11
+      },
+      {
+        "itemId": "chart_scalded",
+        "price": 110
+      },
+      {
+        "itemId": "chart_thanes_rest",
+        "price": 80
+      }
+    ]
+  },
+  {
+    "npcId": "wry_warrior",
+    "title": "High Drills",
+    "copyFrom": "eirik",
+    "stock": []
+  },
+  {
+    "npcId": "wry_shaman",
+    "title": "High Drills",
+    "copyFrom": "torunn",
+    "stock": []
+  },
+  {
+    "npcId": "wry_rogue",
+    "title": "High Drills",
+    "copyFrom": "sable",
+    "stock": []
+  },
+  {
+    "npcId": "wry_berserker",
+    "title": "High Drills",
+    "copyFrom": "hroth",
+    "stock": []
+  },
+  {
+    "npcId": "wry_warden",
+    "title": "High Drills",
+    "copyFrom": "bjorn",
+    "stock": []
+  },
+  {
+    "npcId": "wry_wizard",
+    "title": "High Drills",
+    "copyFrom": "maeriel",
+    "stock": []
+  },
+  {
+    "npcId": "wry_cleric",
+    "title": "High Drills",
+    "copyFrom": "selne",
+    "stock": []
+  },
+  {
+    "npcId": "wry_enchanter",
+    "title": "High Drills",
+    "copyFrom": "miris",
+    "stock": []
+  },
+  {
+    "npcId": "wry_paladin",
+    "title": "High Drills",
+    "copyFrom": "adel",
+    "stock": []
+  },
+  {
+    "npcId": "wry_magician",
+    "title": "High Drills",
+    "copyFrom": "quen",
+    "stock": []
+  }
+]

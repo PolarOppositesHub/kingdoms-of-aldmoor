@@ -9,7 +9,7 @@ export default function App() {
     <Page title="Kingdoms of Aldmoor: Design Doc v0.2" summary="Plan for an EverQuest-style, top-down 16-bit RPG set in the world of Aldmoor, played on the iPhone Duo. v1 starts in the Barbarian town of Hoffender. Josh is creative director; Grok Bot and the Coding bot are the dev team." width="column">
       <TableOfContents items={[
         { label: "Vision and pillars" }, { label: "Locked decisions" }, { label: "Lore and world" }, { label: "Platform and engine" },
-        { label: "Core systems" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "The Black Ice" }, { label: "The road south" }, { label: "Eldenmoor" }, { label: "Warrior v1 kit" },
+        { label: "Core systems" }, { label: "World map" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "The Black Ice" }, { label: "The road south" }, { label: "Brightforge" }, { label: "Eldenmoor" }, { label: "Wyrmrest" }, { label: "Warrior v1 kit" },
         { label: "Milestone roadmap" }, { label: "Multiplayer-ready architecture" }, { label: "Open questions for Josh" },
       ]} />
       <Section heading="Vision and pillars">
@@ -25,7 +25,7 @@ export default function App() {
       <Section heading="Locked decisions">
         <Properties items={[
           { label: "Game / world", value: "Kingdoms of Aldmoor / Aldmoor" },
-          { label: "Races", value: "Human, Dwarf, High Elf, Barbarian. High Elf is playable and starts in Eldenmoor. The others still wait." },
+          { label: "Races", value: "Human, Dwarf, High Elf, Barbarian. Barbarian starts in Hoffender. High Elf starts in Eldenmoor. Dwarf starts in Brightforge. The others still wait." },
           { label: "v1 starter town", value: "Hoffender, the Barbarian town, ruled by Jarl Freya Halvarddottir" },
           { label: "Frostmere Wilds", value: "The country outside Hoffender's north gate" },
           { label: "Frostfang Reach", value: "The Ogre Highlands past the north ridge of the Frostmere Wilds. Levels 10–20. Hearthpass outpost. War-chief Vargan Frostfang." },
@@ -33,8 +33,8 @@ export default function App() {
           { label: "Second class", value: "Wizard, playable as a Barbarian from the Hoffender gate, with mana, Shardbolt, and Rimefield" },
           { label: "Combat", value: "Real-time auto-attack, EverQuest-style" },
           { label: "Art", value: "16-bit SNES-style pixel art" },
-          { label: "Level cap", value: "30. It was 10, then 25. 50 is still the far goal." },
-          { label: "Death penalty", value: "Corpse run plus XP loss: none below level 5, 2.5% at 5–9, 5% at 10–19, 7.5% at 20–29, 10% at 30. No delevel." },
+          { label: "Level cap", value: "50. It was 10, then 25, then 30." },
+          { label: "Death penalty", value: "Corpse run plus XP loss: none below level 5, 2.5% at 5–9, 5% at 10–19, 7.5% at 20–29, 10% at 30–39, 12.5% at 40–49, 15% at 50. No delevel." },
           { label: "Saves", value: "Local saves first; cloud saves arrive together with co-op" },
           { label: "Multiplayer", value: "Single-player first; architecture ready for co-op" },
         ]} />
@@ -64,7 +64,7 @@ export default function App() {
       <Section heading="Core systems">
         <Table columns={["System", "v1 design"]} rows={[
           ["Stats", "STR, STA, AGI, DEX, WIS, INT, CHA; HP, mana/endurance, AC, attack"],
-          ["Leveling", "XP curve per level; cap 30; class drills are bought and gated by level through 30"],
+          ["Leveling", "XP curve per level; cap 50; class drills are bought and gated by level through 50"],
           ["Combat", "Auto-attack on a weapon delay timer; hit, miss and crit rolls; skills on cooldowns"],
           ["Aggro", "Hate list per mob; damage and taunt add hate; social mobs assist nearby kin"],
           ["Con colors", "Gray, green, light blue, blue, white, yellow, red by level gap"],
@@ -74,6 +74,9 @@ export default function App() {
           ["Quests", "Data-driven: collect, kill, deliver, then chains ending in boss kills"],
           ["Saves", "Local (IndexedDB) save of serialized game state"],
         ]} />
+      </Section>
+      <Section heading="World map">
+        <Text>Maerthun is the big western continent, and the kingdom on it is Valdoria. Hoffender and Frostfang Reach sit on the frozen northwest fjord. The Ogre Highlands run across the far north. Wyrmrest is a castle city on the kingdom's northern border, under those highlands, northeast of Hoffender. Thornhaven is a west-coast port, with Graymoor Hold just inland. Blackpine Tower is a castle in the central pines, inside a wood-elf free-passage ring. Ironhollow Keep, in the eastern hills, and Saltmere Castle, on the south coast, are not open. The Dwarven Mountains run diagonally across southern Maerthun from near Thornhaven and Graymoor: Brightforge of the Lightbrune clan is the northernmost hold, then Ashdeep of the Darkbrune, then Veilspire of the Mistbrune. The deep mine tunnels between them are shut. The Wood Elf lands and Canipure, a high elf staging ground, are on the east coast. Vaelmoor is a separate continent across the water to the northeast: Eldenmoor, the Dwarven Ruins, the Troll Fens, and Illindral of the dark elves. Golden trade ships link Maerthun and Vaelmoor by the Wood Elf coast. Vescara, seat of the Shadow King at Morzul, is southeast across the Sundering Sea, and it is not open.</Text>
       </Section>
       <Section heading="Starter zone: Hoffender">
         <Rows rows={[
@@ -103,10 +106,10 @@ export default function App() {
         ]} />
       </Section>
       <Section heading="The road south">
-        <Text>The Frostmere signs already named the lands south of the snow. Those roads are open, and they do not skip a country. A walker leaves Hoffender by the south road or by the grass track on the southeast edge. Both enter Thornhaven. Valdoria is south of the hold. Eldenmoor is south of Valdoria. The east road to Wyrmrest is still closed.</Text>
+        <Text>The Frostmere signs already named the lands south of the snow. Those roads are open, and they do not skip a country. A walker leaves Hoffender by the south road or by the grass track on the southeast edge. Both enter Thornhaven. Valdoria is south of the hold. Eldenmoor is not south of Valdoria. It is on Vaelmoor, and the way there is the ship at Valdoria's east dock. The east road out of the Frostmere Wilds is open, and it reaches Wyrmrest.</Text>
         <Rows rows={[
-          { title: "Thornhaven", detail: "256×256. Levels 10–18. Mud, slush, and the first fields. Graymoor Hold is the safe yard in the north, kept by Odda Venn. Nell Ash walks the fences. Hask the Reeve is the named bandit on the south road. North returns to Hoffender. The east gate is the grass track. South is Valdoria." },
-          { title: "Valdoria", detail: "256×256. Levels 16–26. Pine and grass, the kingdom between the mud and the elves. Blackpine Tower is the safe yard. Osric Blackpine keeps it. Captain Malrek is the named brigand by the water. North is Thornhaven. South is the Eldenweald." },
+          { title: "Thornhaven", detail: "256×256. Levels 10–18. A west-coast port, mud, and the first fields. Graymoor Hold is a castle just inland, kept by Odda Venn, with gate guards, a smith, and a bind point. Nell Ash walks the fences. Hask the Reeve is the named bandit on the south road. North returns to Hoffender. One east road is the grass track back to the wilds. Another, from the castle, is the Lightbrune Pass to Brightforge. South is Valdoria." },
+          { title: "Valdoria", detail: "256×256. Levels 16–26. Pine and grass, the central kingdom. Blackpine Tower is a castle, kept by Osric Blackpine, with gate guards, a clothier, and a bind point. Captain Malrek is the named brigand by the water. North is Thornhaven. The east dock is the golden trade route to Eldenmoor. South goes on toward Saltmere, and that coast is shut." },
         ]} />
       </Section>
       <Section heading="Eldenmoor">
@@ -117,8 +120,26 @@ export default function App() {
           { title: "Enchanter", detail: "Miris Vale. A hush that holds a foe still, a slow, a mana tide, a thin needle of force, and a borrowed will that makes one foe follow for a while. The hush rod is the starting weapon." },
           { title: "Paladin", detail: "Adel Cor. Plate and a shield, an oath cut, a small grace, a bell that stuns, and a challenge that pulls hate. The oath blade is the starting weapon." },
           { title: "Magician", detail: "Quen Ash. A cinder bolt, a called ember that uses the pet window, and a conjured ration. The ember staff is the starting weapon. The ember does not come until the call is bought and spoken." },
-          { title: "The Eldenweald", detail: "The country outside the north gate, levels 1–10, the same job the Frostmere Wilds do for Hoffender. Hares and foxes by the wall, wolves, beetles, spiders, poachers, and bears as the trees thicken. Lark the Poacher is named. The Amber Hart is the rare at the north end. The road north leaves the woods for Valdoria, and that road is not a first walk." },
+          { title: "The Eldenweald", detail: "The country outside the north gate, levels 1–10, the same job the Frostmere Wilds do for Hoffender. Hares and foxes by the wall, wolves, beetles, spiders, poachers, and bears as the trees thicken. Lark the Poacher is named. The Amber Hart is the rare at the north end. The woods end. They do not become Valdoria. The ship at the east dock is the way back to Maerthun." },
           { title: "Starter quests", detail: "Sere wants eight weald wolves, then Lark. Halden asks for the Amber Hart in the queen's name. Odda wants boars, then Hask. Osric wants brigands, then Malrek. Each zone on the road has its own work." },
+        ]} />
+      </Section>
+      <Section heading="Brightforge">
+        <Text>Dwarf is playable. A new dwarf wakes in Brightforge, hold of the Lightbrune clan, and binds in the yard unless they bind somewhere else. The paths open to them are Warrior, Cleric, Paladin, Rogue, and Berserker, the same class definitions the other races already use. Barbarian and high elf class lists are unchanged. Brim, Kelda, Orrin, Nala, and Bram keep the halls. King Durgan Ashbeard stands in the court. The deep doors to Ashdeep and Veilspire are seams, not roads.</Text>
+        <Rows rows={[
+          { title: "The hold", detail: "A stone castle in the north of the mountain map. Henge sells rations, the two charts, and Lightbrune plate. The pass north returns to Graymoor Hold, so a dwarf can join the road that already runs from level 10 to 28." },
+          { title: "Lightbrune Slopes", detail: "The country outside the south gate, levels 1–10, the same job the Frostmere Wilds and the Eldenweald do. Hares and beetles, wolves, bandits, and bears. Kragg Ashhand is named. Old Slate is the rare bear." },
+          { title: "Starter quests", detail: "Sella wants eight bright wolves, then Kragg. Durgan asks for Old Slate." },
+        ]} />
+      </Section>
+      <Section heading="Wyrmrest">
+        <Text>Wyrmrest is named for the dragons laid to rest beneath the northern peaks after an ancient war. Ysolde's cold kept them asleep. Breaking the Black Ice wakes them. The castle is the level 30–50 hub: a bind point, Brynn Holt for the chain, Vess for the peak armor and weapons, and a high-drill vendor for every class. The west gate is the Frostmere road. Three 256×256 zones climb north into the eastern Ogre Highlands.</Text>
+        <Rows rows={[
+          { title: "Ashfall Moors", detail: "Levels 30–37. Dragon-burned heath. Emberwatch is the safe outpost, dwarf scouts and a barbarian. Ash wolves, cultists, and young drakes. Korrag the Scorched is named." },
+          { title: "The Scalded Vale", detail: "Levels 36–43. A steaming canyon. Kobold clans mine for the dragons. Thane's Rest is the ruined dwarf waystation, and it is safe. Skreeva is the kobold matriarch." },
+          { title: "Wyrmrest Spires", detail: "Levels 42–50. Roosts. Wyverns, drakes, and dragonkin. Vyrmathax the Elder, level 50, is the oldest of the wakened. The door behind him is sealed for a later raid. The Last Step, at the south of the spires, is safe." },
+          { title: "The chain", detail: "Brynn asks for eight ash wolves, then Korrag, then Skreeva, then Vyrmathax. The castle's reward is the elder fang." },
+          { title: "Saves", detail: "Old saves still load. A hero standing on a tile a rebuilt map removed is set down on the nearest open ground, a safe yard when one is close. Saves from before the big map moves still wake at the zone entrance." },
         ]} />
       </Section>
       <Section heading="Warrior v1 kit">
@@ -131,7 +152,7 @@ export default function App() {
           ["8", "Shout of Challenge", "Small area hate to nearby mobs"],
           ["10", "Second Wind", "Restore some HP, long cooldown"],
         ]} />
-        <Text>That table is the old v1 plan. In the game, every class buys later drills from its guild trainer, including Cleric, Enchanter, Paladin, and Magician. The lists run through level 30. Leveling does not grant them. Until the level is reached the line reads Requires level N.</Text>
+        <Text>That table is the old v1 plan. In the game, every class buys later drills from its guild trainer, including Cleric, Enchanter, Paladin, and Magician, and the dwarf halls sell the same lists for the classes dwarves may walk. The lists run through level 50. Leveling does not grant them. Until the level is reached the line reads Requires level N. Pets grow with the hero: more health, a harder swing.</Text>
       </Section>
       <Section heading="Milestone roadmap">
         <Steps steps={[
@@ -139,7 +160,7 @@ export default function App() {
           { title: "M2 First zone", detail: "Full Hoffender and the Frostmere Wilds, quests, leveling to 10, inventory and equipment, death and corpse runs, local saves." },
           { title: "M3 Second class", detail: "A caster with a spell vendor in its guild, mana and spell casting." },
           { title: "M4 First dungeon", detail: "Done. The Black Ice, three floors past the Fang. Ysolde of the Black Ice is the boss. Kara and Anwen carry the chain." },
-          { title: "M5 World growth", detail: "Eldenmoor, the High Elf start, is in, with Thornhaven and Valdoria on the walk south from Hoffender. Still ahead: the other races, the east road to Wyrmrest, the iOS wrap, and co-op with cloud saves." },
+          { title: "M5 World growth", detail: "Eldenmoor is on Vaelmoor and reached by ship. Brightforge is the dwarf start. Wyrmrest and the peak road run to level 50. Still ahead: the other races, Ashdeep and Veilspire, the sealed lair under the spires, Ironhollow, Saltmere, the Wood Elf coast as its own country, Vescara, the iOS wrap, and co-op with cloud saves." },
         ]} />
       </Section>
       <Section heading="Multiplayer-ready architecture">
@@ -156,7 +177,7 @@ export default function App() {
         <NumberedList items={[
           "Hoffender's look: snowy fjord village, mountain longhouse hold, or frozen coastal port? M1 ships the fjord village.",
           "Camp boss flavor: bandit chief, alpha frost wolf, or gnoll warlord?",
-          "Which race opens after the high elves? Human, Dwarf, Wood Elf, and the rest are still locked. Wyrmrest, east of the Frostmere Wilds, is still a closed road.",
+          "Which race opens after the dwarves? Human, Wood Elf, and the rest are still locked. Ashdeep, Veilspire, the lair under the spires, Ironhollow, Saltmere, and Vescara are still shut.",
         ]} />
         <Callout lead="Next step">Coding can start M1 now; these answers shape M2.</Callout>
       </Section>

@@ -84,8 +84,8 @@ export interface ItemDef {
   grip?: 'axe' | 'blade' | 'staff' | 'fist';
   /** Plate, chain, leather, cloth, or scale. Scale is in the schema and not stocked yet. */
   armorType?: ArmorType;
-  /** 1 rusty/tattered, 2 worked, 3 bronze/hardened/wool. */
-  tier?: 1 | 2 | 3;
+  /** 1 rusty/tattered, 2 worked, 3 bronze/hardened/wool, 4 ashforged and the peak sets. */
+  tier?: 1 | 2 | 3 | 4;
   /** Class ids allowed to equip this. Omitted means no class limit. */
   wearers?: string[];
   /** Faction standing required to equip. No current item sets this. */
@@ -150,6 +150,8 @@ export interface MobDef {
   named?: boolean;
   /** Named outcasts. They stay down longer than a camp boss. */
   rare?: boolean;
+  /** Drawn size. 1 is the sprite as painted. */
+  scale?: number;
   /** Future pets can bark a foe onto themselves. The snow wolf does not. */
   petTaunt?: boolean;
 }

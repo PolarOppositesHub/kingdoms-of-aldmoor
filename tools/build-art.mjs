@@ -22,6 +22,7 @@ import { buildHeroArt, buildPeopleArt } from './hero-art.mjs';
 import { buildWorld, T } from './frostmere-map.mjs';
 import { buildFrostfang } from './frostfang-map.mjs';
 import { buildSouthlands } from './south-map.mjs';
+import { buildCanon, clearCrossings } from './canon-map.mjs';
 import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -1822,6 +1823,20 @@ function buildActors() {
     adel: 58,
     quen: 59,
     ember: 60,
+    durgan: 61,
+    brim: 62,
+    kelda: 63,
+    orrin: 64,
+    nala: 65,
+    bram: 66,
+    henge: 67,
+    sella: 68,
+    drake: 69,
+    wyvern: 70,
+    kobold: 71,
+    cultist: 72,
+    dragonkin: 73,
+    ash_wolf: 74,
   };
   const sheet = createImage(cols * fw, Object.keys(rowOf).length * fh);
 
@@ -1915,6 +1930,14 @@ function buildActors() {
     { row: 57, tint: clothTint(hex('#2e4a38'), hex('#d7f0c0'), hex('#1c3024'), hex('#f4f7fb'), hex('#d5e6f0')), overlay: () => (img) => img },
     { row: 58, tint: clothTint(hex('#241c28'), hex('#c8c0b4'), hex('#120e14'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
     { row: 59, tint: clothTint(hex('#1e4030'), hex('#8eae72'), hex('#142016'), hex('#e6c15a'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 61, tint: clothTint(hex('#6a3030'), hex('#c48462'), hex('#3a2418'), hex('#c6a56a'), hex('#f0d9a0')), overlay: () => (img) => img },
+    { row: 62, tint: clothTint(hex('#5c2424'), hex('#8a4030'), hex('#2a1414'), hex('#8b97a3'), hex('#d7dee6')), overlay: () => (img) => img },
+    { row: 63, tint: clothTint(hex('#8a3034'), hex('#d5dee6'), hex('#4a1420'), hex('#f0d9a0'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 64, tint: clothTint(hex('#3a241c'), hex('#c8c0b4'), hex('#241610'), hex('#e6c15a'), hex('#fff6d4')), overlay: () => (img) => img },
+    { row: 65, tint: clothTint(hex('#241c28'), hex('#4a3a48'), hex('#120e14'), hex('#1c1418'), hex('#3a241c')), overlay: () => (img) => img },
+    { row: 66, tint: clothTint(hex('#6a2420'), hex('#a33b32'), hex('#3a1410'), hex('#3a241c'), hex('#6b4030')), overlay: () => (img) => img },
+    { row: 67, tint: clothTint(hex('#4a3428'), hex('#a87848'), hex('#2a1c16'), hex('#8a8178'), hex('#c8c0b6')), overlay: () => (img) => img },
+    { row: 68, tint: clothTint(hex('#3a241c'), hex('#6b4030'), hex('#241610'), hex('#c6a56a'), hex('#f0d9a0')), overlay: () => (img) => img },
   ];
 
   for (const person of people) {
@@ -1936,6 +1959,7 @@ function buildActors() {
     { row: 7, tint: wolfTint(hex('#5c534c'), hex('#8a8178'), hex('#c8c0b6')) },
     { row: 8, tint: wolfTint(hex('#8aa4b4'), hex('#d5e4ee'), hex('#f7fbfe')) },
     { row: 34, tint: wolfTint(hex('#4a4038'), hex('#8a8178'), hex('#e7d3a4')) },
+    { row: 74, tint: wolfTint(hex('#3a3230'), hex('#6a5a50'), hex('#c45a28')) },
   ];
   const wolfDirs = [
     [WOLF_S, WOLF_S2],
@@ -2096,6 +2120,38 @@ function buildActors() {
         blob(4, 2, 8, 2, hex('#e6e0d4'));
         img.set(7, 1, hex('#e6c15a'));
       }
+    } else if (kind === 'drake' || kind === 'wyvern') {
+      blob(3, 8, 10, 5, kind === 'wyvern' ? hex('#5c4030') : hex('#8a3030'));
+      blob(11, 7, 4, 3, hex('#c45a28'));
+      blob(2, 6, 5, 3, hex('#3a2418'));
+      blob(4, 13, 2, 5, hex('#2a2018'));
+      blob(9, 13, 2, 5, hex('#2a2018'));
+      img.set(6, 9, hex('#e6c15a'));
+      img.set(8, 9, hex('#e6c15a'));
+      if (kind === 'wyvern') blob(1, 4, 3, 6, hex('#6a5a50'));
+    } else if (kind === 'kobold') {
+      blob(5, 6, 6, 5, hex('#6e8f5a'));
+      blob(4, 11, 8, 5, hex('#3e5a34'));
+      blob(5, 16, 2, 5, hex('#2a2018'));
+      blob(9, 16, 2, 5, hex('#2a2018'));
+      blob(11, 10, 3, 2, hex('#c6a56a'));
+      img.set(6, 8, hex('#1c1418'));
+      img.set(9, 8, hex('#1c1418'));
+    } else if (kind === 'cultist') {
+      blob(5, 3, 6, 6, hex('#2a1414'));
+      blob(4, 9, 8, 7, hex('#6a2420'));
+      blob(5, 16, 2, 6, hex('#1c1418'));
+      blob(9, 16, 2, 6, hex('#1c1418'));
+      img.set(6, 5, hex('#e6c15a'));
+      img.set(9, 5, hex('#e6c15a'));
+    } else if (kind === 'dragonkin') {
+      blob(4, 4, 8, 6, hex('#7a2430'));
+      blob(5, 10, 6, 6, hex('#c45a28'));
+      blob(4, 16, 3, 6, hex('#3a2418'));
+      blob(9, 16, 3, 6, hex('#3a2418'));
+      blob(1, 8, 3, 5, hex('#5c2424'));
+      img.set(6, 6, hex('#f4f0e6'));
+      img.set(9, 6, hex('#f4f0e6'));
     } else if (kind === 'troll' || kind === 'ashjaw') {
       const hide = kind === 'ashjaw' ? hex('#4e5964') : hex('#3c86a2');
       blob(3, 4, 10, 8, hide);
@@ -2143,6 +2199,11 @@ function buildActors() {
     ['stag', 54],
     ['crawler', 55],
     ['ember', 60],
+    ['drake', 69],
+    ['wyvern', 70],
+    ['kobold', 71],
+    ['cultist', 72],
+    ['dragonkin', 73],
   ]) {
     const img = critter(name);
     for (let dir = 0; dir < 4; dir++) {
@@ -2515,10 +2576,10 @@ function drawGearIcons() {
 function drawArmorIcons() {
   const armor = JSON.parse(readFileSync(join(root, 'src', 'content', 'armor.json'), 'utf8'));
   const colors = {
-    plate: ['#5c4a32', '#8d7a58', '#d4b46a'],
-    chain: ['#4e585e', '#8b97a3', '#d5dee6'],
-    leather: ['#4a2c22', '#8a5438', '#c48462'],
-    cloth: ['#6a3840', '#b8a48c', '#e4d8c8'],
+    plate: ['#5c4a32', '#8d7a58', '#d4b46a', '#f0e2a8'],
+    chain: ['#4e585e', '#8b97a3', '#d5dee6', '#f4f7fb'],
+    leather: ['#4a2c22', '#8a5438', '#c48462', '#e0a070'],
+    cloth: ['#6a3840', '#b8a48c', '#e4d8c8', '#fff6e8'],
   };
   const frames = {};
   for (const item of armor) {
@@ -2825,6 +2886,10 @@ async function main() {
   const south = buildSouthlands();
   world.maps.push(...south.maps);
   Object.assign(world.charts, south.charts);
+  const canon = buildCanon();
+  world.maps.push(...canon.maps);
+  Object.assign(world.charts, canon.charts);
+  clearCrossings(world.maps);
   const map = world.maps.find((zone) => zone.id === 'hoffender');
   const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };
   const itemIcons = drawItemIcons();

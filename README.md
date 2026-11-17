@@ -41,7 +41,7 @@ One map: Hoffender, a snowy fjord hold, and the Frostmere Wilds outside its nort
 - The place name follows you. Inside the palisade it reads Hoffender. Step through the gate and it reads Frostmere Wilds. Those names are also painted on the map.
 - One merchant. Sell pelts and teeth. Buy bandages, trail rations, and a faster handaxe, then equip it from the pack.
 - Young wolves on the Frostmere Wilds road, wolves in the pines, and frost wolves farther north. Wolves assist nearby kin. The palisade is safe; they will not chase you inside.
-- Character creation at the gate. The roster lists every planned race and class. Barbarian can be a warrior, shaman, rogue, berserker, or warden, and starts in Hoffender. High Elf can be a wizard, cleric, enchanter, paladin, or magician, and starts in Eldenmoor. Six bonus points go into the stats. The choice is remembered on this device.
+- Character creation at the gate. The roster lists every planned race and class. Barbarian can be a warrior, shaman, rogue, berserker, or warden, and starts in Hoffender. High Elf can be a wizard, cleric, enchanter, paladin, or magician, and starts in Eldenmoor. Dwarf can be a warrior, cleric, paladin, rogue, or berserker, and starts in Brightforge. Six bonus points go into the stats. The choice is remembered on this device.
 - Warrior combat: real-time auto-attack on a weapon delay, plus Kick on a cooldown. Tap a wolf, then ATK.
 - Wizard combat: a mana bar, Shardbolt at range, and Rimefield, which slows every wolf near your target. The staff still swings if a wolf gets close.
 - Pinch the map, or use the mouse wheel, to zoom. The Pad button swaps the stick for a D-pad. Look talks to someone or reads a sign.
