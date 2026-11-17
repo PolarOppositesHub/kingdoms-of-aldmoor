@@ -6,6 +6,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
+import { frameGate, stampBuilding } from './buildings.mjs';
 
 const W = 256;
 const H = 256;
@@ -337,9 +338,12 @@ function buildThornhaven() {
     [184, 44, 1, 12],
   ]);
   clearPatch(scenery, solid, 89, 17, 183, 91);
-  stoneHouse(g, solid, 96, 28, 16, 10);
-  stoneHouse(g, solid, 156, 28, 16, 10);
-  stoneHouse(g, solid, 100, 64, 14, 10);
+  frameGate(g, solid, 120, 16, 16, 1);
+  frameGate(g, solid, 120, 92, 16, 1);
+  frameGate(g, solid, 184, 44, 1, 12);
+  stampBuilding(g, solid, scenery, 96, 22, 14, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 156, 22, 14, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 100, 64, 12, 8, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
   const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
@@ -483,8 +487,11 @@ function buildValdoria() {
     [220, 108, 1, 12],
   ]);
   clearPatch(scenery, solid, 151, 79, 219, 167);
-  stoneHouse(g, solid, 160, 96, 16, 12);
-  stoneHouse(g, solid, 188, 96, 18, 14);
+  frameGate(g, solid, 180, 78, 14, 1);
+  frameGate(g, solid, 186, 168, 12, 1);
+  frameGate(g, solid, 220, 108, 1, 12);
+  stampBuilding(g, solid, scenery, 158, 90, 16, 10, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 188, 92, 16, 10, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[220, 114], [228, 112]], 1);
   const m = maker('valdoria', 'Blackpine Tower', 'Valdoria');
   m.add('door', 'To Thornhaven', 128, 8, { toZone: 'thornhaven', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
@@ -593,14 +600,19 @@ function buildEldenmoor() {
   ]);
   // The castle court. Queen Ellewynn's house. The steward stands in the yard.
   wallBox(g, solid, safe, 108, 190, 148, 218, T.STONE, T.PATH, [[120, 218, 12, 1]]);
-  stoneHouse(g, solid, 116, 196, 24, 14);
-  house(g, solid, 72, 186, 12, 8);
-  house(g, solid, 174, 186, 14, 8);
-  house(g, solid, 68, 208, 12, 7);
-  house(g, solid, 174, 208, 12, 7);
-  house(g, solid, 96, 232, 12, 8);
-  house(g, solid, 68, 232, 12, 6);
-  house(g, solid, 150, 232, 12, 6);
+  frameGate(g, solid, 120, 156, 16, 1);
+  frameGate(g, solid, 192, 204, 1, 10);
+  frameGate(g, solid, 120, 176, 16, 1);
+  frameGate(g, solid, 120, 230, 12, 1);
+  frameGate(g, solid, 120, 218, 12, 1);
+  stampBuilding(g, solid, scenery, 112, 192, 20, 12, 'elf', { enter: false });
+  stampBuilding(g, solid, scenery, 70, 188, 12, 9, 'elf', { enter: true, doorX: 78 });
+  stampBuilding(g, solid, scenery, 170, 188, 14, 9, 'elf', { enter: true, doorX: 180 });
+  stampBuilding(g, solid, scenery, 66, 208, 12, 9, 'elf', { enter: true, doorX: 74 });
+  stampBuilding(g, solid, scenery, 170, 208, 14, 9, 'elf', { enter: true, doorX: 180 });
+  stampBuilding(g, solid, scenery, 66, 232, 12, 8, 'elf', { enter: true, doorX: 74 });
+  stampBuilding(g, solid, scenery, 148, 232, 14, 8, 'elf', { enter: true, doorX: 156 });
+  stampBuilding(g, solid, scenery, 94, 234, 14, 9, 'elf', { enter: true, doorX: 102 });
   for (let y = 198; y <= 236; y++) {
     for (let x = 234; x < W - 1; x++) {
       g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;

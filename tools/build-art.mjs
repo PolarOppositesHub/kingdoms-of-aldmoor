@@ -25,6 +25,7 @@ import { buildSouthlands } from './south-map.mjs';
 import { buildCanon, clearCrossings } from './canon-map.mjs';
 import { buildPhase2, linkPhase2 } from './phase2-map.mjs';
 import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
+import { paintArchitectureTiles } from './building-tiles.mjs';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const assetDir = join(root, 'src', 'assets');
@@ -213,23 +214,17 @@ function paintDock() {
 function paintLogs(front) {
   const img = tileCanvas();
   for (let y = 0; y < 16; y++) {
-    const band = Math.floor(y / 4);
-    const local = y % 4;
+    const local = y % 5;
     for (let x = 0; x < 16; x++) {
-      let c = WOOD;
-      if (local === 0) c = WOOD_DARK;
-      else if (local === 1) c = WOOD_HI;
-      else if (local === 3) c = WOOD_SH;
-      if (x % 8 === 0) c = WOOD_DARK;
+      let c = local === 0 ? WOOD_DARK : local === 1 ? WOOD_HI : local === 4 ? WOOD_SH : WOOD;
+      if (x % 8 === 0 || x % 8 === 7) c = WOOD_DARK;
+      if (x % 8 === 1 && local === 2) c = hex('#e6c15a');
       img.set(x, y, c);
-    }
-    if (band === 3 && front) {
-      // stone foundation so the cabin sits on the snow
     }
   }
   if (front) {
-    for (let y = 13; y < 16; y++) {
-      for (let x = 0; x < 16; x++) img.set(x, y, y === 13 ? hex('#6e6258') : hex('#4e4640'));
+    for (let y = 12; y < 16; y++) {
+      for (let x = 0; x < 16; x++) img.set(x, y, y === 12 ? hex('#8a8078') : hex('#3e3832'));
     }
   }
   return img;
@@ -307,15 +302,23 @@ function paintDoorLeaf(part, stone) {
       const outer = (left && x <= 2) || (!left && x >= 13) || (top && y <= 2) || (bot && y >= 14);
       const seam = left ? x >= 14 : x <= 1;
       if (outer) {
-        img.set(x, y, frame);
+        img.set(x, y, y % 2 === 0 ? frame : hex('#5c4030'));
         continue;
       }
       if (seam) {
         img.set(x, y, recess);
         continue;
       }
-      const band = (left ? x : 15 - x) % 4;
-      img.set(x, y, band === 0 ? hex('#4a301f') : band === 1 ? hex('#8d5a38') : hex('#6b4030'));
+      const inner = left ? x < 6 : x > 9;
+      img.set(x, y, inner ? hex('#0e0a08') : hex('#3a2418'));
+      if (!inner && y % 5 === 2) img.set(x, y, hex('#6b4030'));
+    }
+  }
+  if (bot) {
+    for (let x = left ? 3 : 2; x < (left ? 14 : 13); x++) {
+      img.set(x, 13, hex('#8a8078'));
+      img.set(x, 14, hex('#5c564e'));
+      img.set(x, 15, hex('#3a342e'));
     }
   }
   if (!left && bot) {
@@ -336,9 +339,14 @@ function paintDoor() {
 function paintRoof(kind) {
   const img = tileCanvas();
   for (let y = 0; y < 16; y++) {
+    const course = Math.floor(y / 4);
     for (let x = 0; x < 16; x++) {
-      const shade = y < 3 ? SNOW_HI : y < 9 ? ROOF : ROOF_SH;
-      img.set(x, y, kind === 'b' && (x * 3 + y) % 11 === 0 ? ROOF_DEEP : shade);
+      const shift = course % 2 === 0 ? 0 : 4;
+      const seam = (x + shift) % 8 === 0 || y % 4 === 0;
+      let shade = y < 2 ? SNOW_HI : y < 8 ? ROOF : ROOF_SH;
+      if (seam) shade = ROOF_DEEP;
+      if (kind === 'b' && (x * 3 + y) % 11 === 0) shade = WOOD_SH;
+      img.set(x, y, shade);
     }
   }
   const edge = (x0, x1, y0, y1) => {
@@ -652,6 +660,7 @@ function buildTileset() {
   const stoneLeaves = { tl: T.SDOOR_TL, tr: T.SDOOR_TR, ml: T.SDOOR_ML, mr: T.SDOOR_MR, bl: T.SDOOR_BL, br: T.SDOOR_BR };
   for (const [part, id] of Object.entries(woodLeaves)) tiles.set(id, paintDoorLeaf(part, false));
   for (const [part, id] of Object.entries(stoneLeaves)) tiles.set(id, paintDoorLeaf(part, true));
+  for (const [id, tile] of paintArchitectureTiles()) tiles.set(id, tile);
 
   const rows = Math.ceil(Math.max(...tiles.keys()) / COLS);
   const margin = 1;

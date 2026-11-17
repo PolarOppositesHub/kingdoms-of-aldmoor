@@ -1944,6 +1944,30 @@ describe('Wood elves, Grokthul ogres, and Ironhollow', () => {
     expect(elf.ui.nodeId).toBe('start');
   });
 
+  it('sets every hall door on the tile the player walks through', () => {
+    const doorSteps = new Set([37, 38, 43, 44, 76, 77, 88, 89, 100, 101, 112, 113, 124, 125]);
+    const halls = new Set([
+      'inn', 'shop', 'needles', 'forge', 'smithy', 'mead', 'warrior', 'warden', 'wizard', 'shaman', 'rogue', 'berserker',
+      'elden_inn', 'elden_wizard', 'elden_cleric', 'elden_enchanter', 'elden_paladin', 'elden_magician', 'elden_shop',
+      'bright_warrior', 'bright_cleric', 'bright_paladin', 'bright_rogue', 'bright_berserker', 'bright_shop',
+      'can_warden', 'can_rogue', 'can_druid', 'can_ranger', 'can_shop',
+      'grok_warrior', 'grok_shaman', 'grok_berserker', 'grok_shop',
+    ]);
+    const hoffender = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+    const all = new Map(maps);
+    all.set('hoffender', hoffender);
+    for (const map of all.values()) {
+      for (const spawn of map.spawns) {
+        if (spawn.kind !== 'door' || !spawn.toZone || !halls.has(spawn.toZone)) continue;
+        const tx = Math.floor(spawn.x / map.tileWidth);
+        const ty = Math.floor(spawn.y / map.tileWidth);
+        const index = ty * map.width + tx;
+        expect(doorSteps.has(map.ground[index]), `${map.zoneId} ${spawn.name}`).toBe(true);
+        expect(map.collision[index], `${map.zoneId} ${spawn.name}`).toBe(0);
+      }
+    }
+  });
+
   it('paints pointed elf ears and a wider ogre than a human', () => {
     const png = PNG.sync.read(readFileSync(join(process.cwd(), 'src', 'assets', 'portrait.png')));
     const frameH = atlas.portrait.frameH;

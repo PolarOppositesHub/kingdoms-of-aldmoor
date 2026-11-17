@@ -3,6 +3,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
+import { frameGate, stampBuilding } from './buildings.mjs';
 import {
   H,
   W,
@@ -16,7 +17,6 @@ import {
   outpost,
   paintScenery,
   placeMobs,
-  stoneHouse,
   stroke,
   wallBox,
 } from './canon-map.mjs';
@@ -98,9 +98,11 @@ function buildIronhollow() {
     [124, 140, 16, 1],
   ]);
   clearPatch(scenery, 97, 57, 175, 139);
-  stoneHouse(g, solid, 108, 70, 16, 12);
-  stoneHouse(g, solid, 146, 70, 18, 12);
-  stoneHouse(g, solid, 120, 108, 24, 14);
+  frameGate(g, solid, 124, 56, 16, 1);
+  frameGate(g, solid, 124, 140, 16, 1);
+  stampBuilding(g, solid, scenery, 108, 68, 14, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 148, 68, 14, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 108, 112, 12, 8, 'human', { enter: false });
   const m = maker('ironhollow', 'Ironhollow Keep', 'Ironhollow Hills');
   m.add('door', 'To Valdoria', 10, 36, { toZone: 'valdoria', toX: feet(236, 40).x, toY: feet(236, 40).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Greenreach', 246, 36, { toZone: 'canipure', toX: feet(18, 128).x, toY: feet(18, 128).y, sprite: 'sign_wilds' });
@@ -184,11 +186,13 @@ function buildCanipure() {
     [214, 112, 1, 12],
   ]);
   clearPatch(scenery, 149, 79, 213, 167);
-  woodHouse(g, solid, 158, 88, 14, 10);
-  woodHouse(g, solid, 188, 88, 14, 10);
-  woodHouse(g, solid, 158, 132, 14, 10);
-  woodHouse(g, solid, 188, 132, 14, 10);
-  woodHouse(g, solid, 170, 146, 16, 10);
+  frameGate(g, solid, 148, 112, 1, 16);
+  frameGate(g, solid, 214, 112, 1, 12);
+  stampBuilding(g, solid, scenery, 156, 90, 12, 10, 'wood', { enter: true, doorX: 164 });
+  stampBuilding(g, solid, scenery, 186, 90, 12, 10, 'wood', { enter: true, doorX: 194 });
+  stampBuilding(g, solid, scenery, 156, 134, 12, 10, 'wood', { enter: true, doorX: 164 });
+  stampBuilding(g, solid, scenery, 186, 134, 12, 10, 'wood', { enter: true, doorX: 194 });
+  stampBuilding(g, solid, scenery, 172, 148, 12, 10, 'wood', { enter: true, doorX: 178 });
   for (let y = 112; y <= 128; y++) {
     for (let x = 214; x <= 226; x++) {
       g[y][x] = T.DOCK;
@@ -283,9 +287,12 @@ function buildGrokthul() {
   });
   stroke(g, solid, road, scenery.grid, [[128, 8], [128, 36], [128, 120], [128, 248]], 1);
   outpost(g, solid, safe, scenery, 80, 36, 176, 112, [[120, 36, 16, 1], [120, 112, 16, 1]]);
-  stoneHouse(g, solid, 92, 48, 14, 10);
-  stoneHouse(g, solid, 146, 48, 14, 10);
-  stoneHouse(g, solid, 118, 84, 18, 12);
+  frameGate(g, solid, 120, 36, 16, 1);
+  frameGate(g, solid, 120, 112, 16, 1);
+  stampBuilding(g, solid, scenery, 90, 50, 12, 10, 'ogre', { enter: true, doorX: 98 });
+  stampBuilding(g, solid, scenery, 144, 50, 12, 10, 'ogre', { enter: true, doorX: 152 });
+  stampBuilding(g, solid, scenery, 120, 88, 14, 10, 'ogre', { enter: true, doorX: 128 });
+  stampBuilding(g, solid, scenery, 144, 86, 12, 9, 'ogre', { enter: true, doorX: 150 });
   const m = maker('grokthul', 'Grokthul Hold', 'Grokthul Valley');
   const back = (tx, ty) => feet(tx, ty);
   m.add('door', 'To the Grokthul Peaks', 128, 12, { toZone: 'grokthul_peaks', toX: feet(128, 232).x, toY: feet(128, 232).y, sprite: 'sign_wilds' });

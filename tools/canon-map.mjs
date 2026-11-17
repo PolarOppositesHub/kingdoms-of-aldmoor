@@ -4,6 +4,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
+import { frameGate, stampBuilding } from './buildings.mjs';
 
 export const W = 256;
 export const H = 256;
@@ -319,11 +320,14 @@ function buildBrightforge() {
     [120, 112, 16, 1],
   ]);
   clearPatch(scenery, 81, 37, 175, 111);
-  stoneHouse(g, solid, 90, 48, 14, 10);
-  stoneHouse(g, solid, 152, 48, 14, 10);
-  stoneHouse(g, solid, 90, 78, 14, 10);
-  stoneHouse(g, solid, 152, 78, 14, 10);
-  stoneHouse(g, solid, 118, 90, 20, 12);
+  frameGate(g, solid, 120, 36, 16, 1);
+  frameGate(g, solid, 120, 112, 16, 1);
+  stampBuilding(g, solid, scenery, 90, 49, 12, 8, 'dwarf', { enter: true, doorX: 96 });
+  stampBuilding(g, solid, scenery, 152, 49, 12, 8, 'dwarf', { enter: true, doorX: 158 });
+  stampBuilding(g, solid, scenery, 90, 79, 12, 8, 'dwarf', { enter: true, doorX: 96 });
+  stampBuilding(g, solid, scenery, 152, 79, 12, 8, 'dwarf', { enter: true, doorX: 158 });
+  stampBuilding(g, solid, scenery, 118, 92, 16, 9, 'dwarf', { enter: true, doorX: 128 });
+  stampBuilding(g, solid, scenery, 142, 92, 12, 9, 'dwarf', { enter: true, doorX: 148 });
   const m = maker('brightforge', 'Brightforge', 'Lightbrune Slopes');
   const back = (tx, ty) => feet(tx, ty);
   m.add('door', 'To Graymoor', 128, 10, { toZone: 'thornhaven', toX: feet(236, 48).x, toY: feet(236, 48).y, sprite: 'sign_wilds' });
@@ -435,10 +439,12 @@ function buildWyrmrest() {
     [120, 70, 16, 1],
   ]);
   clearPatch(scenery, 71, 71, 185, 189);
-  stoneHouse(g, solid, 86, 86, 18, 12);
-  stoneHouse(g, solid, 150, 86, 18, 12);
-  stoneHouse(g, solid, 86, 150, 22, 14);
-  stoneHouse(g, solid, 140, 154, 28, 16);
+  frameGate(g, solid, 70, 132, 1, 16);
+  frameGate(g, solid, 120, 70, 16, 1);
+  stampBuilding(g, solid, scenery, 108, 74, 12, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 150, 74, 14, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 88, 150, 12, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 152, 148, 14, 8, 'human', { enter: false });
   const m = maker('wyrmrest', 'Wyrmrest', 'Wyrmrest');
   m.add('door', 'To the Frostmere Wilds', 12, 140, { toZone: 'hoffender', toX: feet(240, 152).x, toY: feet(240, 152).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Ashfall Moors', 128, 10, { toZone: 'ashfall', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
@@ -570,7 +576,8 @@ function buildScalded() {
   });
   stroke(g, solid, road, scenery.grid, [[128, 6], [120, 80], [136, 150], [128, 248]], 1);
   outpost(g, solid, safe, scenery, 96, 176, 168, 228, [[120, 228, 16, 1]]);
-  stoneHouse(g, solid, 112, 190, 16, 12);
+  frameGate(g, solid, 120, 228, 16, 1);
+  stampBuilding(g, solid, scenery, 112, 186, 12, 8, 'dwarf', { enter: false });
   const m = maker('scalded', "Thane's Rest", 'The Scalded Vale');
   m.add('door', 'To the Ashfall Moors', 128, 248, { toZone: 'ashfall', toX: feet(128, 16).x, toY: feet(128, 16).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Wyrmrest Spires', 128, 8, { toZone: 'spires', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
