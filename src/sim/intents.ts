@@ -470,12 +470,16 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
       case 'setLoadout': {
         const known = knownAbilities(state, content);
         const slots: string[] = [];
-        for (const id of intent.slots) {
-          if (!known.includes(id) || slots.includes(id)) continue;
+        const seen = new Set<string>();
+        for (let index = 0; index < LOADOUT_CAP; index += 1) {
+          const id = intent.slots[index] ?? '';
+          if (!id || !known.includes(id) || seen.has(id)) {
+            slots.push('');
+            continue;
+          }
+          seen.add(id);
           slots.push(id);
-          if (slots.length >= LOADOUT_CAP) break;
         }
-        if (!slots.length) return;
         state.loadout = slots;
         return;
       }
@@ -501,6 +505,12 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         state.ui = { panel: 'help', npcId: null, nodeId: null, title: null, body: null };
         state.input.x = 0;
         state.input.y = 0;
+        return;
+      case 'openSettings':
+        state.ui = { panel: 'settings', npcId: null, nodeId: null, title: null, body: null };
+        state.input.x = 0;
+        state.input.y = 0;
+        state.input.dest = null;
         return;
       case 'close':
         state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };

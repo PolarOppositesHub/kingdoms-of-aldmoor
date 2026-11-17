@@ -83,6 +83,7 @@ export function configurePlayer(state: GameState, content: ContentDb, classId: s
   for (const abilityId of cls.abilities) state.cooldowns[abilityId] = 0;
   state.learned = [];
   state.loadout = cls.abilities.slice(0, LOADOUT_CAP);
+  while (state.loadout.length < LOADOUT_CAP) state.loadout.push('');
   state.charts = [];
   state.petOrder = 'follow';
   state.petAway = classId === 'magician';

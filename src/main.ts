@@ -16,8 +16,15 @@ if (!app || !mapSlot || !gate || !enter) throw new Error('missing shell');
 function applyLayout(): void {
   const wide = window.innerWidth / window.innerHeight > 0.92;
   app!.dataset.layout = wide ? 'wide' : 'portrait';
-  const side = wide ? Math.max(156, Math.min(220, Math.round(window.innerWidth * 0.24))) : 0;
+  const fill = document.documentElement.dataset.fill === '1';
+  const side = wide && !fill ? Math.max(156, Math.min(220, Math.round(window.innerWidth * 0.24))) : 0;
   document.documentElement.style.setProperty('--side', `${side}px`);
+}
+
+try {
+  document.documentElement.dataset.fill = localStorage.getItem('aldmoor-fill') === '1' ? '1' : '0';
+} catch {
+  document.documentElement.dataset.fill = '0';
 }
 
 applyLayout();

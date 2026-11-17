@@ -7,7 +7,8 @@ import { conColor, formatCoin, maxFocus, maxHp, petStrike, xpLossFraction, xpToN
 import { applyIntent } from './intents';
 import { askPrice, ivarIsBusy, mobRespawnDelay, resolveStrike, turnInPelts } from './systems';
 import { addItem, countItem, findStack, moveItem } from './bags';
-import { applySave, captureSave, migrateSave } from './save';
+import { applySave, captureSave, migrateSave, normalizeLoadout } from './save';
+import { classListLabel, classesForAbility } from './wear';
 import { itemIconKey } from './icons';
 import { bodyBlocked, nearestStand, placeName } from './map';
 import { applyHero, blankActor, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
@@ -480,13 +481,52 @@ describe('save and classes', () => {
   });
 });
 
+describe('hotbar, journal classes, and old saves', () => {
+  it('names every class that can use a spell for sale', () => {
+    expect(classesForAbility(content, 'quiet_mend')).toEqual(['cleric']);
+    expect(classListLabel(content, 'quiet_mend')).toBe('Classes: Cleric');
+    expect(classListLabel(content, 'small_grace')).toBe('Classes: Paladin');
+    const ability = content.abilities.quiet_mend;
+    const saved = ability.classes;
+    ability.classes = ['cleric', 'paladin'];
+    try {
+      expect(classListLabel(content, 'quiet_mend')).toBe('Classes: Cleric, Paladin');
+    } finally {
+      ability.classes = saved;
+    }
+  });
+
+  it('keeps a saved bar, clears a slot, and fills a bar the save never stored', () => {
+    const map = arena();
+    const state = createWorld(content, map, 21);
+    applyIntent(state, { type: 'setLoadout', slots: ['heavy_swing', 'kick', '', '', ''] }, content, map);
+    expect(state.loadout).toEqual(['heavy_swing', 'kick', '', '', '']);
+    applyIntent(state, { type: 'setLoadout', slots: ['', 'kick', 'kick', 'missing', ''] }, content, map);
+    expect(state.loadout).toEqual(['', 'kick', '', '', '']);
+
+    const raw = captureSave(state);
+    delete raw.loadout;
+    const restored = createWorld(content, map, 22);
+    applySave(restored, content, map, raw);
+    expect(restored.loadout.slice(0, 2)).toEqual(['kick', 'heavy_swing']);
+    expect(restored.loadout).toHaveLength(5);
+
+    const kept = captureSave(state);
+    kept.loadout = ['heavy_swing'];
+    applySave(restored, content, map, kept);
+    expect(restored.loadout).toEqual(['heavy_swing', '', '', '', '']);
+    expect(normalizeLoadout(undefined, content, 'warrior', ['shoulder_rush'])[2]).toBe('shoulder_rush');
+  });
+});
+
 describe('bags, charts, pets, and respawn', () => {
   it('starts with one sack, five ability slots, and no charts', () => {
     const state = createWorld(content, arena(), 1);
     expect(state.bags.filter(Boolean)).toHaveLength(1);
     expect(state.bags[0]?.slots).toHaveLength(4);
-    expect(state.loadout.length).toBeLessThanOrEqual(5);
-    expect(state.loadout.length).toBeGreaterThan(0);
+    expect(state.loadout.length).toBe(5);
+    expect(state.loadout[0]).toBe('kick');
+    expect(state.loadout.filter(Boolean).length).toBeGreaterThan(0);
     expect(state.charts).toEqual([]);
     expect(getPlayer(state).scale).toBeGreaterThan(1);
   });

@@ -6,7 +6,7 @@ import { tileColor } from '../sim/mapColors';
 import { EQUIP_SLOTS, LOADOUT_CAP, type EquipSlot, type GameState, type ItemDef, type PetCommand } from '../sim/types';
 import { bindHudLayout, type HudLayoutCtl } from './hudLayout';
 import { itemIconKey } from '../sim/icons';
-import { armorLabel, classLabel } from '../sim/wear';
+import { armorLabel, classLabel, classListLabel } from '../sim/wear';
 import { askPrice, knownAbilities } from '../sim/systems';
 import { countItem, firstConsumable } from '../sim/bags';
 import { playerVisuals, raceScale } from '../sim/appearance';
@@ -58,6 +58,33 @@ function applySlotNames(on: boolean): void {
   } catch {
     /* private mode */
   }
+}
+
+const FILL_KEY = 'aldmoor-fill';
+
+function fillEnabled(): boolean {
+  return document.documentElement.dataset.fill === '1';
+}
+
+/** Letterbox stays the default. Fill removes the side bars and asks for fullscreen when the browser allows it. */
+function applyFill(on: boolean): void {
+  document.documentElement.dataset.fill = on ? '1' : '0';
+  try {
+    localStorage.setItem(FILL_KEY, on ? '1' : '0');
+  } catch {
+    /* private mode */
+  }
+  const root = document.documentElement as HTMLElement & { webkitRequestFullscreen?: () => Promise<void> };
+  const doc = document as Document & { webkitFullscreenElement?: Element; webkitExitFullscreen?: () => Promise<void> };
+  if (on) {
+    const request = root.requestFullscreen?.bind(root) ?? root.webkitRequestFullscreen?.bind(root);
+    request?.()?.catch(() => undefined);
+  } else if (document.fullscreenElement || doc.webkitFullscreenElement) {
+    const exit = document.exitFullscreen?.bind(document) ?? doc.webkitExitFullscreen?.bind(document);
+    exit?.()?.catch(() => undefined);
+  }
+  window.dispatchEvent(new Event('resize'));
+  requestAnimationFrame(() => window.dispatchEvent(new Event('resize')));
 }
 
 export function mountHud(api: GameApi): void {
@@ -120,9 +147,7 @@ export function mountHud(api: GameApi): void {
         ${dragHandle('Move action buttons')}
         <button type="button" class="atk util-atk" aria-pressed="false">ATK</button>
         <button type="button" id="next">Next</button>
-        <button type="button" id="talk">Look</button>
-        <button type="button" id="book">Book</button>
-        <button type="button" id="quest">Quest</button>
+        <button type="button" id="talk">Interact</button>
         <button type="button" id="item">Item</button>
       </div>
       <div class="hotbar hotbar-a hud-widget" data-hud="hotbar-a">
@@ -166,6 +191,12 @@ export function mountHud(api: GameApi): void {
     <button type="button" id="scheme" class="help-btn scheme-btn" aria-label="Movement scheme">Pad</button>
     <button type="button" id="hud-lock" class="lock-btn" aria-pressed="true" aria-label="Layout locked. Unlock to move or resize windows."><span class="lock-glyph" aria-hidden="true"></span></button>
     <button type="button" id="help" class="help-btn" aria-label="Help">?</button>
+    <div class="menu-row hud-widget" data-hud="menu">
+      ${dragHandle('Move journal and settings')}
+      <button type="button" id="journal">Journal</button>
+      <button type="button" id="book">Spells</button>
+      <button type="button" id="settings">Settings</button>
+    </div>
     <div id="death" class="death" hidden>The cold takes you.</div>
   `;
 
@@ -194,6 +225,7 @@ export function mountHud(api: GameApi): void {
   scheme.addEventListener('click', () => applyScheme(pad.dataset.scheme === 'dpad' ? 'stick' : 'dpad'));
   applyHotbar(readSetting('aldmoor-hotbar', 'bar') === 'arc' ? 'arc' : 'bar');
   applySlotNames(readSetting('aldmoor-slot-names', '0') === '1');
+  if (fillEnabled() !== (readSetting(FILL_KEY, '0') === '1')) applyFill(readSetting(FILL_KEY, '0') === '1');
 
   const tools = document.createElement('div');
   tools.className = 'corner-tools hud-widget';
@@ -234,11 +266,15 @@ export function mountHud(api: GameApi): void {
   });
   root.querySelector('#next')!.addEventListener('click', () => pushIntent({ type: 'cycleTarget' }));
   root.querySelector('#talk')!.addEventListener('click', () => pushIntent({ type: 'interact' }));
-  root.querySelector('#book')!.addEventListener('click', () => pushIntent({ type: 'openBook' }));
-  root.querySelector('#quest')!.addEventListener('click', () => {
+  root.querySelector('#book')!.addEventListener('click', () => {
+    bookPick = '';
+    pushIntent({ type: 'openBook' });
+  });
+  root.querySelector('#journal')!.addEventListener('click', () => {
     abandonArmed = false;
     pushIntent({ type: 'openJournal' });
   });
+  root.querySelector('#settings')!.addEventListener('click', () => pushIntent({ type: 'openSettings' }));
   root.querySelector('#item')!.addEventListener('click', () => {
     const loc = firstConsumable(api.getState(), api.content);
     if (loc) pushIntent({ type: 'use', bag: loc.bag, slot: loc.slot });
@@ -257,9 +293,31 @@ export function mountHud(api: GameApi): void {
 
   let detail: { itemId: string } | { emptySlot: EquipSlot } | null = null;
   let abandonArmed = false;
-  let bookSlot = 0;
+  let bookPick = '';
   let openBag = 0;
   let dragged = false;
+
+  const loadoutSlots = (): string[] => {
+    const live = api.getState().loadout;
+    return Array.from({ length: LOADOUT_CAP }, (_, index) => live[index] ?? '');
+  };
+  const writeLoadout = (slots: string[]) => {
+    pushIntent({ type: 'setLoadout', slots });
+  };
+  const placeAbility = (abilityId: string, index: number) => {
+    if (!abilityId || index < 0 || index >= LOADOUT_CAP) return;
+    const slots = loadoutSlots();
+    const from = slots.indexOf(abilityId);
+    const prev = slots[index] ?? '';
+    if (from >= 0 && from !== index) slots[from] = prev === abilityId ? '' : prev;
+    slots[index] = abilityId;
+    writeLoadout(slots);
+  };
+  const clearAbilitySlot = (index: number) => {
+    const slots = loadoutSlots();
+    slots[index] = '';
+    writeLoadout(slots);
+  };
 
   panel.addEventListener('click', (event) => {
     if (dragged) {
@@ -285,12 +343,21 @@ export function mountHud(api: GameApi): void {
     else if (action === 'focus-slot') {
       const worn = button.dataset.item;
       detail = worn ? { itemId: worn } : { emptySlot: (button.dataset.equipSlot ?? 'head') as EquipSlot };
-    } else if (action === 'book-slot') bookSlot = Number(button.dataset.slot);
-    else if (action === 'learn') {
-      const live = api.getState();
-      const next = Array.from({ length: LOADOUT_CAP }, (_, index) => live.loadout[index] ?? '');
-      next[bookSlot] = button.dataset.ability ?? '';
-      pushIntent({ type: 'setLoadout', slots: next.filter((id) => id.length > 0) });
+    }     else if (action === 'book-pick') {
+      const id = button.dataset.ability ?? '';
+      bookPick = bookPick === id ? '' : id;
+    } else if (action === 'book-slot') {
+      const index = Number(button.dataset.slot);
+      if (bookPick) {
+        placeAbility(bookPick, index);
+        bookPick = '';
+      } else {
+        const id = button.dataset.ability ?? '';
+        if (id) bookPick = id;
+      }
+    } else if (action === 'book-clear') {
+      clearAbilitySlot(Number(button.dataset.slot));
+      bookPick = '';
     } else if (action === 'abandon-ask') abandonArmed = true;
     else if (action === 'abandon-no') abandonArmed = false;
     else if (action === 'abandon-yes') {
@@ -299,6 +366,7 @@ export function mountHud(api: GameApi): void {
     }     else if (action === 'reload') window.location.reload();
     else if (action === 'set-hotbar') applyHotbar(button.dataset.value === 'arc' ? 'arc' : 'bar');
     else if (action === 'set-names') applySlotNames(document.documentElement.dataset.slotNames !== '1');
+    else if (action === 'set-fill') applyFill(!fillEnabled());
     else if (action === 'toggle-lock') layoutCtl?.setLocked(!(layoutCtl?.isLocked() ?? true));
     else if (action === 'reset-layout') layoutCtl?.reset();
     panelKey = '';
@@ -311,6 +379,9 @@ export function mountHud(api: GameApi): void {
   let lastLevel = 1;
   const startItems = countQty(api.getState());
   bindBagDrag(panel, () => {
+    dragged = true;
+  });
+  bindBookDrag(panel, api, () => {
     dragged = true;
   });
 
@@ -332,10 +403,10 @@ export function mountHud(api: GameApi): void {
       );
     }
     paintVitals(root, state, api);
-    const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}|${bookSlot}|${openBag}`;
+    const key = `${panelSignature(state)}|${detail && 'itemId' in detail ? detail.itemId : ''}|${detail && 'emptySlot' in detail ? detail.emptySlot : ''}|${abandonArmed ? 1 : 0}|${bookPick}|${openBag}`;
     if (key !== panelKey) {
       panelKey = key;
-      paintPanel(panel, state, api, detail, abandonArmed, bookSlot, openBag);
+      paintPanel(panel, state, api, detail, abandonArmed, bookPick, openBag);
     }
     if (!hintedFight && state.ui.panel === 'none' && !isSafe(api.map, getXY(state).x, getXY(state).y)) {
       hintedFight = true;
@@ -492,7 +563,8 @@ function showAbilityTip(button: HTMLButtonElement, api: GameApi, tip: HTMLElemen
   const pool = resourceNow(state, api);
   const costLine = cost > 0 ? `${cost} ${pool.label}` : 'no cost';
   const cool = `${Math.max(1, Math.round(ability.cooldownMs / 1000))}s cooldown`;
-  tip.innerHTML = `<strong>${escapeHtml(ability.name)}</strong><small>${escapeHtml(costLine)} · ${cool}</small><p>${escapeHtml(ability.blurb ?? '')}</p>`;
+  const who = classListLabel(api.content, ability.id);
+  tip.innerHTML = `<strong>${escapeHtml(ability.name)}</strong><small>${escapeHtml(costLine)} · ${cool}${who ? ` · ${escapeHtml(who)}` : ''}</small><p>${escapeHtml(ability.blurb ?? '')}</p>`;
   tip.hidden = false;
   const rect = button.getBoundingClientRect();
   const width = 200;
@@ -620,6 +692,8 @@ function paintVitals(root: HTMLElement, state: GameState, api: GameApi): void {
 
   const className = api.content.classes[state.classId]?.name ?? 'Warrior';
   who.textContent = `Lv ${state.level} ${className}`;
+  const bookBtn = root.querySelector('#book');
+  if (bookBtn) bookBtn.textContent = api.content.classes[state.classId]?.resource === 'mana' ? 'Spells' : 'Abilities';
   place.textContent = placeName(api.map, player.x, player.y);
   coin.textContent = formatCoin(state.copper, api.content.economy);
   hpNum.textContent = `HP ${Math.max(0, player.hp)}/${player.maxHp}`;
@@ -788,7 +862,7 @@ function paintPanel(
   api: GameApi,
   focus: { itemId: string } | { emptySlot: EquipSlot } | null,
   confirmAbandon: boolean,
-  bookSlot: number,
+  bookPick: string,
   openBag: number,
 ): void {
   if (state.ui.panel === 'none') {
@@ -807,52 +881,70 @@ function paintPanel(
     paintCharts(panel, state, api);
   }
   else if (state.ui.panel === 'journal') panel.innerHTML = journalHtml(state, api, confirmAbandon);
-  else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookSlot);
+  else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookPick);
   else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
+  else if (state.ui.panel === 'settings') panel.innerHTML = settingsHtml();
   else panel.innerHTML = helpHtml(state, api);
   const sheet = panel.querySelector<HTMLElement>('.sheet');
   if (sheet) layoutCtl?.mountSheet(sheet, state.ui.panel);
 }
 
-function bookHtml(state: GameState, api: GameApi, armed: number): string {
+function windowHtml(title: string, sub: string, body: string, kind = ''): string {
+  return `<div class="sheet${kind ? ` ${kind}` : ''}">
+    <header class="sheet-bar">
+      <div class="sheet-titles"><h2>${escapeHtml(title)}</h2>${sub ? `<p>${escapeHtml(sub)}</p>` : ''}</div>
+      <button type="button" class="sheet-x" data-action="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+    </header>
+    <div class="sheet-body">${body}</div>
+  </div>`;
+}
+
+function bookHtml(state: GameState, api: GameApi, picked: string): string {
   const known = knownAbilities(state, api.content);
-  const slots = Array.from({ length: LOADOUT_CAP }, (_, index) => index)
-    .map((index) => {
-      const id = state.loadout[index];
-      const ability = id ? api.content.abilities[id] : undefined;
-      return `<button type="button" class="slot-frame${armed === index ? ' is-on' : ''}" data-action="book-slot" data-slot="${index}">${escapeHtml(ability?.short ?? ability?.name ?? 'Empty')}</button>`;
-    })
-    .join('');
+  const caster = api.content.classes[state.classId]?.resource === 'mana';
+  const resource = api.content.classes[state.classId]?.resource === 'rage' ? 'rage' : api.content.classes[state.classId]?.resource === 'guile' ? 'guile' : 'mana';
+  const pickedName = picked ? api.content.abilities[picked]?.name : '';
+  const slots = Array.from({ length: LOADOUT_CAP }, (_, index) => {
+    const id = state.loadout[index] ?? '';
+    const ability = id ? api.content.abilities[id] : undefined;
+    const on = picked && picked === id ? ' is-on' : '';
+    return `<div class="book-slot">
+      <button type="button" class="slot-frame${on}" data-action="book-slot" data-slot="${index}" data-ability="${escapeHtml(id)}" data-drag="loadout" data-drop="slot" aria-label="Slot ${index + 1}, ${escapeHtml(ability?.name ?? 'empty')}">
+        <span class="slot-art">${ability ? iconHtml(ability.id) : ''}</span>
+        <small>${escapeHtml(ability?.short ?? ability?.name ?? 'Empty')}</small>
+      </button>
+      <button type="button" class="slot-clear" data-action="book-clear" data-slot="${index}">Clear</button>
+    </div>`;
+  }).join('');
   const rows = known
     .map((id) => {
       const ability = api.content.abilities[id];
       if (!ability) return '';
-      const cost = ability.mana ? `${ability.mana} ${api.content.classes[state.classId]?.resource === 'rage' ? 'rage' : api.content.classes[state.classId]?.resource === 'guile' ? 'guile' : 'mana'}` : 'no cost';
-      const on = state.loadout.includes(id) ? 'Slotted' : 'Tap to slot';
-      return `<li>${iconHtml(ability.id)}<span><strong>${escapeHtml(ability.name)}</strong><small>${cost} · ${(ability.cooldownMs / 1000).toFixed(0)}s · ${escapeHtml(ability.blurb ?? '')}</small></span><button type="button" data-action="learn" data-ability="${ability.id}">${on}</button></li>`;
+      const cost = ability.mana ? `${ability.mana} ${resource}` : 'no cost';
+      const who = classListLabel(api.content, ability.id);
+      const on = picked === id ? ' is-on' : '';
+      return `<li class="${on.trim()}" data-drag="ability" data-ability="${ability.id}"><button type="button" class="book-row" data-action="book-pick" data-ability="${ability.id}">${iconHtml(ability.id)}<span><strong>${escapeHtml(ability.name)}</strong><small>${escapeHtml(cost)} · ${(ability.cooldownMs / 1000).toFixed(0)}s${who ? ` · ${escapeHtml(who)}` : ''}</small><small>${escapeHtml(ability.blurb ?? '')}</small></span></button></li>`;
     })
     .join('');
-  return `<div class="sheet">
-    <header><h2>Book</h2><p>Tap a slot, then the spell that should sit there.</p></header>
-    <div class="book-slots">${slots}</div>
-    <ul class="trade">${rows}</ul>
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+  const hint = pickedName
+    ? `${pickedName} is selected. Tap a slot to place it.`
+    : 'Tap a spell, then a slot. Drag on a larger screen. Clear empties a slot.';
+  return windowHtml(
+    caster ? 'Spell Book' : 'Abilities',
+    hint,
+    `<div class="book-slots">${slots}</div>${rows ? `<ul class="trade">${rows}</ul>` : '<p class="empty">Nothing learned yet. Your guild trainer sells the first drills.</p>'}`,
+  );
 }
 
 function dialogueHtml(state: GameState, api: GameApi): string {
   const npc = state.actors.find((actor) => actor.id === state.ui.npcId);
   const def = npc ? api.content.npcs[npc.defId] : undefined;
   const node = def && state.ui.nodeId ? api.content.dialogue[def.dialogue]?.[state.ui.nodeId] : undefined;
-  if (!def || !node) return `<div class="sheet"><button type="button" data-action="close">Close</button></div>`;
+  if (!def || !node) return windowHtml('Conversation', '', '<p class="empty">They have nothing to say.</p>');
   const choices = node.choices
     .map((choice, index) => `<button type="button" data-action="choice" data-index="${index}">${escapeHtml(choice.label)}</button>`)
     .join('');
-  return `<div class="sheet">
-    <header><h2>${escapeHtml(def.name)}</h2><p>${escapeHtml(def.title)}</p></header>
-    <p class="speech">${escapeHtml(node.text)}</p>
-    <div class="choice-list">${choices}</div>
-  </div>`;
+  return windowHtml(def.name, def.title, `<p class="speech">${escapeHtml(node.text)}</p><div class="choice-list">${choices}</div>`);
 }
 
 function merchantHtml(state: GameState, api: GameApi): string {
@@ -867,30 +959,21 @@ function merchantHtml(state: GameState, api: GameApi): string {
     const locked = Boolean(taught && state.level < taught.level);
     const already = Boolean(taught && known.has(taught.id));
     const key = item.armorType ? armorLabel(item.armorType) : item.teaches ? 'Training' : 'Goods';
-    const note = locked
-      ? `Requires level ${taught?.level}`
-      : item.slot
-        ? SLOT_LABEL[item.slot]
-        : item.blurb;
+    const who = taught ? classListLabel(api.content, taught.id) : '';
+    const note = locked ? `Requires level ${taught?.level}` : item.slot ? SLOT_LABEL[item.slot] : item.blurb;
     const button = locked
       ? `<button type="button" disabled>Requires level ${taught?.level}</button>`
       : already
         ? `<button type="button" disabled>Known</button>`
         : `<button type="button" data-action="buy" data-item="${item.id}">${formatCoin(askPrice(npc?.defId ?? '', row.price), api.content.economy)}</button>`;
-    const line = `<li class="${locked ? 'is-locked' : ''}">${item.teaches ? iconHtml(item.id) : ''}<span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(note)}</small></span>
+    const line = `<li class="${locked ? 'is-locked' : ''}">${item.teaches ? iconHtml(item.id) : ''}<span><strong>${escapeHtml(item.name)}</strong><small>${escapeHtml(note)}</small>${who ? `<small class="class-line">${escapeHtml(who)}</small>` : ''}</span>
         ${button}</li>`;
     const list = groups.get(key) ?? [];
     list.push(line);
     groups.set(key, list);
   }
   const stock = [...groups.entries()].map(([name, rows]) => `<h3>${escapeHtml(name)}</h3><ul class="trade">${rows.join('')}</ul>`).join('');
-  return `<div class="sheet">
-    <header><h2>${escapeHtml(vendor?.title ?? 'Goods')}</h2><p>Your coin: ${formatCoin(state.copper, api.content.economy)}</p></header>
-    ${stock}
-    <h3>Your pack</h3>
-    ${bagRows(state, api, true)}
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+  return windowHtml(vendor?.title ?? 'Goods', `Your coin: ${formatCoin(state.copper, api.content.economy)}`, `${stock}<h3>Your pack</h3>${bagRows(state, api, true)}`);
 }
 
 const SLOT_LABEL: Record<EquipSlot, string> = {
@@ -995,8 +1078,7 @@ function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string }
     : focus && 'emptySlot' in focus
       ? `<article class="item-card"><h3>${SLOT_LABEL[focus.emptySlot]}</h3><p>Nothing is worn here.</p></article>`
       : '';
-  return `<div class="sheet paper">
-    <header><h2>Inventory</h2><p>${formatCoin(state.copper, api.content.economy)}</p></header>
+  return windowHtml('Inventory', formatCoin(state.copper, api.content.economy), `
     <div class="paper-doll">
       ${slotButton(state, api, 'head', focus)}
       ${slotButton(state, api, 'chest', focus)}
@@ -1011,9 +1093,7 @@ function inventoryHtml(state: GameState, api: GameApi, focus: { itemId: string }
     <p class="empty">Eight holders. Drag a bag or an item. Weight-light bags are not sold yet.</p>
     <div class="holder-row">${holders}</div>
     <div class="bag-grid">${cells}</div>
-    ${detail}
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+    ${detail}`, 'paper');
 }
 
 function findHeld(state: GameState, itemId: string): { bag: number; slot: number } | null {
@@ -1042,6 +1122,10 @@ function itemCard(item: ItemDef, api: GameApi, wornSlot: EquipSlot | null, loc: 
       .filter((key) => bonus[key])
       .map((key) => `${key.toUpperCase()} +${bonus[key]}`);
     if (parts.length) lines.push(`<p><strong>Bonus.</strong> ${escapeHtml(parts.join(', '))}</p>`);
+  }
+  if (item.teaches) {
+    const who = classListLabel(api.content, item.teaches);
+    if (who) lines.push(`<p class="class-line"><strong>${escapeHtml(who)}</strong></p>`);
   }
   if (item.heal) lines.push(`<p><strong>Health.</strong> Restores ${item.heal}</p>`);
   if (item.effects) lines.push(`<p><strong>Effect.</strong> ${escapeHtml(item.effects)}</p>`);
@@ -1088,19 +1172,11 @@ function journalHtml(state: GameState, api: GameApi, confirmAbandon: boolean): s
       </article>`;
     })
     .join('');
-  return `<div class="sheet">
-    <header><h2>Quests</h2></header>
-    ${cards || '<p class="empty">No quests yet. Eirik at the warrior guild is looking for pelts.</p>'}
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+  return windowHtml('Quest Journal', 'Active and completed work.', cards || '<p class="empty">No quests yet. Eirik at the warrior guild is looking for pelts.</p>');
 }
 
 function packHtml(state: GameState, api: GameApi, selling: boolean): string {
-  return `<div class="sheet">
-    <header><h2>Pack</h2><p>${escapeHtml(api.content.items[state.equipment.primary ?? '']?.name ?? 'Empty hands')} · ${formatCoin(state.copper, api.content.economy)}</p></header>
-    ${bagRows(state, api, selling)}
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+  return windowHtml('Pack', `${api.content.items[state.equipment.primary ?? '']?.name ?? 'Empty hands'} · ${formatCoin(state.copper, api.content.economy)}`, bagRows(state, api, selling));
 }
 
 function bagRows(state: GameState, api: GameApi, selling: boolean): string {
@@ -1165,11 +1241,11 @@ function paintCharts(panel: HTMLElement, state: GameState, api: GameApi): void {
 
 function mapsHtml(state: GameState, api: GameApi): string {
   if (!state.charts.length) {
-    return `<div class="sheet">
-      <header><h2>Maps</h2></header>
-      <p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender, the near roads, and the bay. Nils Reed, north of the gate, sells the deep wilds. Kara Holm, at Hearthpass in Frostfang Reach, sells the highlands. None of them sells every map.</p>
-      <button type="button" class="close" data-action="close">Close</button>
-    </div>`;
+    return windowHtml(
+      'Maps',
+      '',
+      '<p class="speech">You have no charts. Sefa Chart, in the Frosthearth Inn, sells Hoffender, the near roads, and the bay. Nils Reed, north of the gate, sells the deep wilds. Kara Holm, at Hearthpass in Frostfang Reach, sells the highlands. None of them sells every map.</p>',
+    );
   }
   const cards = state.charts
     .map((id) => {
@@ -1182,11 +1258,7 @@ function mapsHtml(state: GameState, api: GameApi): string {
       </article>`;
     })
     .join('');
-  return `<div class="sheet">
-    <header><h2>Maps</h2><p>${state.charts.length} chart${state.charts.length === 1 ? '' : 's'}</p></header>
-    ${cards}
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+  return windowHtml('Maps', `${state.charts.length} chart${state.charts.length === 1 ? '' : 's'}`, cards);
 }
 
 function bindBagDrag(panel: HTMLElement, onDrag: () => void): void {
@@ -1198,6 +1270,7 @@ function bindBagDrag(panel: HTMLElement, onDrag: () => void): void {
   panel.addEventListener('pointerdown', (event) => {
     const button = (event.target as HTMLElement).closest<HTMLElement>('[data-drag]');
     if (!button || event.button !== 0) return;
+    if (button.dataset.drag !== 'bag' && button.dataset.drag !== 'item') return;
     const kind = button.dataset.drag === 'bag' ? 'bag' : 'item';
     drag = {
       kind,
@@ -1248,12 +1321,80 @@ function bindBagDrag(panel: HTMLElement, onDrag: () => void): void {
 }
 
 function inspectHtml(state: GameState): string {
-  return `<div class="sheet parchment">
-    <p class="parchment-kicker">Written on the board</p>
-    <header><h2>${escapeHtml(state.ui.title ?? 'Sign')}</h2></header>
-    <p class="speech">${escapeHtml(state.ui.body ?? '')}</p>
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+  return windowHtml(
+    state.ui.title ?? 'Sign',
+    '',
+    `<p class="parchment-kicker">Written on the board</p><p class="speech">${escapeHtml(state.ui.body ?? '')}</p>`,
+    'parchment',
+  );
+}
+
+function canDragAssign(): boolean {
+  return window.innerWidth >= 700 || window.matchMedia('(pointer: fine)').matches;
+}
+
+function bindBookDrag(panel: HTMLElement, api: GameApi, onDrag: () => void): void {
+  let drag: { kind: 'ability' | 'loadout'; ability: string; slot: number; x: number; y: number; moved: boolean } | null = null;
+  const ghost = document.createElement('div');
+  ghost.className = 'drag-ghost';
+  ghost.hidden = true;
+  document.body.appendChild(ghost);
+  panel.addEventListener('pointerdown', (event) => {
+    if (!canDragAssign() || event.button !== 0) return;
+    const source = (event.target as HTMLElement).closest<HTMLElement>('[data-drag="ability"], [data-drag="loadout"]');
+    if (!source || (event.target as HTMLElement).closest('[data-action="book-clear"]')) return;
+    const ability = source.dataset.ability ?? '';
+    if (!ability && source.dataset.drag !== 'loadout') return;
+    drag = {
+      kind: source.dataset.drag === 'loadout' ? 'loadout' : 'ability',
+      ability,
+      slot: Number(source.dataset.slot ?? -1),
+      x: event.clientX,
+      y: event.clientY,
+      moved: false,
+    };
+    ghost.textContent = source.getAttribute('aria-label') || source.textContent || '';
+  });
+  panel.addEventListener('pointermove', (event) => {
+    if (!drag) return;
+    if (Math.hypot(event.clientX - drag.x, event.clientY - drag.y) < 8) return;
+    drag.moved = true;
+    onDrag();
+    ghost.hidden = false;
+    ghost.style.left = `${event.clientX + 8}px`;
+    ghost.style.top = `${event.clientY + 8}px`;
+  });
+  const end = (event: PointerEvent) => {
+    if (!drag) return;
+    const current = drag;
+    drag = null;
+    ghost.hidden = true;
+    if (!current.moved) return;
+    const hit = document.elementFromPoint(event.clientX, event.clientY)?.closest<HTMLElement>('[data-drop="slot"]');
+    if (!hit) return;
+    const index = Number(hit.dataset.slot);
+    if (!Number.isFinite(index)) return;
+    const live = api.getState().loadout;
+    const slots = Array.from({ length: LOADOUT_CAP }, (_, slot) => live[slot] ?? '');
+    if (current.kind === 'loadout' && current.slot >= 0) {
+      const next = slots[index] ?? '';
+      slots[index] = slots[current.slot] ?? '';
+      slots[current.slot] = next;
+      pushIntent({ type: 'setLoadout', slots });
+      return;
+    }
+    if (!current.ability) return;
+    const from = slots.indexOf(current.ability);
+    const prev = slots[index] ?? '';
+    if (from >= 0 && from !== index) slots[from] = prev;
+    slots[index] = current.ability;
+    pushIntent({ type: 'setLoadout', slots });
+  };
+  panel.addEventListener('pointerup', end);
+  panel.addEventListener('pointercancel', () => {
+    drag = null;
+    ghost.hidden = true;
+  });
 }
 
 function helpHtml(state: GameState, api: GameApi): string {
@@ -1263,31 +1404,37 @@ function helpHtml(state: GameState, api: GameApi): string {
     .filter((ability) => ability?.blurb)
     .map((ability) => `<li>${escapeHtml(ability!.name)}. ${escapeHtml(ability!.blurb!)}</li>`)
     .join('');
-  const hotbar = readSetting('aldmoor-hotbar', 'bar') === 'arc' ? 'arc' : 'bar';
-  const names = readSetting('aldmoor-slot-names', '0') === '1';
-  const locked = layoutCtl?.isLocked() ?? true;
-  return `<div class="sheet">
-    <header><h2>How to move through Hoffender</h2></header>
-    <ul class="help-list">
+  const body = `<ul class="help-list">
       <li>Stick or D-pad, or tap the ground, walks. The Pad button swaps them. WASD works on a keyboard. Pinch the map, or use the mouse wheel, to zoom.</li>
       <li>Tap a wolf to mark it, then ATK. The target window sits above your health. Swings land on their own timer. Sit rests you. Walking, swinging, casting, or being hit stands you up.</li>
       ${caster ? spells : '<li>Kick is immediate, then it needs a breath.</li>'}
-      <li>Look talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Quest lists what you have taken up.</li>
-      <li>The action bar holds five abilities. Hold a slot to read it. The book chooses which five. Anything past what you start with is bought from your guild trainer. The list shows the later drills greyed, with the level they ask, until you get there. A warden's wolf has its own window: health, Attack, Back off, Follow, Guard, and Dismiss. Call brings the wolf back.</li>
-      <li>The layout lock is on while you play, so nothing slides under your thumb. Unlock it here, or with the lock button, and the windows grow an outline, a handle, and a corner. Drag to move. Drag the corner to resize. Inventory, the book, quests, maps, and a merchant can be resized too. Reset puts position and size back. The choice is remembered on this device.</li>
+      <li>Interact talks to a person. On a sign it opens the writing. The pack icon opens bags and worn gear. The globe opens maps you have bought. Journal lists active and completed quests.</li>
+      <li>The action bar holds five abilities. Hold a slot to read it. Spells, or Abilities for a melee hero, lists everything you know. Tap one, then a slot, to place it. On a larger screen you can drag. Clear empties a slot. The bar is saved with the hero. Anything past what you start with is bought from your guild trainer, and the line names the classes that can use it. A warden's wolf has its own window: health, Attack, Back off, Follow, Guard, and Dismiss. Call brings the wolf back.</li>
+      <li>Settings holds the hotbar style, ability names, the layout lock, and Fill the screen. Fill is off until you turn it on, so the black side bars stay. On a larger screen it scales the game to the edges, and enters full screen when the browser allows it. The layout lock is on while you play, so nothing slides under your thumb. Unlock it and the windows grow an outline, a handle, and a corner. Drag to move. Drag the corner to resize. Every window has a close mark in the top corner. The choice is remembered on this device.</li>
       <li>Inside the palisade is Hoffender. North of the gate is the Frostmere Wilds, then Frostfang Reach for levels 10 to 20, then the Black Ice. East of the wilds is Wyrmrest, the castle under the peaks, and the road up to level 50. South is Thornhaven, a west-coast port, and Graymoor Hold. Valdoria and Blackpine Tower are south of that. Eldenmoor is on Vaelmoor, reached by the ship at Valdoria's east dock, not by walking. Dwarves begin in Brightforge, east of Graymoor. Fall in combat and you wake at your bind: Hilda's yard, unless you have bound elsewhere. The climb goes on to 50. Spells and drills are bought, and they say the level they ask.</li>
     </ul>
-    <h3>Settings</h3>
-    <div class="settings">
+    <button type="button" data-action="reload">Start a new warrior</button>`;
+  return windowHtml('How to move through Hoffender', '', body);
+}
+
+function settingsHtml(): string {
+  const hotbar = readSetting('aldmoor-hotbar', 'bar') === 'arc' ? 'arc' : 'bar';
+  const names = readSetting('aldmoor-slot-names', '0') === '1';
+  const locked = layoutCtl?.isLocked() ?? true;
+  const fill = fillEnabled();
+  return windowHtml(
+    'Settings',
+    'Kept on this device.',
+    `<div class="settings">
       <button type="button" data-action="set-hotbar" data-value="bar" aria-pressed="${hotbar === 'bar' ? 'true' : 'false'}">Stone &amp; iron</button>
       <button type="button" data-action="set-hotbar" data-value="arc" aria-pressed="${hotbar === 'arc' ? 'true' : 'false'}">Thumb arc</button>
       <button type="button" data-action="set-names" aria-pressed="${names ? 'true' : 'false'}">Ability names</button>
       <button type="button" data-action="toggle-lock" aria-pressed="${locked ? 'true' : 'false'}">${locked ? 'Unlock layout' : 'Lock layout'}</button>
       <button type="button" data-action="reset-layout">Reset layout</button>
+      <button type="button" data-action="set-fill" aria-pressed="${fill ? 'true' : 'false'}">Fill the screen</button>
     </div>
-    <button type="button" data-action="reload">Start a new warrior</button>
-    <button type="button" class="close" data-action="close">Close</button>
-  </div>`;
+    <p class="empty">Fill the screen is off by default, so the black side bars stay. Turn it on for an iPad or an unfolded screen. The game scales to the edges. Full screen is used when the browser allows it, including after you add Aldmoor to the home screen where that call may be missing.</p>`,
+  );
 }
 
 function escapeHtml(value: string): string {

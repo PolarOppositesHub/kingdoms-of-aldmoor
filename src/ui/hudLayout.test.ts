@@ -191,6 +191,10 @@ describe('hud layout', () => {
       [667, 375, 'wide', { hotbar: 'arc' }],
       [844, 390, 'wide', { hotbar: 'arc' }],
       [932, 430, 'wide', { hotbar: 'arc' }],
+      [1024, 1366, 'portrait', {}],
+      [1366, 1024, 'wide', {}],
+      [1024, 1366, 'portrait', { hotbar: 'arc' }],
+      [1366, 1024, 'wide', { hotbar: 'arc' }],
     ];
     for (const [width, height, mode, style] of phones) {
       const boxes = Object.fromEntries(HUD_IDS.map((id) => [id, defaultHudBox(id, mode, width, height, undefined, style)])) as Record<HudId, HudBoxOf>;

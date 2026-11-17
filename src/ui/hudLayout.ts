@@ -2,9 +2,9 @@
 
 export const HUD_LAYOUT_KEY = 'aldmoor-hud-layout';
 
-export const HUD_IDS = ['vitals', 'target', 'pet', 'hotbar-a', 'hotbar-b', 'pad', 'sit', 'maps', 'log', 'util'] as const;
+export const HUD_IDS = ['vitals', 'target', 'pet', 'hotbar-a', 'hotbar-b', 'pad', 'sit', 'maps', 'log', 'util', 'menu'] as const;
 
-export const SHEET_IDS = ['dialogue', 'merchant', 'pack', 'help', 'inspect', 'journal', 'book', 'maps'] as const;
+export const SHEET_IDS = ['dialogue', 'merchant', 'pack', 'help', 'inspect', 'journal', 'book', 'maps', 'settings'] as const;
 
 export type HudId = (typeof HUD_IDS)[number];
 export type SheetId = (typeof SHEET_IDS)[number];
@@ -38,6 +38,7 @@ export const HUD_LIMITS: Record<HudId, HudLimits> = {
   maps: { minW: 44, minH: 84, maxW: 72, maxH: 180 },
   log: { minW: 128, minH: 24, maxW: 480, maxH: 240 },
   util: { minW: 132, minH: 36, maxW: 360, maxH: 180 },
+  menu: { minW: 112, minH: 72, maxW: 280, maxH: 180 },
 };
 
 const RESIZE_LABEL: Record<HudId, string> = {
@@ -51,6 +52,7 @@ const RESIZE_LABEL: Record<HudId, string> = {
   maps: 'Resize map buttons',
   log: 'Resize log',
   util: 'Resize action buttons',
+  menu: 'Resize menu',
 };
 
 export function defaultHudLayout(): HudLayoutFile {
@@ -347,6 +349,32 @@ export function defaultSheetBox(kind: SheetId, viewWidth: number, viewHeight: nu
 
 type Frame = ReturnType<typeof safeFrame>;
 
+/** Journal, spells, and settings. Beside the target when the map is wide, otherwise in the gap right of the health bars. */
+function portraitMenu(frame: Frame, target: HudBox, vitals: HudBox, log: HudBox, util: HudBox): HudBox {
+  const beside = frame.right - 8 - (target.x + target.w);
+  if (beside >= 160) {
+    const w = Math.min(220, beside - 8);
+    return { x: target.x + target.w + 8, y: target.y, w, h: 76 };
+  }
+  const gap = frame.right - 8 - (vitals.x + vitals.w);
+  const w = Math.min(156, Math.max(112, gap));
+  const x = frame.right - 8 - w;
+  const room = log.y - vitals.y - 6;
+  if (room >= 100) return { x, y: vitals.y, w, h: Math.min(148, room) };
+  const top = log.y + log.h + 6;
+  const limit = util.y - 8;
+  const avail = Math.max(72, limit - top);
+  const h = Math.min(140, avail);
+  return { x, y: limit - h, w, h };
+}
+
+function wideMenu(maps: HudBox, target: HudBox): HudBox {
+  const x = maps.x + maps.w + 8;
+  const avail = target.x - 8 - x;
+  if (avail >= 140) return { x, y: maps.y, w: Math.min(220, avail), h: 72 };
+  return { x: maps.x, y: maps.y + maps.h + 8, w: Math.max(140, maps.w + 96), h: 84 };
+}
+
 function portraitBoxes(frame: Frame, fit: HudFit): Record<HudId, HudBox> {
   const { left, top, right, bottom, width, height } = frame;
   const compact = height <= 760 || width <= 384;
@@ -383,6 +411,7 @@ function portraitBoxes(frame: Frame, fit: HudFit): Record<HudId, HudBox> {
     'hotbar-a': hotA,
     'hotbar-b': hotB,
     util,
+    menu: portraitMenu(frame, target, vitals, log, util),
   };
 }
 
@@ -421,6 +450,7 @@ function portraitCompact(frame: Frame, arc: boolean): Record<HudId, HudBox> {
     'hotbar-a': hotA,
     'hotbar-b': hotB,
     util,
+    menu: portraitMenu(frame, target, vitals, log, util),
   };
 }
 
@@ -453,6 +483,7 @@ function portraitRoomy(frame: Frame, arc: boolean): Record<HudId, HudBox> {
     'hotbar-a': hotA,
     'hotbar-b': hotB,
     util,
+    menu: portraitMenu(frame, target, vitals, log, util),
   };
 }
 
@@ -512,6 +543,7 @@ function wideBoxes(frame: Frame, fit: HudFit): Record<HudId, HudBox> {
     'hotbar-a': hotA,
     'hotbar-b': hotB,
     util,
+    menu: wideMenu(maps, target),
   };
 }
 
