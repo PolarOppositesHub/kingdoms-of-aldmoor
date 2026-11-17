@@ -143,6 +143,15 @@ export const T = {
   LANTERN: 134,
   SEAL_TL: 135,
   SEAL_TR: 136,
+  BANNER: 137,
+  PROW: 138,
+  BONE: 139,
+  SKULL: 140,
+  MOSS: 141,
+  WHITE: 142,
+  COBBLE: 143,
+  HIDE: 144,
+  LEAF: 145,
 };
 
 const W = 256;
@@ -1223,6 +1232,7 @@ function building(g, solid, x, y, w, h, opts) {
         else if (north) tile = T.ROOF_N;
         else if (west) tile = T.ROOF_W;
         else if (east) tile = T.ROOF_E;
+        if (yy === 0 && xx === 0) tile = T.PROW;
         g[Y][X] = tile;
       } else if (isDoor) {
         const band = yy === doorTop ? 't' : yy === h - 1 ? 'b' : 'm';

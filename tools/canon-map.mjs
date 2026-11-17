@@ -4,7 +4,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
-import { frameGate, stampBuilding } from './buildings.mjs';
+import { frameGate, layGround, stampBuilding } from './buildings.mjs';
 
 export const W = 256;
 export const H = 256;
@@ -328,6 +328,8 @@ function buildBrightforge() {
   clearPatch(scenery, 81, 37, 175, 111);
   frameGate(g, solid, 120, 36, 16, 1);
   frameGate(g, solid, 120, 112, 16, 1);
+  layGround(g, solid, 82, 38, 174, 110, T.ROCK_GROUND);
+  stampBuilding(g, solid, scenery, 104, 50, 6, 7, 'dwarf', { enter: false });
   stampBuilding(g, solid, scenery, 93, 50, 8, 7, 'dwarf', { enter: true, doorX: 96 });
   stampBuilding(g, solid, scenery, 155, 50, 8, 7, 'dwarf', { enter: true, doorX: 158 });
   stampBuilding(g, solid, scenery, 93, 80, 8, 7, 'dwarf', { enter: true, doorX: 96 });
@@ -447,8 +449,11 @@ function buildWyrmrest() {
   clearPatch(scenery, 71, 71, 185, 189);
   frameGate(g, solid, 70, 132, 1, 16);
   frameGate(g, solid, 120, 70, 16, 1);
-  stampBuilding(g, solid, scenery, 108, 74, 8, 7, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 150, 74, 8, 7, 'human', { enter: false });
+  layGround(g, solid, 72, 72, 184, 188, T.COBBLE);
+  stampBuilding(g, solid, scenery, 108, 74, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 116, 74, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 124, 74, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 150, 74, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 88, 150, 8, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 152, 148, 8, 7, 'human', { enter: false });
   const m = maker('wyrmrest', 'Wyrmrest', 'Wyrmrest');

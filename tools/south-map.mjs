@@ -6,7 +6,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
-import { frameGate, stampBuilding } from './buildings.mjs';
+import { frameGate, layGround, stampBuilding } from './buildings.mjs';
 
 const W = 256;
 const H = 256;
@@ -341,9 +341,13 @@ function buildThornhaven() {
   frameGate(g, solid, 120, 16, 16, 1);
   frameGate(g, solid, 120, 92, 16, 1);
   frameGate(g, solid, 184, 44, 1, 12);
-  stampBuilding(g, solid, scenery, 96, 22, 8, 7, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 156, 22, 8, 7, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 100, 64, 8, 7, 'human', { enter: false });
+  layGround(g, solid, 90, 18, 180, 90, T.COBBLE);
+  stampBuilding(g, solid, scenery, 96, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 104, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 112, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 156, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 100, 64, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 108, 64, 6, 7, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
   const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
@@ -490,8 +494,11 @@ function buildValdoria() {
   frameGate(g, solid, 180, 78, 14, 1);
   frameGate(g, solid, 186, 168, 12, 1);
   frameGate(g, solid, 220, 108, 1, 12);
-  stampBuilding(g, solid, scenery, 158, 90, 8, 7, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 188, 92, 8, 7, 'human', { enter: false });
+  layGround(g, solid, 152, 80, 218, 166, T.COBBLE);
+  stampBuilding(g, solid, scenery, 152, 90, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 160, 90, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 168, 90, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 188, 92, 6, 7, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[220, 114], [228, 112]], 1);
   const m = maker('valdoria', 'Blackpine Tower', 'Valdoria');
   m.add('door', 'To Thornhaven', 128, 8, { toZone: 'thornhaven', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
@@ -605,7 +612,9 @@ function buildEldenmoor() {
   frameGate(g, solid, 120, 176, 16, 1);
   frameGate(g, solid, 120, 230, 12, 1);
   frameGate(g, solid, 120, 218, 12, 1);
-  stampBuilding(g, solid, scenery, 116, 196, 8, 7, 'elf', { enter: false });
+  layGround(g, solid, 66, 158, 190, 244, T.WHITE);
+  stampBuilding(g, solid, scenery, 116, 196, 6, 7, 'elf', { enter: false });
+  stampBuilding(g, solid, scenery, 66, 190, 6, 7, 'elf', { enter: false });
   stampBuilding(g, solid, scenery, 75, 190, 8, 7, 'elf', { enter: true, doorX: 78 });
   stampBuilding(g, solid, scenery, 177, 190, 8, 7, 'elf', { enter: true, doorX: 180 });
   stampBuilding(g, solid, scenery, 71, 210, 8, 7, 'elf', { enter: true, doorX: 74 });

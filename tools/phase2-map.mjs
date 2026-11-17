@@ -3,7 +3,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
-import { frameGate, stampBuilding } from './buildings.mjs';
+import { frameGate, layGround, stampBuilding } from './buildings.mjs';
 import {
   H,
   W,
@@ -100,8 +100,11 @@ function buildIronhollow() {
   clearPatch(scenery, 97, 57, 175, 139);
   frameGate(g, solid, 124, 56, 16, 1);
   frameGate(g, solid, 124, 140, 16, 1);
-  stampBuilding(g, solid, scenery, 108, 68, 8, 7, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 148, 68, 8, 7, 'human', { enter: false });
+  layGround(g, solid, 98, 58, 174, 138, T.COBBLE);
+  stampBuilding(g, solid, scenery, 108, 68, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 116, 68, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 124, 68, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 148, 68, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 108, 112, 8, 7, 'human', { enter: false });
   const m = maker('ironhollow', 'Ironhollow Keep', 'Ironhollow Hills');
   m.add('door', 'To Valdoria', 10, 36, { toZone: 'valdoria', toX: feet(236, 40).x, toY: feet(236, 40).y, sprite: 'sign_wilds' });
@@ -188,6 +191,8 @@ function buildCanipure() {
   clearPatch(scenery, 149, 79, 213, 167);
   frameGate(g, solid, 148, 112, 1, 16);
   frameGate(g, solid, 214, 112, 1, 12);
+  layGround(g, solid, 150, 80, 212, 166, T.GRASS, T.MOSS);
+  stampBuilding(g, solid, scenery, 172, 93, 6, 7, 'wood', { enter: false });
   stampBuilding(g, solid, scenery, 161, 93, 8, 7, 'wood', { enter: true, doorX: 164 });
   stampBuilding(g, solid, scenery, 191, 93, 8, 7, 'wood', { enter: true, doorX: 194 });
   stampBuilding(g, solid, scenery, 161, 137, 8, 7, 'wood', { enter: true, doorX: 164 });
@@ -289,6 +294,8 @@ function buildGrokthul() {
   outpost(g, solid, safe, scenery, 80, 36, 176, 112, [[120, 36, 16, 1], [120, 112, 16, 1]]);
   frameGate(g, solid, 120, 36, 16, 1);
   frameGate(g, solid, 120, 112, 16, 1);
+  layGround(g, solid, 82, 38, 174, 110, T.MUD);
+  stampBuilding(g, solid, scenery, 106, 53, 6, 7, 'ogre', { enter: false });
   stampBuilding(g, solid, scenery, 95, 53, 8, 7, 'ogre', { enter: true, doorX: 98 });
   stampBuilding(g, solid, scenery, 149, 53, 8, 7, 'ogre', { enter: true, doorX: 152 });
   stampBuilding(g, solid, scenery, 125, 91, 8, 7, 'ogre', { enter: true, doorX: 128 });
