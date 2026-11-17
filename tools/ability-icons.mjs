@@ -325,17 +325,103 @@ const DRAW = {
     fill(image, 3, 7, 10, 2, '#f4fbff');
     px(image, '#3e6b40', [8, 5, 8, 10, 5, 8, 11, 8]);
   },
+  iron_guard(image) {
+    fill(image, 4, 4, 8, 9, '#8b97a3');
+    fill(image, 6, 6, 4, 5, '#d7dee6');
+    px(image, '#1c1418', [5, 8, 10, 8]);
+    line(image, 3, 13, 12, 13, '#5c3a28');
+  },
+  cleaving_oath(image) {
+    line(image, 3, 3, 12, 13, '#d7dee6');
+    line(image, 4, 3, 13, 13, '#8b97a3');
+    px(image, '#e6c15a', [3, 3, 4, 4, 12, 12]);
+    disc(image, 12, 4, 2, '#a33b32');
+  },
+  bog_bolt(image) {
+    disc(image, 8, 8, 4, '#3e5a34');
+    disc(image, 8, 8, 2, '#6e8f5a');
+    line(image, 8, 2, 8, 5, '#c4a574');
+    px(image, '#1c1418', [7, 8, 9, 8]);
+  },
+  winter_mend(image) {
+    fill(image, 7, 2, 2, 12, '#d5e6f0');
+    fill(image, 3, 7, 10, 2, '#f4fbff');
+    disc(image, 8, 8, 2, '#7ec8e8');
+    px(image, '#1a4d66', [8, 4, 8, 12]);
+  },
+  vein_cut(image) {
+    line(image, 3, 12, 12, 3, '#a33b32');
+    line(image, 4, 13, 13, 4, '#6a3030');
+    px(image, '#e6c15a', [6, 8, 8, 6, 10, 9]);
+  },
+  silent_end(image) {
+    fill(image, 7, 2, 2, 10, '#c5ced6');
+    fill(image, 6, 11, 4, 3, '#1c1418');
+    px(image, '#4a3a48', [4, 4, 12, 4, 5, 6, 11, 6]);
+  },
+  red_feast(image) {
+    disc(image, 8, 8, 4, '#a33b32');
+    disc(image, 8, 8, 2, '#e6c15a');
+    px(image, '#f4f0e6', [6, 6, 10, 6, 8, 10]);
+  },
+  blood_howl(image) {
+    line(image, 3, 12, 8, 3, '#a33b32');
+    line(image, 13, 12, 8, 3, '#6a2420');
+    disc(image, 8, 11, 2, '#e6c15a');
+    px(image, '#1c1418', [7, 11, 9, 11]);
+  },
+  pack_mend(image) {
+    fill(image, 7, 3, 2, 10, '#d5e6f0');
+    fill(image, 4, 7, 8, 2, '#8aa4b4');
+    px(image, '#f4fbff', [5, 5, 11, 5, 8, 12]);
+  },
+  elder_root(image) {
+    line(image, 8, 2, 8, 8, '#3e6b40');
+    line(image, 8, 8, 3, 14, '#1e4030');
+    line(image, 8, 8, 13, 14, '#6e8f5a');
+    disc(image, 8, 4, 2, '#d7f0c0');
+    px(image, '#e6c15a', [8, 8]);
+  },
+  shard_lance(image) {
+    line(image, 4, 12, 12, 3, '#d5e6f0');
+    line(image, 5, 13, 13, 4, '#7ec8e8');
+    px(image, '#f4fbff', [12, 3, 11, 4, 4, 12]);
+    disc(image, 4, 12, 1, '#1a4d66');
+  },
+  black_rime(image) {
+    disc(image, 8, 8, 5, '#163044');
+    disc(image, 8, 8, 3, '#7ec8e8');
+    disc(image, 8, 8, 1, '#f4fbff');
+    px(image, '#d5e6f0', [3, 3, 13, 3, 3, 13, 13, 13]);
+  },
 };
 
 export function abilityIds() {
   return Object.keys(DRAW);
 }
 
+function paintGlyph(image, id) {
+  let n = 2166136261;
+  for (let i = 0; i < id.length; i++) n = Math.imul(n ^ id.charCodeAt(i), 16777619) >>> 0;
+  const colors = ['#d5e6f0', '#e6c15a', '#c45a50', '#8eae72', '#b7c4e8', '#f4fbff', '#a33b32', '#7ec8e8', '#f0d9a0', '#3e6b40'];
+  const ink = colors[n % colors.length];
+  const mark = colors[(n >>> 8) % colors.length];
+  disc(image, 8, 8, 2 + (n % 3), ink);
+  for (let i = 0; i < 12; i++) {
+    const bit = (n >>> i) & 1;
+    if (!bit) continue;
+    image.set(3 + (i % 10), 3 + (i % 5) + ((n >>> (i + 3)) & 3), hex(mark));
+  }
+  line(image, 3, 13, 8, 4 + (n % 4), ink);
+  line(image, 13, 13, 8, 4, mark);
+  image.set(8, 8, hex('#1c1418'));
+}
+
 export function paintAbilityIcon(id) {
   const draw = DRAW[id];
-  if (!draw) throw new Error(`no ability icon for ${id}`);
   const image = img();
-  draw(image);
+  if (draw) draw(image);
+  else paintGlyph(image, id);
   return image;
 }
 

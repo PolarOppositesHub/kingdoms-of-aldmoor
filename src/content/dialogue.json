@@ -351,8 +351,8 @@
   },
   "ingrid": {
     "start": {
-      "text": "Ingrid Mire. The wizard hall keeps its pages, even though no Barbarian may walk this path. The door is open for the day a wizard race arrives.",
-      "choices": [
+      "text": "Ingrid Mire. The wizard hall keeps its pages. A high elf may buy them. A barbarian may not. Maeriel Voss teaches the same pages in Eldenmoor, if you would rather not walk the snow to study.",
+        "choices": [
         {
           "label": "Show me what you teach.",
           "action": "merchant"
@@ -619,7 +619,7 @@
       "choices": [{ "label": "Understood.", "action": "close" }]
     },
     "after_cairns": {
-      "text": "Rimeheart. The east fork of the north road follows the creek to a frozen lake. Ysolde of the Black Ice is there. She is a frost witch in the Shadow King's service. She is not Ingrid.",
+      "text": "Rimeheart. The east fork follows the creek to a frozen lake. A shade there wears Ysolde's name. It is not the whole of her. The caverns past the Fang are. She is not Ingrid.",
       "choices": [
         { "label": "I'll go to the lake.", "action": "acceptQuest", "quest": "rimeheart" },
         { "label": "Not yet.", "action": "close" }
@@ -708,7 +708,7 @@
       ]
     },
     "king": {
-      "text": "A name the north uses when the cold acts like it has a master. Ysolde of the Black Ice is said to serve him. Ingrid Mire, in the wizard hall, is a different woman. Do not mix the two if you like your teeth.",
+      "text": "A name the north uses when the cold acts like it has a master. Ysolde of the Black Ice is said to serve him. The shade on Rimeheart wears her name. The woman keeps the vault past the Fang. Ingrid Mire is a different woman. Do not mix them if you like your teeth.",
       "choices": [
         { "label": "And the lake?", "next": "lake" },
         { "label": "Back.", "next": "start" }
@@ -867,8 +867,40 @@
         { "label": "Show me your goods.", "action": "merchant" }
       ]
     },
+    "after_fang": {
+      "text": "The cleft is quiet, and the mouth past it is not. The Black Ice starts there. Eight rime crawlers in the first cavern, then find Anwen. She kept a fire when her brother did not come back.",
+      "choices": [
+        { "label": "I'll walk the mouth.", "action": "acceptQuest", "quest": "cold_mouth" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "mouth_active": {
+      "text": "Eight crawlers, then Anwen. She turns the count, not me. I want the vault's ending brought back here.",
+      "choices": [
+        { "label": "I'm going down.", "action": "close" },
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" }
+      ]
+    },
+    "after_mouth": {
+      "text": "Anwen has the next stair. Calden, then Ysolde. When Ysolde falls, that word comes back to this fire. The shade on Rimeheart was never the whole of her.",
+      "choices": [
+        { "label": "Show me your goods.", "action": "merchant" },
+        { "label": "Bind me to this fire.", "action": "bind" },
+        { "label": "I'll go back down.", "action": "close" }
+      ]
+    },
+    "vault_ready": {
+      "text": "You came out of the vault. Ysolde of the Black Ice is down, for as long as that kind of cold stays down. The staff is yours if your bags can take it.",
+      "choices": [
+        { "label": "It is done.", "action": "turnIn", "quest": "the_black_vault" },
+        { "label": "Show me your goods.", "action": "merchant" }
+      ]
+    },
     "done": {
-      "text": "The cleft is quiet for now. Sit by the fire if you need it. The charts are still for sale, and the named ones still come back late.",
+      "text": "The cleft is quiet, and the vault has been walked. Sit by the fire if you need it. The charts of the caverns are with the highland ones. The named still come back late.",
       "choices": [
         { "label": "Show me your goods.", "action": "merchant" },
         { "label": "Bind me to this fire.", "action": "bind" },

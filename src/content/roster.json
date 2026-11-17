@@ -28,8 +28,11 @@
     {
       "id": "high_elf",
       "name": "High Elf",
-      "playable": false,
-      "blurb": "Coming soon. Eldenmoor's people.",
+      "playable": true,
+      "blurb": "Eldenmoor's own. A long memory, and a mind that likes the cold.",
+      "homeZone": "eldenmoor",
+      "homeX": 1256,
+      "homeY": 3278,
       "mods": { "str": -1, "sta": -1, "agi": 1, "dex": 1, "wis": 1, "int": 2, "cha": 0 },
       "scale": 1.05
     },
@@ -114,8 +117,36 @@
       "id": "wizard",
       "name": "Wizard",
       "playable": true,
-      "races": [],
-      "blurb": "A staff and a pool of mana. Not a path a Barbarian can walk."
+      "races": ["high_elf"],
+      "blurb": "A staff and a pool of mana. The path taught in Eldenmoor."
+    },
+    {
+      "id": "cleric",
+      "name": "Cleric",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "Plate and a quiet mend. The dead take it worse."
+    },
+    {
+      "id": "enchanter",
+      "name": "Enchanter",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "A hush, a slow, and a voice that borrows a foe."
+    },
+    {
+      "id": "paladin",
+      "name": "Paladin",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "A shield, a small grace, and a place in front."
+    },
+    {
+      "id": "magician",
+      "name": "Magician",
+      "playable": true,
+      "races": ["high_elf"],
+      "blurb": "A cinder bolt, and an ember that comes when called."
     }
   ]
 }

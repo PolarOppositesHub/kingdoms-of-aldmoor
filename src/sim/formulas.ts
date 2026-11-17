@@ -43,11 +43,13 @@ export function conLabel(color: ConColor): string {
   }
 }
 
-/** Below 5: none. 5–9: 2.5% of this level's bar. 10+: 5%. No delevel. */
+/** Below 5: none. 5–9: 2.5%. 10–19: 5%. 20–29: 7.5%. 30+: 10%. No delevel. */
 export function xpLossFraction(level: number): number {
   if (level < 5) return 0;
   if (level < 10) return 0.025;
-  return 0.05;
+  if (level < 20) return 0.05;
+  if (level < 30) return 0.075;
+  return 0.1;
 }
 
 export function xpToNext(content: ContentDb, level: number): number {

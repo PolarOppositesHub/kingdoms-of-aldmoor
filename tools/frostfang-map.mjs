@@ -218,7 +218,7 @@ export function buildFrostfang() {
   });
   add('sign', 'The Fang', 112, 46, {
     sprite: 'sign_wilds',
-    text: 'The Fang. The cleft of Vargan Frostfang, war-chief of the highland ogres. The road ends at his mouth of stone.',
+    text: 'The Fang. The cleft of Vargan Frostfang, war-chief of the highland ogres. Past his mouth of stone the Black Ice starts: three caverns, and Ysolde at the bottom of them. She is not him.',
   });
 
   // A ring the ogres did not build. They camp in it.
@@ -311,9 +311,31 @@ export function buildFrostfang() {
     g[26][108] = T.GLOW;
     forceMob('vargan_frostfang', 108, 28, 'vargan');
   }
-  g[18][108] = T.CAVE;
-  solid[18][108] = 1;
-  scenery.grid[18][108] = 0;
+  // The stone mouth past Vargan opens into the Black Ice. The road north of him is the door.
+  for (let y = 10; y <= 26; y++) {
+    for (let x = 105; x <= 111; x++) {
+      if (g[y][x] === T.WATER || g[y][x] === T.WATER_B) continue;
+      g[y][x] = T.PATH;
+      solid[y][x] = 0;
+      scenery.grid[y][x] = 0;
+    }
+  }
+  g[12][106] = T.CAVE;
+  g[12][110] = T.CAVE;
+  solid[12][106] = 1;
+  solid[12][110] = 1;
+  scenery.grid[12][106] = 0;
+  scenery.grid[12][110] = 0;
+  add('door', 'The Black Ice', 108, 12, {
+    toZone: 'blackice1',
+    toX: 48 * TILE + 8,
+    toY: 78 * TILE + 14,
+    sprite: 'sign_wilds',
+  });
+  add('sign', 'The Black Ice', 114, 16, {
+    sprite: 'sign_wilds',
+    text: 'The Black Ice. Three caverns past the Fang. The Rime Mouth, the Shatter Gallery, and the vault where Ysolde of the Black Ice keeps her cold. The shade on Rimeheart Lake is not her. The stair back lands here.',
+  });
 
   for (const [id, n] of Object.entries(counts)) {
     const min = id === 'fang_guard' || id === 'stone_ram' ? 3 : 4;

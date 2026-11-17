@@ -3,7 +3,15 @@
     "id": "warrior",
     "name": "Warrior",
     "race": "barbarian",
-    "stats": { "str": 14, "sta": 12, "agi": 10, "dex": 10, "wis": 8, "int": 6, "cha": 8 },
+    "stats": {
+      "str": 14,
+      "sta": 12,
+      "agi": 10,
+      "dex": 10,
+      "wis": 8,
+      "int": 6,
+      "cha": 8
+    },
     "ac": 6,
     "baseHp": 28,
     "hpPerLevel": 8,
@@ -17,14 +25,28 @@
     "baseFocus": 0,
     "focusPerLevel": 0,
     "blurb": "An axe, a kick, and the nerve to stand in reach.",
-    "abilities": ["kick", "heavy_swing"],
-    "kit": { "chest": "cracked_leather_tunic", "feet": "cracked_leather_boots" }
+    "abilities": [
+      "kick",
+      "heavy_swing"
+    ],
+    "kit": {
+      "chest": "cracked_leather_tunic",
+      "feet": "cracked_leather_boots"
+    }
   },
   {
     "id": "shaman",
     "name": "Shaman",
     "race": "barbarian",
-    "stats": { "str": 10, "sta": 11, "agi": 9, "dex": 8, "wis": 14, "int": 10, "cha": 8 },
+    "stats": {
+      "str": 10,
+      "sta": 11,
+      "agi": 9,
+      "dex": 8,
+      "wis": 14,
+      "int": 10,
+      "cha": 8
+    },
     "ac": 3,
     "baseHp": 22,
     "hpPerLevel": 6,
@@ -38,14 +60,29 @@
     "baseFocus": 0,
     "focusPerLevel": 0,
     "blurb": "A caller of cold and blood. Slows, mends, and leaves a burn.",
-    "abilities": ["frostbind", "kindle", "ember_rot"],
-    "kit": { "chest": "tattered_robe", "feet": "tattered_shoes" }
+    "abilities": [
+      "frostbind",
+      "kindle",
+      "ember_rot"
+    ],
+    "kit": {
+      "chest": "tattered_robe",
+      "feet": "tattered_shoes"
+    }
   },
   {
     "id": "rogue",
     "name": "Rogue",
     "race": "barbarian",
-    "stats": { "str": 10, "sta": 10, "agi": 14, "dex": 14, "wis": 8, "int": 8, "cha": 8 },
+    "stats": {
+      "str": 10,
+      "sta": 10,
+      "agi": 14,
+      "dex": 14,
+      "wis": 8,
+      "int": 8,
+      "cha": 8
+    },
     "ac": 4,
     "baseHp": 20,
     "hpPerLevel": 5,
@@ -59,14 +96,29 @@
     "baseFocus": 80,
     "focusPerLevel": 4,
     "blurb": "Quiet feet, a knife from behind, and a step that is not where the blow lands.",
-    "abilities": ["sneak", "backstab", "evade"],
-    "kit": { "chest": "cracked_leather_tunic", "feet": "cracked_leather_boots" }
+    "abilities": [
+      "sneak",
+      "backstab",
+      "evade"
+    ],
+    "kit": {
+      "chest": "cracked_leather_tunic",
+      "feet": "cracked_leather_boots"
+    }
   },
   {
     "id": "berserker",
     "name": "Berserker",
     "race": "barbarian",
-    "stats": { "str": 16, "sta": 13, "agi": 10, "dex": 9, "wis": 7, "int": 6, "cha": 7 },
+    "stats": {
+      "str": 16,
+      "sta": 13,
+      "agi": 10,
+      "dex": 9,
+      "wis": 7,
+      "int": 6,
+      "cha": 7
+    },
     "ac": 4,
     "baseHp": 30,
     "hpPerLevel": 9,
@@ -80,14 +132,28 @@
     "baseFocus": 100,
     "focusPerLevel": 0,
     "blurb": "Two axes and a rage that climbs when you land a blow. A kill feeds you.",
-    "abilities": ["frenzy", "cleave"],
-    "kit": { "chest": "cracked_leather_tunic", "feet": "cracked_leather_boots" }
+    "abilities": [
+      "frenzy",
+      "cleave"
+    ],
+    "kit": {
+      "chest": "cracked_leather_tunic",
+      "feet": "cracked_leather_boots"
+    }
   },
   {
     "id": "warden",
     "name": "Warden",
     "race": "barbarian",
-    "stats": { "str": 12, "sta": 12, "agi": 11, "dex": 10, "wis": 12, "int": 8, "cha": 8 },
+    "stats": {
+      "str": 12,
+      "sta": 12,
+      "agi": 11,
+      "dex": 10,
+      "wis": 12,
+      "int": 8,
+      "cha": 8
+    },
     "ac": 4,
     "baseHp": 24,
     "hpPerLevel": 6,
@@ -101,14 +167,29 @@
     "baseFocus": 0,
     "focusPerLevel": 0,
     "blurb": "Fists, a staff, or wraps. A snow wolf at your heel. Mend, slow, and stand.",
-    "abilities": ["fist", "mend", "snare"],
-    "kit": { "chest": "tattered_robe", "hands": "tattered_gloves" }
+    "abilities": [
+      "fist",
+      "mend",
+      "snare"
+    ],
+    "kit": {
+      "chest": "tattered_robe",
+      "hands": "tattered_gloves"
+    }
   },
   {
     "id": "wizard",
     "name": "Wizard",
     "race": "human",
-    "stats": { "str": 8, "sta": 8, "agi": 9, "dex": 10, "wis": 10, "int": 16, "cha": 8 },
+    "stats": {
+      "str": 8,
+      "sta": 8,
+      "agi": 9,
+      "dex": 10,
+      "wis": 10,
+      "int": 16,
+      "cha": 8
+    },
     "ac": 2,
     "baseHp": 16,
     "hpPerLevel": 4,
@@ -121,8 +202,141 @@
     "resource": "mana",
     "baseFocus": 0,
     "focusPerLevel": 0,
-    "blurb": "A staff and a pool of mana. Not a Barbarian path.",
-    "abilities": ["shardbolt", "rimefield"],
-    "kit": { "chest": "tattered_robe" }
+    "blurb": "A staff and a pool of mana. The path taught in Eldenmoor.",
+    "abilities": [
+      "shardbolt",
+      "rimefield"
+    ],
+    "kit": {
+      "chest": "tattered_robe"
+    }
+  },
+  {
+    "id": "cleric",
+    "name": "Cleric",
+    "race": "high_elf",
+    "stats": {
+      "str": 10,
+      "sta": 12,
+      "agi": 8,
+      "dex": 8,
+      "wis": 16,
+      "int": 12,
+      "cha": 10
+    },
+    "ac": 5,
+    "baseHp": 22,
+    "hpPerLevel": 6,
+    "hpPerSta": 1,
+    "weapon": "chapel_staff",
+    "sprite": "body_m",
+    "baseMana": 22,
+    "manaPerLevel": 6,
+    "manaPerInt": 1,
+    "resource": "mana",
+    "baseFocus": 0,
+    "focusPerLevel": 0,
+    "blurb": "Plate and a quiet mend. The dead take it worse.",
+    "abilities": [],
+    "kit": {
+      "chest": "rusty_iron_breastplate"
+    }
+  },
+  {
+    "id": "enchanter",
+    "name": "Enchanter",
+    "race": "high_elf",
+    "stats": {
+      "str": 8,
+      "sta": 8,
+      "agi": 10,
+      "dex": 12,
+      "wis": 10,
+      "int": 14,
+      "cha": 16
+    },
+    "ac": 2,
+    "baseHp": 16,
+    "hpPerLevel": 4,
+    "hpPerSta": 1,
+    "weapon": "hush_rod",
+    "sprite": "body_m",
+    "baseMana": 24,
+    "manaPerLevel": 7,
+    "manaPerInt": 2,
+    "resource": "mana",
+    "baseFocus": 0,
+    "focusPerLevel": 0,
+    "blurb": "A hush, a slow, and a voice that borrows a foe.",
+    "abilities": [],
+    "kit": {
+      "chest": "tattered_robe",
+      "feet": "tattered_shoes"
+    }
+  },
+  {
+    "id": "paladin",
+    "name": "Paladin",
+    "race": "high_elf",
+    "stats": {
+      "str": 13,
+      "sta": 13,
+      "agi": 8,
+      "dex": 9,
+      "wis": 12,
+      "int": 8,
+      "cha": 12
+    },
+    "ac": 6,
+    "baseHp": 26,
+    "hpPerLevel": 7,
+    "hpPerSta": 1,
+    "weapon": "oath_blade",
+    "sprite": "body_m",
+    "baseMana": 16,
+    "manaPerLevel": 4,
+    "manaPerInt": 1,
+    "resource": "mana",
+    "baseFocus": 0,
+    "focusPerLevel": 0,
+    "blurb": "A shield, a small grace, and a place in front.",
+    "abilities": [],
+    "kit": {
+      "chest": "rusty_iron_breastplate",
+      "secondary": "rusty_iron_shield"
+    }
+  },
+  {
+    "id": "magician",
+    "name": "Magician",
+    "race": "high_elf",
+    "stats": {
+      "str": 8,
+      "sta": 9,
+      "agi": 9,
+      "dex": 10,
+      "wis": 8,
+      "int": 16,
+      "cha": 8
+    },
+    "ac": 2,
+    "baseHp": 16,
+    "hpPerLevel": 4,
+    "hpPerSta": 1,
+    "weapon": "ember_staff",
+    "sprite": "body_m",
+    "baseMana": 22,
+    "manaPerLevel": 7,
+    "manaPerInt": 2,
+    "resource": "mana",
+    "baseFocus": 0,
+    "focusPerLevel": 0,
+    "blurb": "A cinder bolt, and an ember that comes when called.",
+    "abilities": [],
+    "petMob": "ember_wisp",
+    "kit": {
+      "chest": "tattered_robe",
+      "feet": "tattered_shoes"
+    }
   }
 ]

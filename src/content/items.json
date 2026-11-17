@@ -668,8 +668,17 @@
     "weight": 2.2,
     "value": 120,
     "stack": 1,
-    "bonuses": { "sta": 2, "hp": 10 },
-    "wearers": ["warrior", "berserker", "rogue", "shaman", "warden"],
+    "bonuses": {
+      "sta": 2,
+      "hp": 10
+    },
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
     "blurb": "Greymaw's hide, cut for a cloak. The cold does not bite through it the way it should.",
     "effects": "Cold resistance, worn on the chest. A little stamina and health besides."
   },
@@ -692,8 +701,14 @@
     "stack": 1,
     "slot": "primary",
     "delayMs": 2000,
-    "damage": { "n": 1, "sides": 8, "bonus": 4 },
-    "bonuses": { "str": 2 },
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "bonuses": {
+      "str": 2
+    },
     "blurb": "Cairn-iron, with runes Yrsa cut while the metal was still dull red.",
     "effects": "Melee. The runes hold a little of the cold they were cut in.",
     "grip": "axe"
@@ -782,8 +797,14 @@
     "stack": 1,
     "slot": "primary",
     "delayMs": 2000,
-    "damage": { "n": 1, "sides": 8, "bonus": 4 },
-    "bonuses": { "str": 1 },
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "bonuses": {
+      "str": 1
+    },
     "blurb": "Kara's camp axe. Shorter than a war-axe, and it does not mind the cold.",
     "effects": "Melee. A reliable bite for the passes."
   },
@@ -796,8 +817,16 @@
     "weight": 3.4,
     "value": 70,
     "stack": 1,
-    "bonuses": { "sta": 1 },
-    "wearers": ["warrior", "berserker", "rogue", "shaman", "warden"],
+    "bonuses": {
+      "sta": 1
+    },
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
     "blurb": "Wolfhide worked at the outpost fire. Warm, and it turns a light blow.",
     "effects": "Leather armor, worn on the chest."
   },
@@ -811,8 +840,14 @@
     "stack": 1,
     "slot": "primary",
     "delayMs": 2500,
-    "damage": { "n": 2, "sides": 6, "bonus": 2 },
-    "bonuses": { "str": 2 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 2
+    },
+    "bonuses": {
+      "str": 2
+    },
     "blurb": "Grimhild's toll, paid in iron. Slow back to the shoulder. The second hit is the argument.",
     "effects": "Melee. A heavy two-beat crush."
   },
@@ -825,8 +860,17 @@
     "weight": 3.8,
     "value": 160,
     "stack": 1,
-    "bonuses": { "sta": 2, "hp": 14 },
-    "wearers": ["warrior", "berserker", "rogue", "shaman", "warden"],
+    "bonuses": {
+      "sta": 2,
+      "hp": 14
+    },
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
     "blurb": "Ashjaw's hide, cut so the ice sits on the outside.",
     "effects": "Leather armor, worn on the chest. A little stamina and health besides."
   },
@@ -839,8 +883,16 @@
     "weight": 2.2,
     "value": 170,
     "stack": 1,
-    "bonuses": { "str": 2 },
-    "wearers": ["warrior", "berserker", "rogue", "shaman", "warden"],
+    "bonuses": {
+      "str": 2
+    },
+    "wearers": [
+      "warrior",
+      "berserker",
+      "rogue",
+      "shaman",
+      "warden"
+    ],
     "blurb": "Skarn's remaining tusk, bound into a cap. It makes the wearer lean into the swing.",
     "effects": "Leather armor, worn on the head."
   },
@@ -854,8 +906,14 @@
     "stack": 1,
     "slot": "primary",
     "delayMs": 2200,
-    "damage": { "n": 2, "sides": 6, "bonus": 6 },
-    "bonuses": { "str": 3 },
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 6
+    },
+    "bonuses": {
+      "str": 3
+    },
     "blurb": "Vargan's axe. The edge is notched and does not care. The haft is wrapped for a smaller hand.",
     "effects": "Melee. The war-chief's bite."
   },
@@ -902,5 +960,825 @@
     "stack": 1,
     "blurb": "The high cleft. The ink stops at Vargan's stone mouth.",
     "effects": "Adds the Fang to the map case."
+  },
+  {
+    "id": "scroll_guard",
+    "name": "iron guard",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "iron_guard",
+    "blurb": "Eirik's brace. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_cleave",
+    "name": "cleaving oath",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "cleaving_oath",
+    "blurb": "The last oath of the axe. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bog",
+    "name": "bog bolt",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bog_bolt",
+    "blurb": "Torunn's heavier peat. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_winter",
+    "name": "winter mend",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "winter_mend",
+    "blurb": "The deep knit. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_vein",
+    "name": "vein cut",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "vein_cut",
+    "blurb": "Sable's lingering cut. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_silent",
+    "name": "silent end",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "silent_end",
+    "blurb": "The quiet knife. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_redfeast",
+    "name": "red feast",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "red_feast",
+    "blurb": "Rage turned back into blood. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bloodhowl",
+    "name": "blood howl",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "blood_howl",
+    "blurb": "The howl that spends the saving. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_packmend",
+    "name": "pack mend",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "pack_mend",
+    "blurb": "The pack's knit. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_elderroot",
+    "name": "elder root",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "elder_root",
+    "blurb": "The old root. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_lance",
+    "name": "shard lance",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "shard_lance",
+    "blurb": "A longer spear of ice. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_blackrime",
+    "name": "black rime",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "black_rime",
+    "blurb": "The cold at the bottom of the vault. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "boar_tusk",
+    "name": "boar tusk",
+    "kind": "junk",
+    "value": 4,
+    "weight": 0.4,
+    "stack": 20,
+    "blurb": "A tusk from the mud south of Graymoor. Odda will not frame it. A merchant will.",
+    "effects": "Trade goods."
+  },
+  {
+    "id": "glade_pelt",
+    "name": "glade pelt",
+    "kind": "junk",
+    "value": 3,
+    "weight": 0.5,
+    "stack": 20,
+    "blurb": "A pelt from the Eldenweald or the fields. Softer than a frost wolf, and worth less.",
+    "effects": "Trade goods."
+  },
+  {
+    "id": "pine_resin",
+    "name": "pine resin",
+    "kind": "junk",
+    "value": 5,
+    "weight": 0.3,
+    "stack": 20,
+    "blurb": "Sticky amber from the Valdoria pines. It burns, and it sells.",
+    "effects": "Trade goods."
+  },
+  {
+    "id": "blackice_shard",
+    "name": "black ice shard",
+    "kind": "junk",
+    "value": 12,
+    "weight": 0.4,
+    "stack": 20,
+    "blurb": "A splinter from the caverns past the Fang. Cold enough to fog a glove.",
+    "effects": "Trade goods."
+  },
+  {
+    "id": "blackice_staff",
+    "name": "black ice staff",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 420,
+    "weight": 3.2,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2400,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 4
+    },
+    "bonuses": {
+      "int": 4,
+      "mana": 20
+    },
+    "blurb": "Ysolde's staff, cut down for a hand that is not hers. The cold in it is a spell's cold.",
+    "effects": "Melee, and a little more mana to spend."
+  },
+  {
+    "id": "reeve_blade",
+    "name": "reeve blade",
+    "kind": "weapon",
+    "grip": "blade",
+    "value": 180,
+    "weight": 2.2,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 1900,
+    "damage": {
+      "n": 1,
+      "sides": 8,
+      "bonus": 5
+    },
+    "bonuses": {
+      "dex": 2
+    },
+    "blurb": "Hask's collection knife. It was meant for purses. It works on other things.",
+    "effects": "Melee."
+  },
+  {
+    "id": "blackpine_edge",
+    "name": "blackpine edge",
+    "kind": "weapon",
+    "grip": "blade",
+    "value": 260,
+    "weight": 2.6,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2000,
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 4
+    },
+    "bonuses": {
+      "str": 2
+    },
+    "blurb": "Captain Malrek's sword, shortened. The pines did not want it back.",
+    "effects": "Melee."
+  },
+  {
+    "id": "hart_crown",
+    "name": "hart crown",
+    "kind": "armor",
+    "slot": "head",
+    "ac": 3,
+    "value": 160,
+    "weight": 0.8,
+    "stack": 1,
+    "bonuses": {
+      "cha": 2,
+      "wis": 1
+    },
+    "blurb": "A twist of amber from the Eldenweald hart. It sits like a circlet and does not pretend to be a helm.",
+    "effects": "Worn on the head."
+  },
+  {
+    "id": "chart_graymoor",
+    "name": "chart of Graymoor Hold",
+    "kind": "chart",
+    "chart": "graymoor",
+    "value": 40,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Odda's ink of the hold yard.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_thornhaven",
+    "name": "chart of Thornhaven",
+    "kind": "chart",
+    "chart": "thornhaven_fields",
+    "value": 55,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The muddy fields south of Hoffender, as far as the Valdoria road.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_blackpine",
+    "name": "chart of Blackpine Tower",
+    "kind": "chart",
+    "chart": "blackpine",
+    "value": 70,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Osric's ink of the tower yard.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_valdoria",
+    "name": "chart of Valdoria",
+    "kind": "chart",
+    "chart": "valdoria_road",
+    "value": 90,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The kingdom road between Thornhaven and the Eldenweald.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_eldenmoor",
+    "name": "chart of Eldenmoor",
+    "kind": "chart",
+    "chart": "eldenmoor",
+    "value": 25,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Tael's ink of the tiered city. The woods are a different page.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_eldenweald",
+    "name": "chart of the Eldenweald",
+    "kind": "chart",
+    "chart": "eldenweald",
+    "value": 30,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The grass and trees outside Eldenmoor's north gate.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_mouth",
+    "name": "chart of the Rime Mouth",
+    "kind": "chart",
+    "chart": "rime_mouth",
+    "value": 110,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "Kara's ink of the first cavern past the Fang.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_gallery",
+    "name": "chart of the Shatter Gallery",
+    "kind": "chart",
+    "chart": "shatter_gallery",
+    "value": 140,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The middle cavern, where Calden walks.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "chart_vault",
+    "name": "chart of the Black Vault",
+    "kind": "chart",
+    "chart": "black_vault",
+    "value": 180,
+    "weight": 0.1,
+    "stack": 1,
+    "blurb": "The last cavern. Ysolde is marked, and the stair back.",
+    "effects": "Adds the chart to the map case."
+  },
+  {
+    "id": "scroll_quiet_mend",
+    "name": "quiet mend",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "quiet_mend",
+    "blurb": "A small, clean mend. The chapel sells it first. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_pale_spark",
+    "name": "pale spark",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "pale_spark",
+    "blurb": "A thin spark. Bones take it worse than the living. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_linger_light",
+    "name": "linger light",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "linger_light",
+    "blurb": "A mend that keeps working after the word is done. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_dawn_aegis",
+    "name": "dawn aegis",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "dawn_aegis",
+    "blurb": "A pale ward. Blows land lighter for a while. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_grave_lamp",
+    "name": "grave lamp",
+    "kind": "scroll",
+    "value": 220,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "grave_lamp",
+    "blurb": "A harder spark, and crueler to bones. Level 12.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_wellspring",
+    "name": "wellspring",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "wellspring",
+    "blurb": "The deep mend. It spends more of the light. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_last_light",
+    "name": "last light",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "last_light",
+    "blurb": "A light that waits. If you fall while it holds, it pulls you back. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hymn_mend",
+    "name": "hymn mend",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hymn_mend",
+    "blurb": "A mend and a lingering light together. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_second_dawn",
+    "name": "second dawn",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "second_dawn",
+    "blurb": "The last page. A large mend, and the light that pulls you back. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hush",
+    "name": "hush",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hush",
+    "blurb": "A word that stops one foe where they stand. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_drift_slow",
+    "name": "drift",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "drift_slow",
+    "blurb": "Feet that forget their hurry. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_veil_spring",
+    "name": "veil spring",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "veil_spring",
+    "blurb": "Mana comes easier for a while. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_glass_needle",
+    "name": "glass needle",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "glass_needle",
+    "blurb": "A thin, mean point of force. It is not the point of the hall. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_still_room",
+    "name": "still room",
+    "kind": "scroll",
+    "value": 220,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "still_room",
+    "blurb": "A longer hush. One foe, held. Level 12.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_deep_veil",
+    "name": "deep veil",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "deep_veil",
+    "blurb": "A thicker tide of mana. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_borrowed_will",
+    "name": "borrowed will",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "borrowed_will",
+    "blurb": "One foe follows you, for a while. Then they remember themselves. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hush_all",
+    "name": "hush all",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hush_all",
+    "blurb": "A short hush on everyone near the target. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_long_borrow",
+    "name": "long borrow",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "long_borrow",
+    "blurb": "The long version. One foe stays yours longer. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_oath_cut",
+    "name": "oath cut",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "oath_cut",
+    "blurb": "A cut with the oath blade. No mana. It just arrives. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_small_grace",
+    "name": "small grace",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "small_grace",
+    "blurb": "A small mend, for the one holding the shield. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bell_stun",
+    "name": "bell",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bell_stun",
+    "blurb": "A ring off the shield. One foe stops. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_challenge",
+    "name": "challenge",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "challenge",
+    "blurb": "Make them look at you. The cut is small. The hate is not. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_second_grace",
+    "name": "second grace",
+    "kind": "scroll",
+    "value": 220,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "second_grace",
+    "blurb": "A larger mend than the first grace. Level 12.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_lamp_stun",
+    "name": "lamp stun",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "lamp_stun",
+    "blurb": "A brighter stop. One foe, held longer. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_vow_mend",
+    "name": "vow mend",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "vow_mend",
+    "blurb": "The oath turned inward. A deep mend. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bulwark",
+    "name": "bulwark",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bulwark",
+    "blurb": "The shield remembers. Blows land lighter. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_dawn_oath",
+    "name": "dawn oath",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "dawn_oath",
+    "blurb": "The last oath. A heavy cut, and the foe stops. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_cinder_bolt",
+    "name": "cinder bolt",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "cinder_bolt",
+    "blurb": "A thrown cinder. It is the first page. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_call_ember",
+    "name": "call ember",
+    "kind": "scroll",
+    "value": 48,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "call_ember",
+    "blurb": "Shape an ember beside you. It takes Attack, Follow, Stay, and Dismiss. Level 1.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_hearth_crumb",
+    "name": "hearth crumb",
+    "kind": "scroll",
+    "value": 72,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "hearth_crumb",
+    "blurb": "Two trail rations, from nothing you were carrying. Level 4.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_flare",
+    "name": "flare",
+    "kind": "scroll",
+    "value": 148,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "flare",
+    "blurb": "A hotter cinder. It still costs. Level 8.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_scorch_field",
+    "name": "scorch",
+    "kind": "scroll",
+    "value": 352,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "scorch_field",
+    "blurb": "Cinders on everyone near the target. Level 18.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_bright_coal",
+    "name": "bright coal",
+    "kind": "scroll",
+    "value": 412,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "bright_coal",
+    "blurb": "Four trail rations. The ember hall calls this practical. Level 24.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_cinder_rain",
+    "name": "cinder rain",
+    "kind": "scroll",
+    "value": 540,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "cinder_rain",
+    "blurb": "A meaner bolt. One foe, and it shows. Level 27.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "scroll_ember_star",
+    "name": "ember star",
+    "kind": "scroll",
+    "value": 720,
+    "weight": 0.1,
+    "stack": 1,
+    "teaches": "ember_star",
+    "blurb": "The expensive one. One star of cinder. Level 30.",
+    "effects": "Training. Buying it teaches the ability if you are the right class and level."
+  },
+  {
+    "id": "chapel_staff",
+    "name": "chapel staff",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 18,
+    "weight": 2.4,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2400,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
+    "bonuses": {
+      "wis": 1
+    },
+    "blurb": "A pale staff from the chapel. It mends nothing by itself.",
+    "effects": "Melee. A cleric weapon."
+  },
+  {
+    "id": "hush_rod",
+    "name": "hush rod",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 16,
+    "weight": 1.6,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2200,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 0
+    },
+    "bonuses": {
+      "cha": 1
+    },
+    "blurb": "A thin rod. The quiet is in the hand that holds it.",
+    "effects": "Melee. An enchanter weapon."
+  },
+  {
+    "id": "oath_blade",
+    "name": "oath blade",
+    "kind": "weapon",
+    "grip": "blade",
+    "value": 22,
+    "weight": 2.8,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2000,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 2
+    },
+    "bonuses": {
+      "sta": 1
+    },
+    "blurb": "A straight blade for an oath. The edge is honest.",
+    "effects": "Melee. A paladin weapon."
+  },
+  {
+    "id": "ember_staff",
+    "name": "ember staff",
+    "kind": "weapon",
+    "grip": "staff",
+    "value": 18,
+    "weight": 2.2,
+    "stack": 1,
+    "slot": "primary",
+    "delayMs": 2300,
+    "damage": {
+      "n": 1,
+      "sides": 4,
+      "bonus": 1
+    },
+    "bonuses": {
+      "int": 1
+    },
+    "blurb": "A staff with a coal set in the head. It is warm, not kind.",
+    "effects": "Melee. A magician weapon."
   }
 ]

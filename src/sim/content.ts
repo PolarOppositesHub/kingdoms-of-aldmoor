@@ -26,6 +26,10 @@ import mapsJson from '../content/maps.json';
 import armorJson from '../content/armor.json';
 import armorRules from '../content/armor-rules.json';
 import chartBounds from '../assets/chart-bounds.json';
+import southMobs from '../content/south-mobs.json';
+import southNpcs from '../content/south-npcs.json';
+import southQuests from '../content/south-quests.json';
+import southDialogue from '../content/south-dialogue.json';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -69,8 +73,14 @@ export function loadContent(): ContentDb {
     if (!source) throw new Error(`${vendor.npcId} copies missing vendor ${vendor.copyFrom}`);
     return { ...vendor, stock: source.stock.map((row) => ({ ...row })) };
   });
-  const mobs = indexById(mobsJson as MobDef[]);
-  const npcs = indexById(npcsJson as NpcDef[]);
+  const mobs = indexById([...(mobsJson as MobDef[]), ...(southMobs as MobDef[])]);
+  if (Object.keys(mobs).length !== (mobsJson as MobDef[]).length + (southMobs as MobDef[]).length) {
+    throw new Error('south mob ids collide with existing mobs');
+  }
+  const npcs = indexById([...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[])]);
+  if (Object.keys(npcs).length !== (npcsJson as NpcDef[]).length + (southNpcs as NpcDef[]).length) {
+    throw new Error('south npc ids collide with existing npcs');
+  }
   const abilities = indexById(abilitiesJson as AbilityDef[]);
   const classes = indexById(classesJson as ClassDef[]);
   for (const vendor of vendors) {
@@ -89,7 +99,7 @@ export function loadContent(): ContentDb {
     items,
     mobs,
     npcs,
-    dialogue: dialogueJson as ContentDb['dialogue'],
+    dialogue: { ...(dialogueJson as ContentDb['dialogue']), ...(southDialogue as ContentDb['dialogue']) },
     abilities,
     classes,
     tuning: tuningJson as ContentDb['tuning'],
@@ -97,7 +107,7 @@ export function loadContent(): ContentDb {
     economy: economyJson,
     player: playerJson,
     roster: rosterJson as Roster,
-    quests: questsJson as QuestDef[],
+    quests: [...(questsJson as QuestDef[]), ...(southQuests as QuestDef[])],
     maps,
   };
 }
