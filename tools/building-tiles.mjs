@@ -172,7 +172,12 @@ function paintDoor(pal, part) {
     }
   }
   if (top) {
-    for (let x = left ? 3 : 0; x < (left ? 16 : 13); x++) img.set(x, 10, frame);
+    for (let y = 0; y < 16; y++) {
+      for (let x = 0; x < 16; x++) {
+        const arch = y < 8 && (left ? x < 4 + y : x > 11 - y);
+        if (arch) img.set(x, y, y % 2 === 0 ? frame : hex(pal.wall));
+      }
+    }
   }
   if (bot) {
     for (let x = left ? 3 : 2; x < (left ? 14 : 13); x++) {
@@ -289,12 +294,31 @@ export function paintArchitectureTiles() {
   out.set(T.ROPE, paintRope());
   out.set(T.TRUNK, paintTrunk());
   out.set(T.RUNE, paintRune());
-  out.set(T.SEAL_L, paintSealed(true));
-  out.set(T.SEAL_R, paintSealed(false));
+  out.set(T.SEAL_L, paintSealed(true, false));
+  out.set(T.SEAL_R, paintSealed(false, false));
+  out.set(T.SEAL_TL, paintSealed(true, true));
+  out.set(T.SEAL_TR, paintSealed(false, true));
+  out.set(T.LANTERN, paintLantern());
   return out;
 }
 
-function paintSealed(left) {
+function paintLantern() {
+  const img = tile();
+  fill(img, hex('#4e463f'));
+  for (let y = 0; y < 16; y++) {
+    img.set(7, y, hex('#2a2018'));
+    img.set(8, y, hex('#6b4030'));
+  }
+  for (let y = 3; y <= 10; y++) {
+    for (let x = 4; x <= 11; x++) {
+      const edge = x === 4 || x === 11 || y === 3 || y === 10;
+      img.set(x, y, edge ? hex('#e6c15a') : y < 7 ? hex('#ffe7ad') : hex('#e07030'));
+    }
+  }
+  return img;
+}
+
+function paintSealed(left, lintel) {
   const img = tile();
   fill(img, hex('#3a2418'));
   const frame = hex('#e6c15a');
@@ -302,12 +326,15 @@ function paintSealed(left) {
   const bar = hex('#8b97a3');
   for (let y = 0; y < 16; y++) {
     for (let x = 0; x < 16; x++) {
-      const outer = (left && x <= 2) || (!left && x >= 13) || y <= 1 || y >= 14;
-      if (outer) img.set(x, y, y % 2 === 0 ? frame : hex('#5c4030'));
+      const outer = (left && x <= 2) || (!left && x >= 13) || (lintel && y <= 2);
+      const arch = lintel && y < 8 && (left ? x < 4 + y : x > 11 - y);
+      if (outer || arch) img.set(x, y, y % 2 === 0 ? frame : hex('#5c4030'));
       else img.set(x, y, x % 4 === 0 ? hex('#4a301f') : plank);
     }
   }
-  for (let x = left ? 3 : 2; x < (left ? 14 : 13); x++) img.set(x, 8, bar);
+  if (!lintel) {
+    for (let x = left ? 3 : 2; x < (left ? 14 : 13); x++) img.set(x, 8, bar);
+  }
   return img;
 }
 

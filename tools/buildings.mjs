@@ -30,9 +30,10 @@ export function stampBuilding(g, solid, scenery, x, y, w, h, style, opts = {}) {
   if (!look) throw new Error(`unknown building style ${style}`);
   const grid = scenery?.grid ?? scenery;
   const roofH = Math.max(2, h - 4);
-  const enter = opts.enter !== false;
+  const enter = opts.enter === true;
   const doorLeft = opts.doorX !== undefined ? opts.doorX - x : Math.floor((w - 2) / 2);
   const doorTop = h - 3;
+  if (h < 6 || doorLeft < 1 || doorLeft + 2 >= w) throw new Error(`facade ${style} ${x},${y} ${w}x${h} has no room for a door`);
   for (let yy = 0; yy < h; yy++) {
     for (let xx = 0; xx < w; xx++) {
       const X = x + xx;
@@ -55,8 +56,10 @@ export function stampBuilding(g, solid, scenery, x, y, w, h, style, opts = {}) {
         const key = `d${band}${side}`;
         g[Y][X] = look[key];
         if (yy === h - 1) solid[Y][X] = 0;
-      } else if (!enter && yy === h - 1 && xx >= doorLeft && xx < doorLeft + 2) {
-        g[Y][X] = xx === doorLeft ? T.SEAL_L : T.SEAL_R;
+      } else if (!enter && xx >= doorLeft && xx < doorLeft + 2 && yy >= doorTop) {
+        const lintel = yy === doorTop;
+        const left = xx === doorLeft;
+        g[Y][X] = lintel ? (left ? T.SEAL_TL : T.SEAL_TR) : left ? T.SEAL_L : T.SEAL_R;
       } else if (!enter && yy === h - 2 && xx > 1 && xx < w - 2 && xx % 3 === 1) {
         g[Y][X] = look.win;
       } else if (yy === h - 2 && (xx === 1 || xx === w - 2)) {
@@ -82,8 +85,18 @@ export function stampBuilding(g, solid, scenery, x, y, w, h, style, opts = {}) {
       }
     }
   }
+  const doorX = x + doorLeft;
+  const doorY = y + h - 1;
+  const lampX = doorX - 1;
+  if (g[doorY - 2]?.[lampX] !== undefined) g[doorY - 2][lampX] = T.LANTERN;
+  const porchX = doorX + 2;
+  if (g[doorY]?.[porchX] !== undefined && solid[doorY][porchX]) {
+    solid[doorY][porchX] = 0;
+    g[doorY][porchX] = T.STEP;
+    if (grid?.[doorY]) grid[doorY][porchX] = 0;
+  }
   const south = y + h;
-  if (enter && style !== 'wood' && g[south]) {
+  if (style !== 'wood' && g[south]) {
     for (const xx of [doorLeft, doorLeft + 1]) {
       const X = x + xx;
       if (g[south][X] === undefined || solid[south][X]) continue;
@@ -98,8 +111,8 @@ export function stampBuilding(g, solid, scenery, x, y, w, h, style, opts = {}) {
     y,
     w,
     h,
-    doorX: x + doorLeft,
-    doorY: y + h - 1,
+    doorX,
+    doorY,
     enter,
   };
 }

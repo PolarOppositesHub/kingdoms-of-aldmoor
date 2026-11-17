@@ -1968,6 +1968,40 @@ describe('Wood elves, Grokthul ogres, and Ironhollow', () => {
     }
   });
 
+  it('builds every door at least as tall and as wide as the hero', () => {
+    const heroH = atlas.hero.frameH;
+    const heroW = atlas.hero.frameW;
+    const faces = new Set([
+      33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+      72, 73, 74, 75, 76, 77, 84, 85, 86, 87, 88, 89,
+      96, 97, 98, 99, 100, 101, 108, 109, 110, 111, 112, 113,
+      120, 121, 122, 123, 124, 125, 132, 133, 135, 136,
+    ]);
+    const bottoms = new Set([37, 38, 43, 44, 76, 77, 88, 89, 100, 101, 112, 113, 124, 125, 132, 133]);
+    const hoffender = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+    const all = new Map(maps);
+    all.set('hoffender', hoffender);
+    let doors = 0;
+    for (const map of all.values()) {
+      for (let ty = 0; ty < map.height; ty++) {
+        for (let tx = 0; tx < map.width; tx++) {
+          const gid = map.ground[ty * map.width + tx];
+          if (!bottoms.has(gid)) continue;
+          const below = ty + 1 < map.height ? map.ground[(ty + 1) * map.width + tx] : 0;
+          if (faces.has(below)) continue;
+          let height = 1;
+          for (let y = ty - 1; y >= 0 && faces.has(map.ground[y * map.width + tx]); y--) height += 1;
+          const beside = tx + 1 < map.width && bottoms.has(map.ground[ty * map.width + tx + 1]);
+          const other = tx > 0 && bottoms.has(map.ground[ty * map.width + tx - 1]);
+          expect(height * map.tileWidth, `${map.zoneId} ${tx},${ty}`).toBeGreaterThanOrEqual(heroH);
+          expect((beside || other ? 2 : 1) * map.tileWidth, `${map.zoneId} ${tx},${ty}`).toBeGreaterThanOrEqual(heroW);
+          doors += 1;
+        }
+      }
+    }
+    expect(doors).toBeGreaterThan(20);
+  });
+
   it('paints pointed elf ears and a wider ogre than a human', () => {
     const png = PNG.sync.read(readFileSync(join(process.cwd(), 'src', 'assets', 'portrait.png')));
     const frameH = atlas.portrait.frameH;

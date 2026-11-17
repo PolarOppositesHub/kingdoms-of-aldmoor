@@ -140,6 +140,9 @@ export const T = {
   RUNE: 131,
   SEAL_L: 132,
   SEAL_R: 133,
+  LANTERN: 134,
+  SEAL_TL: 135,
+  SEAL_TR: 136,
 };
 
 const W = 256;
@@ -1151,23 +1154,26 @@ function stampCity(g, solid, safe, road) {
     }
   }
 
-  const specs = [
-    ['inn', 93, 124, 12, 11, { chimney: true }],
-    ['shop', 106, 124, 11, 11, { shop: true }],
-    ['needles', 124, 124, 8, 11, { shop: true }],
-    ['forge', 133, 124, 10, 11, { chimney: true }],
-    ['smithy', 144, 124, 8, 11, { chimney: true }],
-    ['mead', 93, 156, 22, 12, { stone: true, chimney: true }],
-    ['warrior', 93, 170, 12, 11, { chimney: true }],
-    ['warden', 106, 170, 10, 11, {}],
-    ['wizard', 124, 156, 13, 11, { chimney: true }],
-    ['shaman', 138, 156, 13, 11, {}],
-    ['rogue', 124, 170, 13, 11, {}],
-    ['berserker', 138, 170, 13, 11, { chimney: true }],
+  // Door columns stay where the old halls put them. The facade is short enough that roof, wall, and door fit on a phone with the hero beside the door.
+  const halls = [
+    ['inn', 98, 134, 8, { chimney: true }],
+    ['shop', 110, 134, 8, { shop: true }],
+    ['needles', 127, 134, 8, { shop: true }],
+    ['forge', 137, 134, 8, { chimney: true }],
+    ['smithy', 147, 134, 8, { chimney: true }],
+    ['mead', 103, 167, 10, { stone: true, chimney: true }],
+    ['warrior', 98, 180, 8, { chimney: true }],
+    ['warden', 110, 180, 8, {}],
+    ['wizard', 129, 166, 8, { chimney: true }],
+    ['shaman', 143, 166, 8, {}],
+    ['rogue', 129, 180, 8, {}],
+    ['berserker', 143, 180, 8, { chimney: true }],
   ];
   const buildings = {};
-  for (const [id, x, y, w, h, opts] of specs) {
-    buildings[id] = building(g, solid, x, y, w, h, { ...opts, id });
+  const facadeH = 7;
+  for (const [id, doorX, doorY, w, opts] of halls) {
+    const doorLeft = Math.floor((w - 2) / 2);
+    buildings[id] = building(g, solid, doorX - doorLeft, doorY - (facadeH - 1), w, facadeH, { ...opts, id });
   }
   buildings.brandStall = { x: 138, y: 116 };
 
@@ -1236,10 +1242,17 @@ function building(g, solid, x, y, w, h, opts) {
   if (opts.chimney) {
     const cx = x + 2;
     const cy = y + 1;
-    if (cy < y + roofH - 1) g[cy][cx] = T.CHIMNEY;
+    if (cy < y + roofH) g[cy][cx] = T.CHIMNEY;
   }
   const doorX = x + doorLeft;
   const doorY = y + h - 1;
+  const lampX = doorX - 1;
+  if (g[doorY - 2]?.[lampX] !== undefined && lampX >= x) g[doorY - 2][lampX] = T.LANTERN;
+  const porchX = doorX + 2;
+  if (g[doorY]?.[porchX] !== undefined && solid[doorY][porchX]) {
+    solid[doorY][porchX] = 0;
+    g[doorY][porchX] = T.PATH;
+  }
   return { id: opts.id, x, y, w, h, doorX, doorY };
 }
 
@@ -1302,12 +1315,18 @@ function buildInteriors(buildings, _barrowDoor) {
       safe[y][w - 1] = 0;
     }
     const doorX = Math.floor(w / 2);
-    g[h - 1][doorX] = T.DOOR_BL;
-    g[h - 1][doorX - 1] = T.DOOR_BR;
-    solid[h - 1][doorX] = 0;
-    solid[h - 1][doorX - 1] = 0;
-    safe[h - 1][doorX] = 1;
-    safe[h - 1][doorX - 1] = 1;
+    for (const [row, left, right] of [
+      [h - 3, T.DOOR_TL, T.DOOR_TR],
+      [h - 2, T.DOOR_ML, T.DOOR_MR],
+      [h - 1, T.DOOR_BL, T.DOOR_BR],
+    ]) {
+      g[row][doorX] = left;
+      g[row][doorX - 1] = right;
+      solid[row][doorX] = 0;
+      solid[row][doorX - 1] = 0;
+      safe[row][doorX] = 1;
+      safe[row][doorX - 1] = 1;
+    }
     // A rug of floor variety and a fire.
     for (let x = 3; x < w - 3; x++) g[6][x] = T.PATH_B;
     const objects = [];

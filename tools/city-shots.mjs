@@ -4,17 +4,17 @@ import { chromium } from 'playwright';
 
 const out = '/opt/cursor/artifacts/phase2';
 mkdirSync(out, { recursive: true });
-const feet = (tx, ty) => ({ x: tx * 16 + 8, y: ty * 16 + 14 });
 
 const shots = [
   ['hoffender', 'inn', 'hoffender'],
-  ['thornhaven', null, 'graymoor', 103, 31],
-  ['valdoria', null, 'blackpine', 166, 101],
+  ['thornhaven', null, 'graymoor', 101, 28],
+  ['thornhaven', null, 'thornhaven', 105, 69],
+  ['valdoria', null, 'blackpine', 163, 95],
   ['eldenmoor', 'elden_inn', 'eldenmoor'],
   ['brightforge', 'bright_warrior', 'brightforge'],
-  ['wyrmrest', null, 'wyrmrest', 114, 83],
+  ['wyrmrest', null, 'wyrmrest', 113, 79],
   ['canipure', 'can_warden', 'canipure'],
-  ['ironhollow', null, 'ironhollow', 115, 77],
+  ['ironhollow', null, 'ironhollow', 113, 73],
   ['grokthul', 'grok_warrior', 'grokthul'],
 ];
 
@@ -40,14 +40,16 @@ async function show(page, zone, hall, tx, ty) {
     let y;
     if (hall) {
       const door = api.zones[zone].spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === hall);
-      x = door.x;
-      y = door.y + 28;
+      x = door.x + 32;
+      y = door.y;
     } else {
       x = tx * 16 + 8;
       y = ty * 16 + 14;
     }
-    const hud = document.getElementById('hud');
-    if (hud) hud.style.visibility = 'hidden';
+    for (const id of ['hud', 'panel', 'toast', 'log']) {
+      const el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+    }
     api.push({ type: 'debugZone', zoneId: zone, x, y });
   }, { zone, hall, tx, ty });
   await page.waitForTimeout(800);

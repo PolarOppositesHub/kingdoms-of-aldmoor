@@ -341,9 +341,9 @@ function buildThornhaven() {
   frameGate(g, solid, 120, 16, 16, 1);
   frameGate(g, solid, 120, 92, 16, 1);
   frameGate(g, solid, 184, 44, 1, 12);
-  stampBuilding(g, solid, scenery, 96, 22, 14, 8, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 156, 22, 14, 8, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 100, 64, 12, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 96, 22, 8, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 156, 22, 8, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 100, 64, 8, 7, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
   const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
@@ -490,8 +490,8 @@ function buildValdoria() {
   frameGate(g, solid, 180, 78, 14, 1);
   frameGate(g, solid, 186, 168, 12, 1);
   frameGate(g, solid, 220, 108, 1, 12);
-  stampBuilding(g, solid, scenery, 158, 90, 16, 10, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 188, 92, 16, 10, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 158, 90, 8, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 188, 92, 8, 7, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[220, 114], [228, 112]], 1);
   const m = maker('valdoria', 'Blackpine Tower', 'Valdoria');
   m.add('door', 'To Thornhaven', 128, 8, { toZone: 'thornhaven', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
@@ -605,14 +605,14 @@ function buildEldenmoor() {
   frameGate(g, solid, 120, 176, 16, 1);
   frameGate(g, solid, 120, 230, 12, 1);
   frameGate(g, solid, 120, 218, 12, 1);
-  stampBuilding(g, solid, scenery, 112, 192, 20, 12, 'elf', { enter: false });
-  stampBuilding(g, solid, scenery, 70, 188, 12, 9, 'elf', { enter: true, doorX: 78 });
-  stampBuilding(g, solid, scenery, 170, 188, 14, 9, 'elf', { enter: true, doorX: 180 });
-  stampBuilding(g, solid, scenery, 66, 208, 12, 9, 'elf', { enter: true, doorX: 74 });
-  stampBuilding(g, solid, scenery, 170, 208, 14, 9, 'elf', { enter: true, doorX: 180 });
-  stampBuilding(g, solid, scenery, 66, 232, 12, 8, 'elf', { enter: true, doorX: 74 });
-  stampBuilding(g, solid, scenery, 148, 232, 14, 8, 'elf', { enter: true, doorX: 156 });
-  stampBuilding(g, solid, scenery, 94, 234, 14, 9, 'elf', { enter: true, doorX: 102 });
+  stampBuilding(g, solid, scenery, 116, 196, 8, 7, 'elf', { enter: false });
+  stampBuilding(g, solid, scenery, 75, 190, 8, 7, 'elf', { enter: true, doorX: 78 });
+  stampBuilding(g, solid, scenery, 177, 190, 8, 7, 'elf', { enter: true, doorX: 180 });
+  stampBuilding(g, solid, scenery, 71, 210, 8, 7, 'elf', { enter: true, doorX: 74 });
+  stampBuilding(g, solid, scenery, 177, 210, 8, 7, 'elf', { enter: true, doorX: 180 });
+  stampBuilding(g, solid, scenery, 71, 233, 8, 7, 'elf', { enter: true, doorX: 74 });
+  stampBuilding(g, solid, scenery, 153, 233, 8, 7, 'elf', { enter: true, doorX: 156 });
+  stampBuilding(g, solid, scenery, 99, 236, 8, 7, 'elf', { enter: true, doorX: 102 });
   for (let y = 198; y <= 236; y++) {
     for (let x = 234; x < W - 1; x++) {
       g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
@@ -766,12 +766,18 @@ function interior(id, title, exit, occupants) {
     safe[y][w - 1] = 0;
   }
   const doorX = 8;
-  g[h - 1][doorX] = T.DOOR_BL;
-  g[h - 1][doorX - 1] = T.DOOR_BR;
-  solid[h - 1][doorX] = 0;
-  solid[h - 1][doorX - 1] = 0;
-  safe[h - 1][doorX] = 1;
-  safe[h - 1][doorX - 1] = 1;
+  for (const [row, left, right] of [
+    [h - 3, T.DOOR_TL, T.DOOR_TR],
+    [h - 2, T.DOOR_ML, T.DOOR_MR],
+    [h - 1, T.DOOR_BL, T.DOOR_BR],
+  ]) {
+    g[row][doorX] = left;
+    g[row][doorX - 1] = right;
+    solid[row][doorX] = 0;
+    solid[row][doorX - 1] = 0;
+    safe[row][doorX] = 1;
+    safe[row][doorX - 1] = 1;
+  }
   const objects = [];
   objects.push({
     kind: 'door',

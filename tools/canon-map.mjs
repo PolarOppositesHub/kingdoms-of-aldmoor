@@ -273,12 +273,18 @@ export function interior(id, title, exitZone, exit, occupants, blurb) {
     safe[y][w - 1] = 0;
   }
   const doorX = 8;
-  g[h - 1][doorX] = T.DOOR_BL;
-  g[h - 1][doorX - 1] = T.DOOR_BR;
-  solid[h - 1][doorX] = 0;
-  solid[h - 1][doorX - 1] = 0;
-  safe[h - 1][doorX] = 1;
-  safe[h - 1][doorX - 1] = 1;
+  for (const [row, left, right] of [
+    [h - 3, T.DOOR_TL, T.DOOR_TR],
+    [h - 2, T.DOOR_ML, T.DOOR_MR],
+    [h - 1, T.DOOR_BL, T.DOOR_BR],
+  ]) {
+    g[row][doorX] = left;
+    g[row][doorX - 1] = right;
+    solid[row][doorX] = 0;
+    solid[row][doorX - 1] = 0;
+    safe[row][doorX] = 1;
+    safe[row][doorX - 1] = 1;
+  }
   const objects = [];
   objects.push({ kind: 'door', name: 'exit', ...feet(doorX, h - 1), toZone: exitZone, toX: exit.x, toY: exit.y, sprite: 'sign_hall' });
   objects.push({ kind: 'spawn', name: 'entry', ...feet(doorX, h - 3) });
@@ -322,12 +328,12 @@ function buildBrightforge() {
   clearPatch(scenery, 81, 37, 175, 111);
   frameGate(g, solid, 120, 36, 16, 1);
   frameGate(g, solid, 120, 112, 16, 1);
-  stampBuilding(g, solid, scenery, 90, 49, 12, 8, 'dwarf', { enter: true, doorX: 96 });
-  stampBuilding(g, solid, scenery, 152, 49, 12, 8, 'dwarf', { enter: true, doorX: 158 });
-  stampBuilding(g, solid, scenery, 90, 79, 12, 8, 'dwarf', { enter: true, doorX: 96 });
-  stampBuilding(g, solid, scenery, 152, 79, 12, 8, 'dwarf', { enter: true, doorX: 158 });
-  stampBuilding(g, solid, scenery, 118, 92, 16, 9, 'dwarf', { enter: true, doorX: 128 });
-  stampBuilding(g, solid, scenery, 142, 92, 12, 9, 'dwarf', { enter: true, doorX: 148 });
+  stampBuilding(g, solid, scenery, 93, 50, 8, 7, 'dwarf', { enter: true, doorX: 96 });
+  stampBuilding(g, solid, scenery, 155, 50, 8, 7, 'dwarf', { enter: true, doorX: 158 });
+  stampBuilding(g, solid, scenery, 93, 80, 8, 7, 'dwarf', { enter: true, doorX: 96 });
+  stampBuilding(g, solid, scenery, 155, 80, 8, 7, 'dwarf', { enter: true, doorX: 158 });
+  stampBuilding(g, solid, scenery, 125, 94, 8, 7, 'dwarf', { enter: true, doorX: 128 });
+  stampBuilding(g, solid, scenery, 145, 94, 8, 7, 'dwarf', { enter: true, doorX: 148 });
   const m = maker('brightforge', 'Brightforge', 'Lightbrune Slopes');
   const back = (tx, ty) => feet(tx, ty);
   m.add('door', 'To Graymoor', 128, 10, { toZone: 'thornhaven', toX: feet(236, 48).x, toY: feet(236, 48).y, sprite: 'sign_wilds' });
@@ -441,10 +447,10 @@ function buildWyrmrest() {
   clearPatch(scenery, 71, 71, 185, 189);
   frameGate(g, solid, 70, 132, 1, 16);
   frameGate(g, solid, 120, 70, 16, 1);
-  stampBuilding(g, solid, scenery, 108, 74, 12, 8, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 150, 74, 14, 8, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 88, 150, 12, 8, 'human', { enter: false });
-  stampBuilding(g, solid, scenery, 152, 148, 14, 8, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 108, 74, 8, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 150, 74, 8, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 88, 150, 8, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 152, 148, 8, 7, 'human', { enter: false });
   const m = maker('wyrmrest', 'Wyrmrest', 'Wyrmrest');
   m.add('door', 'To the Frostmere Wilds', 12, 140, { toZone: 'hoffender', toX: feet(240, 152).x, toY: feet(240, 152).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Ashfall Moors', 128, 10, { toZone: 'ashfall', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
@@ -577,7 +583,7 @@ function buildScalded() {
   stroke(g, solid, road, scenery.grid, [[128, 6], [120, 80], [136, 150], [128, 248]], 1);
   outpost(g, solid, safe, scenery, 96, 176, 168, 228, [[120, 228, 16, 1]]);
   frameGate(g, solid, 120, 228, 16, 1);
-  stampBuilding(g, solid, scenery, 112, 186, 12, 8, 'dwarf', { enter: false });
+  stampBuilding(g, solid, scenery, 112, 186, 8, 7, 'dwarf', { enter: false });
   const m = maker('scalded', "Thane's Rest", 'The Scalded Vale');
   m.add('door', 'To the Ashfall Moors', 128, 248, { toZone: 'ashfall', toX: feet(128, 16).x, toY: feet(128, 16).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Wyrmrest Spires', 128, 8, { toZone: 'spires', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
