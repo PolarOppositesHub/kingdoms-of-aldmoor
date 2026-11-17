@@ -81,7 +81,7 @@ export interface ItemDef {
   /** What a scroll teaches. Buying it spends the coin and adds the ability. */
   teaches?: string;
   /** Warden may equip fist or staff only. */
-  grip?: 'axe' | 'blade' | 'staff' | 'fist';
+  grip?: 'axe' | 'blade' | 'staff' | 'fist' | 'bow';
   /** Plate, chain, leather, cloth, or scale. Scale is in the schema and not stocked yet. */
   armorType?: ArmorType;
   /** 1 rusty/tattered, 2 worked, 3 bronze/hardened/wool, 4 ashforged and the peak sets. */
@@ -285,6 +285,8 @@ export interface Tuning {
 export interface MerchantStock {
   itemId: string;
   price: number;
+  /** When set, only these races are offered the row. */
+  races?: string[];
 }
 
 export interface VendorDef {
@@ -293,6 +295,8 @@ export interface VendorDef {
   stock: MerchantStock[];
   /** Copy another vendor's list. Prices stay listed; the counter can still discount. */
   copyFrom?: string;
+  /** When set, the whole counter refuses other races. */
+  races?: string[];
 }
 
 export interface ContentDb {

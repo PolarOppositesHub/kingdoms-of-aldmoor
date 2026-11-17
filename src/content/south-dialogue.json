@@ -1,7 +1,7 @@
 {
   "odda": {
     "start": {
-      "text": "Odda Venn. Graymoor Hold is the last dry yard before the fields forget how to be fields. The boars are the first problem. Eight of them.",
+      "text": "Odda Venn. Graymoor Hold is the last dry yard before the fields forget how to be fields. I keep it for King Aldric Valdor, as every castle lord does. The boars are the first problem. Eight of them.",
       "choices": [
         { "label": "I'll thin the boars.", "action": "acceptQuest", "quest": "graymoor_boars" },
         { "label": "Show me your goods.", "action": "merchant" },
@@ -74,7 +74,7 @@
   },
   "osric": {
     "start": {
-      "text": "Osric Blackpine. The tower is the kingdom's, which these days means it is mine to keep standing. Brigands on the road are the count I can still make. Six of them.",
+      "text": "Osric Blackpine. The tower is King Aldric Valdor's, and I keep it standing for him. Brigands on the road are the count I can still make. Six of them.",
       "choices": [
         { "label": "I'll clear the road.", "action": "acceptQuest", "quest": "pine_road" },
         { "label": "Show me your goods.", "action": "merchant" },

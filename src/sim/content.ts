@@ -36,6 +36,12 @@ import canonQuests from '../content/canon-quests.json';
 import canonDialogue from '../content/canon-dialogue.json';
 import canonMaps from '../content/canon-maps.json';
 import canonVendors from '../content/canon-vendors.json';
+import phase2Mobs from '../content/phase2-mobs.json';
+import phase2Npcs from '../content/phase2-npcs.json';
+import phase2Quests from '../content/phase2-quests.json';
+import phase2Dialogue from '../content/phase2-dialogue.json';
+import phase2Maps from '../content/phase2-maps.json';
+import phase2Vendors from '../content/phase2-vendors.json';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -62,9 +68,10 @@ export function loadContent(): ContentDb {
       throw new Error(`${item.id} wearers do not match the ${item.armorType} rule`);
     }
   }
-  const maps = indexById([...(mapsJson as MapChart[]), ...(canonMaps as MapChart[])]);
-  if (Object.keys(maps).length !== (mapsJson as MapChart[]).length + (canonMaps as MapChart[]).length) {
-    throw new Error('canon chart ids collide with existing charts');
+  const mapRows = [...(mapsJson as MapChart[]), ...(canonMaps as MapChart[]), ...(phase2Maps as MapChart[])];
+  const maps = indexById(mapRows);
+  if (Object.keys(maps).length !== mapRows.length) {
+    throw new Error('chart ids collide');
   }
   const bounds = chartBounds as Record<string, { zone: string; x: number; y: number; w: number; h: number }>;
   for (const chart of Object.values(maps)) {
@@ -76,17 +83,17 @@ export function loadContent(): ContentDb {
     chart.w = box.w;
     chart.h = box.h;
   }
-  const vendorRows = [...(merchantJson.vendors as VendorDef[]), ...(canonVendors as VendorDef[])];
+  const vendorRows = [...(merchantJson.vendors as VendorDef[]), ...(canonVendors as VendorDef[]), ...(phase2Vendors as VendorDef[])];
   const vendors: VendorDef[] = vendorRows.map((vendor) => {
     if (!vendor.copyFrom) return vendor;
     const source = vendorRows.find((entry) => entry.npcId === vendor.copyFrom);
     if (!source) throw new Error(`${vendor.npcId} copies missing vendor ${vendor.copyFrom}`);
     return { ...vendor, stock: source.stock.map((row) => ({ ...row })) };
   });
-  const mobRows = [...(mobsJson as MobDef[]), ...(southMobs as MobDef[]), ...(canonMobs as MobDef[])];
+  const mobRows = [...(mobsJson as MobDef[]), ...(southMobs as MobDef[]), ...(canonMobs as MobDef[]), ...(phase2Mobs as MobDef[])];
   const mobs = indexById(mobRows);
   if (Object.keys(mobs).length !== mobRows.length) throw new Error('mob ids collide');
-  const npcRows = [...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[]), ...(canonNpcs as NpcDef[])];
+  const npcRows = [...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[]), ...(canonNpcs as NpcDef[]), ...(phase2Npcs as NpcDef[])];
   const npcs = indexById(npcRows);
   if (Object.keys(npcs).length !== npcRows.length) throw new Error('npc ids collide');
   const abilities = indexById(abilitiesJson as AbilityDef[]);
@@ -111,6 +118,7 @@ export function loadContent(): ContentDb {
       ...(dialogueJson as ContentDb['dialogue']),
       ...(southDialogue as ContentDb['dialogue']),
       ...(canonDialogue as ContentDb['dialogue']),
+      ...(phase2Dialogue as ContentDb['dialogue']),
     },
     abilities,
     classes,
@@ -119,7 +127,7 @@ export function loadContent(): ContentDb {
     economy: economyJson,
     player: playerJson,
     roster: rosterJson as Roster,
-    quests: [...(questsJson as QuestDef[]), ...(southQuests as QuestDef[]), ...(canonQuests as QuestDef[])],
+    quests: [...(questsJson as QuestDef[]), ...(southQuests as QuestDef[]), ...(canonQuests as QuestDef[]), ...(phase2Quests as QuestDef[])],
     maps,
   };
 }

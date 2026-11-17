@@ -9,7 +9,7 @@ import { itemIconKey } from '../sim/icons';
 import { armorLabel, classLabel, classListLabel } from '../sim/wear';
 import { askPrice, knownAbilities } from '../sim/systems';
 import { countItem, firstConsumable } from '../sim/bags';
-import { playerVisuals, raceScale } from '../sim/appearance';
+import { bodySprite, playerVisuals, raceScale } from '../sim/appearance';
 import iconsUrl from '../assets/icons.png?url';
 import iconMeta from '../assets/icons.json';
 import actorsUrl from '../assets/actors.png?url';
@@ -955,6 +955,7 @@ function merchantHtml(state: GameState, api: GameApi): string {
   for (const row of vendor?.stock ?? []) {
     const item = api.content.items[row.itemId];
     if (!item) continue;
+    if (row.races && !row.races.includes(state.raceId)) continue;
     const taught = item.teaches ? api.content.abilities[item.teaches] : undefined;
     const locked = Boolean(taught && state.level < taught.level);
     const already = Boolean(taught && known.has(taught.id));
@@ -1017,11 +1018,11 @@ function actorLayerStyle(rowName: string): string {
 }
 
 function dollFigure(state: GameState, api: GameApi): string {
-  const body = state.sex === 'female' ? 'body_f' : 'body_m';
+  const body = bodySprite(state.raceId, state.sex);
   const layers = playerVisuals(state, api.content)
     .map((visual) => `<span class="doll-layer" style="${actorLayerStyle(visual.row)}"></span>`)
     .join('');
-  const scale = Math.min(1.16, raceScale(api.content, state.raceId));
+  const scale = Math.min(1.45, raceScale(api.content, state.raceId));
   return `<div class="doll-stage" style="transform:scale(${scale});transform-origin:bottom center">
     <span class="doll-shadow"></span>
     <span class="doll-layer doll-body" style="${actorLayerStyle(body)}"></span>

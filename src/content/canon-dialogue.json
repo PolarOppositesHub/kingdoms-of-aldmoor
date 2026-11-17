@@ -1,7 +1,7 @@
 {
   "durgan": {
     "start": {
-      "text": "Durgan Ashbeard. Brightforge is the Lightbrune hold, the nearest of the mountain clans to Graymoor. The deep doors to Ashdeep and Veilspire are shut. Old Slate is not. The bear is rarely on the slope. I would like it met.",
+      "text": "Durgan Ashbeard. Brightforge is the Lightbrune hold, the nearest of the mountain clans to Graymoor. King Aldric Valdor rules the human castles. This hold keeps its own crown, and the pass to his kingdom is open. The deep doors to Ashdeep and Veilspire are shut. Old Slate is not. The bear is rarely on the slope. I would like it met.",
       "choices": [
         {
           "label": "I will look for Old Slate.",
@@ -376,7 +376,7 @@
   },
   "brynn": {
     "start": {
-      "text": "Brynn Holt, castellan of Wyrmrest. The castle sits on the northern border, under the peaks, northeast of Hoffender. The dragons were laid to rest here after an old war. Ysolde's cold held them. The Black Ice is broken, and the heath is burned. Eight ash wolves, first.",
+      "text": "Brynn Holt, castellan of Wyrmrest. The castle sits on the northern border, under the peaks, northeast of Hoffender, and it answers to King Aldric Valdor. The dragons were laid to rest here after an old war. Ysolde's cold held them. The Black Ice is broken, and the heath is burned. East of here, the Grokthul ogres fight those dragons. They are not Vargan's clan. Eight ash wolves, first.",
       "choices": [
         {
           "label": "I will take the ash pack.",

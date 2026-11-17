@@ -72,6 +72,86 @@ export const T = {
   SHELF: 63,
   DUNGEON: 64,
   GLOW: 65,
+  HUMAN_WALL: 66,
+  HUMAN_FRONT: 67,
+  HUMAN_WIN: 68,
+  HUMAN_ROOF: 69,
+  HUMAN_EAVE: 70,
+  HUMAN_ROOFN: 71,
+  HUMAN_DTL: 72,
+  HUMAN_DTR: 73,
+  HUMAN_DML: 74,
+  HUMAN_DMR: 75,
+  HUMAN_DBL: 76,
+  HUMAN_DBR: 77,
+  ELF_WALL: 78,
+  ELF_FRONT: 79,
+  ELF_WIN: 80,
+  ELF_ROOF: 81,
+  ELF_EAVE: 82,
+  ELF_ROOFN: 83,
+  ELF_DTL: 84,
+  ELF_DTR: 85,
+  ELF_DML: 86,
+  ELF_DMR: 87,
+  ELF_DBL: 88,
+  ELF_DBR: 89,
+  WOOD_WALL: 90,
+  WOOD_FRONT: 91,
+  WOOD_WIN: 92,
+  WOOD_ROOF: 93,
+  WOOD_EAVE: 94,
+  WOOD_ROOFN: 95,
+  WOOD_DTL: 96,
+  WOOD_DTR: 97,
+  WOOD_DML: 98,
+  WOOD_DMR: 99,
+  WOOD_DBL: 100,
+  WOOD_DBR: 101,
+  DWARF_WALL: 102,
+  DWARF_FRONT: 103,
+  DWARF_WIN: 104,
+  DWARF_ROOF: 105,
+  DWARF_EAVE: 106,
+  DWARF_ROOFN: 107,
+  DWARF_DTL: 108,
+  DWARF_DTR: 109,
+  DWARF_DML: 110,
+  DWARF_DMR: 111,
+  DWARF_DBL: 112,
+  DWARF_DBR: 113,
+  OGRE_WALL: 114,
+  OGRE_FRONT: 115,
+  OGRE_WIN: 116,
+  OGRE_ROOF: 117,
+  OGRE_EAVE: 118,
+  OGRE_ROOFN: 119,
+  OGRE_DTL: 120,
+  OGRE_DTR: 121,
+  OGRE_DML: 122,
+  OGRE_DMR: 123,
+  OGRE_DBL: 124,
+  OGRE_DBR: 125,
+  GATE: 126,
+  STEP: 127,
+  SPIRE: 128,
+  ROPE: 129,
+  TRUNK: 130,
+  RUNE: 131,
+  SEAL_L: 132,
+  SEAL_R: 133,
+  LANTERN: 134,
+  SEAL_TL: 135,
+  SEAL_TR: 136,
+  BANNER: 137,
+  PROW: 138,
+  BONE: 139,
+  SKULL: 140,
+  MOSS: 141,
+  WHITE: 142,
+  COBBLE: 143,
+  HIDE: 144,
+  LEAF: 145,
 };
 
 const W = 256;
@@ -1083,23 +1163,26 @@ function stampCity(g, solid, safe, road) {
     }
   }
 
-  const specs = [
-    ['inn', 93, 124, 12, 11, { chimney: true }],
-    ['shop', 106, 124, 11, 11, { shop: true }],
-    ['needles', 124, 124, 8, 11, { shop: true }],
-    ['forge', 133, 124, 10, 11, { chimney: true }],
-    ['smithy', 144, 124, 8, 11, { chimney: true }],
-    ['mead', 93, 156, 22, 12, { stone: true, chimney: true }],
-    ['warrior', 93, 170, 12, 11, { chimney: true }],
-    ['warden', 106, 170, 10, 11, {}],
-    ['wizard', 124, 156, 13, 11, { chimney: true }],
-    ['shaman', 138, 156, 13, 11, {}],
-    ['rogue', 124, 170, 13, 11, {}],
-    ['berserker', 138, 170, 13, 11, { chimney: true }],
+  // Door columns stay where the old halls put them. The facade is short enough that roof, wall, and door fit on a phone with the hero beside the door.
+  const halls = [
+    ['inn', 98, 134, 8, { chimney: true }],
+    ['shop', 110, 134, 8, { shop: true }],
+    ['needles', 127, 134, 8, { shop: true }],
+    ['forge', 137, 134, 8, { chimney: true }],
+    ['smithy', 147, 134, 8, { chimney: true }],
+    ['mead', 103, 167, 10, { stone: true, chimney: true }],
+    ['warrior', 98, 180, 8, { chimney: true }],
+    ['warden', 110, 180, 8, {}],
+    ['wizard', 129, 166, 8, { chimney: true }],
+    ['shaman', 143, 166, 8, {}],
+    ['rogue', 129, 180, 8, {}],
+    ['berserker', 143, 180, 8, { chimney: true }],
   ];
   const buildings = {};
-  for (const [id, x, y, w, h, opts] of specs) {
-    buildings[id] = building(g, solid, x, y, w, h, { ...opts, id });
+  const facadeH = 7;
+  for (const [id, doorX, doorY, w, opts] of halls) {
+    const doorLeft = Math.floor((w - 2) / 2);
+    buildings[id] = building(g, solid, doorX - doorLeft, doorY - (facadeH - 1), w, facadeH, { ...opts, id });
   }
   buildings.brandStall = { x: 138, y: 116 };
 
@@ -1149,6 +1232,7 @@ function building(g, solid, x, y, w, h, opts) {
         else if (north) tile = T.ROOF_N;
         else if (west) tile = T.ROOF_W;
         else if (east) tile = T.ROOF_E;
+        if (yy === 0 && xx === 0) tile = T.PROW;
         g[Y][X] = tile;
       } else if (isDoor) {
         const band = yy === doorTop ? 't' : yy === h - 1 ? 'b' : 'm';
@@ -1168,10 +1252,17 @@ function building(g, solid, x, y, w, h, opts) {
   if (opts.chimney) {
     const cx = x + 2;
     const cy = y + 1;
-    if (cy < y + roofH - 1) g[cy][cx] = T.CHIMNEY;
+    if (cy < y + roofH) g[cy][cx] = T.CHIMNEY;
   }
   const doorX = x + doorLeft;
   const doorY = y + h - 1;
+  const lampX = doorX - 1;
+  if (g[doorY - 2]?.[lampX] !== undefined && lampX >= x) g[doorY - 2][lampX] = T.LANTERN;
+  const porchX = doorX + 2;
+  if (g[doorY]?.[porchX] !== undefined && solid[doorY][porchX]) {
+    solid[doorY][porchX] = 0;
+    g[doorY][porchX] = T.PATH;
+  }
   return { id: opts.id, x, y, w, h, doorX, doorY };
 }
 
@@ -1234,12 +1325,18 @@ function buildInteriors(buildings, _barrowDoor) {
       safe[y][w - 1] = 0;
     }
     const doorX = Math.floor(w / 2);
-    g[h - 1][doorX] = T.DOOR_BL;
-    g[h - 1][doorX - 1] = T.DOOR_BR;
-    solid[h - 1][doorX] = 0;
-    solid[h - 1][doorX - 1] = 0;
-    safe[h - 1][doorX] = 1;
-    safe[h - 1][doorX - 1] = 1;
+    for (const [row, left, right] of [
+      [h - 3, T.DOOR_TL, T.DOOR_TR],
+      [h - 2, T.DOOR_ML, T.DOOR_MR],
+      [h - 1, T.DOOR_BL, T.DOOR_BR],
+    ]) {
+      g[row][doorX] = left;
+      g[row][doorX - 1] = right;
+      solid[row][doorX] = 0;
+      solid[row][doorX - 1] = 0;
+      safe[row][doorX] = 1;
+      safe[row][doorX - 1] = 1;
+    }
     // A rug of floor variety and a fire.
     for (let x = 3; x < w - 3; x++) g[6][x] = T.PATH_B;
     const objects = [];

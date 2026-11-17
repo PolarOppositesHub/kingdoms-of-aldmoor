@@ -6,6 +6,7 @@
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
 import { T, TILE } from './frostmere-map.mjs';
+import { frameGate, layGround, stampBuilding } from './buildings.mjs';
 
 const W = 256;
 const H = 256;
@@ -337,9 +338,16 @@ function buildThornhaven() {
     [184, 44, 1, 12],
   ]);
   clearPatch(scenery, solid, 89, 17, 183, 91);
-  stoneHouse(g, solid, 96, 28, 16, 10);
-  stoneHouse(g, solid, 156, 28, 16, 10);
-  stoneHouse(g, solid, 100, 64, 14, 10);
+  frameGate(g, solid, 120, 16, 16, 1);
+  frameGate(g, solid, 120, 92, 16, 1);
+  frameGate(g, solid, 184, 44, 1, 12);
+  layGround(g, solid, 90, 18, 180, 90, T.COBBLE);
+  stampBuilding(g, solid, scenery, 96, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 104, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 112, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 156, 22, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 100, 64, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 108, 64, 6, 7, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
   const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
@@ -483,8 +491,14 @@ function buildValdoria() {
     [220, 108, 1, 12],
   ]);
   clearPatch(scenery, solid, 151, 79, 219, 167);
-  stoneHouse(g, solid, 160, 96, 16, 12);
-  stoneHouse(g, solid, 188, 96, 18, 14);
+  frameGate(g, solid, 180, 78, 14, 1);
+  frameGate(g, solid, 186, 168, 12, 1);
+  frameGate(g, solid, 220, 108, 1, 12);
+  layGround(g, solid, 152, 80, 218, 166, T.COBBLE);
+  stampBuilding(g, solid, scenery, 152, 90, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 160, 90, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 168, 90, 6, 7, 'human', { enter: false });
+  stampBuilding(g, solid, scenery, 188, 92, 6, 7, 'human', { enter: false });
   stroke(g, solid, road, scenery.grid, [[220, 114], [228, 112]], 1);
   const m = maker('valdoria', 'Blackpine Tower', 'Valdoria');
   m.add('door', 'To Thornhaven', 128, 8, { toZone: 'thornhaven', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
@@ -494,7 +508,7 @@ function buildValdoria() {
   m.add('npc', 'pike', 176, 160, { defId: 'pike', sprite: 'soren' });
   m.add('npc', 'cress', 204, 160, { defId: 'cress', sprite: 'freya' });
   m.add('npc', 'wynn', 168, 120, { defId: 'wynn', sprite: 'signe' });
-  m.add('npc', 'joren', 228, 116, { defId: 'joren', sprite: 'tael' });
+  m.add('npc', 'joren', 228, 116, { defId: 'joren', sprite: 'joren' });
   m.add('bind', 'blackpine-yard', 196, 136);
   m.add('prop', 'banner', 192, 128, { sprite: 'banner' });
   m.add('prop', 'crate', 176, 136, { sprite: 'crate' });
@@ -593,14 +607,21 @@ function buildEldenmoor() {
   ]);
   // The castle court. Queen Ellewynn's house. The steward stands in the yard.
   wallBox(g, solid, safe, 108, 190, 148, 218, T.STONE, T.PATH, [[120, 218, 12, 1]]);
-  stoneHouse(g, solid, 116, 196, 24, 14);
-  house(g, solid, 72, 186, 12, 8);
-  house(g, solid, 174, 186, 14, 8);
-  house(g, solid, 68, 208, 12, 7);
-  house(g, solid, 174, 208, 12, 7);
-  house(g, solid, 96, 232, 12, 8);
-  house(g, solid, 68, 232, 12, 6);
-  house(g, solid, 150, 232, 12, 6);
+  frameGate(g, solid, 120, 156, 16, 1);
+  frameGate(g, solid, 192, 204, 1, 10);
+  frameGate(g, solid, 120, 176, 16, 1);
+  frameGate(g, solid, 120, 230, 12, 1);
+  frameGate(g, solid, 120, 218, 12, 1);
+  layGround(g, solid, 66, 158, 190, 244, T.WHITE);
+  stampBuilding(g, solid, scenery, 116, 196, 6, 7, 'elf', { enter: false });
+  stampBuilding(g, solid, scenery, 66, 190, 6, 7, 'elf', { enter: false });
+  stampBuilding(g, solid, scenery, 75, 190, 8, 7, 'elf', { enter: true, doorX: 78 });
+  stampBuilding(g, solid, scenery, 177, 190, 8, 7, 'elf', { enter: true, doorX: 180 });
+  stampBuilding(g, solid, scenery, 71, 210, 8, 7, 'elf', { enter: true, doorX: 74 });
+  stampBuilding(g, solid, scenery, 177, 210, 8, 7, 'elf', { enter: true, doorX: 180 });
+  stampBuilding(g, solid, scenery, 71, 233, 8, 7, 'elf', { enter: true, doorX: 74 });
+  stampBuilding(g, solid, scenery, 153, 233, 8, 7, 'elf', { enter: true, doorX: 156 });
+  stampBuilding(g, solid, scenery, 99, 236, 8, 7, 'elf', { enter: true, doorX: 102 });
   for (let y = 198; y <= 236; y++) {
     for (let x = 234; x < W - 1; x++) {
       g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
@@ -754,12 +775,18 @@ function interior(id, title, exit, occupants) {
     safe[y][w - 1] = 0;
   }
   const doorX = 8;
-  g[h - 1][doorX] = T.DOOR_BL;
-  g[h - 1][doorX - 1] = T.DOOR_BR;
-  solid[h - 1][doorX] = 0;
-  solid[h - 1][doorX - 1] = 0;
-  safe[h - 1][doorX] = 1;
-  safe[h - 1][doorX - 1] = 1;
+  for (const [row, left, right] of [
+    [h - 3, T.DOOR_TL, T.DOOR_TR],
+    [h - 2, T.DOOR_ML, T.DOOR_MR],
+    [h - 1, T.DOOR_BL, T.DOOR_BR],
+  ]) {
+    g[row][doorX] = left;
+    g[row][doorX - 1] = right;
+    solid[row][doorX] = 0;
+    solid[row][doorX - 1] = 0;
+    safe[row][doorX] = 1;
+    safe[row][doorX - 1] = 1;
+  }
   const objects = [];
   objects.push({
     kind: 'door',

@@ -9,7 +9,7 @@ export default function App() {
     <Page title="Kingdoms of Aldmoor: Design Doc v0.2" summary="Plan for an EverQuest-style, top-down 16-bit RPG set in the world of Aldmoor, played on the iPhone Duo. v1 starts in the Barbarian town of Hoffender. Josh is creative director; Grok Bot and the Coding bot are the dev team." width="column">
       <TableOfContents items={[
         { label: "Vision and pillars" }, { label: "Locked decisions" }, { label: "Lore and world" }, { label: "Platform and engine" },
-        { label: "Core systems" }, { label: "World map" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "The Black Ice" }, { label: "The road south" }, { label: "Brightforge" }, { label: "Eldenmoor" }, { label: "Wyrmrest" },         { label: "Warrior v1 kit" }, { label: "Touch HUD" },
+        { label: "Core systems" }, { label: "World map" }, { label: "Starter zone: Hoffender" }, { label: "Frostfang Reach" }, { label: "The Black Ice" }, { label: "The road south" }, { label: "Brightforge" }, { label: "Eldenmoor" }, { label: "Wyrmrest" }, { label: "Ironhollow" }, { label: "Canipure" }, { label: "Grokthul" }, { label: "Warrior v1 kit" }, { label: "Touch HUD" },
         { label: "Milestone roadmap" }, { label: "Multiplayer-ready architecture" }, { label: "Open questions for Josh" },
       ]} />
       <Section heading="Vision and pillars">
@@ -25,7 +25,7 @@ export default function App() {
       <Section heading="Locked decisions">
         <Properties items={[
           { label: "Game / world", value: "Kingdoms of Aldmoor / Aldmoor" },
-          { label: "Races", value: "Human, Dwarf, High Elf, Barbarian. Barbarian starts in Hoffender. High Elf starts in Eldenmoor. Dwarf starts in Brightforge. The others still wait." },
+          { label: "Races", value: "Barbarian starts in Hoffender. High Elf starts in Eldenmoor. Dwarf starts in Brightforge. Wood Elf starts in Canipure. Ogre, the Grokthul clan, starts in Grokthul Hold. Human is the plain baseline and is not playable yet. Dark elf, troll, and halfling still wait." },
           { label: "v1 starter town", value: "Hoffender, the Barbarian town, ruled by Jarl Freya Halvarddottir" },
           { label: "Frostmere Wilds", value: "The country outside Hoffender's north gate" },
           { label: "Frostfang Reach", value: "The Ogre Highlands past the north ridge of the Frostmere Wilds. Levels 10–20. Hearthpass outpost. War-chief Vargan Frostfang." },
@@ -76,7 +76,7 @@ export default function App() {
         ]} />
       </Section>
       <Section heading="World map">
-        <Text>Maerthun is the big western continent, and the kingdom on it is Valdoria. Hoffender and Frostfang Reach sit on the frozen northwest fjord. The Ogre Highlands run across the far north. Wyrmrest is a castle city on the kingdom's northern border, under those highlands, northeast of Hoffender. Thornhaven is a west-coast port, with Graymoor Hold just inland. Blackpine Tower is a castle in the central pines, inside a wood-elf free-passage ring. Ironhollow Keep, in the eastern hills, and Saltmere Castle, on the south coast, are not open. The Dwarven Mountains run diagonally across southern Maerthun from near Thornhaven and Graymoor: Brightforge of the Lightbrune clan is the northernmost hold, then Ashdeep of the Darkbrune, then Veilspire of the Mistbrune. The deep mine tunnels between them are shut. The Wood Elf lands and Canipure, a high elf staging ground, are on the east coast. Vaelmoor is a separate continent across the water to the northeast: Eldenmoor, the Dwarven Ruins, the Troll Fens, and Illindral of the dark elves. Golden trade ships link Maerthun and Vaelmoor by the Wood Elf coast. Vescara, seat of the Shadow King at Morzul, is southeast across the Sundering Sea, and it is not open.</Text>
+        <Text>Maerthun is the big western continent, and the kingdom on it is Valdoria. Hoffender and Frostfang Reach sit on the frozen northwest fjord. The Ogre Highlands run across the far north. Wyrmrest is a castle city on the kingdom's northern border, under those highlands, northeast of Hoffender. Thornhaven is a west-coast port, with Graymoor Hold just inland. Blackpine Tower is a castle in the central pines, inside a wood-elf free-passage ring. Ironhollow Keep is open in the eastern hills. Saltmere Castle, on the south coast, is not open. The Dwarven Mountains run diagonally across southern Maerthun from near Thornhaven and Graymoor: Brightforge of the Lightbrune clan is the northernmost hold, then Ashdeep of the Darkbrune, then Veilspire of the Mistbrune. The deep mine tunnels between them are shut. One forest runs from west of Blackpine, north of Ironhollow Keep, and east to the Wood Elf lands. Canipure, the wood elf treehouse city, stands on that east coast facing Vaelmoor, the high elf staging ground. The Grokthul Peaks sit in the eastern Ogre Highlands beside Wyrmrest. King Aldric Valdor rules the Kingdom of Valdoria, and every castle lord answers to him. His capital is not built yet. Vaelmoor is a separate continent across the water to the northeast: Eldenmoor, the Dwarven Ruins, the Troll Fens, and Illindral of the dark elves. Golden trade ships link Maerthun and Vaelmoor by the Wood Elf coast. Vescara, seat of the Shadow King at Morzul, is southeast across the Sundering Sea, and it is not open.</Text>
       </Section>
       <Section heading="Starter zone: Hoffender">
         <Rows rows={[
@@ -142,6 +142,16 @@ export default function App() {
           { title: "Saves", detail: "Old saves still load. A hero standing on a tile a rebuilt map removed is set down on the nearest open ground, a safe yard when one is close. Saves from before the big map moves still wake at the zone entrance." },
         ]} />
       </Section>
+
+      <Section heading="Ironhollow">
+        <Text>Ironhollow Keep is a castle city in the eastern hills, ruled by Lord Edric Hollen. He answers to King Aldric Valdor, as every castle lord does. The keep and the hills share one 256×256 map. The court is safe. A forest road runs along the north of the keep: west to Blackpine Tower, east into the Greenreach. The hills south of the court are the second leveling road east of Blackpine, levels 18–28. Bessa sells the two charts. Oswin keeps the gate chain. Old Marrow is the named rare.</Text>
+      </Section>
+      <Section heading="Canipure">
+        <Text>Wood Elf is playable. A new wood elf wakes in Canipure, the treehouse city on the east coast, and binds at the stair unless they bind somewhere else. The paths open to them are Warden, Rogue, Druid, and Ranger. Druid is a nature caster: heals, roots, a damage-over-time, and bark worn as a self-buff. Ranger is a bow: ranged shots, a light knife, a trail-reading buff, and a call that a beast may answer. Trainers stand in the boughs. Nothing is learned by leveling. The list says Requires level N until the level is reached, through 50. High elves are welcomed. Other races get a cold welcome: they may bind and buy bread, bandages, and the charts, and the halls will not teach them. The Greenreach, levels 1–10, is the forest west of the city, the same wood that runs north of Ironhollow. The dock faces Vaelmoor and sails to Eldenmoor.</Text>
+      </Section>
+      <Section heading="Grokthul">
+        <Text>Ogre is playable, and this clan is not Vargan Frostfang's. The Grokthul fight the waking dragons from the eastern Ogre Highlands, beside Wyrmrest. A new ogre wakes in Grokthul Hold and binds at the fire. The paths are Warrior, Shaman, and Berserker, the same class definitions the other races already use. The valley south of the hold is levels 1–10. The Grokthul Peaks, levels 28–35, run north of the hold and west to Wyrmrest. Tuskwatch is the safe yard. Cindermaw is the named rare. Ogres are drawn big, hunched, and tusked. The sprite scale matches.</Text>
+      </Section>
       <Section heading="Warrior v1 kit">
         <Table columns={["Level", "Skill", "Effect"]} rows={[
           ["1", "Auto-attack", "Weapon-delay melee swings"],
@@ -152,7 +162,7 @@ export default function App() {
           ["8", "Shout of Challenge", "Small area hate to nearby mobs"],
           ["10", "Second Wind", "Restore some HP, long cooldown"],
         ]} />
-        <Text>That table is the old v1 plan. In the game, every class buys later drills from its guild trainer, including Cleric, Enchanter, Paladin, and Magician, and the dwarf halls sell the same lists for the classes dwarves may walk. The lists run through level 50. Leveling does not grant them. Until the level is reached the line reads Requires level N. A spell or ability for sale names every class that can use it, for example Classes: Cleric, Paladin. Pets grow with the hero: more health, a harder swing.</Text>
+        <Text>That table is the old v1 plan. In the game, every class buys later drills from its guild trainer, including Cleric, Enchanter, Paladin, Magician, Druid, and Ranger, and the dwarf, wood elf, and ogre halls sell the lists for the classes those peoples may walk. The lists run through level 50. Leveling does not grant them. Until the level is reached the line reads Requires level N. A spell or ability for sale names every class that can use it, for example Classes: Cleric, Paladin. Pets grow with the hero: more health, a harder swing.</Text>
       </Section>
       <Section heading="Touch HUD">
         <Text>Combat buttons stay ATK, Next, Interact, and the ration. Journal, Spells (Abilities when the hero does not use mana), and Settings are a compact menu so a phone does not grow a second row of tiny labels. Interact talks to a person or opens a sign. Journal lists active and completed quests and their objectives. The spell book lists every spell and ability the hero knows, with icon, name, cost, and description. Tap one, then a hotbar slot, to assign it. A larger screen can drag. Slots can be rearranged or cleared, and the bar is saved with the character. An old save with no bar is filled from spells the hero already knows.</Text>
@@ -164,7 +174,7 @@ export default function App() {
           { title: "M2 First zone", detail: "Full Hoffender and the Frostmere Wilds, quests, leveling to 10, inventory and equipment, death and corpse runs, local saves." },
           { title: "M3 Second class", detail: "A caster with a spell vendor in its guild, mana and spell casting." },
           { title: "M4 First dungeon", detail: "Done. The Black Ice, three floors past the Fang. Ysolde of the Black Ice is the boss. Kara and Anwen carry the chain." },
-          { title: "M5 World growth", detail: "Eldenmoor is on Vaelmoor and reached by ship. Brightforge is the dwarf start. Wyrmrest and the peak road run to level 50. Still ahead: the other races, Ashdeep and Veilspire, the sealed lair under the spires, Ironhollow, Saltmere, the Wood Elf coast as its own country, Vescara, the iOS wrap, and co-op with cloud saves." },
+          { title: "M5 World growth", detail: "Phase 2 is in. Wood elves start in Canipure. Grokthul ogres start in Grokthul Hold. Ironhollow Keep and the hills are the road east of Blackpine. Eldenmoor, Brightforge, and the Wyrmrest road to 50 were already in. Still ahead: humans and the remaining races, Ashdeep and Veilspire, the sealed lair under the spires, Saltmere, Vescara, the iOS wrap, and co-op with cloud saves." },
         ]} />
       </Section>
       <Section heading="Multiplayer-ready architecture">
@@ -181,7 +191,7 @@ export default function App() {
         <NumberedList items={[
           "Hoffender's look: snowy fjord village, mountain longhouse hold, or frozen coastal port? M1 ships the fjord village.",
           "Camp boss flavor: bandit chief, alpha frost wolf, or gnoll warlord?",
-          "Which race opens after the dwarves? Human, Wood Elf, and the rest are still locked. Ashdeep, Veilspire, the lair under the spires, Ironhollow, Saltmere, and Vescara are still shut.",
+          "Phase 2 opened the wood elves and the Grokthul ogres. Human, dark elf, troll, and halfling are still locked. Ashdeep, Veilspire, the lair under the spires, Saltmere, and Vescara are still shut.",
         ]} />
         <Callout lead="Next step">Coding can start M1 now; these answers shape M2.</Callout>
       </Section>

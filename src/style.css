@@ -750,6 +750,9 @@ html[data-hud-density="regular"] .util-row.is-fit:not(.is-sized) {
   touch-action: pan-y;
 }
 .create-card h2 { margin: 12px 0 6px; font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
+.race-preview { display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 220px; margin: 6px 0; padding-top: 56px; }
+.race-preview p { margin: 0; color: var(--muted); font-size: 12px; }
+.race-preview .doll-stage { width: 96px; height: 150px; }
 .pick-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .pick-grid button { text-align: left; }
 .pick-grid button small { display: block; color: var(--muted); font-size: 11px; font-weight: 500; }
