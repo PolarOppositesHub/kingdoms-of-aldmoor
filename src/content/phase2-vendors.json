@@ -1,0 +1,298 @@
+[
+  {
+    "npcId": "larkin",
+    "title": "Warden Drills",
+    "copyFrom": "bjorn",
+    "races": [
+      "wood_elf",
+      "high_elf"
+    ],
+    "stock": []
+  },
+  {
+    "npcId": "thistle",
+    "title": "Rogue Drills",
+    "copyFrom": "sable",
+    "races": [
+      "wood_elf",
+      "high_elf"
+    ],
+    "stock": []
+  },
+  {
+    "npcId": "briar",
+    "title": "Grove Drills",
+    "races": [
+      "wood_elf",
+      "high_elf"
+    ],
+    "stock": [
+      {
+        "itemId": "scroll_briar_mend",
+        "price": 58
+      },
+      {
+        "itemId": "scroll_thorn_bolt",
+        "price": 58
+      },
+      {
+        "itemId": "scroll_creeping_rot",
+        "price": 124
+      },
+      {
+        "itemId": "scroll_rootbind",
+        "price": 212
+      },
+      {
+        "itemId": "scroll_barkskin",
+        "price": 300
+      },
+      {
+        "itemId": "scroll_seed_mend",
+        "price": 388
+      },
+      {
+        "itemId": "scroll_bramble_field",
+        "price": 476
+      },
+      {
+        "itemId": "scroll_vine_lash",
+        "price": 676
+      },
+      {
+        "itemId": "scroll_grove_root",
+        "price": 876
+      },
+      {
+        "itemId": "scroll_grove_mend",
+        "price": 1076
+      },
+      {
+        "itemId": "scroll_spore_cloud",
+        "price": 1276
+      },
+      {
+        "itemId": "scroll_living_bark",
+        "price": 1476
+      },
+      {
+        "itemId": "scroll_thorn_rain",
+        "price": 1676
+      },
+      {
+        "itemId": "scroll_old_growth",
+        "price": 1876
+      },
+      {
+        "itemId": "scroll_green_crown",
+        "price": 1976
+      }
+    ]
+  },
+  {
+    "npcId": "rowan",
+    "title": "Ranger Drills",
+    "races": [
+      "wood_elf",
+      "high_elf"
+    ],
+    "stock": [
+      {
+        "itemId": "scroll_quick_shot",
+        "price": 58
+      },
+      {
+        "itemId": "scroll_knife_jab",
+        "price": 58
+      },
+      {
+        "itemId": "scroll_marked_trail",
+        "price": 124
+      },
+      {
+        "itemId": "scroll_pinning_shot",
+        "price": 212
+      },
+      {
+        "itemId": "scroll_sidestep",
+        "price": 300
+      },
+      {
+        "itemId": "scroll_volley",
+        "price": 388
+      },
+      {
+        "itemId": "scroll_calm_beast",
+        "price": 476
+      },
+      {
+        "itemId": "scroll_low_shot",
+        "price": 676
+      },
+      {
+        "itemId": "scroll_hunters_eye",
+        "price": 876
+      },
+      {
+        "itemId": "scroll_thicket_step",
+        "price": 1076
+      },
+      {
+        "itemId": "scroll_arrow_rain",
+        "price": 1276
+      },
+      {
+        "itemId": "scroll_second_mark",
+        "price": 1476
+      },
+      {
+        "itemId": "scroll_wild_knit",
+        "price": 1676
+      },
+      {
+        "itemId": "scroll_long_shot",
+        "price": 1876
+      },
+      {
+        "itemId": "scroll_last_arrow",
+        "price": 1976
+      }
+    ]
+  },
+  {
+    "npcId": "wry_druid",
+    "title": "High Drills",
+    "copyFrom": "briar",
+    "stock": []
+  },
+  {
+    "npcId": "wry_ranger",
+    "title": "High Drills",
+    "copyFrom": "rowan",
+    "stock": []
+  },
+  {
+    "npcId": "bruk",
+    "title": "Warrior Drills",
+    "copyFrom": "eirik",
+    "stock": []
+  },
+  {
+    "npcId": "shala",
+    "title": "Shaman Drills",
+    "copyFrom": "torunn",
+    "stock": []
+  },
+  {
+    "npcId": "ruk",
+    "title": "Berserker Drills",
+    "copyFrom": "hroth",
+    "stock": []
+  },
+  {
+    "npcId": "moss",
+    "title": "Bough Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 8
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 12
+      },
+      {
+        "itemId": "chart_canipure",
+        "price": 30
+      },
+      {
+        "itemId": "chart_greenreach",
+        "price": 28
+      },
+      {
+        "itemId": "grove_staff",
+        "price": 16,
+        "races": [
+          "wood_elf",
+          "high_elf"
+        ]
+      },
+      {
+        "itemId": "wood_bow",
+        "price": 18,
+        "races": [
+          "wood_elf",
+          "high_elf"
+        ]
+      }
+    ]
+  },
+  {
+    "npcId": "bessa",
+    "title": "Ironhollow Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 8
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 12
+      },
+      {
+        "itemId": "chart_ironhollow",
+        "price": 50
+      },
+      {
+        "itemId": "chart_ironhollow_hills",
+        "price": 60
+      }
+    ]
+  },
+  {
+    "npcId": "cald",
+    "title": "Ironhollow Forge",
+    "copyFrom": "ivar",
+    "stock": []
+  },
+  {
+    "npcId": "ugga",
+    "title": "Hold Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 8
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 12
+      },
+      {
+        "itemId": "chart_grokthul",
+        "price": 24
+      },
+      {
+        "itemId": "chart_grokthul_valley",
+        "price": 26
+      }
+    ]
+  },
+  {
+    "npcId": "skaal",
+    "title": "Tuskwatch Stores",
+    "stock": [
+      {
+        "itemId": "trail_ration",
+        "price": 8
+      },
+      {
+        "itemId": "wool_bandage",
+        "price": 12
+      },
+      {
+        "itemId": "chart_grokthul_peaks",
+        "price": 80
+      }
+    ]
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "id": "ironhollow",
+    "name": "Ironhollow Keep",
+    "blurb": "Lord Edric's castle. The ink stops at the wall."
+  },
+  {
+    "id": "ironhollow_hills",
+    "name": "Ironhollow Hills",
+    "blurb": "The hills south of the keep, from the gate to Old Marrow."
+  },
+  {
+    "id": "canipure",
+    "name": "Canipure",
+    "blurb": "The wood elf treehouse city. The ink stops at the boughs."
+  },
+  {
+    "id": "greenreach",
+    "name": "The Greenreach",
+    "blurb": "The young forest west of Canipure."
+  },
+  {
+    "id": "grokthul",
+    "name": "Grokthul Hold",
+    "blurb": "The Grokthul camp. The ink stops at the palisade."
+  },
+  {
+    "id": "grokthul_valley",
+    "name": "Grokthul Valley",
+    "blurb": "The young ground south of the hold."
+  },
+  {
+    "id": "grokthul_peaks",
+    "name": "Grokthul Peaks",
+    "blurb": "The peaks beside Wyrmrest. Cindermaw keeps the north of them."
+  }
+]

@@ -11,6 +11,8 @@ const CLASS_NAME: Record<string, string> = {
   enchanter: 'Enchanter',
   paladin: 'Paladin',
   magician: 'Magician',
+  druid: 'Druid',
+  ranger: 'Ranger',
 };
 
 export function classLabel(id: string): string {

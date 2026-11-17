@@ -417,6 +417,32 @@ function paintGlyph(image, id) {
   image.set(8, 8, hex('#1c1418'));
 }
 
+function paintPhaseMark(image, id) {
+  let n = 2166136261;
+  for (let i = 0; i < id.length; i++) n = Math.imul(n ^ id.charCodeAt(i), 16777619) >>> 0;
+  const greens = ['#1e3324', '#2c4a30', '#3e6b40', '#6a8a48', '#8ab86a', '#c4a060', '#5c3a22', '#d7c4a4', '#e6c15a', '#f4f0e6'];
+  fill(image, 1, 1, 14, 14, greens[n % greens.length]);
+  for (let y = 2; y < 14; y++) {
+    for (let x = 2; x < 14; x++) {
+      const bit = (n >>> ((x + y * 3) % 24)) & 1;
+      if ((x * 7 + y * 13 + n) % 5 === 0) image.set(x, y, hex(greens[(n >>> (x + y)) % greens.length]));
+      else if (bit && (x + y) % 3 === 0) image.set(x, y, hex('#1c1418'));
+    }
+  }
+  image.set(3 + (n % 8), 4 + ((n >>> 4) % 7), hex('#f4f7fb'));
+  image.set(4 + ((n >>> 9) % 8), 5, hex('#a33b32'));
+}
+
+const PHASE_MARKS = [
+  'briar_mend', 'thorn_bolt', 'creeping_rot', 'rootbind', 'barkskin', 'seed_mend', 'bramble_field', 'vine_lash', 'grove_root',
+  'grove_mend', 'spore_cloud', 'living_bark', 'thorn_rain', 'old_growth', 'green_crown', 'quick_shot', 'knife_jab', 'marked_trail',
+  'pinning_shot', 'sidestep', 'volley', 'calm_beast', 'low_shot', 'hunters_eye', 'thicket_step', 'arrow_rain', 'second_mark',
+  'wild_knit', 'long_shot', 'last_arrow',
+];
+for (const id of PHASE_MARKS) {
+  DRAW[id] = (image) => paintPhaseMark(image, id);
+}
+
 export function paintAbilityIcon(id) {
   const draw = DRAW[id];
   const image = img();

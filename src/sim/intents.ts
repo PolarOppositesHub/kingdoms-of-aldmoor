@@ -115,11 +115,13 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         if (race?.homeZone && race.homeX !== undefined && race.homeY !== undefined && race.homeZone !== state.zoneId) {
           state.bindZone = race.homeZone;
           state.bind = { x: race.homeX, y: race.homeY };
-          state.log = [
-            race.id === 'dwarf'
-              ? 'Brightforge is at your back. The Lightbrune Slopes, and whatever keeps to the rock, wait past the south gate.'
-              : 'The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.',
-          ];
+          const arrived: Record<string, string> = {
+            dwarf: 'Brightforge is at your back. The Lightbrune Slopes, and whatever keeps to the rock, wait past the south gate.',
+            high_elf: 'The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.',
+            wood_elf: 'Canipure is at your back. The Greenreach, and whatever keeps to the trees, waits past the west boughs.',
+            ogre: 'Grokthul Hold is at your back. The valley is young. The peaks, and the dragons, are north.',
+          };
+          state.log = [arrived[race.id] ?? 'You wake at home.'];
           emit({ type: 'zone', zoneId: race.homeZone, x: race.homeX, y: race.homeY });
         }
         return;
@@ -218,6 +220,10 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
             ashfall: 'You bind at Emberwatch. If you fall, you wake in the yard.',
             scalded: "You bind at Thane's Rest. If you fall, you wake in the yard.",
             spires: 'You bind on the Last Step. If you fall, you wake here.',
+            canipure: 'You bind at the Canipure stair. If you fall, you wake in the boughs.',
+            ironhollow: 'You bind at Ironhollow Keep. If you fall, you wake in the court.',
+            grokthul: 'You bind at the Grokthul fire. If you fall, you wake in the yard.',
+            grokthul_peaks: 'You bind at Tuskwatch. If you fall, you wake in the yard.',
           };
           emit({ type: 'log', text: bindText[state.zoneId] ?? 'You bind here.' });
           state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };
@@ -238,6 +244,14 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const stock = vendor.stock.find((row) => row.itemId === intent.itemId);
         const item = content.items[intent.itemId];
         if (!stock || !item) return;
+        if (vendor.races && !vendor.races.includes(state.raceId)) {
+          emit({ type: 'log', text: 'They will not sell that to you.' });
+          return;
+        }
+        if (stock.races && !stock.races.includes(state.raceId)) {
+          emit({ type: 'log', text: 'That is not for sale to you.' });
+          return;
+        }
         if (item.teaches) {
           const price = askPrice(npc.defId, stock.price);
           if (state.copper < price) {

@@ -2794,5 +2794,601 @@
     "mana": 46,
     "verb": "crown",
     "radius": 80
+  },
+  {
+    "id": "briar_mend",
+    "name": "Briar Mend",
+    "short": "Briar",
+    "level": 1,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "druid",
+    "blurb": "A small mend from the green.",
+    "mana": 8,
+    "heal": 14
+  },
+  {
+    "id": "thorn_bolt",
+    "name": "Thorn Bolt",
+    "short": "Thorn",
+    "level": 1,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "druid",
+    "blurb": "One thorn, thrown.",
+    "mana": 6,
+    "verb": "pierce"
+  },
+  {
+    "id": "creeping_rot",
+    "name": "Creeping Rot",
+    "short": "Rot",
+    "level": 4,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "hate": 6,
+    "kind": "dot",
+    "classId": "druid",
+    "blurb": "A rot that keeps working.",
+    "mana": 10,
+    "verb": "rots",
+    "dotMs": 8000,
+    "dotAmount": 3
+  },
+  {
+    "id": "rootbind",
+    "name": "Rootbind",
+    "short": "Root",
+    "level": 8,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "druid",
+    "blurb": "Roots take the feet. They do not let go quickly.",
+    "mana": 14,
+    "verb": "root",
+    "slowMs": 7000,
+    "slowFactor": 0.15
+  },
+  {
+    "id": "barkskin",
+    "name": "Barkskin",
+    "short": "Bark",
+    "level": 12,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "druid",
+    "blurb": "You put the bark on yourself.",
+    "mana": 16,
+    "buff": "aegis",
+    "buffMs": 12000
+  },
+  {
+    "id": "seed_mend",
+    "name": "Seed Mend",
+    "short": "Seed",
+    "level": 16,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "druid",
+    "blurb": "A mend that keeps growing.",
+    "mana": 18,
+    "heal": 20,
+    "hotMs": 8000,
+    "hotAmount": 4
+  },
+  {
+    "id": "bramble_field",
+    "name": "Bramble Field",
+    "short": "Bramble",
+    "level": 20,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 3
+    },
+    "hate": 6,
+    "kind": "field",
+    "classId": "druid",
+    "blurb": "Briars on everyone near the target.",
+    "mana": 24,
+    "verb": "rake",
+    "slowMs": 4000,
+    "slowFactor": 0.55,
+    "radius": 70
+  },
+  {
+    "id": "vine_lash",
+    "name": "Vine Lash",
+    "short": "Lash",
+    "level": 24,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 3
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "druid",
+    "blurb": "A longer vine.",
+    "mana": 18,
+    "verb": "lash"
+  },
+  {
+    "id": "grove_mend",
+    "name": "Grove Mend",
+    "short": "Grove",
+    "level": 32,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "druid",
+    "blurb": "The grove lends a larger mend.",
+    "mana": 28,
+    "heal": 70
+  },
+  {
+    "id": "spore_cloud",
+    "name": "Spore Cloud",
+    "short": "Spore",
+    "level": 36,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 5
+    },
+    "hate": 6,
+    "kind": "field",
+    "classId": "druid",
+    "blurb": "Spores on the crowd.",
+    "mana": 32,
+    "verb": "choke",
+    "radius": 74
+  },
+  {
+    "id": "living_bark",
+    "name": "Living Bark",
+    "short": "Bark",
+    "level": 40,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "druid",
+    "blurb": "The bark stays longer.",
+    "mana": 26,
+    "buff": "aegis",
+    "buffMs": 18000
+  },
+  {
+    "id": "thorn_rain",
+    "name": "Thorn Rain",
+    "short": "Rain",
+    "level": 44,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 6
+    },
+    "hate": 6,
+    "kind": "field",
+    "classId": "druid",
+    "blurb": "Thorns on everyone near the target.",
+    "mana": 36,
+    "verb": "rain",
+    "radius": 80
+  },
+  {
+    "id": "old_growth",
+    "name": "Old Growth",
+    "short": "Growth",
+    "level": 48,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 6
+    },
+    "hate": 6,
+    "kind": "dot",
+    "classId": "druid",
+    "blurb": "The old rot. It stays.",
+    "mana": 30,
+    "verb": "rots",
+    "dotMs": 12000,
+    "dotAmount": 8
+  },
+  {
+    "id": "green_crown",
+    "name": "The Green Crown",
+    "short": "Crown",
+    "level": 50,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "druid",
+    "blurb": "The last mend of the grove, and it keeps mending.",
+    "mana": 40,
+    "heal": 120,
+    "hotMs": 8000,
+    "hotAmount": 8
+  },
+  {
+    "id": "quick_shot",
+    "name": "Quick Shot",
+    "short": "Shot",
+    "level": 1,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "One arrow. The bow is already in your hand.",
+    "mana": 4,
+    "verb": "shoot"
+  },
+  {
+    "id": "knife_jab",
+    "name": "Knife Jab",
+    "short": "Jab",
+    "level": 1,
+    "cooldownMs": 7000,
+    "range": 28,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "hate": 6,
+    "kind": "strike",
+    "classId": "ranger",
+    "blurb": "When they get close. Light, and mean.",
+    "verb": "jab"
+  },
+  {
+    "id": "marked_trail",
+    "name": "Marked Trail",
+    "short": "Mark",
+    "level": 4,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "ranger",
+    "blurb": "You read the ground. Breath comes easier.",
+    "mana": 8,
+    "buff": "flow",
+    "buffMs": 20000
+  },
+  {
+    "id": "pinning_shot",
+    "name": "Pinning Shot",
+    "short": "Pin",
+    "level": 8,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 1,
+      "sides": 6,
+      "bonus": 1
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "An arrow in the foot.",
+    "mana": 12,
+    "verb": "pin",
+    "slowMs": 6000,
+    "slowFactor": 0.4
+  },
+  {
+    "id": "sidestep",
+    "name": "Sidestep",
+    "short": "Side",
+    "level": 12,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "ranger",
+    "blurb": "You are not where the blow lands.",
+    "mana": 10,
+    "buff": "evade",
+    "buffMs": 6000
+  },
+  {
+    "id": "volley",
+    "name": "Volley",
+    "short": "Volley",
+    "level": 16,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 2
+    },
+    "hate": 6,
+    "kind": "field",
+    "classId": "ranger",
+    "blurb": "Arrows on everyone near the target.",
+    "mana": 20,
+    "verb": "shoot",
+    "radius": 68
+  },
+  {
+    "id": "calm_beast",
+    "name": "Calm Beast",
+    "short": "Calm",
+    "level": 20,
+    "cooldownMs": 24000,
+    "range": 200,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 6,
+    "kind": "charm",
+    "classId": "ranger",
+    "blurb": "A beast listens, for a while. It is not a promise about people.",
+    "mana": 22
+  },
+  {
+    "id": "hunters_eye",
+    "name": "Hunter's Eye",
+    "short": "Eye",
+    "level": 28,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 4
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "One careful shot.",
+    "mana": 18,
+    "verb": "pierce"
+  },
+  {
+    "id": "thicket_step",
+    "name": "Thicket Step",
+    "short": "Thicket",
+    "level": 32,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "ward",
+    "classId": "ranger",
+    "blurb": "You go quiet. The trail hides you.",
+    "mana": 12,
+    "buff": "sneak",
+    "buffMs": 16000
+  },
+  {
+    "id": "arrow_rain",
+    "name": "Arrow Rain",
+    "short": "Rain",
+    "level": 36,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 5
+    },
+    "hate": 6,
+    "kind": "field",
+    "classId": "ranger",
+    "blurb": "The expensive volley.",
+    "mana": 30,
+    "verb": "rain",
+    "radius": 76
+  },
+  {
+    "id": "second_mark",
+    "name": "Second Mark",
+    "short": "Mark",
+    "level": 40,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 5
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "You already know where it will land.",
+    "mana": 22,
+    "verb": "shoot"
+  },
+  {
+    "id": "wild_knit",
+    "name": "Wild Knit",
+    "short": "Knit",
+    "level": 44,
+    "cooldownMs": 14000,
+    "range": 0,
+    "damage": {
+      "n": 0,
+      "sides": 1,
+      "bonus": 0
+    },
+    "hate": 0,
+    "kind": "heal",
+    "classId": "ranger",
+    "blurb": "The wild lends a small mend. Animal-friendly, which includes you.",
+    "mana": 24,
+    "heal": 60
+  },
+  {
+    "id": "long_shot",
+    "name": "Long Shot",
+    "short": "Long",
+    "level": 48,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 6
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "Far, and it costs.",
+    "mana": 26,
+    "verb": "pierce"
+  },
+  {
+    "id": "last_arrow",
+    "name": "The Last Arrow",
+    "short": "Last",
+    "level": 50,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 3,
+      "sides": 8,
+      "bonus": 6
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "The arrow at the end of the list.",
+    "mana": 34,
+    "verb": "end"
+  },
+  {
+    "id": "grove_root",
+    "name": "Grove Root",
+    "short": "Root",
+    "level": 28,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 8,
+      "bonus": 4
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "druid",
+    "blurb": "The root that does not hurry.",
+    "mana": 22,
+    "verb": "bind",
+    "slowMs": 9000,
+    "slowFactor": 0.12
+  },
+  {
+    "id": "low_shot",
+    "name": "Low Shot",
+    "short": "Low",
+    "level": 24,
+    "cooldownMs": 5000,
+    "range": 200,
+    "damage": {
+      "n": 2,
+      "sides": 6,
+      "bonus": 3
+    },
+    "hate": 6,
+    "kind": "bolt",
+    "classId": "ranger",
+    "blurb": "A low shot. The feet slow.",
+    "mana": 16,
+    "verb": "cut",
+    "slowMs": 7000,
+    "slowFactor": 0.35
   }
 ]

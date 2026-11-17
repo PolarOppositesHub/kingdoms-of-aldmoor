@@ -245,6 +245,11 @@ export class WorldScene extends Phaser.Scene {
       const hook = window as unknown as { __ALDMOOR__?: GameApi; __ZOOM__?: () => number };
       hook.__ALDMOOR__ = api;
       hook.__ZOOM__ = () => this.zoom;
+      (hook as { __SET_ZOOM__?: (zoom: number) => void }).__SET_ZOOM__ = (zoom: number) => {
+        this.zoomTouched = true;
+        this.zoom = zoom;
+        this.applyZoom();
+      };
       (hook as { __SCENERY__?: () => number }).__SCENERY__ = () => this.sceneryLive;
     }
     this.api = api;

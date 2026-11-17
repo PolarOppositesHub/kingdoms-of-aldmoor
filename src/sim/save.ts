@@ -1,6 +1,6 @@
 import type { ContentDb, Equipment, GameState, HeldBag, ItemStack, MapData, PetOrder } from './types';
 import { emptyQuests, refreshGear, syncCompanion } from './state';
-import { raceScale } from './appearance';
+import { bodySprite, raceScale } from './appearance';
 import { bagsFromLegacy, normalizeBags } from './bags';
 import { bodyBlocked, nearestStand } from './map';
 
@@ -184,7 +184,7 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   }
   player.level = save.level;
   player.defId = save.classId;
-  player.sprite = save.sex === 'female' ? 'body_f' : 'body_m';
+  player.sprite = bodySprite(save.raceId, save.sex === 'female' ? 'female' : 'male');
   player.scale = raceScale(content, save.raceId);
   player.facing = save.facing;
   refreshGear(state, content);

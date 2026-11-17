@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { loadContent } from './content';
 import { PNG } from 'pngjs';
+import atlas from '../assets/atlas.json';
 import { conColor, formatCoin, maxFocus, maxHp, petStrike, xpLossFraction, xpToNext, xpYield } from './formulas';
 import { applyIntent } from './intents';
 import { askPrice, ivarIsBusy, mobRespawnDelay, resolveStrike, turnInPelts } from './systems';
@@ -1398,11 +1399,11 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
       ['paladin', 'adel', 'scroll_small_grace', 'scroll_vow_mend'],
       ['magician', 'quen', 'scroll_cinder_bolt', 'scroll_ember_star'],
     ] as const;
-    expect(content.roster.classes.find((entry) => entry.id === 'shaman')?.races).toEqual(['barbarian']);
-    expect(content.roster.classes.find((entry) => entry.id === 'warden')?.races).toEqual(['barbarian']);
-    for (const id of ['warrior', 'rogue', 'berserker']) {
-      expect(content.roster.classes.find((entry) => entry.id === id)?.races).toEqual(['barbarian', 'dwarf']);
-    }
+    expect(content.roster.classes.find((entry) => entry.id === 'shaman')?.races).toEqual(['barbarian', 'ogre']);
+    expect(content.roster.classes.find((entry) => entry.id === 'warden')?.races).toEqual(['barbarian', 'wood_elf']);
+    expect(content.roster.classes.find((entry) => entry.id === 'warrior')?.races).toEqual(['barbarian', 'dwarf', 'ogre']);
+    expect(content.roster.classes.find((entry) => entry.id === 'berserker')?.races).toEqual(['barbarian', 'dwarf', 'ogre']);
+    expect(content.roster.classes.find((entry) => entry.id === 'rogue')?.races).toEqual(['barbarian', 'dwarf', 'wood_elf']);
     for (const closed of ['warrior', 'shaman', 'rogue', 'warden', 'berserker']) {
       expect(applyHero(createWorld(content, arena(), 1), content, 'high_elf', closed, bonus)).toBe(false);
     }
@@ -1785,6 +1786,238 @@ describe('Brightforge, Wyrmrest, and the cap at 50', () => {
     expect(v1?.classId).toBe('warrior');
     expect(v1?.raceId).toBe('barbarian');
     expect(v1?.level).toBe(3);
+  });
+});
+
+describe('Wood elves, Grokthul ogres, and Ironhollow', () => {
+  const zoneDir = join(process.cwd(), 'src', 'assets', 'zones');
+  const maps = new Map<string, ReturnType<typeof parseTiledMap>>();
+  for (const file of readdirSync(zoneDir).filter((name) => name.endsWith('.tmj'))) {
+    const map = parseTiledMap(JSON.parse(readFileSync(join(zoneDir, file), 'utf8')) as TiledJson);
+    maps.set(map.zoneId, map);
+  }
+  const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
+  const levels = (zone: string) =>
+    maps.get(zone)!.spawns.filter((spawn) => spawn.kind === 'mob').map((spawn) => content.mobs[spawn.defId].level);
+
+  it('opens Canipure to wood elves and Grokthul Hold to ogres', () => {
+    const wood = content.roster.races.find((entry) => entry.id === 'wood_elf');
+    const ogre = content.roster.races.find((entry) => entry.id === 'ogre');
+    expect(wood?.playable).toBe(true);
+    expect(ogre?.playable).toBe(true);
+    expect(wood?.homeZone).toBe('canipure');
+    expect(ogre?.homeZone).toBe('grokthul');
+    const city = maps.get('canipure')!;
+    const hold = maps.get('grokthul')!;
+    expect(city.width).toBeGreaterThanOrEqual(256);
+    expect(hold.width).toBeGreaterThanOrEqual(256);
+    const woodSpawn = city.spawns.find((entry) => entry.kind === 'spawn');
+    const ogreSpawn = hold.spawns.find((entry) => entry.kind === 'spawn');
+    expect(woodSpawn?.x).toBe(wood?.homeX);
+    expect(woodSpawn?.y).toBe(wood?.homeY);
+    expect(ogreSpawn?.x).toBe(ogre?.homeX);
+    expect(ogreSpawn?.y).toBe(ogre?.homeY);
+    for (const id of ['warden', 'rogue', 'druid', 'ranger']) {
+      expect(applyHero(createWorld(content, arena(), 2), content, 'wood_elf', id, bonus)).toBe(true);
+    }
+    for (const id of ['warrior', 'wizard', 'berserker']) {
+      expect(applyHero(createWorld(content, arena(), 3), content, 'wood_elf', id, bonus)).toBe(false);
+    }
+    for (const id of ['warrior', 'shaman', 'berserker']) {
+      expect(applyHero(createWorld(content, arena(), 4), content, 'ogre', id, bonus)).toBe(true);
+    }
+    expect(applyHero(createWorld(content, arena(), 5), content, 'ogre', 'druid', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 6), content, 'barbarian', 'druid', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 7), content, 'high_elf', 'ranger', bonus)).toBe(false);
+    const born = createWorld(content, arena(), 8);
+    const events = applyIntent(born, { type: 'createHero', raceId: 'wood_elf', classId: 'druid', bonus }, content, arena());
+    expect(born.bindZone).toBe('canipure');
+    expect(events.find((event) => event.type === 'zone')).toMatchObject({ type: 'zone', zoneId: 'canipure' });
+    expect(born.learned).not.toContain('briar_mend');
+    expect(born.learned).not.toContain('quick_shot');
+    expect(content.classes.druid.abilities).toEqual([]);
+    expect(content.classes.ranger.abilities).toEqual([]);
+    const ogreBorn = createWorld(content, arena(), 9);
+    applyIntent(ogreBorn, { type: 'createHero', raceId: 'ogre', classId: 'warrior', bonus }, content, arena());
+    expect(ogreBorn.bindZone).toBe('grokthul');
+    expect(getPlayer(ogreBorn).scale).toBeGreaterThan(1.3);
+    expect(getPlayer(born).sprite).toBe('body_wood_elf_m');
+    expect(getPlayer(ogreBorn).sprite).toBe('body_ogre_m');
+  });
+
+  it('connects the forest, the hills, and the Grokthul peaks', () => {
+    expect(maps.get('valdoria')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'ironhollow')).toBe(true);
+    expect(maps.get('ironhollow')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'valdoria')).toBe(true);
+    expect(maps.get('ironhollow')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'canipure')).toBe(true);
+    expect(maps.get('canipure')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'ironhollow')).toBe(true);
+    expect(maps.get('canipure')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'eldenmoor')).toBe(true);
+    expect(maps.get('wyrmrest')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'grokthul_peaks')).toBe(true);
+    expect(maps.get('grokthul_peaks')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'wyrmrest')).toBe(true);
+    expect(maps.get('grokthul_peaks')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'grokthul')).toBe(true);
+    expect(maps.get('grokthul')!.spawns.some((spawn) => spawn.kind === 'door' && spawn.toZone === 'grokthul_peaks')).toBe(true);
+    for (const [zone, lo, hi] of [
+      ['canipure', 1, 10],
+      ['ironhollow', 18, 28],
+      ['grokthul', 1, 10],
+      ['grokthul_peaks', 28, 35],
+    ] as const) {
+      const found = levels(zone);
+      expect(found.length, zone).toBeGreaterThan(8);
+      for (const level of found) {
+        expect(level, zone).toBeGreaterThanOrEqual(lo);
+        expect(level, zone).toBeLessThanOrEqual(hi);
+      }
+      expect(maps.get(zone)!.width, zone).toBeGreaterThanOrEqual(256);
+      expect(maps.get(zone)!.safe.some((cell) => cell !== 0), zone).toBe(true);
+    }
+    expect(content.mobs.mossantler.rare).toBe(true);
+    expect(content.mobs.old_marrow.rare).toBe(true);
+    expect(content.mobs.old_marrow.name).toBe('Old Marrow');
+    expect(content.mobs.cindermaw.rare).toBe(true);
+    expect(content.mobs.cindermaw.level).toBe(35);
+    expect(content.mobs.puck.named).toBe(true);
+    expect(content.mobs.rusk.named).toBe(true);
+    expect(content.dialogue.edric.start.text).toMatch(/King Aldric Valdor/);
+    expect(content.dialogue.grukka.start.text).toMatch(/not Vargan/);
+    for (const id of ['canipure', 'greenreach', 'ironhollow', 'ironhollow_hills', 'grokthul', 'grokthul_valley', 'grokthul_peaks']) {
+      expect(content.maps[id], id).toBeTruthy();
+    }
+  });
+
+  it('sells druid and ranger drills only after the level, and keeps Canipure cold to other races', () => {
+    for (const classId of ['druid', 'ranger'] as const) {
+      const top = Object.values(content.abilities).filter((ability) => ability.classId === classId).map((ability) => ability.level);
+      expect(Math.max(...top), classId).toBe(50);
+      expect(top.filter((level) => level === 1).length, classId).toBeGreaterThan(0);
+    }
+    const hall = maps.get('can_druid')!;
+    const buyer = createWorld(content, hall, 4);
+    applyHero(buyer, content, 'wood_elf', 'druid', bonus);
+    const trainer = buyer.actors.find((actor) => actor.defId === 'briar')!;
+    const player = getPlayer(buyer);
+    player.x = trainer.x;
+    player.y = trainer.y + 8;
+    buyer.copper = 8000;
+    applyIntent(buyer, { type: 'talkTo', id: trainer.id }, content, hall);
+    expect(buyer.ui.nodeId).toBe('start');
+    applyIntent(buyer, { type: 'choice', index: 0 }, content, hall);
+    expect(buyer.ui.panel).toBe('merchant');
+    applyIntent(buyer, { type: 'buy', itemId: 'scroll_green_crown' }, content, hall);
+    expect(buyer.learned).not.toContain('green_crown');
+    expect(buyer.log.at(-1)).toMatch(/level 50/);
+    buyer.level = 50;
+    player.level = 50;
+    applyIntent(buyer, { type: 'buy', itemId: 'scroll_green_crown' }, content, hall);
+    expect(buyer.learned).toContain('green_crown');
+
+    const outsider = createWorld(content, hall, 5);
+    applyHero(outsider, content, 'dwarf', 'warrior', bonus);
+    getPlayer(outsider).x = trainer.x;
+    getPlayer(outsider).y = trainer.y + 8;
+    applyIntent(outsider, { type: 'talkTo', id: trainer.id }, content, hall);
+    expect(outsider.ui.nodeId).toBe('outsider');
+    applyIntent(outsider, { type: 'choice', index: 0 }, content, hall);
+    expect(outsider.ui.panel).not.toBe('merchant');
+
+    const shop = maps.get('can_shop')!;
+    const guest = createWorld(content, shop, 6);
+    applyHero(guest, content, 'ogre', 'warrior', bonus);
+    const moss = guest.actors.find((actor) => actor.defId === 'moss')!;
+    getPlayer(guest).x = moss.x;
+    getPlayer(guest).y = moss.y + 8;
+    guest.copper = 500;
+    applyIntent(guest, { type: 'talkTo', id: moss.id }, content, shop);
+    expect(guest.ui.nodeId).toBe('outsider');
+    applyIntent(guest, { type: 'choice', index: 0 }, content, shop);
+    expect(guest.ui.panel).toBe('merchant');
+    applyIntent(guest, { type: 'buy', itemId: 'grove_staff' }, content, shop);
+    expect(guest.equipment.primary).not.toBe('grove_staff');
+    expect(guest.bags.some((bag) => bag?.slots.some((slot) => slot?.itemId === 'grove_staff'))).toBe(false);
+    applyIntent(guest, { type: 'buy', itemId: 'trail_ration' }, content, shop);
+    expect(countItem(guest, 'trail_ration')).toBeGreaterThan(0);
+    const elf = createWorld(content, shop, 7);
+    applyHero(elf, content, 'high_elf', 'wizard', bonus);
+    const mossAgain = elf.actors.find((actor) => actor.defId === 'moss')!;
+    getPlayer(elf).x = mossAgain.x;
+    getPlayer(elf).y = mossAgain.y + 8;
+    applyIntent(elf, { type: 'talkTo', id: mossAgain.id }, content, shop);
+    expect(elf.ui.nodeId).toBe('start');
+  });
+
+  it('sets every hall door on the tile the player walks through', () => {
+    const doorSteps = new Set([37, 38, 43, 44, 76, 77, 88, 89, 100, 101, 112, 113, 124, 125]);
+    const halls = new Set([
+      'inn', 'shop', 'needles', 'forge', 'smithy', 'mead', 'warrior', 'warden', 'wizard', 'shaman', 'rogue', 'berserker',
+      'elden_inn', 'elden_wizard', 'elden_cleric', 'elden_enchanter', 'elden_paladin', 'elden_magician', 'elden_shop',
+      'bright_warrior', 'bright_cleric', 'bright_paladin', 'bright_rogue', 'bright_berserker', 'bright_shop',
+      'can_warden', 'can_rogue', 'can_druid', 'can_ranger', 'can_shop',
+      'grok_warrior', 'grok_shaman', 'grok_berserker', 'grok_shop',
+    ]);
+    const hoffender = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+    const all = new Map(maps);
+    all.set('hoffender', hoffender);
+    for (const map of all.values()) {
+      for (const spawn of map.spawns) {
+        if (spawn.kind !== 'door' || !spawn.toZone || !halls.has(spawn.toZone)) continue;
+        const tx = Math.floor(spawn.x / map.tileWidth);
+        const ty = Math.floor(spawn.y / map.tileWidth);
+        const index = ty * map.width + tx;
+        expect(doorSteps.has(map.ground[index]), `${map.zoneId} ${spawn.name}`).toBe(true);
+        expect(map.collision[index], `${map.zoneId} ${spawn.name}`).toBe(0);
+      }
+    }
+  });
+
+  it('builds every door at least as tall and as wide as the hero', () => {
+    const heroH = atlas.hero.frameH;
+    const heroW = atlas.hero.frameW;
+    const faces = new Set([
+      33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44,
+      72, 73, 74, 75, 76, 77, 84, 85, 86, 87, 88, 89,
+      96, 97, 98, 99, 100, 101, 108, 109, 110, 111, 112, 113,
+      120, 121, 122, 123, 124, 125, 132, 133, 135, 136,
+    ]);
+    const bottoms = new Set([37, 38, 43, 44, 76, 77, 88, 89, 100, 101, 112, 113, 124, 125, 132, 133]);
+    const hoffender = parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson);
+    const all = new Map(maps);
+    all.set('hoffender', hoffender);
+    let doors = 0;
+    for (const map of all.values()) {
+      for (let ty = 0; ty < map.height; ty++) {
+        for (let tx = 0; tx < map.width; tx++) {
+          const gid = map.ground[ty * map.width + tx];
+          if (!bottoms.has(gid)) continue;
+          const below = ty + 1 < map.height ? map.ground[(ty + 1) * map.width + tx] : 0;
+          if (faces.has(below)) continue;
+          let height = 1;
+          for (let y = ty - 1; y >= 0 && faces.has(map.ground[y * map.width + tx]); y--) height += 1;
+          const beside = tx + 1 < map.width && bottoms.has(map.ground[ty * map.width + tx + 1]);
+          const other = tx > 0 && bottoms.has(map.ground[ty * map.width + tx - 1]);
+          expect(height * map.tileWidth, `${map.zoneId} ${tx},${ty}`).toBeGreaterThanOrEqual(heroH);
+          expect((beside || other ? 2 : 1) * map.tileWidth, `${map.zoneId} ${tx},${ty}`).toBeGreaterThanOrEqual(heroW);
+          doors += 1;
+        }
+      }
+    }
+    expect(doors).toBeGreaterThan(20);
+  });
+
+  it('paints pointed elf ears and a wider ogre than a human', () => {
+    const png = PNG.sync.read(readFileSync(join(process.cwd(), 'src', 'assets', 'portrait.png')));
+    const frameH = atlas.portrait.frameH;
+    const opaque = (rowName: string, x: number, y: number) => {
+      const row = atlas.portrait.rows[rowName as keyof typeof atlas.portrait.rows];
+      const i = ((row * frameH + y) * png.width + x) * 4;
+      return png.data[i + 3] > 10;
+    };
+    expect(opaque('body_high_elf_m', 36, 8)).toBe(true);
+    expect(opaque('body_wood_elf_f', 36, 10)).toBe(true);
+    expect(opaque('body_human_m', 36, 8)).toBe(false);
+    expect(opaque('body_ogre_m', 6, 36)).toBe(true);
+    expect(opaque('body_human_m', 6, 36)).toBe(false);
+    expect(atlas.people.rows.grukka).toBeGreaterThanOrEqual(0);
+    expect(atlas.people.rows.vaela).toBeGreaterThanOrEqual(0);
+    expect(atlas.people.rows.durgan).toBeGreaterThanOrEqual(0);
   });
 });
 

@@ -1,5 +1,8 @@
 import type { GameApi } from '../game/api';
 import type { Stats } from '../sim/types';
+import { bodySprite, raceGearRow, raceScale } from '../sim/appearance';
+import atlas from '../assets/atlas.json';
+import portraitUrl from '../assets/portrait.png?url';
 
 const KEY = 'aldmoor-hero';
 const STATS = ['str', 'sta', 'agi', 'dex', 'wis', 'int', 'cha'] as const;
@@ -70,8 +73,46 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
     }
   };
 
+  const previewKit: Record<string, string[]> = {
+    warrior: ['chest_plate', 'weapon_axe'],
+    shaman: ['chest_fur', 'weapon_staff'],
+    rogue: ['chest_leather', 'weapon_blade'],
+    berserker: ['chest_leather', 'weapon_axe'],
+    warden: ['chest_cloth', 'hands_wrap'],
+    wizard: ['chest_cloth', 'weapon_staff'],
+    cleric: ['chest_plate', 'weapon_staff'],
+    enchanter: ['chest_cloth', 'weapon_staff'],
+    paladin: ['chest_plate', 'weapon_blade'],
+    magician: ['chest_cloth', 'weapon_staff'],
+    druid: ['chest_cloth', 'weapon_staff'],
+    ranger: ['chest_leather', 'weapon_bow'],
+  };
+  const portrait = atlas.portrait;
+  const portraitRows = portrait?.rows as Record<string, number> | undefined;
+  const layerStyle = (rowName: string) => {
+    const row = portraitRows?.[rowName] ?? 0;
+    const frameW = (portrait?.frameW ?? 48) * 2;
+    const frameH = (portrait?.frameH ?? 80) * 2;
+    const cols = (portrait?.dirs.length ?? 1) * (portrait?.framesPerDir ?? 2);
+    const sheetW = cols * frameW;
+    const sheetH = Object.keys(portraitRows ?? { x: 0 }).length * frameH;
+    return `--frame-y:-${row * frameH}px;--step:${frameW}px;width:${frameW}px;height:${frameH}px;background-image:url(${portraitUrl});background-size:${sheetW}px ${sheetH}px;`;
+  };
   const paint = () => {
     if (!races || !classes || !blurb || !points || !list) return;
+    const preview = document.getElementById('race-preview');
+    if (preview) {
+      const race = roster.races.find((entry) => entry.id === raceId);
+      const layers = (previewKit[classId] ?? [])
+        .map((part) => `<span class="doll-layer" style="${layerStyle(raceGearRow(raceId, part))}"></span>`)
+        .join('');
+      const scale = raceScale(api.content, raceId);
+      preview.innerHTML = `<div class="doll-stage" style="transform:scale(${scale});transform-origin:bottom center">
+        <span class="doll-shadow"></span>
+        <span class="doll-layer doll-body" style="${layerStyle(bodySprite(raceId, sex))}"></span>
+        ${layers}
+      </div><p>${race?.name ?? ''} · ${roster.classes.find((cls) => cls.id === classId)?.name ?? ''}</p>`;
+    }
     if (sexes) {
       sexes.innerHTML = (['male', 'female'] as const)
         .map((id) => `<button type="button" data-sex="${id}" aria-pressed="${sex === id ? 'true' : 'false'}">${id === 'male' ? 'Male' : 'Female'}<small>${id === 'male' ? 'Beard and a heavier shoulder.' : 'Braids and a leaner shoulder.'}</small></button>`)
@@ -104,7 +145,13 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
       .join('');
     blurb.textContent = roster.classes.find((cls) => cls.id === classId)?.blurb ?? '';
     const enter = document.getElementById('enter');
-    if (enter) enter.textContent = raceId === 'high_elf' ? 'Enter Eldenmoor' : 'Enter Hoffender';
+    const gates: Record<string, string> = {
+      high_elf: 'Enter Eldenmoor',
+      dwarf: 'Enter Brightforge',
+      wood_elf: 'Enter Canipure',
+      ogre: 'Enter Grokthul Hold',
+    };
+    if (enter) enter.textContent = gates[raceId] ?? 'Enter Hoffender';
     points.textContent = `Bonus points left: ${roster.points - spent()}`;
     list.innerHTML = STATS.map((key) => {
       const total = baseOf(key) + bonus[key];

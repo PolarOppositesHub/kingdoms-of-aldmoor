@@ -1,0 +1,862 @@
+{
+  "vaela": {
+    "start": {
+      "text": "Elder Vaela Thorn. Canipure keeps the east coast, and the boughs face Vaelmoor. You are of the trees, or near enough. High elf and wood elf both. Mossantler is the stag we rarely see. I would like it met. King Aldric Valdor rules the castles west of the forest. He does not rule this city. We still know his name.",
+      "choices": [
+        {
+          "label": "I will look for Mossantler.",
+          "action": "acceptQuest",
+          "quest": "mossantler"
+        },
+        {
+          "label": "Who may stand here?",
+          "next": "welcome"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Elder Vaela Thorn. You are not of the trees. The stair will bind you, and Moss will sell bread. I do not give the grove's work to outsiders. The halls will not teach you. You may still walk the forest. Be polite while you do.",
+      "choices": [
+        {
+          "label": "I will keep to the yard.",
+          "action": "close"
+        }
+      ]
+    },
+    "welcome": {
+      "text": "Wood elves wake here. High elves are kin, and the dock faces their city. Everyone else gets the yard, the stair, and the bread. Not the drills.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    },
+    "hart_active": {
+      "text": "Mossantler. West, where the Greenreach forgets the road. It does not come often.",
+      "choices": [
+        {
+          "label": "I am still looking.",
+          "action": "close"
+        }
+      ]
+    },
+    "hart_ready": {
+      "text": "You met it.",
+      "choices": [
+        {
+          "label": "Mossantler is down.",
+          "action": "turnIn",
+          "quest": "mossantler"
+        }
+      ]
+    },
+    "done": {
+      "text": "The forest will grow another stag. The coast still faces Vaelmoor.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "sylven": {
+    "start": {
+      "text": "Sylven Reed. I keep the west bough. The Greenreach is a young forest: hares, beetles, then wolves. Eight green wolves, before you go looking for Puck. The same trees run west, north of Ironhollow Keep, to Blackpine.",
+      "choices": [
+        {
+          "label": "I will thin the wolves.",
+          "action": "acceptQuest",
+          "quest": "green_wolves"
+        },
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        },
+        {
+          "label": "Where do the roads go?",
+          "next": "roads"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Sylven Reed. Cold wind off the sea, and colder for you. This city is for wood elves, and we stand with the high elves. You may bind at the stair and buy what Moss calls bread. The boughs will not train you, and I will not hand you the grove's counts. Walk softly.",
+      "choices": [
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        },
+        {
+          "label": "I understand.",
+          "action": "close"
+        }
+      ]
+    },
+    "wolves_active": {
+      "text": "Eight green wolves. They like the west trail.",
+      "choices": [
+        {
+          "label": "Still working.",
+          "action": "close"
+        },
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        }
+      ]
+    },
+    "wolves_ready": {
+      "text": "Eight. Next is Puck the Snare. He stays down longer than a wolf.",
+      "choices": [
+        {
+          "label": "The wolves are down.",
+          "action": "turnIn",
+          "quest": "green_wolves"
+        }
+      ]
+    },
+    "after_wolves": {
+      "text": "Puck the Snare, west of the road. End it.",
+      "choices": [
+        {
+          "label": "I will find Puck.",
+          "action": "acceptQuest",
+          "quest": "puck_snare"
+        },
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "puck_active": {
+      "text": "Puck is still on the trail.",
+      "choices": [
+        {
+          "label": "I am on it.",
+          "action": "close"
+        }
+      ]
+    },
+    "puck_ready": {
+      "text": "The snare is ended. The elder can have the stag, if you want the rarer job.",
+      "choices": [
+        {
+          "label": "Puck is down.",
+          "action": "turnIn",
+          "quest": "puck_snare"
+        }
+      ]
+    },
+    "done": {
+      "text": "The west trail holds. Ironhollow is that way, then Blackpine. The dock is the other way, toward Vaelmoor.",
+      "choices": [
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "roads": {
+      "text": "West, the Greenreach, then the forest north of Ironhollow Keep, then Blackpine Tower in Valdoria. King Aldric Valdor rules those castles. East, the dock, and Eldenmoor across the water. The hills south of Ironhollow are the harder road, not this one.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "moss": {
+    "start": {
+      "text": "Moss Linden. Bread, bandages, and the two charts for anyone who can pay. A grove staff and a wood bow are for elves. High elf or wood elf, those are yours to buy.",
+      "choices": [
+        {
+          "label": "Show me your goods.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Moss Linden. I will sell you bread and bandages, and the charts, because a lost traveler is a worse neighbor than a rude one. The grove staff is not for you. The halls are not for you. The stair will still take your bind.",
+      "choices": [
+        {
+          "label": "Show me the basics.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this stair.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "oak": {
+    "start": {
+      "text": "Oak. The court is safe. The Greenreach is not. If you are not an elf, be brief.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Oak. You can stand there. Do not lean on the boughs like you built them.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "fern": {
+    "start": {
+      "text": "Fern. The dock faces Vaelmoor. The west road is the forest. I watch both.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Fern. Pass. The bread is Moss. The drills are not.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "larkin": {
+    "start": {
+      "text": "Larkin Bough. The warden list, the same drills Bjorn sells in Hoffender, through the last of them. Nothing is learned by getting older. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Larkin Bough. I do not teach outside the blood. High elves may buy, because we stand with them. You may not.",
+      "choices": [
+        {
+          "label": "I will go.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "thistle": {
+    "start": {
+      "text": "Thistle Venn. Quietly. The rogue list, through level fifty. The line that says Requires level is a closed door.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Thistle Venn. No. The knife is not a souvenir for every traveler King Aldric's road sends east.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "briar": {
+    "start": {
+      "text": "Briar Holt. Druid. A mend, a root, a rot that stays, and a bark you put on yourself. You buy them. Leveling does not hand them over. The list says Requires level N until you are that old.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Briar Holt. The grove does not sell its words to you. Come back as an elf, or do not come back for this.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "rowan": {
+    "start": {
+      "text": "Rowan Keel. Ranger. The bow, a knife if they get close, a mark on the trail, and a call that beasts sometimes answer. Bought, not gifted. Through level fifty. Requires level means what it says.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "outsider": {
+      "text": "Rowan Keel. The bow stays on the rack. Elves may buy the drills. You get the yard.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "edric": {
+    "start": {
+      "text": "Lord Edric Hollen. Ironhollow Keep is mine to hold, and I hold it for King Aldric Valdor. Every castle lord on Maerthun answers to him. The capital is not built in this yard. Old Marrow is the rare of the south hills. I would like it met.",
+      "choices": [
+        {
+          "label": "I will look for Old Marrow.",
+          "action": "acceptQuest",
+          "quest": "old_marrow"
+        },
+        {
+          "label": "What roads leave here?",
+          "next": "roads"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "marrow_active": {
+      "text": "Old Marrow. South, off the road, and not often. It stays down when it falls.",
+      "choices": [
+        {
+          "label": "I am still looking.",
+          "action": "close"
+        }
+      ]
+    },
+    "marrow_ready": {
+      "text": "You met it. That is the word I owed the king's map.",
+      "choices": [
+        {
+          "label": "Old Marrow is down.",
+          "action": "turnIn",
+          "quest": "old_marrow"
+        }
+      ]
+    },
+    "done": {
+      "text": "The hills will grow another bear. The forest north of us still runs to Canipure. Tell the king's people, if you see them, that the keep stands.",
+      "choices": [
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "roads": {
+      "text": "North of the keep, one forest: west to Blackpine Tower and Valdoria, east to the Greenreach and Canipure. South, the hills, eighteen to twenty-eight. Wyrmrest is not this road. It is north of Hoffender, under the peaks, and the Grokthul ogres live east of it.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    }
+  },
+  "oswin": {
+    "start": {
+      "text": "Sergeant Oswin Keel. The court is safe. The hills are not. Eight hill wolves, before you go naming brigands. Lord Edric answers to King Aldric Valdor. I answer to Lord Edric. That is the whole chain.",
+      "choices": [
+        {
+          "label": "I will thin the wolves.",
+          "action": "acceptQuest",
+          "quest": "hill_pack"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "wolves_active": {
+      "text": "Eight hill wolves. They like the south slope.",
+      "choices": [
+        {
+          "label": "Still at it.",
+          "action": "close"
+        }
+      ]
+    },
+    "wolves_ready": {
+      "text": "Eight. Rusk the Hollow is next. He takes a toll and he stays down.",
+      "choices": [
+        {
+          "label": "The wolves are down.",
+          "action": "turnIn",
+          "quest": "hill_pack"
+        }
+      ]
+    },
+    "after_wolves": {
+      "text": "Rusk the Hollow, with the brigands. End the toll.",
+      "choices": [
+        {
+          "label": "I will find Rusk.",
+          "action": "acceptQuest",
+          "quest": "rusk_hollow"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "rusk_active": {
+      "text": "Rusk is still collecting.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "rusk_ready": {
+      "text": "The toll is ended. The lord can have the bear.",
+      "choices": [
+        {
+          "label": "Rusk is down.",
+          "action": "turnIn",
+          "quest": "rusk_hollow"
+        }
+      ]
+    },
+    "done": {
+      "text": "The gate holds. North is the forest road. South is the hills.",
+      "choices": [
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "cald": {
+    "start": {
+      "text": "Cald Hollen. I work the castle forge for Lord Edric, and he works it for King Aldric Valdor. Plate and chain, at the price on the slate.",
+      "choices": [
+        {
+          "label": "Show me the steel.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "bessa": {
+    "start": {
+      "text": "Bessa Quill. Rations, bandages, and the two Ironhollow charts. Osric sells Blackpine. I do not. The forest north of the keep is one wood, from his tower to Canipure.",
+      "choices": [
+        {
+          "label": "Show me your goods.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this court.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "grukka": {
+    "start": {
+      "text": "Speaker Grukka. Grokthul Hold is this clan. We fight the dragons the cold woke. We are not Vargan Frostfang's ogres, and we do not want his name on our fire. Eight valley wolves, if you are starting here. King Aldric Valdor's castle is Wyrmrest, west of our peaks. We are neighbors. He is not our king. He is theirs.",
+      "choices": [
+        {
+          "label": "I will thin the wolves.",
+          "action": "acceptQuest",
+          "quest": "valley_wolves"
+        },
+        {
+          "label": "Bind me to this fire.",
+          "action": "bind"
+        },
+        {
+          "label": "Which ogres?",
+          "next": "which"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "which": {
+      "text": "Vargan keeps the Fang, past Hoffender's north road. Hostile, and not us. The Grokthul live in these eastern highlands, beside Wyrmrest, and the things we hunt have scales.",
+      "choices": [
+        {
+          "label": "Back.",
+          "next": "start"
+        }
+      ]
+    },
+    "wolves_active": {
+      "text": "Eight valley wolves. South of the palisade.",
+      "choices": [
+        {
+          "label": "Still working.",
+          "action": "close"
+        }
+      ]
+    },
+    "wolves_ready": {
+      "text": "Eight. Brug the Toll is next. He is not of this clan.",
+      "choices": [
+        {
+          "label": "The wolves are down.",
+          "action": "turnIn",
+          "quest": "valley_wolves"
+        }
+      ]
+    },
+    "after_wolves": {
+      "text": "Brug the Toll, south, with anyone still paying him. End it.",
+      "choices": [
+        {
+          "label": "I will find Brug.",
+          "action": "acceptQuest",
+          "quest": "brug_toll"
+        },
+        {
+          "label": "Bind me to this fire.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "brug_active": {
+      "text": "Brug is still taking the toll.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "brug_ready": {
+      "text": "The toll is ended. The valley can have its rare boar another day. The peaks are Skaal's count.",
+      "choices": [
+        {
+          "label": "Brug is down.",
+          "action": "turnIn",
+          "quest": "brug_toll"
+        }
+      ]
+    },
+    "done": {
+      "text": "The hold stands. North is the peaks, then Wyrmrest to the west. Do not call us Frostfang.",
+      "choices": [
+        {
+          "label": "Bind me to this fire.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "skaal": {
+    "start": {
+      "text": "Skaal. Tuskwatch is the fire on the Grokthul Peaks. West is Wyrmrest. South is the hold, and it is too young for what walks up here. Eight ash drakes. They woke when the Black Ice broke. We were already here.",
+      "choices": [
+        {
+          "label": "I will take the drakes.",
+          "action": "acceptQuest",
+          "quest": "ash_drakes"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Show me the chart.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "drakes_active": {
+      "text": "Eight ash drakes. They are the middle of this road, which is not a comfort.",
+      "choices": [
+        {
+          "label": "Still at it.",
+          "action": "close"
+        }
+      ]
+    },
+    "drakes_ready": {
+      "text": "Eight. Cindermaw is the rare one, north. It stays down.",
+      "choices": [
+        {
+          "label": "The drakes are down.",
+          "action": "turnIn",
+          "quest": "ash_drakes"
+        }
+      ]
+    },
+    "after_drakes": {
+      "text": "Cindermaw. North of the road. End it. The sealed lair under Wyrmrest's spires is not this job.",
+      "choices": [
+        {
+          "label": "I will find Cindermaw.",
+          "action": "acceptQuest",
+          "quest": "cindermaw"
+        },
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "maw_active": {
+      "text": "Cindermaw is still on the roost.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    },
+    "maw_ready": {
+      "text": "You came back. The fang is the watch's pay, if the roost did not already drop one.",
+      "choices": [
+        {
+          "label": "Cindermaw is down.",
+          "action": "turnIn",
+          "quest": "cindermaw"
+        }
+      ]
+    },
+    "done": {
+      "text": "The peaks are quieter. Wyrmrest still stands west of us. Bind here if you mean to keep hunting scales.",
+      "choices": [
+        {
+          "label": "Bind me to this yard.",
+          "action": "bind"
+        },
+        {
+          "label": "Show me the chart.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "bruk": {
+    "start": {
+      "text": "Bruk. The pit sells the warrior drills, the same list as Hoffender, through level fifty. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "shala": {
+    "start": {
+      "text": "Shala. Slows, mends, and the burn that stays. Torunn's list. I sell it here. The level is the lock.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "ruk": {
+    "start": {
+      "text": "Ruk the Red. Rage is a tool. The pit sells Hroth's list, to the end of it.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "ugga": {
+    "start": {
+      "text": "Ugga. Rations, the hold charts, and leather that fits a large chest. The peaks chart is Skaal's.",
+      "choices": [
+        {
+          "label": "Show me your goods.",
+          "action": "merchant"
+        },
+        {
+          "label": "Bind me to this fire.",
+          "action": "bind"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "gash": {
+    "start": {
+      "text": "Gash. The yard is safe. The valley is not. Vargan's ogres are a long way west of this fire. Do not mix us up.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "mara": {
+    "start": {
+      "text": "Mara. North is the peaks and the dragons. South is where the young ones learn. I count who comes back.",
+      "choices": [
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_druid": {
+    "start": {
+      "text": "Linden Moss. The druid list, the same one Briar sells in Canipure, through level fifty. Nothing on it arrives because you leveled. If it says Requires level, you are early.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  },
+  "wry_ranger": {
+    "start": {
+      "text": "Keel Ash. The ranger list, through the last arrow. Bought. The level on the line is the lock.",
+      "choices": [
+        {
+          "label": "Show me the drills.",
+          "action": "merchant"
+        },
+        {
+          "label": "Another time.",
+          "action": "close"
+        }
+      ]
+    }
+  }
+}

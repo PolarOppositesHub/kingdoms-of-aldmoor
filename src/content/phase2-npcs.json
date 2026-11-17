@@ -1,0 +1,163 @@
+[
+  {
+    "id": "vaela",
+    "name": "Elder Vaela Thorn",
+    "title": "elder of Canipure",
+    "dialogue": "vaela",
+    "race": "wood_elf"
+  },
+  {
+    "id": "sylven",
+    "name": "Sylven Reed",
+    "title": "warden of the west bough",
+    "dialogue": "sylven",
+    "race": "wood_elf"
+  },
+  {
+    "id": "moss",
+    "name": "Moss Linden",
+    "title": "provisioner",
+    "dialogue": "moss",
+    "race": "wood_elf"
+  },
+  {
+    "id": "larkin",
+    "name": "Larkin Bough",
+    "title": "warden trainer",
+    "dialogue": "larkin",
+    "race": "wood_elf"
+  },
+  {
+    "id": "thistle",
+    "name": "Thistle Venn",
+    "title": "rogue trainer",
+    "dialogue": "thistle",
+    "race": "wood_elf"
+  },
+  {
+    "id": "briar",
+    "name": "Briar Holt",
+    "title": "druid trainer",
+    "dialogue": "briar",
+    "race": "wood_elf"
+  },
+  {
+    "id": "rowan",
+    "name": "Rowan Keel",
+    "title": "ranger trainer",
+    "dialogue": "rowan",
+    "race": "wood_elf"
+  },
+  {
+    "id": "oak",
+    "name": "Oak",
+    "title": "bough guard",
+    "dialogue": "oak",
+    "race": "wood_elf"
+  },
+  {
+    "id": "fern",
+    "name": "Fern",
+    "title": "bough guard",
+    "dialogue": "fern",
+    "race": "wood_elf"
+  },
+  {
+    "id": "edric",
+    "name": "Lord Edric Hollen",
+    "title": "lord of Ironhollow Keep",
+    "dialogue": "edric",
+    "race": "human"
+  },
+  {
+    "id": "oswin",
+    "name": "Sergeant Oswin Keel",
+    "title": "gate sergeant",
+    "dialogue": "oswin",
+    "race": "human"
+  },
+  {
+    "id": "cald",
+    "name": "Cald Hollen",
+    "title": "castle smith",
+    "dialogue": "cald",
+    "race": "human"
+  },
+  {
+    "id": "bessa",
+    "name": "Bessa Quill",
+    "title": "castle provisioner",
+    "dialogue": "bessa",
+    "race": "human"
+  },
+  {
+    "id": "grukka",
+    "name": "Speaker Grukka",
+    "title": "speaker of Grokthul Hold",
+    "dialogue": "grukka",
+    "race": "ogre"
+  },
+  {
+    "id": "skaal",
+    "name": "Skaal",
+    "title": "keeper of Tuskwatch",
+    "dialogue": "skaal",
+    "race": "ogre"
+  },
+  {
+    "id": "bruk",
+    "name": "Bruk",
+    "title": "warrior trainer",
+    "dialogue": "bruk",
+    "race": "ogre"
+  },
+  {
+    "id": "shala",
+    "name": "Shala",
+    "title": "shaman trainer",
+    "dialogue": "shala",
+    "race": "ogre"
+  },
+  {
+    "id": "ruk",
+    "name": "Ruk the Red",
+    "title": "berserker trainer",
+    "dialogue": "ruk",
+    "race": "ogre"
+  },
+  {
+    "id": "ugga",
+    "name": "Ugga",
+    "title": "provisioner",
+    "dialogue": "ugga",
+    "race": "ogre"
+  },
+  {
+    "id": "gash",
+    "name": "Gash",
+    "title": "hold guard",
+    "dialogue": "gash",
+    "race": "ogre"
+  },
+  {
+    "id": "mara",
+    "name": "Mara",
+    "title": "hold guard",
+    "dialogue": "mara",
+    "race": "ogre"
+  },
+  {
+    "id": "wry_druid",
+    "name": "Linden Moss",
+    "title": "high drills, druid",
+    "dialogue": "wry_druid",
+    "race": "wood_elf"
+  },
+  {
+    "id": "wry_ranger",
+    "name": "Keel Ash",
+    "title": "high drills, ranger",
+    "dialogue": "wry_ranger",
+    "race": "wood_elf"
+  }
+]

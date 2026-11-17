@@ -13,6 +13,19 @@ export function raceScale(content: ContentDb, raceId: string): number {
   return content.roster.races.find((race) => race.id === raceId)?.scale ?? 1;
 }
 
+/** Barbarian keeps the original row names so older saves still find a body. */
+export function bodySprite(raceId: string, sex: 'male' | 'female'): string {
+  const side = sex === 'female' ? 'f' : 'm';
+  if (!raceId || raceId === 'barbarian') return side === 'f' ? 'body_f' : 'body_m';
+  return `body_${raceId}_${side}`;
+}
+
+/** Gear is painted on each race's own proportions. Barbarian uses the unprefixed rows. */
+export function raceGearRow(raceId: string, row: string): string {
+  if (!raceId || raceId === 'barbarian') return row;
+  return `${raceId}_${row}`;
+}
+
 function materialRow(prefix: string, item: ItemDef): string {
   const material = item.armorType === 'scale' ? 'chain' : item.armorType;
   if (material === 'plate' || material === 'chain' || material === 'leather' || material === 'cloth') {
@@ -40,6 +53,7 @@ export function gearVisual(item: ItemDef | undefined, sex: 'male' | 'female'): G
   if (item.slot === 'primary') {
     if (item.grip === 'fist' || item.id === 'hand_wraps') return { layer: 'hands', row: 'hands_wrap' };
     if (item.grip === 'blade') return { layer: 'weapon', row: 'weapon_blade' };
+    if (item.grip === 'bow' || item.look === 'weapon_bow') return { layer: 'weapon', row: 'weapon_bow' };
     if (item.grip === 'staff') return { layer: 'weapon', row: 'weapon_staff' };
     return { layer: 'weapon', row: 'weapon_axe' };
   }
@@ -67,5 +81,8 @@ export function playerVisuals(state: GameState, content: ContentDb): GearVisual[
     found.set(visual.layer, visual.row);
   }
   if (found.get('hands') === 'hands_wrap') found.delete('weapon');
-  return LAYER_ORDER.filter((layer) => found.has(layer)).map((layer) => ({ layer, row: found.get(layer)! }));
+  return LAYER_ORDER.filter((layer) => found.has(layer)).map((layer) => ({
+    layer,
+    row: raceGearRow(state.raceId, found.get(layer)!),
+  }));
 }

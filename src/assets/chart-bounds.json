@@ -201,5 +201,54 @@
     "y": 16,
     "w": 224,
     "h": 190
+  },
+  "ironhollow": {
+    "zone": "ironhollow",
+    "x": 90,
+    "y": 50,
+    "w": 96,
+    "h": 100
+  },
+  "ironhollow_hills": {
+    "zone": "ironhollow",
+    "x": 16,
+    "y": 150,
+    "w": 224,
+    "h": 96
+  },
+  "canipure": {
+    "zone": "canipure",
+    "x": 140,
+    "y": 70,
+    "w": 84,
+    "h": 110
+  },
+  "greenreach": {
+    "zone": "canipure",
+    "x": 8,
+    "y": 16,
+    "w": 130,
+    "h": 224
+  },
+  "grokthul": {
+    "zone": "grokthul",
+    "x": 72,
+    "y": 28,
+    "w": 112,
+    "h": 92
+  },
+  "grokthul_valley": {
+    "zone": "grokthul",
+    "x": 16,
+    "y": 120,
+    "w": 224,
+    "h": 120
+  },
+  "grokthul_peaks": {
+    "zone": "grokthul_peaks",
+    "x": 16,
+    "y": 16,
+    "w": 224,
+    "h": 220
   }
 }
