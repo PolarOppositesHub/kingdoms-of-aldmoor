@@ -3,6 +3,7 @@ import { LOADOUT_CAP } from './types';
 import { maxFocus, maxHp, maxMana } from './formulas';
 import { addItem, emptyBags } from './bags';
 import { bodySprite, raceScale } from './appearance';
+import { defaultUi } from '../ui/theme';
 
 export function getPlayer(state: GameState): Actor {
   const player = state.actors.find((actor) => actor.id === state.playerId);
@@ -49,6 +50,7 @@ export function blankActor(partial: Pick<Actor, 'id' | 'kind' | 'defId' | 'name'
     pet: false,
     dormant: false,
     scale: 1,
+    barkMs: 0,
     ...partial,
   };
 }
@@ -254,9 +256,15 @@ export function actorsFromMap(content: ContentDb, map: MapData): Actor[] {
     if (spawn.kind === 'npc') {
       const def = content.npcs[spawn.defId];
       if (!def) throw new Error(`map npc ${spawn.defId} has no definition`);
+      let npcId = `npc_${def.id}`;
+      let suffix = 2;
+      while (actors.some((actor) => actor.id === npcId)) {
+        npcId = `npc_${def.id}_${suffix}`;
+        suffix += 1;
+      }
       actors.push(
         blankActor({
-          id: `npc_${def.id}`,
+          id: npcId,
           kind: 'npc',
           defId: def.id,
           name: def.name,
@@ -264,6 +272,8 @@ export function actorsFromMap(content: ContentDb, map: MapData): Actor[] {
           x: spawn.x,
           y: spawn.y,
           scale: raceScale(content, def.race ?? 'barbarian'),
+          ambient: spawn.ambient === true,
+          barkMs: spawn.ambient ? 600 + actors.length * 280 : 0,
         }),
       );
     } else if (spawn.kind === 'mob') {
@@ -333,6 +343,7 @@ export function createWorld(content: ContentDb, map: MapData, seed: number, debu
     ac: cls.ac,
     classId: cls.id,
     raceId: 'barbarian',
+    uiPrefs: defaultUi('barbarian'),
     mana: 0,
     maxMana: 0,
     manaRegenBank: 0,

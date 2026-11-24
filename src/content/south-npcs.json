@@ -89,5 +89,26 @@
     "title": "the fire in the mouth",
     "dialogue": "anwen",
     "race": "human"
+  },
+  {
+    "id": "aldric",
+    "name": "Aldric Valdor",
+    "title": "King of Valdoria",
+    "dialogue": "aldric",
+    "race": "human"
+  },
+  {
+    "id": "wren",
+    "name": "Wren Holt",
+    "title": "grove tutor",
+    "dialogue": "wren",
+    "race": "human"
+  },
+  {
+    "id": "keel",
+    "name": "Keel Marsh",
+    "title": "bow tutor",
+    "dialogue": "keel",
+    "race": "human"
   }
 ]

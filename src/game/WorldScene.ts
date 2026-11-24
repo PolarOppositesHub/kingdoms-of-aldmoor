@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { clampZoom, defaultZoom, followScroll } from './camera';
 import atlasJson from '../assets/atlas.json';
 import actorsUrl from '../assets/actors.png?url';
 import heroUrl from '../assets/hero.png?url';
@@ -70,10 +71,6 @@ const SCENERY_FRAMES = [
 ];
 
 const SCENERY_CELL = 8;
-
-function clampZoom(value: number): number {
-  return Math.round(Math.max(1.75, Math.min(4.5, value)) * 4) / 4;
-}
 
 interface ActorView {
   sprite: Phaser.GameObjects.Sprite;
@@ -193,7 +190,7 @@ export class WorldScene extends Phaser.Scene {
     this.cam.roundPixels = true;
     this.applyZoom();
     const player = this.state.actors[0];
-    this.cam.centerOn(player.x, player.y);
+    this.followHero(player.x, player.y);
     this.scale.on('resize', () => this.applyZoom());
 
     if (debug && this.mapData.width * this.mapData.height < 20000) {
@@ -391,7 +388,7 @@ export class WorldScene extends Phaser.Scene {
 
   private applyZoom(): void {
     // 3× keeps a 16px tile at 48 CSS pixels. Pinch and the wheel snap to quarter steps so the pixels stay crisp.
-    if (!this.zoomTouched) this.zoom = this.scale.width >= 320 ? 3 : 2;
+    if (!this.zoomTouched) this.zoom = defaultZoom(this.scale.width, this.scale.height);
     this.cam.setZoom(this.zoom);
     const inv = 1 / this.zoom;
     for (const label of this.placeLabels) label.setScale(inv);
@@ -466,7 +463,7 @@ export class WorldScene extends Phaser.Scene {
           this.api.map = map;
           this.mountMap(map.zoneId);
           const player = this.state.actors.find((actor) => actor.id === this.state.playerId);
-          if (player) this.cam.centerOn(player.x, player.y);
+          if (player) this.followHero(player.x, player.y);
         }
         this.swap.committed = true;
         this.swap.at = this.time.now;
@@ -549,11 +546,30 @@ export class WorldScene extends Phaser.Scene {
       } else if (event.type === 'seam') {
         this.fade.classList.add('on');
         this.time.delayedCall(200, () => this.fade.classList.remove('on'));
+      } else if (event.type === 'bark') {
+        this.bubble(event.text, event.actorId);
       } else if (event.type === 'swing') {
         const view = this.views.get(event.actorId);
         if (view) view.lunge = 1;
       }
     }
+  }
+
+  private bubble(text: string, actorId: string): void {
+    const actor = this.state.actors.find((entry) => entry.id === actorId);
+    if (!actor || this.floaters.length > 8) return;
+    const label = this.add.text(actor.x, actor.y - 36, text, {
+      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+      fontSize: '11px',
+      color: '#1c1418',
+      backgroundColor: '#f4f0e6',
+      padding: { x: 4, y: 3 },
+      wordWrap: { width: 140 },
+      align: 'center',
+    });
+    label.setOrigin(0.5, 1);
+    label.setDepth(6100);
+    this.floaters.push({ text: label, life: 2600, vy: 0 });
   }
 
   private float(text: string, actorId: string, color: string): void {
@@ -826,13 +842,38 @@ export class WorldScene extends Phaser.Scene {
     const view = this.views.get(player.id);
     const px = view ? view.sprite.x : player.x;
     const py = view ? view.sprite.y : player.y;
-    this.cam.centerOn(Math.round(px), Math.round(py));
+    this.followHero(px, py);
     this.syncScenery();
 
     const fire = Math.floor(this.time.now / 180) % 2 === 0 ? 'firepit' : 'firepit_b';
+    const hop = Math.floor(this.time.now / 480) % 2 === 0;
     for (const sprite of this.propSprites) {
       const frame = sprite.frame.name;
       if (frame === 'firepit' || frame === 'firepit_b') sprite.setFrame(fire);
+      if (typeof frame === 'string' && frame.startsWith('horse_')) {
+        const base = frame.endsWith('_b') ? frame.slice(0, -2) : frame;
+        const next = hop ? `${base}_b` : base;
+        if (this.textures.get('props').has(next)) sprite.setFrame(next);
+      }
     }
+  }
+
+  /** Center the hero, or center a room that is smaller than the map view. */
+  private followHero(px: number, py: number): void {
+    const mapW = this.mapData.width * this.mapData.tileWidth;
+    const mapH = this.mapData.height * this.mapData.tileWidth;
+    const scroll = followScroll({
+      heroX: px,
+      heroY: py,
+      mapW,
+      mapH,
+      viewW: this.scale.width,
+      viewH: this.scale.height,
+      zoom: this.zoom || 1,
+    });
+    const camW = this.scale.width;
+    const camH = this.scale.height;
+    this.cam.setBounds(-camW, -camH, mapW + camW * 2, mapH + camH * 2);
+    this.cam.setScroll(scroll.scrollX, scroll.scrollY);
   }
 }

@@ -439,6 +439,11 @@ function paint(w, h, sex, dir, pose, part, palette, raceId = 'barbarian') {
       img.set(cx + hh - s, hy - 2 * s, race.leafHi);
     } else if (race.id === 'barbarian') {
       box(img, cx - hh, hy + s, hh * 2, s, race.band);
+    } else if (race.id === 'human') {
+      box(img, cx - hh, hy + s, hh * 2, Math.max(s, 1), hex('#e6c15a'));
+      img.set(cx, hy, hex('#1d4e89'));
+      box(img, cx - sh, chestTop - s, sh * 2, s, hex('#1d4e89'));
+      img.set(cx, chestTop - s, hex('#e6c15a'));
     }
     if (race.ears === 'point') pointedEars(img, cx, hy, s, hh, skin, skinHi, EAR_INNER, dir);
     else if (race.ears === 'round') roundEars(img, cx, hy, s, hh, skin, skinHi);
@@ -664,6 +669,39 @@ export const PEOPLE = [
   { id: 'ugga', race: 'ogre', sex: 'female', hair: '#2a3024', hairHi: '#4a5440', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_boot' },
   { id: 'gash', race: 'ogre', sex: 'male', hair: '#1c1814', chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', helm: 'helm_cap', weapon: 'weapon_axe' },
   { id: 'mara', race: 'ogre', sex: 'female', hair: '#3a3428', hairHi: '#5a5448', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_barb_guard', race: 'barbarian', sex: 'male', hair: '#3a2418', beard: '#5c3a28', chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', helm: 'helm_cap', weapon: 'weapon_axe' },
+  { id: 'folk_barb_folk', race: 'barbarian', sex: 'female', hair: '#c4a574', hairHi: '#e6d2a4', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_barb_merchant', race: 'barbarian', sex: 'male', hair: '#6a3030', beard: '#4a2018', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_barb_elder', race: 'barbarian', sex: 'female', hair: '#d8d0c4', hairHi: '#f4f0e6', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_human_guard', race: 'human', sex: 'male', hair: '#2a2018', beard: '#3a2820', chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', helm: 'helm_coif', weapon: 'weapon_blade' },
+  { id: 'folk_human_folk', race: 'human', sex: 'female', hair: '#6a4030', hairHi: '#c4a080', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_human_merchant', race: 'human', sex: 'male', hair: '#4a3020', beard: '#5c4030', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_human_elder', race: 'human', sex: 'female', hair: '#c8b090', hairHi: '#f0e0c0', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_elf_guard', race: 'high_elf', sex: 'male', hair: '#d5dbe8', hairHi: '#f7fbff', beard: false, chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', weapon: 'weapon_blade' },
+  { id: 'folk_elf_folk', race: 'high_elf', sex: 'female', hair: '#f4f7fb', hairHi: '#ffffff', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_elf_merchant', race: 'high_elf', sex: 'male', hair: '#c5ced8', hairHi: '#eef3f8', beard: false, chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_elf_elder', race: 'high_elf', sex: 'female', hair: '#e6e0d4', hairHi: '#ffffff', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_wood_guard', race: 'wood_elf', sex: 'male', hair: '#2e4a28', hairHi: '#6a9a48', beard: false, chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_bow' },
+  { id: 'folk_wood_folk', race: 'wood_elf', sex: 'female', hair: '#6a5030', hairHi: '#c4a060', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_wood_merchant', race: 'wood_elf', sex: 'male', hair: '#3e6b40', hairHi: '#9ac86a', beard: false, chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_wood_elder', race: 'wood_elf', sex: 'female', hair: '#c8b080', hairHi: '#f0e0b0', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe' },
+  { id: 'folk_dwarf_guard', race: 'dwarf', sex: 'male', hair: '#6a3818', beard: '#4a2810', chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', helm: 'helm_cap', weapon: 'weapon_axe' },
+  { id: 'folk_dwarf_folk', race: 'dwarf', sex: 'female', hair: '#a06030', hairHi: '#e0a060', beard: '#6a3810', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_dwarf_merchant', race: 'dwarf', sex: 'male', hair: '#8a6840', beard: '#5c4020', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_dwarf_elder', race: 'dwarf', sex: 'female', hair: '#e0c080', hairHi: '#f4e0b0', beard: '#a07040', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_boot' },
+  { id: 'folk_ogre_guard', race: 'ogre', sex: 'male', hair: '#1c1814', chest: 'chest_chain', legs: 'legs_chain', feet: 'feet_boot', weapon: 'weapon_axe' },
+  { id: 'folk_ogre_folk', race: 'ogre', sex: 'female', hair: '#3a4030', hairHi: '#5a6450', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot' },
+  { id: 'folk_ogre_merchant', race: 'ogre', sex: 'male', hair: '#242820', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_boot' },
+  { id: 'folk_ogre_elder', race: 'ogre', sex: 'female', hair: '#4a5440', hairHi: '#6a7460', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_staff' },
+  { id: 'aldric', race: 'human', sex: 'male', hair: '#c4a060', hairHi: '#e6c15a', beard: '#8a6840', chest: 'chest_plate', legs: 'legs_plate', feet: 'feet_boot', helm: 'helm_plate', weapon: 'weapon_blade' },
+  { id: 'wren', race: 'human', sex: 'female', hair: '#3e6b40', hairHi: '#8ab86a', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe', weapon: 'weapon_staff' },
+  { id: 'keel', race: 'human', sex: 'male', hair: '#5a4030', hairHi: '#a07850', beard: '#4a3020', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', weapon: 'weapon_bow' },
+  { id: 'drinker_human', race: 'human', sex: 'male', hair: '#5a4030', beard: '#3a2820', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe', mug: true },
+  { id: 'drinker_barbarian', race: 'barbarian', sex: 'male', hair: '#6a3030', beard: '#4a2018', chest: 'chest_fur', legs: 'legs_leather', feet: 'feet_boot', mug: true },
+  { id: 'drinker_high_elf', race: 'high_elf', sex: 'female', hair: '#f4f7fb', hairHi: '#ffffff', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe', mug: true },
+  { id: 'drinker_wood_elf', race: 'wood_elf', sex: 'female', hair: '#6a5030', hairHi: '#c4a060', chest: 'chest_cloth', legs: 'legs_cloth', feet: 'feet_shoe', mug: true },
+  { id: 'drinker_dwarf', race: 'dwarf', sex: 'male', hair: '#8a6840', beard: '#5c4020', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', mug: true },
+  { id: 'drinker_ogre', race: 'ogre', sex: 'male', hair: '#242820', chest: 'chest_leather', legs: 'legs_leather', feet: 'feet_boot', mug: true },
 ];
 
 function compositePerson(w, h, person, dir, pose) {
@@ -680,6 +718,13 @@ function compositePerson(w, h, person, dir, pose) {
   for (const part of layers) {
     const overlay = paint(w, h, person.sex, dir === 'w' ? 'e' : dir, pose, part, palette, race);
     blit(base, overlay, 0, 0);
+  }
+  if (person.mug && dir !== 'n') {
+    const cx = 16;
+    const y = 20;
+    for (let yy = 0; yy < 4; yy++) for (let xx = 0; xx < 3; xx++) base.set(cx + xx, y + yy, hex('#e6c15a'));
+    base.set(cx + 3, y + 1, hex('#f4f0e6'));
+    base.set(cx + 1, y + 4, hex('#8d5a38'));
   }
   return dir === 'w' ? flip(base) : base;
 }

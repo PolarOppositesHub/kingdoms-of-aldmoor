@@ -1,6 +1,7 @@
 import type { GameApi } from '../game/api';
 import type { Stats } from '../sim/types';
 import { bodySprite, raceGearRow, raceScale } from '../sim/appearance';
+import { applyTheme, defaultUi } from './theme';
 import atlas from '../assets/atlas.json';
 import portraitUrl from '../assets/portrait.png?url';
 
@@ -150,7 +151,9 @@ export function mountCreate(api: GameApi): { read: () => HeroDraft; save: () => 
       dwarf: 'Enter Brightforge',
       wood_elf: 'Enter Canipure',
       ogre: 'Enter Grokthul Hold',
+      human: 'Enter Thornhaven',
     };
+    applyTheme(defaultUi(raceId), raceId);
     if (enter) enter.textContent = gates[raceId] ?? 'Enter Hoffender';
     points.textContent = `Bonus points left: ${roster.points - spent()}`;
     list.innerHTML = STATS.map((key) => {

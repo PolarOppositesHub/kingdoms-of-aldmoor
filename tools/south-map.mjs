@@ -7,6 +7,8 @@
  */
 import { T, TILE } from './frostmere-map.mjs';
 import { frameGate, layGround, stampBuilding } from './buildings.mjs';
+import { dressTown, dropProps } from './town-fill.mjs';
+import { placeTownFolk } from './town-place.mjs';
 
 const W = 256;
 const H = 256;
@@ -348,6 +350,33 @@ function buildThornhaven() {
   stampBuilding(g, solid, scenery, 156, 22, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 100, 64, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 108, 64, 6, 7, 'human', { enter: false });
+  dressTown(g, solid, road, scenery, {
+    name: 'Thornhaven',
+    style: 'human',
+    min: 6,
+    reserved: [
+      [130, 48], [142, 52], [118, 86], [146, 86], [164, 44], [124, 56], [124, 50], [128, 34],
+      [122, 48], [136, 42], [108, 48], [154, 48], [128, 16],
+    ],
+    houses: [
+      { x: 132, y: 22, w: 8, h: 7 },
+      { x: 166, y: 22, w: 8, h: 7 },
+      { x: 90, y: 36, w: 8, h: 7 },
+      { x: 166, y: 40, w: 8, h: 7 },
+      { x: 140, y: 58, w: 8, h: 7 },
+      { x: 166, y: 64, w: 8, h: 7 },
+      { x: 90, y: 72, w: 8, h: 7 },
+      { x: 156, y: 76, w: 8, h: 7 },
+    ],
+    streets: [
+      [92, 32, 178, 33],
+      [92, 50, 178, 51],
+      [92, 74, 178, 75],
+      [148, 20, 149, 88],
+    ],
+    lamps: [[96, 34], [160, 34], [96, 52], [174, 52], [120, 76]],
+    gardens: [{ x: 92, y: 82, w: 7, h: 5, floor: T.FARM }],
+  });
   stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
   const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
@@ -391,6 +420,19 @@ function buildThornhaven() {
   });
   m.add('label', 'Thornhaven', 80, 180);
   m.add('label', 'Graymoor Hold', 128, 24);
+  m.add('npc', 'aldric', 136, 42, { defId: 'aldric', sprite: 'aldric' });
+  m.add('npc', 'wren', 108, 48, { defId: 'wren', sprite: 'wren' });
+  m.add('npc', 'keel', 154, 48, { defId: 'keel', sprite: 'keel' });
+  dropProps(m, g, solid, [
+    { name: 'well', sprite: 'well', x: 96, y: 46, block: true },
+    { name: 'cart', sprite: 'cart', x: 172, y: 56, block: true },
+    { name: 'stall', sprite: 'stall', x: 120, y: 70, block: true },
+    { name: 'crate', sprite: 'crate', x: 158, y: 70, block: true },
+    { name: 'barrel', sprite: 'barrel', x: 160, y: 72, block: true },
+    { name: 'banner', sprite: 'banner', x: 174, y: 30, block: false },
+    { name: 'tree', sprite: 'tree_green', x: 94, y: 84, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'thornhaven');
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['field_boar', 'boar', 48, 88],
     ['field_boar', 'boar', 70, 96],
@@ -425,6 +467,19 @@ function buildThornhaven() {
     ['briar_bear', 'bear', 168, 236],
     ['briar_bear', 'bear', 220, 220],
     ['hask', 'leader', 72, 206],
+    ['lane_hare', 'hare', 118, 104],
+    ['lane_hare', 'hare', 138, 110],
+    ['lane_hare', 'hare', 116, 118],
+    ['lane_fox', 'fox', 140, 126],
+    ['lane_fox', 'fox', 118, 132],
+    ['lane_wolf', 'wolf', 142, 144],
+    ['lane_wolf', 'wolf', 116, 150],
+    ['lane_boar', 'boar', 140, 162],
+    ['lane_boar', 'boar', 118, 170],
+    ['lane_bandit', 'bandit', 138, 182],
+    ['lane_bandit', 'bandit', 120, 190],
+    ['lane_bear', 'bear', 136, 206],
+    ['lane_bear', 'bear', 118, 214],
   ]);
   border(g, solid);
   const map = m.finish(g, solid, safe, scenery);
@@ -499,6 +554,29 @@ function buildValdoria() {
   stampBuilding(g, solid, scenery, 160, 90, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 168, 90, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 188, 92, 6, 7, 'human', { enter: false });
+  dressTown(g, solid, road, scenery, {
+    name: 'Blackpine',
+    style: 'human',
+    min: 4,
+    reserved: [
+      [190, 132], [176, 160], [204, 160], [168, 120], [196, 136], [192, 128], [176, 136],
+    ],
+    houses: [
+      { x: 200, y: 92, w: 8, h: 7 },
+      { x: 152, y: 110, w: 8, h: 7 },
+      { x: 200, y: 112, w: 8, h: 7 },
+      { x: 152, y: 146, w: 8, h: 7 },
+      { x: 204, y: 146, w: 8, h: 7 },
+      { x: 168, y: 146, w: 6, h: 7 },
+    ],
+    streets: [
+      [154, 106, 216, 107],
+      [154, 140, 216, 141],
+      [186, 82, 187, 164],
+    ],
+    lamps: [[158, 108], [210, 108], [158, 142], [208, 142]],
+    gardens: [{ x: 208, y: 126, w: 6, h: 4, floor: T.GRASS }],
+  });
   stroke(g, solid, road, scenery.grid, [[220, 114], [228, 112]], 1);
   const m = maker('valdoria', 'Blackpine Tower', 'Valdoria');
   m.add('door', 'To Thornhaven', 128, 8, { toZone: 'thornhaven', toX: feet(128, 238).x, toY: feet(128, 238).y, sprite: 'sign_wilds' });
@@ -531,6 +609,14 @@ function buildValdoria() {
   });
   m.add('label', 'Valdoria', 80, 80);
   m.add('label', 'Blackpine Tower', 192, 96);
+  dropProps(m, g, solid, [
+    { name: 'well', sprite: 'well', x: 160, y: 128, block: true },
+    { name: 'cart', sprite: 'cart', x: 208, y: 100, block: true },
+    { name: 'stall', sprite: 'stall', x: 164, y: 158, block: true },
+    { name: 'crate', sprite: 'crate', x: 210, y: 158, block: true },
+    { name: 'tree', sprite: 'tree_green', x: 210, y: 128, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'valdoria');
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['pine_stag', 'stag', 48, 40],
     ['pine_stag', 'stag', 80, 56],
@@ -622,6 +708,27 @@ function buildEldenmoor() {
   stampBuilding(g, solid, scenery, 71, 233, 8, 7, 'elf', { enter: true, doorX: 74 });
   stampBuilding(g, solid, scenery, 153, 233, 8, 7, 'elf', { enter: true, doorX: 156 });
   stampBuilding(g, solid, scenery, 99, 236, 8, 7, 'elf', { enter: true, doorX: 102 });
+  dressTown(g, solid, road, scenery, {
+    name: 'Eldenmoor',
+    style: 'elf',
+    min: 3,
+    reserved: [
+      [140, 164], [128, 214], [128, 186], [96, 200], [78, 196], [180, 196], [74, 216], [180, 216],
+      [74, 239], [156, 239], [102, 242], [78, 204], [84, 206],
+    ],
+    houses: [
+      { x: 90, y: 160, w: 8, h: 7 },
+      { x: 158, y: 160, w: 8, h: 7 },
+      { x: 128, y: 232, w: 8, h: 7 },
+      { x: 180, y: 232, w: 6, h: 7 },
+    ],
+    streets: [
+      [68, 168, 188, 169],
+      [68, 224, 188, 225],
+    ],
+    lamps: [[88, 170], [150, 170], [110, 226], [170, 226]],
+    gardens: [{ x: 148, y: 160, w: 6, h: 4, floor: T.GRASS }],
+  });
   for (let y = 198; y <= 236; y++) {
     for (let x = 234; x < W - 1; x++) {
       g[y][x] = (x + y) % 2 === 0 ? T.WATER : T.WATER_B;
@@ -662,6 +769,13 @@ function buildEldenmoor() {
   m.add('npc', 'halden', 128, 214, { defId: 'halden', sprite: 'halden' });
   m.add('prop', 'banner', 128, 186, { sprite: 'banner' });
   m.add('prop', 'well', 96, 200, { sprite: 'well' });
+  dropProps(m, g, solid, [
+    { name: 'stall', sprite: 'stall', x: 110, y: 172, block: true },
+    { name: 'cart', sprite: 'cart', x: 168, y: 172, block: true },
+    { name: 'crate', sprite: 'crate', x: 140, y: 228, block: true },
+    { name: 'tree', sprite: 'tree_green', x: 150, y: 162, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'eldenmoor');
   solid[200][96] = 1;
   solid[201][96] = 1;
   m.add('sign', 'Eldenmoor', 112, 162, {

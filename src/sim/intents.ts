@@ -2,6 +2,7 @@ import type { ContentDb, GameState, Intent, MapData } from './types';
 import { collect } from './events';
 import { dist } from './formulas';
 import { findActor, getPlayer, applyHero, refreshGear, syncCompanion } from './state';
+import { defaultUi, normalizeUi } from '../ui/theme';
 import { abandonQuest, acceptQuest, addHate, addItem, askPrice, grantXp, knownAbilities, learnAbility, nearestMob, openDialogue, openInspect, performAbility, sellAllOf, standUp, turnInPelts, turnInQuest } from './systems';
 import { moveBag, moveItem, removeBag, removeOne } from './bags';
 import { LOADOUT_CAP } from './types';
@@ -112,6 +113,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         const made = applyHero(state, content, intent.raceId, intent.classId, intent.bonus, intent.sex ?? state.sex);
         if (!made) return;
         const race = content.roster.races.find((entry) => entry.id === intent.raceId);
+        state.uiPrefs = defaultUi(intent.raceId);
         if (race?.homeZone && race.homeX !== undefined && race.homeY !== undefined && race.homeZone !== state.zoneId) {
           state.bindZone = race.homeZone;
           state.bind = { x: race.homeX, y: race.homeY };
@@ -120,7 +122,9 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
             high_elf: 'The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.',
             wood_elf: 'Canipure is at your back. The Greenreach, and whatever keeps to the trees, waits past the west boughs.',
             ogre: 'Grokthul Hold is at your back. The valley is young. The peaks, and the dragons, are north.',
+            human: 'Thornhaven is at your back. King Aldric is in the Graymoor yard. The south lane, outside the hold, is where the young start.',
           };
+          state.uiPrefs = defaultUi(race.id);
           state.log = [arrived[race.id] ?? 'You wake at home.'];
           emit({ type: 'zone', zoneId: race.homeZone, x: race.homeX, y: race.homeY });
         }
@@ -525,6 +529,9 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
         state.input.x = 0;
         state.input.y = 0;
         state.input.dest = null;
+        return;
+      case 'setUi':
+        state.uiPrefs = normalizeUi(intent.prefs, state.raceId);
         return;
       case 'close':
         state.ui = { panel: 'none', npcId: null, nodeId: null, title: null, body: null };

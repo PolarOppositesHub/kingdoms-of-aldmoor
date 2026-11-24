@@ -311,6 +311,246 @@
       "h": 24,
       "anchorX": 16,
       "anchorY": 23
+    },
+    "cart": {
+      "x": 0,
+      "y": 210,
+      "w": 32,
+      "h": 24,
+      "anchorX": 16,
+      "anchorY": 23
+    },
+    "stall": {
+      "x": 32,
+      "y": 210,
+      "w": 28,
+      "h": 24,
+      "anchorX": 14,
+      "anchorY": 23
+    },
+    "bar": {
+      "x": 60,
+      "y": 210,
+      "w": 28,
+      "h": 16,
+      "anchorX": 14,
+      "anchorY": 15
+    },
+    "stool": {
+      "x": 88,
+      "y": 210,
+      "w": 12,
+      "h": 14,
+      "anchorX": 6,
+      "anchorY": 13
+    },
+    "table": {
+      "x": 100,
+      "y": 210,
+      "w": 20,
+      "h": 16,
+      "anchorX": 10,
+      "anchorY": 15
+    },
+    "chair": {
+      "x": 0,
+      "y": 234,
+      "w": 12,
+      "h": 16,
+      "anchorX": 6,
+      "anchorY": 15
+    },
+    "keg": {
+      "x": 12,
+      "y": 234,
+      "w": 14,
+      "h": 16,
+      "anchorX": 7,
+      "anchorY": 15
+    },
+    "forge": {
+      "x": 26,
+      "y": 234,
+      "w": 24,
+      "h": 24,
+      "anchorX": 12,
+      "anchorY": 23
+    },
+    "quench": {
+      "x": 50,
+      "y": 234,
+      "w": 16,
+      "h": 16,
+      "anchorX": 8,
+      "anchorY": 15
+    },
+    "rack": {
+      "x": 66,
+      "y": 234,
+      "w": 16,
+      "h": 22,
+      "anchorX": 8,
+      "anchorY": 21
+    },
+    "shield_prop": {
+      "x": 82,
+      "y": 234,
+      "w": 14,
+      "h": 16,
+      "anchorX": 7,
+      "anchorY": 15
+    },
+    "armor_stand": {
+      "x": 96,
+      "y": 234,
+      "w": 14,
+      "h": 22,
+      "anchorX": 7,
+      "anchorY": 21
+    },
+    "hay": {
+      "x": 110,
+      "y": 234,
+      "w": 16,
+      "h": 12,
+      "anchorX": 8,
+      "anchorY": 11
+    },
+    "trough": {
+      "x": 0,
+      "y": 258,
+      "w": 20,
+      "h": 12,
+      "anchorX": 10,
+      "anchorY": 11
+    },
+    "stallpost": {
+      "x": 20,
+      "y": 258,
+      "w": 10,
+      "h": 20,
+      "anchorX": 5,
+      "anchorY": 19
+    },
+    "shelf": {
+      "x": 30,
+      "y": 258,
+      "w": 20,
+      "h": 16,
+      "anchorX": 10,
+      "anchorY": 15
+    },
+    "altar": {
+      "x": 50,
+      "y": 258,
+      "w": 20,
+      "h": 16,
+      "anchorX": 10,
+      "anchorY": 15
+    },
+    "candle": {
+      "x": 70,
+      "y": 258,
+      "w": 8,
+      "h": 14,
+      "anchorX": 4,
+      "anchorY": 13
+    },
+    "horse_human": {
+      "x": 78,
+      "y": 258,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_human_b": {
+      "x": 0,
+      "y": 286,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_barb": {
+      "x": 32,
+      "y": 286,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_barb_b": {
+      "x": 64,
+      "y": 286,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_elf": {
+      "x": 96,
+      "y": 286,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_elf_b": {
+      "x": 0,
+      "y": 314,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_wood": {
+      "x": 32,
+      "y": 314,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_wood_b": {
+      "x": 64,
+      "y": 314,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_dwarf": {
+      "x": 96,
+      "y": 314,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_dwarf_b": {
+      "x": 0,
+      "y": 342,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_ogre": {
+      "x": 32,
+      "y": 342,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
+    },
+    "horse_ogre_b": {
+      "x": 64,
+      "y": 342,
+      "w": 32,
+      "h": 28,
+      "anchorX": 16,
+      "anchorY": 27
     }
   },
   "hero": {
@@ -740,7 +980,40 @@
       "ruk": 86,
       "ugga": 87,
       "gash": 88,
-      "mara": 89
+      "mara": 89,
+      "folk_barb_guard": 90,
+      "folk_barb_folk": 91,
+      "folk_barb_merchant": 92,
+      "folk_barb_elder": 93,
+      "folk_human_guard": 94,
+      "folk_human_folk": 95,
+      "folk_human_merchant": 96,
+      "folk_human_elder": 97,
+      "folk_elf_guard": 98,
+      "folk_elf_folk": 99,
+      "folk_elf_merchant": 100,
+      "folk_elf_elder": 101,
+      "folk_wood_guard": 102,
+      "folk_wood_folk": 103,
+      "folk_wood_merchant": 104,
+      "folk_wood_elder": 105,
+      "folk_dwarf_guard": 106,
+      "folk_dwarf_folk": 107,
+      "folk_dwarf_merchant": 108,
+      "folk_dwarf_elder": 109,
+      "folk_ogre_guard": 110,
+      "folk_ogre_folk": 111,
+      "folk_ogre_merchant": 112,
+      "folk_ogre_elder": 113,
+      "aldric": 114,
+      "wren": 115,
+      "keel": 116,
+      "drinker_human": 117,
+      "drinker_barbarian": 118,
+      "drinker_high_elf": 119,
+      "drinker_wood_elf": 120,
+      "drinker_dwarf": 121,
+      "drinker_ogre": 122
     }
   }
 }

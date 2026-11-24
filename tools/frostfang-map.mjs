@@ -3,6 +3,8 @@
  * 256×256. The south gate lines up with the Frostmere north road.
  * Original layout. Tile ids match tools/frostmere-map.mjs.
  */
+import { placeTownFolk } from './town-place.mjs';
+
 export const TILE = 16;
 
 const T = {
@@ -190,6 +192,7 @@ export function buildFrostfang() {
 
   add('npc', 'kara', 120, 198, { defId: 'kara', sprite: 'kara' });
   add('npc', 'orm', 132, 200, { defId: 'orm', sprite: 'orm' });
+  placeTownFolk({ add }, g, solid, 'frostfang');
   add('bind', 'hearthpass-fire', 126, 204);
   add('prop', 'campfire', 126, 203, { sprite: 'firepit' });
   add('prop', 'banner', 126, 190, { sprite: 'banner' });

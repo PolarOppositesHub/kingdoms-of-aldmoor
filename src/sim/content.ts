@@ -42,6 +42,7 @@ import phase2Quests from '../content/phase2-quests.json';
 import phase2Dialogue from '../content/phase2-dialogue.json';
 import phase2Maps from '../content/phase2-maps.json';
 import phase2Vendors from '../content/phase2-vendors.json';
+import { TOWN_FOLK } from '../../tools/town-folk.mjs';
 
 function indexById<T extends { id: string }>(rows: T[]): Record<string, T> {
   const out: Record<string, T> = {};
@@ -93,7 +94,15 @@ export function loadContent(): ContentDb {
   const mobRows = [...(mobsJson as MobDef[]), ...(southMobs as MobDef[]), ...(canonMobs as MobDef[]), ...(phase2Mobs as MobDef[])];
   const mobs = indexById(mobRows);
   if (Object.keys(mobs).length !== mobRows.length) throw new Error('mob ids collide');
-  const npcRows = [...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[]), ...(canonNpcs as NpcDef[]), ...(phase2Npcs as NpcDef[])];
+  const folkNpcs: NpcDef[] = TOWN_FOLK.map((folk) => ({
+    id: folk.id,
+    name: folk.name,
+    title: folk.title,
+    dialogue: folk.id,
+    race: folk.race,
+    barks: folk.barks,
+  }));
+  const npcRows = [...(npcsJson as NpcDef[]), ...(southNpcs as NpcDef[]), ...(canonNpcs as NpcDef[]), ...(phase2Npcs as NpcDef[]), ...folkNpcs];
   const npcs = indexById(npcRows);
   if (Object.keys(npcs).length !== npcRows.length) throw new Error('npc ids collide');
   const abilities = indexById(abilitiesJson as AbilityDef[]);
@@ -119,6 +128,24 @@ export function loadContent(): ContentDb {
       ...(southDialogue as ContentDb['dialogue']),
       ...(canonDialogue as ContentDb['dialogue']),
       ...(phase2Dialogue as ContentDb['dialogue']),
+      ...Object.fromEntries(
+        TOWN_FOLK.map((folk) => [
+          folk.id,
+          {
+            start: {
+              text: folk.talk,
+              choices: [
+                { label: 'I will remember.', action: 'close' as const },
+                { label: 'What else is there?', next: 'more' },
+              ],
+            },
+            more: {
+              text: folk.barks[0] ?? folk.talk,
+              choices: [{ label: 'Fair road.', action: 'close' as const }],
+            },
+          },
+        ]),
+      ),
     },
     abilities,
     classes,

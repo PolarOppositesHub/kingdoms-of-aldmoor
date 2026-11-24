@@ -1,4 +1,5 @@
 /** Shared simulation types. Serializable: no functions, no class instances. */
+import type { UiPrefs } from '../ui/theme';
 
 export const TICK_MS = 1000 / 30;
 
@@ -163,6 +164,8 @@ export interface NpcDef {
   dialogue: string;
   /** Body scale. Barbarians stand taller than humans. */
   race?: string;
+  /** Short lines a walking townsfolk may say on their own. */
+  barks?: string[];
 }
 
 export interface DialogueChoice {
@@ -415,6 +418,10 @@ export interface Actor {
   dormant: boolean;
   /** Drawn size. Feet stay put; the body grows up from them. */
   scale: number;
+  /** Townsfolk who walk the streets. Quest givers stay put. */
+  ambient?: boolean;
+  /** Milliseconds until the next unprompted line. */
+  barkMs: number;
 }
 
 export interface GroundItem {
@@ -452,6 +459,8 @@ export interface GameState {
   ac: number;
   classId: string;
   raceId: string;
+  /** Window colors and scale. Old saves omit it and receive the race default. */
+  uiPrefs: UiPrefs;
   mana: number;
   maxMana: number;
   manaRegenBank: number;
@@ -524,7 +533,8 @@ export type SimEvent =
   | { type: 'bolt'; fromX: number; fromY: number; toX: number; toY: number }
   | { type: 'field'; x: number; y: number; radius: number }
   | { type: 'zone'; zoneId: string; x: number; y: number }
-  | { type: 'seam'; title: string };
+  | { type: 'seam'; title: string }
+  | { type: 'bark'; actorId: string; text: string };
 
 export type Intent =
   | { type: 'move'; x: number; y: number }
@@ -557,6 +567,7 @@ export type Intent =
   | { type: 'abandonQuest'; id: string }
   | { type: 'openHelp' }
   | { type: 'openSettings' }
+  | { type: 'setUi'; prefs: UiPrefs }
   | { type: 'close' }
   | { type: 'debugTeleport'; x: number; y: number }
   | { type: 'debugZone'; zoneId: string; x: number; y: number }
@@ -573,6 +584,8 @@ export interface Spawn {
   toZone?: string;
   toX?: number;
   toY?: number;
+  /** Walking townsfolk. Vendors and quest givers omit this. */
+  ambient?: boolean;
 }
 
 export interface MapData {

@@ -292,7 +292,10 @@ describe('wizard and the pelt quest', () => {
     const state = createWorld(content, map, 9);
     const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 2, cha: 0 };
     expect(applyHero(state, content, 'barbarian', 'wizard', bonus)).toBe(false);
-    expect(applyHero(state, content, 'human', 'wizard', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 3), content, 'human', 'wizard', bonus)).toBe(true);
+    expect(applyHero(createWorld(content, arena(), 4), content, 'human', 'shaman', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 5), content, 'human', 'enchanter', bonus)).toBe(false);
+    expect(applyHero(createWorld(content, arena(), 6), content, 'human', 'warden', bonus)).toBe(false);
     configurePlayer(state, content, 'wizard');
     state.baseStats.int += bonus.int + (content.roster.races.find((race) => race.id === 'barbarian')?.mods.int ?? 0);
     state.stats = { ...state.baseStats };
@@ -1289,9 +1292,18 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
       expect(level).toBeLessThanOrEqual(10);
     }
     expect(levels('eldenmoor', (spawn) => spawn.y > 160 * 16)).toHaveLength(0);
-    for (const level of levels('thornhaven')) {
-      expect(level).toBeGreaterThanOrEqual(10);
-      expect(level).toBeLessThanOrEqual(18);
+    const lane = maps.get('thornhaven')!.spawns.filter((spawn) => spawn.kind === 'mob' && Math.abs(spawn.x / 16 - 128) < 24 && spawn.y / 16 > 98 && spawn.y / 16 < 230);
+    expect(lane.length).toBeGreaterThanOrEqual(8);
+    for (const spawn of maps.get('thornhaven')!.spawns.filter((entry) => entry.kind === 'mob')) {
+      const level = content.mobs[spawn.defId].level;
+      const onLane = Math.abs(spawn.x / 16 - 128) < 24 && spawn.y / 16 > 98 && spawn.y / 16 < 230;
+      if (onLane) {
+        expect(level).toBeGreaterThanOrEqual(1);
+        expect(level).toBeLessThanOrEqual(10);
+      } else {
+        expect(level).toBeGreaterThanOrEqual(10);
+        expect(level).toBeLessThanOrEqual(18);
+      }
     }
     for (const level of levels('valdoria')) {
       expect(level).toBeGreaterThanOrEqual(16);
@@ -1441,9 +1453,9 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     ] as const;
     expect(content.roster.classes.find((entry) => entry.id === 'shaman')?.races).toEqual(['barbarian', 'ogre']);
     expect(content.roster.classes.find((entry) => entry.id === 'warden')?.races).toEqual(['barbarian', 'wood_elf']);
-    expect(content.roster.classes.find((entry) => entry.id === 'warrior')?.races).toEqual(['barbarian', 'dwarf', 'ogre']);
-    expect(content.roster.classes.find((entry) => entry.id === 'berserker')?.races).toEqual(['barbarian', 'dwarf', 'ogre']);
-    expect(content.roster.classes.find((entry) => entry.id === 'rogue')?.races).toEqual(['barbarian', 'dwarf', 'wood_elf']);
+    expect(content.roster.classes.find((entry) => entry.id === 'warrior')?.races).toEqual(['barbarian', 'dwarf', 'ogre', 'human']);
+    expect(content.roster.classes.find((entry) => entry.id === 'berserker')?.races).toEqual(['barbarian', 'dwarf', 'ogre', 'human']);
+    expect(content.roster.classes.find((entry) => entry.id === 'rogue')?.races).toEqual(['barbarian', 'dwarf', 'wood_elf', 'human']);
     for (const closed of ['warrior', 'shaman', 'rogue', 'warden', 'berserker']) {
       expect(applyHero(createWorld(content, arena(), 1), content, 'high_elf', closed, bonus)).toBe(false);
     }
@@ -1496,7 +1508,7 @@ describe('Eldenmoor, the road south, and the Black Ice', () => {
     const city = maps.get('eldenmoor');
     expect(city).toBeTruthy();
     for (const [classId, trainerId, starterScroll, laterScroll] of open) {
-      const races = classId === 'cleric' || classId === 'paladin' ? ['high_elf', 'dwarf'] : ['high_elf'];
+      const races = classId === 'enchanter' ? ['high_elf'] : classId === 'cleric' || classId === 'paladin' ? ['high_elf', 'dwarf', 'human'] : ['high_elf', 'human'];
       expect(content.roster.classes.find((entry) => entry.id === classId)?.races).toEqual(races);
       const door = city!.spawns.find((spawn) => spawn.kind === 'door' && spawn.toZone === `elden_${classId}`);
       expect(door?.toX, classId).toBeTypeOf('number');
@@ -2058,6 +2070,64 @@ describe('Wood elves, Grokthul ogres, and Ironhollow', () => {
     expect(atlas.people.rows.grukka).toBeGreaterThanOrEqual(0);
     expect(atlas.people.rows.vaela).toBeGreaterThanOrEqual(0);
     expect(atlas.people.rows.durgan).toBeGreaterThanOrEqual(0);
+  });
+});
+
+describe('town doors, wanderers, and stable horses', () => {
+  const bottoms = new Set([37, 38, 43, 44, 76, 77, 88, 89, 100, 101, 112, 113, 124, 125]);
+  const towns = ['hoffender', 'thornhaven', 'valdoria', 'wyrmrest', 'ironhollow', 'eldenmoor', 'brightforge', 'canipure', 'grokthul', 'ashfall', 'scalded', 'spires', 'grokthul_peaks', 'frostfang'];
+  const maps = new Map<string, ReturnType<typeof parseTiledMap>>();
+  maps.set('hoffender', parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson));
+  for (const file of readdirSync(join(process.cwd(), 'src', 'assets', 'zones')).filter((name) => name.endsWith('.tmj'))) {
+    const map = parseTiledMap(JSON.parse(readFileSync(join(process.cwd(), 'src', 'assets', 'zones', file), 'utf8')) as TiledJson);
+    maps.set(map.zoneId, map);
+  }
+
+  it('sends every visible town door into a room with a way back', () => {
+    let doors = 0;
+    for (const id of towns) {
+      const map = maps.get(id);
+      expect(map, id).toBeTruthy();
+      for (let ty = 0; ty < map!.height; ty++) {
+        for (let tx = 0; tx < map!.width; tx++) {
+          const gid = map!.ground[ty * map!.width + tx];
+          const right = tx + 1 < map!.width ? map!.ground[ty * map!.width + tx + 1] : 0;
+          const pair = (gid === 37 && right === 38) || (gid === 43 && right === 44) || (gid === 76 && right === 77) || (gid === 88 && right === 89) || (gid === 100 && right === 101) || (gid === 112 && right === 113) || (gid === 124 && right === 125);
+          if (!pair || !bottoms.has(gid)) continue;
+          const spawn = map!.spawns.find((entry) => entry.kind === 'door' && entry.toZone && Math.hypot(entry.x - (tx * 16 + 8), entry.y - (ty * 16 + 8)) < 28);
+          expect(spawn, `${id} door ${tx},${ty}`).toBeTruthy();
+          const dest = maps.get(spawn!.toZone!);
+          expect(dest, `${id} -> ${spawn!.toZone}`).toBeTruthy();
+          expect(bodyBlocked(dest!, spawn!.toX ?? 0, spawn!.toY ?? 0, 5, 3, false), `${spawn!.name} lands blocked`).toBe(false);
+          const back = dest!.spawns.find((entry) => entry.kind === 'door' && entry.toZone === id);
+          expect(back, `${spawn!.toZone} returns to ${id}`).toBeTruthy();
+          doors += 1;
+        }
+      }
+    }
+    expect(doors).toBeGreaterThan(20);
+  });
+
+  it('gives every town at least four named wanderers', () => {
+    for (const id of towns) {
+      const folk = maps.get(id)!.spawns.filter((spawn) => spawn.kind === 'npc' && spawn.ambient);
+      expect(folk.length, id).toBeGreaterThanOrEqual(4);
+      for (const spawn of folk) expect(content.npcs[spawn.defId]?.barks?.length).toBeGreaterThan(0);
+    }
+    const hold = maps.get('thornhaven')!.spawns.filter((spawn) => spawn.ambient && spawn.y < 100 * 16);
+    const harbor = maps.get('thornhaven')!.spawns.filter((spawn) => spawn.ambient && spawn.x < 70 * 16);
+    expect(hold.length).toBeGreaterThanOrEqual(3);
+    expect(harbor.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('furnishes a tavern, a smith, and a stable, and keeps horses as future mounts', () => {
+    const props = [...maps.values()].flatMap((map) => map.spawns.filter((spawn) => spawn.kind === 'prop'));
+    expect(props.some((spawn) => spawn.sprite === 'bar')).toBe(true);
+    expect(props.some((spawn) => spawn.sprite === 'forge' || spawn.sprite === 'anvil')).toBe(true);
+    expect(props.some((spawn) => spawn.sprite?.startsWith('horse_'))).toBe(true);
+    const mounts = JSON.parse(readFileSync(join(process.cwd(), 'src', 'content', 'mounts.json'), 'utf8')) as { mounts: { rideable: boolean; sprite: string }[] };
+    expect(mounts.mounts.every((mount) => mount.rideable === false)).toBe(true);
+    for (const mount of mounts.mounts) expect(props.some((spawn) => spawn.sprite === mount.sprite)).toBe(true);
   });
 });
 

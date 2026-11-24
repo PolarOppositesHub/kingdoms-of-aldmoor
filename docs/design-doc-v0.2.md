@@ -25,7 +25,7 @@ export default function App() {
       <Section heading="Locked decisions">
         <Properties items={[
           { label: "Game / world", value: "Kingdoms of Aldmoor / Aldmoor" },
-          { label: "Races", value: "Barbarian starts in Hoffender. High Elf starts in Eldenmoor. Dwarf starts in Brightforge. Wood Elf starts in Canipure. Ogre, the Grokthul clan, starts in Grokthul Hold. Human is the plain baseline and is not playable yet. Dark elf, troll, and halfling still wait." },
+          { label: "Races", value: "Barbarian starts in Hoffender. High Elf starts in Eldenmoor. Dwarf starts in Brightforge. Wood Elf starts in Canipure. Ogre, the Grokthul clan, starts in Grokthul Hold. Valdorian Human starts in Thornhaven and may walk any class except Shaman, Enchanter, and Warden. Dark elf, troll, and halfling still wait." },
           { label: "v1 starter town", value: "Hoffender, the Barbarian town, ruled by Jarl Freya Halvarddottir" },
           { label: "Frostmere Wilds", value: "The country outside Hoffender's north gate" },
           { label: "Frostfang Reach", value: "The Ogre Highlands past the north ridge of the Frostmere Wilds. Levels 10–20. Hearthpass outpost. War-chief Vargan Frostfang." },
@@ -76,7 +76,7 @@ export default function App() {
         ]} />
       </Section>
       <Section heading="World map">
-        <Text>Maerthun is the big western continent, and the kingdom on it is Valdoria. Hoffender and Frostfang Reach sit on the frozen northwest fjord. The Ogre Highlands run across the far north. Wyrmrest is a castle city on the kingdom's northern border, under those highlands, northeast of Hoffender. Thornhaven is a west-coast port, with Graymoor Hold just inland. Blackpine Tower is a castle in the central pines, inside a wood-elf free-passage ring. Ironhollow Keep is open in the eastern hills. Saltmere Castle, on the south coast, is not open. The Dwarven Mountains run diagonally across southern Maerthun from near Thornhaven and Graymoor: Brightforge of the Lightbrune clan is the northernmost hold, then Ashdeep of the Darkbrune, then Veilspire of the Mistbrune. The deep mine tunnels between them are shut. One forest runs from west of Blackpine, north of Ironhollow Keep, and east to the Wood Elf lands. Canipure, the wood elf treehouse city, stands on that east coast facing Vaelmoor, the high elf staging ground. The Grokthul Peaks sit in the eastern Ogre Highlands beside Wyrmrest. King Aldric Valdor rules the Kingdom of Valdoria, and every castle lord answers to him. His capital is not built yet. Vaelmoor is a separate continent across the water to the northeast: Eldenmoor, the Dwarven Ruins, the Troll Fens, and Illindral of the dark elves. Golden trade ships link Maerthun and Vaelmoor by the Wood Elf coast. Vescara, seat of the Shadow King at Morzul, is southeast across the Sundering Sea, and it is not open.</Text>
+        <Text>Maerthun is the big western continent, and the kingdom on it is Valdoria. Hoffender and Frostfang Reach sit on the frozen northwest fjord. The Ogre Highlands run across the far north. Wyrmrest is a castle city on the kingdom's northern border, under those highlands, northeast of Hoffender. Thornhaven is a west-coast port, with Graymoor Hold just inland. Blackpine Tower is a castle in the central pines, inside a wood-elf free-passage ring. Ironhollow Keep is open in the eastern hills. Saltmere Castle, on the south coast, is not open. The Dwarven Mountains run diagonally across southern Maerthun from near Thornhaven and Graymoor: Brightforge of the Lightbrune clan is the northernmost hold, then Ashdeep of the Darkbrune, then Veilspire of the Mistbrune. The deep mine tunnels between them are shut. One forest runs from west of Blackpine, north of Ironhollow Keep, and east to the Wood Elf lands. Canipure, the wood elf treehouse city, stands on that east coast facing Vaelmoor, the high elf staging ground. The Grokthul Peaks sit in the eastern Ogre Highlands beside Wyrmrest. King Aldric Valdor rules the Kingdom of Valdoria from Thornhaven, the west-coast port, and stands in the Graymoor yard. Every castle lord answers to him. Vaelmoor is a separate continent across the water to the northeast: Eldenmoor, the Dwarven Ruins, the Troll Fens, and Illindral of the dark elves. Golden trade ships link Maerthun and Vaelmoor by the Wood Elf coast. Vescara, seat of the Shadow King at Morzul, is southeast across the Sundering Sea, and it is not open.</Text>
       </Section>
       <Section heading="Starter zone: Hoffender">
         <Rows rows={[
@@ -174,7 +174,7 @@ export default function App() {
           { title: "M2 First zone", detail: "Full Hoffender and the Frostmere Wilds, quests, leveling to 10, inventory and equipment, death and corpse runs, local saves." },
           { title: "M3 Second class", detail: "A caster with a spell vendor in its guild, mana and spell casting." },
           { title: "M4 First dungeon", detail: "Done. The Black Ice, three floors past the Fang. Ysolde of the Black Ice is the boss. Kara and Anwen carry the chain." },
-          { title: "M5 World growth", detail: "Phase 2 is in. Wood elves start in Canipure. Grokthul ogres start in Grokthul Hold. Ironhollow Keep and the hills are the road east of Blackpine. Eldenmoor, Brightforge, and the Wyrmrest road to 50 were already in. Still ahead: humans and the remaining races, Ashdeep and Veilspire, the sealed lair under the spires, Saltmere, Vescara, the iOS wrap, and co-op with cloud saves." },
+          { title: "M5 World growth", detail: "Phase 2 is in, and Valdorian humans now start in Thornhaven. Wood elves start in Canipure. Grokthul ogres start in Grokthul Hold. Ironhollow Keep and the hills are the road east of Blackpine. Eldenmoor, Brightforge, and the Wyrmrest road to 50 were already in. Still ahead: the remaining races, Ashdeep and Veilspire, the sealed lair under the spires, Saltmere, Vescara, rideable mounts, the iOS wrap, and co-op with cloud saves." },
         ]} />
       </Section>
       <Section heading="Multiplayer-ready architecture">
@@ -191,9 +191,25 @@ export default function App() {
         <NumberedList items={[
           "Hoffender's look: snowy fjord village, mountain longhouse hold, or frozen coastal port? M1 ships the fjord village.",
           "Camp boss flavor: bandit chief, alpha frost wolf, or gnoll warlord?",
-          "Phase 2 opened the wood elves and the Grokthul ogres. Human, dark elf, troll, and halfling are still locked. Ashdeep, Veilspire, the lair under the spires, Saltmere, and Vescara are still shut.",
+          "Valdorian humans are open. Dark elf, troll, and halfling are still locked. Ashdeep, Veilspire, the lair under the spires, Saltmere, and Vescara are still shut.",
         ]} />
         <Callout lead="Next step">Coding can start M1 now; these answers shape M2.</Callout>
+      </Section>
+      <Section heading="Valdorians">
+        <Text>Human is playable. A new Valdorian wakes in the Graymoor yard at Thornhaven, capital of the Kingdom of Valdoria, and binds there unless they bind somewhere else. King Aldric Valdor stands in that yard. The paths open to them are every class except Shaman, Enchanter, and Warden. Wren Holt sells the grove drills and Keel Marsh the bow drills in the yard. The other halls are the ones that already stand in Hoffender, Eldenmoor, Brightforge, and Canipure. The south lane, on the road just outside the hold, is levels 1 to 10: hares, foxes, wolves, boars, bandits, and a bear. The older fields stay 10 to 18. Aldric's first work is six lane hares, then five lane wolves.</Text>
+      </Section>
+      <Section heading="Window themes">
+        <Text>Each playable race opens on its own window theme: Valdorians in royal blue and gold, high elves in white and pearl, wood elves in leaf and bark, dwarves in forge iron and bronze with rune marks, Grokthul ogres in green with a mud splatter, and Hoffender barbarians in the old frost colors with a light scratch. Settings can pick another preset, or a custom accent and window color. Text stays dark on a light window and light on a dark one. Opacity, including one window at a time, and UI scale are saved with the hero. An old save with none of this gets the race default. Reset to race default puts the theme back. Move, lock, and reset layout stay on the device, as they were.</Text>
+      </Section>
+      <Section heading="Placeholder rooms">
+        <Text>Every visible door in a town opens. Halls that already had a teacher keep that room. A door that had no interior opens a furnished placeholder in that race's colors: a tavern, smith, stable, store, shrine, guild loft, or plain room, depending on the building. The full list, with town, building, and suggested purpose, is written to src/content/placeholder-rooms.json whenever the art is built. Those rooms are empty of quests on purpose, so a later build can give each one its lore.</Text>
+      </Section>
+      <Section heading="Backlog">
+        <NumberedList items={[
+          "Rideable mounts (future build). Stables already keep horses as their own sprite ids, listed in src/content/mounts.json with rideable set to false. A later build can sell those mounts from the stables, make them faster than walking, and keep the race themes already painted: Valdorian palfrey, fjord pony, pearl courser, grove mare, iron pony, and tusk draft. Do not invent a second horse.",
+          "Name and stock the placeholder rooms listed in src/content/placeholder-rooms.json. Each row is a town, a building, and a suggested purpose.",
+          "Dark elf, troll, and halfling. Ashdeep, Veilspire, the lair under the spires, Saltmere, and Vescara.",
+        ]} />
       </Section>
     </Page>
   );
