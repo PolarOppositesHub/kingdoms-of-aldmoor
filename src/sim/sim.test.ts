@@ -12,7 +12,7 @@ import { applySave, captureSave, migrateSave, normalizeLoadout } from './save';
 import { classListLabel, classesForAbility } from './wear';
 import { itemIconKey } from './icons';
 import { bodyBlocked, nearestStand, placeName } from './map';
-import { applyHero, blankActor, commitZone, configurePlayer, createWorld, getPlayer, refreshGear } from './state';
+import { applyHero, blankActor, commitZone, configurePlayer, createWorld, getPlayer, refreshGear, refreshMobActivity } from './state';
 import abilitiesJson from '../content/abilities.json';
 import iconMeta from '../assets/icons.json';
 import { step } from './step';
@@ -2175,6 +2175,81 @@ describe('town doors, wanderers, and stable horses', () => {
     const mounts = JSON.parse(readFileSync(join(process.cwd(), 'src', 'content', 'mounts.json'), 'utf8')) as { mounts: { rideable: boolean; sprite: string }[] };
     expect(mounts.mounts.every((mount) => mount.rideable === false)).toBe(true);
     for (const mount of mounts.mounts) expect(props.some((spawn) => spawn.sprite === mount.sprite)).toBe(true);
+  });
+});
+
+describe('hostile spawns on the leveling roads', () => {
+  const zoneDir = join(process.cwd(), 'src', 'assets', 'zones');
+  const maps = new Map<string, ReturnType<typeof parseTiledMap>>();
+  maps.set('hoffender', parseTiledMap(JSON.parse(hoffenderRaw) as TiledJson));
+  for (const file of readdirSync(zoneDir).filter((name) => name.endsWith('.tmj'))) {
+    const map = parseTiledMap(JSON.parse(readFileSync(join(zoneDir, file), 'utf8')) as TiledJson);
+    maps.set(map.zoneId, map);
+  }
+
+  function mobs(zone: string) {
+    return maps.get(zone)!.spawns.filter((spawn) => spawn.kind === 'mob');
+  }
+
+  it('keeps a camp in every starter city and dungeon road', () => {
+    const least: Record<string, number> = {
+      hoffender: 40,
+      thornhaven: 20,
+      eldenmoor: 24,
+      brightforge: 15,
+      canipure: 15,
+      grokthul: 12,
+      ironhollow: 12,
+      blackice1: 8,
+      blackice2: 8,
+      blackice3: 6,
+      frostfang: 30,
+    };
+    for (const [zone, count] of Object.entries(least)) {
+      expect(mobs(zone).length, zone).toBeGreaterThanOrEqual(count);
+      for (const spawn of mobs(zone)) expect(content.mobs[spawn.defId], `${zone} ${spawn.defId}`).toBeTruthy();
+    }
+  });
+
+  it('puts Eldenweald hostiles on the north trail, where a walk out of the gate can see them', () => {
+    const map = maps.get('eldenmoor')!;
+    const wildPath: Array<[number, number]> = [];
+    for (let ty = 0; ty < map.height; ty++) {
+      for (let tx = 0; tx < map.width; tx++) {
+        const tile = map.ground[ty * map.width + tx];
+        if ((tile === 4 || tile === 5) && !map.safe[ty * map.width + tx]) wildPath.push([tx, ty]);
+      }
+    }
+    const near = mobs('eldenmoor').filter((spawn) => {
+      const x = spawn.x / map.tileWidth;
+      const y = spawn.y / map.tileWidth;
+      return wildPath.some(([tx, ty]) => Math.max(Math.abs(tx - x), Math.abs(ty - y)) <= 4);
+    });
+    expect(near.length).toBeGreaterThanOrEqual(12);
+    expect(near.some((spawn) => spawn.defId === 'meadow_hare' && spawn.y / map.tileWidth > 130)).toBe(true);
+  });
+
+  it('lets Next target a weald wolf and an attack land', () => {
+    const map = maps.get('eldenmoor')!;
+    const state = createWorld(content, map, 3);
+    const wolf = state.actors.find((actor) => actor.defId === 'weald_wolf');
+    expect(wolf).toBeTruthy();
+    const player = getPlayer(state);
+    player.x = wolf!.x;
+    player.y = wolf!.y + 10;
+    player.level = 12;
+    state.level = 12;
+    player.attackMs = 0;
+    refreshMobActivity(state, map);
+    applyIntent(state, { type: 'cycleTarget' }, content, map);
+    const target = state.actors.find((actor) => actor.id === state.targetId);
+    expect(target?.kind).toBe('mob');
+    expect(target?.alive).toBe(true);
+    state.autoAttack = true;
+    target!.hate = [{ id: player.id, amount: 8 }];
+    const before = target!.hp;
+    for (let i = 0; i < 200; i++) step(state, content, map);
+    expect(target!.hp).toBeLessThan(before);
   });
 });
 
