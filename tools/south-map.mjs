@@ -248,15 +248,17 @@ function placeMobs(m, g, solid, safe, road, scenery, list) {
   const placed = [];
   const taken = new Set();
   const blocked = new Set([T.WATER, T.WATER_B, T.CLIFF, T.WALL, T.STONE, T.PALISADE, T.ROOF, T.STONE_FRONT, T.POST, T.DOCK]);
-  const ok = (x, y) => {
+  const ok = (x, y, allowRoad = false) => {
     const tile = g[y]?.[x];
-    if (tile === undefined || safe[y]?.[x] || road[y]?.[x] || blocked.has(tile)) return false;
+    if (tile === undefined || safe[y]?.[x] || blocked.has(tile)) return false;
+    if (!allowRoad && road[y]?.[x]) return false;
     if (taken.has(`${x},${y}`)) return false;
     if (x < 2 || y < 2 || x >= g[0].length - 2 || y >= g.length - 2) return false;
     return true;
   };
   for (const [defId, sprite, tx, ty] of list) {
-    let spot = ok(tx, ty) ? [tx, ty] : null;
+    // The seed tile may sit on the trail. A search that refuses the road walks the camp off into the trees, out of sight.
+    let spot = ok(tx, ty, true) ? [tx, ty] : null;
     for (let r = 1; !spot && r <= 10; r++) {
       for (let dy = -r; dy <= r && !spot; dy++) {
         for (let dx = -r; dx <= r; dx++) {
@@ -682,43 +684,44 @@ function buildEldenmoor() {
   });
   m.add('label', 'Eldenmoor', 128, 222);
   m.add('label', 'Eldenweald', 80, 60);
+  // On the north trail. The old camps sat 14+ tiles off this wide road, so a walk out of the gate showed an empty wood.
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
-    ['meadow_hare', 'hare', 48, 140],
-    ['meadow_hare', 'hare', 90, 136],
-    ['meadow_hare', 'hare', 160, 140],
-    ['meadow_hare', 'hare', 200, 132],
-    ['meadow_hare', 'hare', 40, 120],
-    ['meadow_hare', 'hare', 220, 124],
-    ['glade_fox', 'fox', 56, 110],
-    ['glade_fox', 'fox', 100, 118],
-    ['glade_fox', 'fox', 170, 112],
-    ['glade_fox', 'fox', 210, 100],
-    ['glade_fox', 'fox', 70, 100],
-    ['weald_wolf', 'wolf', 44, 88],
-    ['weald_wolf', 'wolf', 80, 80],
-    ['weald_wolf', 'wolf', 160, 84],
-    ['weald_wolf', 'wolf', 210, 78],
-    ['weald_wolf', 'wolf', 100, 70],
-    ['weald_wolf', 'wolf', 180, 60],
-    ['weald_wolf', 'wolf', 50, 64],
-    ['weald_wolf', 'wolf', 230, 90],
-    ['glade_beetle', 'beetle', 40, 70],
-    ['glade_beetle', 'beetle', 150, 100],
-    ['glade_beetle', 'beetle', 220, 64],
-    ['glade_beetle', 'beetle', 90, 50],
-    ['weald_spider', 'spider', 36, 48],
-    ['weald_spider', 'spider', 70, 40],
-    ['weald_spider', 'spider', 160, 44],
-    ['weald_spider', 'spider', 210, 36],
-    ['weald_bandit', 'bandit', 48, 36],
-    ['weald_bandit', 'bandit', 100, 32],
-    ['weald_bandit', 'bandit', 170, 28],
-    ['weald_bandit', 'bandit', 220, 48],
-    ['weald_bear', 'bear', 40, 24],
-    ['weald_bear', 'bear', 80, 20],
-    ['weald_bear', 'bear', 200, 22],
-    ['lark_poacher', 'vetch', 60, 30],
-    ['amber_hart', 'stag', 180, 36],
+    ['meadow_hare', 'hare', 125, 147],
+    ['meadow_hare', 'hare', 132, 144],
+    ['meadow_hare', 'hare', 124, 140],
+    ['meadow_hare', 'hare', 130, 136],
+    ['meadow_hare', 'hare', 126, 132],
+    ['meadow_hare', 'hare', 131, 127],
+    ['glade_fox', 'fox', 124, 124],
+    ['glade_fox', 'fox', 130, 120],
+    ['glade_fox', 'fox', 126, 116],
+    ['glade_fox', 'fox', 132, 112],
+    ['glade_fox', 'fox', 124, 108],
+    ['weald_wolf', 'wolf', 130, 104],
+    ['weald_wolf', 'wolf', 126, 100],
+    ['weald_wolf', 'wolf', 132, 96],
+    ['weald_wolf', 'wolf', 124, 92],
+    ['weald_wolf', 'wolf', 130, 88],
+    ['weald_wolf', 'wolf', 126, 84],
+    ['weald_wolf', 'wolf', 131, 79],
+    ['weald_wolf', 'wolf', 124, 76],
+    ['glade_beetle', 'beetle', 130, 72],
+    ['glade_beetle', 'beetle', 126, 68],
+    ['glade_beetle', 'beetle', 132, 64],
+    ['glade_beetle', 'beetle', 124, 60],
+    ['weald_spider', 'spider', 130, 56],
+    ['weald_spider', 'spider', 126, 52],
+    ['weald_spider', 'spider', 132, 48],
+    ['weald_spider', 'spider', 124, 44],
+    ['weald_bandit', 'bandit', 130, 40],
+    ['weald_bandit', 'bandit', 126, 36],
+    ['weald_bandit', 'bandit', 132, 32],
+    ['weald_bandit', 'bandit', 124, 28],
+    ['weald_bear', 'bear', 130, 24],
+    ['weald_bear', 'bear', 126, 20],
+    ['weald_bear', 'bear', 132, 16],
+    ['lark_poacher', 'vetch', 124, 14],
+    ['amber_hart', 'stag', 130, 12],
   ]);
   border(g, solid);
   // The north door and the inn yard must stay open after the border pass.
