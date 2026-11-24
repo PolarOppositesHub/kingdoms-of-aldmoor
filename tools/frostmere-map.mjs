@@ -3,6 +3,8 @@
  * Original layout. Tile ids match the tileset painted in build-art.mjs.
  */
 import { mulberry } from './pixel.mjs';
+import { dressTown } from './town-fill.mjs';
+import { placeTownFolk } from './town-place.mjs';
 
 export const TILE = 16;
 
@@ -389,6 +391,7 @@ function buildOutdoor() {
   add('npc', 'ivar', buildings.forge.doorX + 2, buildings.forge.doorY + 2, { defId: 'ivar', sprite: 'ivar' });
   add('npc', 'nils', 128, 112, { defId: 'nils', sprite: 'nils' });
   add('npc', 'brand', 136, 114, { defId: 'brand', sprite: 'brand' });
+  placeTownFolk({ add }, g, solid, 'hoffender');
 
   add('prop', 'anvil', buildings.forge.doorX + 2, buildings.forge.doorY + 1, { sprite: 'anvil' });
   solid[buildings.forge.doorY + 1][buildings.forge.doorX + 2] = 1;
@@ -1185,6 +1188,31 @@ function stampCity(g, solid, safe, road) {
     buildings[id] = building(g, solid, doorX - doorLeft, doorY - (facadeH - 1), w, facadeH, { ...opts, id });
   }
   buildings.brandStall = { x: 138, y: 116 };
+  dressTown(g, solid, road, null, {
+    name: 'Hoffender',
+    min: 3,
+    timber: (_g, _s, house) => {
+      building(g, solid, house.x, house.y, house.w, house.h, { id: house.id ?? 'cottage' });
+    },
+    reserved: [
+      [112, 146], [116, 123], [124, 123], [104, 169], [139, 136], [128, 112], [136, 114],
+    ],
+    houses: [
+      { x: 98, y: 138, w: 7, h: 7, id: 'cot-a' },
+      { x: 127, y: 138, w: 7, h: 7, id: 'cot-b' },
+      { x: 146, y: 138, w: 7, h: 7, id: 'cot-c' },
+    ],
+    streets: [
+      [98, 136, 153, 137],
+      [106, 146, 153, 147],
+    ],
+    lamps: [
+      [96, 140],
+      [108, 149],
+      [140, 149],
+    ],
+    gardens: [{ x: 100, y: 156, w: 6, h: 4, floor: T.FARM }],
+  });
 
   for (let y = y0 + 1; y < y1; y++) {
     for (let x = x0 + 1; x < x1; x++) {

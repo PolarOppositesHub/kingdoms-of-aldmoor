@@ -1,4 +1,5 @@
 import Phaser from 'phaser';
+import { clampZoom, clearRect, defaultZoom, followScroll, interiorZoom, isTightRoom, type Rect } from './camera';
 import atlasJson from '../assets/atlas.json';
 import actorsUrl from '../assets/actors.png?url';
 import heroUrl from '../assets/hero.png?url';
@@ -70,10 +71,6 @@ const SCENERY_FRAMES = [
 ];
 
 const SCENERY_CELL = 8;
-
-function clampZoom(value: number): number {
-  return Math.round(Math.max(1.75, Math.min(4.5, value)) * 4) / 4;
-}
 
 interface ActorView {
   sprite: Phaser.GameObjects.Sprite;
@@ -193,8 +190,11 @@ export class WorldScene extends Phaser.Scene {
     this.cam.roundPixels = true;
     this.applyZoom();
     const player = this.state.actors[0];
-    this.cam.centerOn(player.x, player.y);
-    this.scale.on('resize', () => this.applyZoom());
+    this.followHero(player.x, player.y);
+    this.scale.on('resize', () => {
+      this.zoomTouched = false;
+      this.followHero(this.state.actors[0]?.x ?? 0, this.state.actors[0]?.y ?? 0);
+    });
 
     if (debug && this.mapData.width * this.mapData.height < 20000) {
       this.debugGraphics = this.add.graphics().setDepth(1500).setAlpha(0.35);
@@ -245,6 +245,23 @@ export class WorldScene extends Phaser.Scene {
       const hook = window as unknown as { __ALDMOOR__?: GameApi; __ZOOM__?: () => number };
       hook.__ALDMOOR__ = api;
       hook.__ZOOM__ = () => this.zoom;
+      (hook as { __VIEW__?: () => unknown }).__VIEW__ = () => {
+        const player = this.state.actors.find((actor) => actor.id === this.state.playerId);
+        return {
+          zoom: this.zoom,
+          scrollX: this.cam.scrollX,
+          scrollY: this.cam.scrollY,
+          camW: this.cam.width,
+          camH: this.cam.height,
+          scaleW: this.scale.width,
+          scaleH: this.scale.height,
+          heroX: player?.x ?? 0,
+          heroY: player?.y ?? 0,
+          mapW: this.mapData.width * this.mapData.tileWidth,
+          mapH: this.mapData.height * this.mapData.tileWidth,
+          place: this.mapData.townName,
+        };
+      };
       (hook as { __SET_ZOOM__?: (zoom: number) => void }).__SET_ZOOM__ = (zoom: number) => {
         this.zoomTouched = true;
         this.zoom = zoom;
@@ -346,7 +363,8 @@ export class WorldScene extends Phaser.Scene {
     if (!ground) throw new Error('ground layer failed to load');
     ground.setCullPadding(2, 2);
     this.groundLayer = ground;
-    this.cam.setBounds(0, 0, tiled.widthInPixels, tiled.heightInPixels);
+    this.cam.useBounds = false;
+    this.zoomTouched = false;
     for (const spawn of this.mapData.spawns) {
       if (spawn.kind !== 'prop' && spawn.kind !== 'sign' && spawn.kind !== 'node') continue;
       const frame = atlas.props[spawn.sprite];
@@ -390,11 +408,32 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private applyZoom(): void {
-    // 3× keeps a 16px tile at 48 CSS pixels. Pinch and the wheel snap to quarter steps so the pixels stay crisp.
-    if (!this.zoomTouched) this.zoom = this.scale.width >= 320 ? 3 : 2;
     this.cam.setZoom(this.zoom);
-    const inv = 1 / this.zoom;
+    const inv = 1 / (this.zoom || 1);
     for (const label of this.placeLabels) label.setScale(inv);
+  }
+
+  /** HUD windows that cover the map canvas, in camera pixels. Side columns sit outside the canvas. */
+  private hudBlocks(): Rect[] {
+    const canvas = this.game.canvas?.getBoundingClientRect();
+    if (!canvas || canvas.width < 2 || canvas.height < 2) return [];
+    const sx = this.scale.width / canvas.width;
+    const sy = this.scale.height / canvas.height;
+    const blocks: Rect[] = [];
+    for (const el of document.querySelectorAll<HTMLElement>('[data-hud]')) {
+      if (el.hidden) continue;
+      const style = getComputedStyle(el);
+      if (style.display === 'none' || style.visibility === 'hidden') continue;
+      const rect = el.getBoundingClientRect();
+      if (rect.width < 8 || rect.height < 8) continue;
+      const x = (rect.left - canvas.left) * sx;
+      const y = (rect.top - canvas.top) * sy;
+      const w = rect.width * sx;
+      const h = rect.height * sy;
+      if (x + w < 0 || y + h < 0 || x > this.scale.width || y > this.scale.height) continue;
+      blocks.push({ x, y, w, h });
+    }
+    return blocks;
   }
 
   private drawCollision(): void {
@@ -466,7 +505,7 @@ export class WorldScene extends Phaser.Scene {
           this.api.map = map;
           this.mountMap(map.zoneId);
           const player = this.state.actors.find((actor) => actor.id === this.state.playerId);
-          if (player) this.cam.centerOn(player.x, player.y);
+          if (player) this.followHero(player.x, player.y);
         }
         this.swap.committed = true;
         this.swap.at = this.time.now;
@@ -549,11 +588,30 @@ export class WorldScene extends Phaser.Scene {
       } else if (event.type === 'seam') {
         this.fade.classList.add('on');
         this.time.delayedCall(200, () => this.fade.classList.remove('on'));
+      } else if (event.type === 'bark') {
+        this.bubble(event.text, event.actorId);
       } else if (event.type === 'swing') {
         const view = this.views.get(event.actorId);
         if (view) view.lunge = 1;
       }
     }
+  }
+
+  private bubble(text: string, actorId: string): void {
+    const actor = this.state.actors.find((entry) => entry.id === actorId);
+    if (!actor || this.floaters.length > 8) return;
+    const label = this.add.text(actor.x, actor.y - 36, text, {
+      fontFamily: 'ui-sans-serif, system-ui, sans-serif',
+      fontSize: '11px',
+      color: '#1c1418',
+      backgroundColor: '#f4f0e6',
+      padding: { x: 4, y: 3 },
+      wordWrap: { width: 140 },
+      align: 'center',
+    });
+    label.setOrigin(0.5, 1);
+    label.setDepth(6100);
+    this.floaters.push({ text: label, life: 2600, vy: 0 });
   }
 
   private float(text: string, actorId: string, color: string): void {
@@ -826,13 +884,44 @@ export class WorldScene extends Phaser.Scene {
     const view = this.views.get(player.id);
     const px = view ? view.sprite.x : player.x;
     const py = view ? view.sprite.y : player.y;
-    this.cam.centerOn(Math.round(px), Math.round(py));
+    this.followHero(px, py);
     this.syncScenery();
 
     const fire = Math.floor(this.time.now / 180) % 2 === 0 ? 'firepit' : 'firepit_b';
+    const hop = Math.floor(this.time.now / 480) % 2 === 0;
     for (const sprite of this.propSprites) {
       const frame = sprite.frame.name;
       if (frame === 'firepit' || frame === 'firepit_b') sprite.setFrame(fire);
+      if (typeof frame === 'string' && frame.startsWith('horse_')) {
+        const base = frame.endsWith('_b') ? frame.slice(0, -2) : frame;
+        const next = hop ? `${base}_b` : base;
+        if (this.textures.get('props').has(next)) sprite.setFrame(next);
+      }
     }
+  }
+
+  /** Center a small room in the open play area, or keep the hero there on a larger map. */
+  private followHero(px: number, py: number): void {
+    const mapW = this.mapData.width * this.mapData.tileWidth;
+    const mapH = this.mapData.height * this.mapData.tileWidth;
+    const viewW = this.scale.width;
+    const viewH = this.scale.height;
+    const clear = clearRect(viewW, viewH, this.hudBlocks());
+    if (!this.zoomTouched) {
+      this.zoom = isTightRoom(mapW, mapH) ? interiorZoom(mapW, mapH, clear) : defaultZoom(viewW, viewH);
+    }
+    const scroll = followScroll({
+      heroX: px,
+      heroY: py,
+      mapW,
+      mapH,
+      viewW,
+      viewH,
+      zoom: this.zoom || 1,
+      clear,
+    });
+    this.cam.useBounds = false;
+    this.applyZoom();
+    this.cam.setScroll(scroll.scrollX, scroll.scrollY);
   }
 }

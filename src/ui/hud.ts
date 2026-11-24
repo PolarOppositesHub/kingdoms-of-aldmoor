@@ -15,6 +15,7 @@ import iconMeta from '../assets/icons.json';
 import actorsUrl from '../assets/actors.png?url';
 import portraitUrl from '../assets/portrait.png?url';
 import atlas from '../assets/atlas.json';
+import { UI_PRESETS, applyTheme, defaultUi, racePresetId, type UiPrefs } from './theme';
 
 function slotMarkup(index: number, extra: string): string {
   return `<button type="button" class="spell slot ${extra}" data-spell="${index}">
@@ -369,6 +370,13 @@ export function mountHud(api: GameApi): void {
     else if (action === 'set-fill') applyFill(!fillEnabled());
     else if (action === 'toggle-lock') layoutCtl?.setLocked(!(layoutCtl?.isLocked() ?? true));
     else if (action === 'reset-layout') layoutCtl?.reset();
+    else if (action === 'ui-preset') {
+      const id = button.dataset.value ?? 'frost';
+      const base = defaultUi(api.getState().raceId);
+      pushIntent({ type: 'setUi', prefs: { ...base, mode: 'custom', preset: id, accent: '', window: '', windows: { ...api.getState().uiPrefs.windows } } });
+    } else if (action === 'ui-race') {
+      pushIntent({ type: 'setUi', prefs: defaultUi(api.getState().raceId) });
+    }
     panelKey = '';
   });
 
@@ -392,14 +400,37 @@ export function mountHud(api: GameApi): void {
       if (toast.textContent === text) toast.hidden = true;
     }, 4600);
   };
+  panel.addEventListener('input', (event) => {
+    const target = event.target as HTMLInputElement;
+    const key = target.dataset.ui;
+    if (!key) return;
+    const state = api.getState();
+    const prefs: UiPrefs = { ...state.uiPrefs, windows: { ...state.uiPrefs.windows }, mode: 'custom' };
+    if (key === 'opacity') prefs.opacity = Number(target.value) / 100;
+    else if (key === 'scale') prefs.scale = Number(target.value) / 100;
+    else if (key === 'accent') {
+      prefs.preset = 'custom';
+      prefs.accent = target.value;
+    } else if (key === 'window') {
+      prefs.preset = 'custom';
+      prefs.window = target.value;
+    } else if (key === 'win-opacity') {
+      const id = (panel.querySelector<HTMLSelectElement>('[data-ui="win-id"]')?.value ?? 'vitals');
+      prefs.windows[id] = Number(target.value) / 100;
+    }
+    pushIntent({ type: 'setUi', prefs });
+  });
   const tick = () => {
     const state = api.getState();
+    applyTheme(state.uiPrefs ?? defaultUi(state.raceId), state.raceId);
     if (!hintedStart && state.tick > 0) {
       hintedStart = true;
       showToast(
         state.raceId === 'high_elf'
           ? 'Tap the ground to walk, or use the pad. North of the wall is the Eldenweald.'
-          : 'Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.',
+          : state.raceId === 'human'
+            ? 'Tap the ground to walk, or use the pad. You are in Thornhaven. The east gate leads to the south lane, levels 1 to 10.'
+            : 'Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.',
       );
     }
     paintVitals(root, state, api);
@@ -883,7 +914,7 @@ function paintPanel(
   else if (state.ui.panel === 'journal') panel.innerHTML = journalHtml(state, api, confirmAbandon);
   else if (state.ui.panel === 'book') panel.innerHTML = bookHtml(state, api, bookPick);
   else if (state.ui.panel === 'inspect') panel.innerHTML = inspectHtml(state);
-  else if (state.ui.panel === 'settings') panel.innerHTML = settingsHtml();
+  else if (state.ui.panel === 'settings') panel.innerHTML = settingsHtml(state);
   else panel.innerHTML = helpHtml(state, api);
   const sheet = panel.querySelector<HTMLElement>('.sheet');
   if (sheet) layoutCtl?.mountSheet(sheet, state.ui.panel);
@@ -923,7 +954,7 @@ function bookHtml(state: GameState, api: GameApi, picked: string): string {
       const cost = ability.mana ? `${ability.mana} ${resource}` : 'no cost';
       const who = classListLabel(api.content, ability.id);
       const on = picked === id ? ' is-on' : '';
-      return `<li class="${on.trim()}" data-drag="ability" data-ability="${ability.id}"><button type="button" class="book-row" data-action="book-pick" data-ability="${ability.id}">${iconHtml(ability.id)}<span><strong>${escapeHtml(ability.name)}</strong><small>${escapeHtml(cost)} · ${(ability.cooldownMs / 1000).toFixed(0)}s${who ? ` · ${escapeHtml(who)}` : ''}</small><small>${escapeHtml(ability.blurb ?? '')}</small></span></button></li>`;
+      return `<li class="${on.trim()}" data-drag="ability" data-ability="${ability.id}"><button type="button" class="book-row" data-action="book-pick" data-ability="${ability.id}">${iconHtml(ability.id)}<span><strong>${escapeHtml(ability.name)}</strong><small>${escapeHtml(cost)} · ${(ability.cooldownMs / 1000).toFixed(0)}s</small>${who ? `<small class="class-line">${escapeHtml(who)}</small>` : ''}<small>${escapeHtml(ability.blurb ?? '')}</small></span></button></li>`;
     })
     .join('');
   const hint = pickedName
@@ -1418,14 +1449,20 @@ function helpHtml(state: GameState, api: GameApi): string {
   return windowHtml('How to move through Hoffender', '', body);
 }
 
-function settingsHtml(): string {
+function settingsHtml(state: GameState): string {
   const hotbar = readSetting('aldmoor-hotbar', 'bar') === 'arc' ? 'arc' : 'bar';
   const names = readSetting('aldmoor-slot-names', '0') === '1';
   const locked = layoutCtl?.isLocked() ?? true;
   const fill = fillEnabled();
+  const prefs = state.uiPrefs ?? defaultUi(state.raceId);
+  const raceDefault = racePresetId(state.raceId);
+  const presets = UI_PRESETS.map((preset) => `<button type="button" data-action="ui-preset" data-value="${preset.id}" aria-pressed="${prefs.mode === 'custom' && prefs.preset === preset.id ? 'true' : 'false'}">${preset.name}</button>`).join('');
+  const windows = ['vitals', 'target', 'hotbar-a', 'log', 'menu', 'book', 'settings', 'pack', 'journal']
+    .map((id) => `<option value="${id}">${id}</option>`)
+    .join('');
   return windowHtml(
     'Settings',
-    'Kept on this device.',
+    'Colors travel with this hero. Layout stays on this device.',
     `<div class="settings">
       <button type="button" data-action="set-hotbar" data-value="bar" aria-pressed="${hotbar === 'bar' ? 'true' : 'false'}">Stone &amp; iron</button>
       <button type="button" data-action="set-hotbar" data-value="arc" aria-pressed="${hotbar === 'arc' ? 'true' : 'false'}">Thumb arc</button>
@@ -1433,8 +1470,16 @@ function settingsHtml(): string {
       <button type="button" data-action="toggle-lock" aria-pressed="${locked ? 'true' : 'false'}">${locked ? 'Unlock layout' : 'Lock layout'}</button>
       <button type="button" data-action="reset-layout">Reset layout</button>
       <button type="button" data-action="set-fill" aria-pressed="${fill ? 'true' : 'false'}">Fill the screen</button>
+      ${presets}
+      <button type="button" data-action="ui-race" aria-pressed="${prefs.mode === 'race' ? 'true' : 'false'}">Reset to race default (${raceDefault})</button>
     </div>
-    <p class="empty">Fill the screen is off by default, so the black side bars stay. Turn it on for an iPad or an unfolded screen. The game scales to the edges. Full screen is used when the browser allows it, including after you add Aldmoor to the home screen where that call may be missing.</p>`,
+    <label class="slider">Window opacity <input type="range" min="45" max="100" value="${Math.round(prefs.opacity * 100)}" data-ui="opacity"></label>
+    <label class="slider">UI scale <input type="range" min="85" max="135" value="${Math.round(prefs.scale * 100)}" data-ui="scale"></label>
+    <label class="slider">Accent <input type="color" value="${prefs.accent || '#e6c15a'}" data-ui="accent"></label>
+    <label class="slider">Window color <input type="color" value="${prefs.window || '#2a211c'}" data-ui="window"></label>
+    <label class="slider">One window <select data-ui="win-id">${windows}</select></label>
+    <label class="slider">That window's opacity <input type="range" min="45" max="100" value="100" data-ui="win-opacity"></label>
+    <p class="empty">Unlock layout to drag and resize. Reset layout puts every window back. Fill the screen is off until you turn it on. Text stays dark on a light window and light on a dark one.</p>`,
   );
 }
 

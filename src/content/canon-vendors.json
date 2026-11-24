@@ -358,5 +358,19 @@
     "title": "High Drills",
     "copyFrom": "quen",
     "stock": []
+  },
+  {
+    "npcId": "wren",
+    "title": "Grove Drills",
+    "copyFrom": "briar",
+    "races": ["human"],
+    "stock": []
+  },
+  {
+    "npcId": "keel",
+    "title": "Bow Drills",
+    "copyFrom": "rowan",
+    "races": ["human"],
+    "stock": []
   }
 ]

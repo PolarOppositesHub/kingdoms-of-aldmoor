@@ -1,0 +1,53 @@
+{
+  "note": "Not sold and not rideable. Stable horses use these sprite ids so a later build can turn the same definitions into mounts.",
+  "mounts": [
+    {
+      "id": "mount_valdorian",
+      "name": "Valdorian palfrey",
+      "race": "human",
+      "sprite": "horse_human",
+      "spriteIdle": "horse_human_b",
+      "rideable": false
+    },
+    {
+      "id": "mount_fjord",
+      "name": "Fjord pony",
+      "race": "barbarian",
+      "sprite": "horse_barb",
+      "spriteIdle": "horse_barb_b",
+      "rideable": false
+    },
+    {
+      "id": "mount_pearl",
+      "name": "Pearl courser",
+      "race": "high_elf",
+      "sprite": "horse_elf",
+      "spriteIdle": "horse_elf_b",
+      "rideable": false
+    },
+    {
+      "id": "mount_grove",
+      "name": "Grove mare",
+      "race": "wood_elf",
+      "sprite": "horse_wood",
+      "spriteIdle": "horse_wood_b",
+      "rideable": false
+    },
+    {
+      "id": "mount_iron",
+      "name": "Iron pony",
+      "race": "dwarf",
+      "sprite": "horse_dwarf",
+      "spriteIdle": "horse_dwarf_b",
+      "rideable": false
+    },
+    {
+      "id": "mount_tusk",
+      "name": "Tusk draft",
+      "race": "ogre",
+      "sprite": "horse_ogre",
+      "spriteIdle": "horse_ogre_b",
+      "rideable": false
+    }
+  ]
+}

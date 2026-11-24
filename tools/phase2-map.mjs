@@ -4,6 +4,8 @@
  */
 import { T, TILE } from './frostmere-map.mjs';
 import { frameGate, layGround, stampBuilding } from './buildings.mjs';
+import { dressTown, dropProps } from './town-fill.mjs';
+import { placeTownFolk } from './town-place.mjs';
 import {
   H,
   W,
@@ -106,6 +108,28 @@ function buildIronhollow() {
   stampBuilding(g, solid, scenery, 124, 68, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 148, 68, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 108, 112, 8, 7, 'human', { enter: false });
+  dressTown(g, solid, road, scenery, {
+    name: 'Ironhollow',
+    style: 'human',
+    min: 4,
+    reserved: [
+      [136, 88], [132, 128], [156, 100], [112, 100], [144, 66], [124, 96], [136, 96], [128, 104],
+    ],
+    houses: [
+      { x: 160, y: 80, w: 8, h: 7 },
+      { x: 160, y: 112, w: 8, h: 7 },
+      { x: 100, y: 120, w: 8, h: 7 },
+      { x: 148, y: 120, w: 8, h: 7 },
+      { x: 100, y: 88, w: 6, h: 7 },
+    ],
+    streets: [
+      [100, 78, 172, 79],
+      [100, 110, 172, 111],
+      [146, 60, 147, 136],
+    ],
+    lamps: [[104, 80], [166, 80], [104, 118], [166, 118]],
+    gardens: [{ x: 100, y: 130, w: 6, h: 4, floor: T.FARM }],
+  });
   const m = maker('ironhollow', 'Ironhollow Keep', 'Ironhollow Hills');
   m.add('door', 'To Valdoria', 10, 36, { toZone: 'valdoria', toX: feet(236, 40).x, toY: feet(236, 40).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Greenreach', 246, 36, { toZone: 'canipure', toX: feet(18, 128).x, toY: feet(18, 128).y, sprite: 'sign_wilds' });
@@ -135,6 +159,14 @@ function buildIronhollow() {
   });
   m.add('label', 'Ironhollow Keep', 136, 48);
   m.add('label', 'Ironhollow Hills', 80, 190);
+  dropProps(m, g, solid, [
+    { name: 'well', sprite: 'well', x: 104, y: 96, block: true },
+    { name: 'cart', sprite: 'cart', x: 166, y: 96, block: true },
+    { name: 'stall', sprite: 'stall', x: 150, y: 108, block: true },
+    { name: 'crate', sprite: 'crate', x: 168, y: 128, block: true },
+    { name: 'tree', sprite: 'tree_green', x: 102, y: 132, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'ironhollow');
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['hill_wolf', 'wolf', 40, 160],
     ['hill_wolf', 'wolf', 80, 168],
@@ -198,6 +230,26 @@ function buildCanipure() {
   stampBuilding(g, solid, scenery, 161, 137, 8, 7, 'wood', { enter: true, doorX: 164 });
   stampBuilding(g, solid, scenery, 191, 137, 8, 7, 'wood', { enter: true, doorX: 194 });
   stampBuilding(g, solid, scenery, 175, 151, 8, 7, 'wood', { enter: true, doorX: 178 });
+  dressTown(g, solid, road, scenery, {
+    name: 'Canipure',
+    style: 'wood',
+    min: 2,
+    reserved: [
+      [176, 108], [156, 120], [200, 118], [188, 124], [184, 90], [168, 112], [170, 124],
+      [164, 99], [194, 99], [164, 143], [194, 143], [178, 157],
+    ],
+    houses: [
+      { x: 176, y: 80, w: 6, h: 7 },
+      { x: 203, y: 108, w: 6, h: 7 },
+      { x: 203, y: 150, w: 6, h: 7 },
+    ],
+    streets: [
+      [152, 90, 210, 91],
+      [152, 128, 210, 129],
+    ],
+    lamps: [[156, 92], [200, 92], [156, 130]],
+    gardens: [{ x: 150, y: 100, w: 5, h: 4, floor: T.MOSS }],
+  });
   for (let y = 112; y <= 128; y++) {
     for (let x = 214; x <= 226; x++) {
       g[y][x] = T.DOCK;
@@ -237,6 +289,13 @@ function buildCanipure() {
   });
   m.add('label', 'Canipure', 180, 70);
   m.add('label', 'The Greenreach', 60, 70);
+  dropProps(m, g, solid, [
+    { name: 'stall', sprite: 'stall', x: 156, y: 108, block: true },
+    { name: 'crate', sprite: 'crate', x: 206, y: 124, block: true },
+    { name: 'cart', sprite: 'cart', x: 180, y: 130, block: true },
+    { name: 'tree', sprite: 'tree_green', x: 152, y: 102, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'canipure');
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['reach_hare', 'hare', 30, 40],
     ['reach_hare', 'hare', 70, 56],
@@ -300,6 +359,26 @@ function buildGrokthul() {
   stampBuilding(g, solid, scenery, 149, 53, 8, 7, 'ogre', { enter: true, doorX: 152 });
   stampBuilding(g, solid, scenery, 125, 91, 8, 7, 'ogre', { enter: true, doorX: 128 });
   stampBuilding(g, solid, scenery, 147, 88, 8, 7, 'ogre', { enter: true, doorX: 150 });
+  dressTown(g, solid, road, scenery, {
+    name: 'Grokthul',
+    style: 'ogre',
+    min: 2,
+    reserved: [
+      [128, 68], [96, 100], [156, 100], [116, 72], [140, 46], [120, 78],
+      [98, 59], [152, 59], [128, 97], [150, 94],
+    ],
+    houses: [
+      { x: 82, y: 70, w: 8, h: 7 },
+      { x: 164, y: 68, w: 8, h: 7 },
+      { x: 110, y: 40, w: 8, h: 7 },
+    ],
+    streets: [
+      [84, 64, 172, 65],
+      [84, 84, 172, 85],
+    ],
+    lamps: [[90, 66], [160, 66], [100, 86]],
+    gardens: [{ x: 84, y: 96, w: 6, h: 4, floor: T.MUD }],
+  });
   const m = maker('grokthul', 'Grokthul Hold', 'Grokthul Valley');
   const back = (tx, ty) => feet(tx, ty);
   m.add('door', 'To the Grokthul Peaks', 128, 12, { toZone: 'grokthul_peaks', toX: feet(128, 232).x, toY: feet(128, 232).y, sprite: 'sign_wilds' });
@@ -328,6 +407,13 @@ function buildGrokthul() {
   });
   m.add('label', 'Grokthul Hold', 128, 28);
   m.add('label', 'Grokthul Valley', 70, 180);
+  dropProps(m, g, solid, [
+    { name: 'cart', sprite: 'cart', x: 100, y: 80, block: true },
+    { name: 'crate', sprite: 'crate', x: 160, y: 80, block: true },
+    { name: 'stall', sprite: 'stall', x: 140, y: 80, block: true },
+    { name: 'barrel', sprite: 'barrel', x: 88, y: 98, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'grokthul');
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['hold_hare', 'hare', 40, 140],
     ['hold_hare', 'hare', 80, 150],
@@ -385,6 +471,7 @@ function buildPeaks() {
   m.add('spawn', 'watch', 128, 190);
   m.add('bind', 'tuskwatch', 140, 186);
   m.add('npc', 'skaal', 128, 176, { defId: 'skaal', sprite: 'skaal' });
+  placeTownFolk(m, g, solid, 'grokthul_peaks');
   m.add('prop', 'fire', 116, 180, { sprite: 'firepit' });
   m.add('sign', 'Tuskwatch', 108, 200, {
     sprite: 'sign_hall',

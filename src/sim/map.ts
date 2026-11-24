@@ -59,6 +59,7 @@ export function parseTiledMap(raw: TiledJson): MapData {
       toZone: typeof props.toZone === 'string' ? props.toZone : undefined,
       toX: typeof props.toX === 'number' ? props.toX : undefined,
       toY: typeof props.toY === 'number' ? props.toY : undefined,
+      ambient: props.ambient === true,
     };
     if (kind === 'bind') bind = { x: obj.x, y: obj.y };
     spawns.push(spawn);
@@ -85,6 +86,12 @@ export function parseTiledMap(raw: TiledJson): MapData {
 
 /** Inside the palisade the place is Hoffender. Outside the gate it is the Frostmere Wilds. */
 export function placeName(map: MapData, x: number, y: number): string {
+  if (map.zoneId === 'thornhaven') {
+    const tx = Math.floor(x / map.tileWidth);
+    const ty = Math.floor(y / map.tileWidth);
+    if (tx >= 88 && tx <= 184 && ty >= 16 && ty <= 92) return 'Graymoor Hold';
+    return 'Thornhaven';
+  }
   return isSafe(map, x, y) ? map.townName : map.wildsName;
 }
 

@@ -129,5 +129,31 @@
     "rewardCopper": 200,
     "rewardXp": 1200,
     "reward": "The black ice staff, 200 copper, and 1200 experience"
+  },
+  {
+    "id": "lane_hares",
+    "name": "The South Lane",
+    "giver": "Aldric Valdor",
+    "description": "King Aldric wants six lane hares from the south road east of Thornhaven. It is the young path, levels 1 to 10.",
+    "objective": "Lane hares",
+    "itemId": "",
+    "need": 6,
+    "killId": "lane_hare",
+    "rewardCopper": 20,
+    "rewardXp": 70,
+    "reward": "20 copper and 70 experience"
+  },
+  {
+    "id": "lane_wolves",
+    "name": "Wolves on the Lane",
+    "giver": "Aldric Valdor",
+    "description": "Five lane wolves work the same south road. Aldric wants them thinned before a new Valdorian walks into the older fields.",
+    "objective": "Lane wolves",
+    "itemId": "",
+    "need": 5,
+    "killId": "lane_wolf",
+    "rewardCopper": 35,
+    "rewardXp": 120,
+    "reward": "35 copper and 120 experience"
   }
 ]

@@ -23,6 +23,8 @@ import { buildWorld, T } from './frostmere-map.mjs';
 import { buildFrostfang } from './frostfang-map.mjs';
 import { buildSouthlands } from './south-map.mjs';
 import { buildCanon, clearCrossings } from './canon-map.mjs';
+import { linkPlaceholders } from './placeholders.mjs';
+import { dressInteriors } from './decor.mjs';
 import { buildPhase2, linkPhase2 } from './phase2-map.mjs';
 import { paintAbilityIcon, scrollIcon } from './ability-icons.mjs';
 import { paintArchitectureTiles } from './building-tiles.mjs';
@@ -1544,6 +1546,43 @@ function paintFloor() {
   return img;
 }
 
+function drawCart() {
+  const img = createImage(32, 24);
+  for (let y = 8; y <= 16; y++) {
+    for (let x = 4; x <= 26; x++) img.set(x, y, y < 12 ? hex('#a56a3c') : hex('#6a3a22'));
+  }
+  for (let x = 6; x <= 24; x++) img.set(x, 8, hex('#e6c15a'));
+  img.set(8, 18, hex('#2a241c'));
+  img.set(9, 19, hex('#2a241c'));
+  img.set(10, 20, hex('#5c534c'));
+  img.set(22, 18, hex('#2a241c'));
+  img.set(23, 19, hex('#2a241c'));
+  img.set(24, 20, hex('#5c534c'));
+  for (let y = 10; y <= 14; y++) img.set(2, y, hex('#5c3a28'));
+  silhouette(img, INK);
+  return img;
+}
+
+function drawStall() {
+  const img = createImage(28, 24);
+  for (let x = 4; x <= 24; x++) {
+    img.set(x, 4, hex('#e6c15a'));
+    img.set(x, 5, hex('#8a3030'));
+    img.set(x, 6, hex('#a84848'));
+  }
+  for (let y = 6; y <= 18; y++) {
+    img.set(6, y, hex('#5c3a28'));
+    img.set(22, y, hex('#5c3a28'));
+  }
+  for (let x = 6; x <= 22; x++) {
+    for (let y = 16; y <= 18; y++) img.set(x, y, hex('#c4a574'));
+  }
+  img.set(10, 14, hex('#3a2418'));
+  img.set(16, 14, hex('#f4f0e6'));
+  silhouette(img, INK);
+  return img;
+}
+
 function drawWell() {
   const img = createImage(56, 48);
   // Posts and beam
@@ -2250,6 +2289,156 @@ function drawAnvil() {
   return img;
 }
 
+function drawBar() {
+  const img = createImage(28, 16);
+  for (let y = 6; y <= 14; y++) for (let x = 2; x <= 26; x++) img.set(x, y, y < 9 ? hex('#a56b3c') : hex('#5c3a28'));
+  for (let x = 2; x <= 26; x++) img.set(x, 6, hex('#e6c15a'));
+  silhouette(img, INK);
+  return img;
+}
+function drawStool() {
+  const img = createImage(12, 14);
+  for (let x = 2; x <= 9; x++) img.set(x, 3, hex('#8d5a38'));
+  for (let y = 4; y <= 12; y++) {
+    img.set(3, y, hex('#5c3a28'));
+    img.set(8, y, hex('#5c3a28'));
+  }
+  silhouette(img, INK);
+  return img;
+}
+function drawTable() {
+  const img = createImage(20, 16);
+  for (let y = 4; y <= 8; y++) for (let x = 2; x <= 17; x++) img.set(x, y, hex('#a56b3c'));
+  for (const x of [4, 14]) for (let y = 8; y <= 14; y++) img.set(x, y, hex('#5c3a28'));
+  silhouette(img, INK);
+  return img;
+}
+function drawChair() {
+  const img = createImage(12, 16);
+  for (let y = 2; y <= 8; y++) for (let x = 3; x <= 8; x++) img.set(x, y, hex('#6a3a22'));
+  for (let x = 2; x <= 9; x++) img.set(x, 9, hex('#8d5a38'));
+  img.set(3, 14, hex('#3a2418'));
+  img.set(8, 14, hex('#3a2418'));
+  silhouette(img, INK);
+  return img;
+}
+function drawKeg() {
+  const img = createImage(14, 16);
+  for (let y = 3; y <= 13; y++) for (let x = 3; x <= 10; x++) img.set(x, y, hex('#8d5a38'));
+  for (const y of [4, 8, 12]) for (let x = 3; x <= 10; x++) img.set(x, y, hex('#3a2418'));
+  silhouette(img, INK);
+  return img;
+}
+function drawForge() {
+  const img = createImage(24, 24);
+  for (let y = 8; y <= 20; y++) for (let x = 4; x <= 20; x++) img.set(x, y, hex('#4a4038'));
+  for (let y = 12; y <= 17; y++) for (let x = 8; x <= 16; x++) img.set(x, y, y % 2 ? hex('#e07030') : hex('#ffd060'));
+  for (let x = 6; x <= 18; x++) img.set(x, 8, hex('#2a241c'));
+  silhouette(img, INK);
+  return img;
+}
+function drawQuench() {
+  const img = createImage(16, 16);
+  for (let y = 4; y <= 13; y++) for (let x = 3; x <= 12; x++) img.set(x, y, hex('#5c3a28'));
+  for (let y = 6; y <= 10; y++) for (let x = 5; x <= 10; x++) img.set(x, y, hex('#3c86a2'));
+  silhouette(img, INK);
+  return img;
+}
+function drawRack() {
+  const img = createImage(16, 22);
+  for (let y = 4; y <= 18; y++) img.set(8, y, hex('#5c3a28'));
+  for (let x = 3; x <= 13; x++) img.set(x, 6, hex('#8d5a38'));
+  img.set(5, 4, hex('#d7dee6'));
+  img.set(6, 8, hex('#d7dee6'));
+  img.set(10, 4, hex('#c4a574'));
+  img.set(11, 9, hex('#c4a574'));
+  silhouette(img, INK);
+  return img;
+}
+function drawShieldProp() {
+  const img = createImage(14, 16);
+  for (let y = 2; y <= 12; y++) for (let x = 3; x <= 10; x++) {
+    if ((x - 6) * (x - 6) + (y - 6) * (y - 6) < 20) img.set(x, y, hex('#1d4e89'));
+  }
+  img.set(6, 6, hex('#e6c15a'));
+  img.set(7, 6, hex('#e6c15a'));
+  silhouette(img, INK);
+  return img;
+}
+function drawArmorStand() {
+  const img = createImage(14, 22);
+  for (let y = 4; y <= 12; y++) for (let x = 4; x <= 9; x++) img.set(x, y, hex('#8b97a3'));
+  for (let y = 13; y <= 18; y++) img.set(6, y, hex('#5c3a28'));
+  img.set(4, 6, hex('#e6c15a'));
+  silhouette(img, INK);
+  return img;
+}
+function drawHay() {
+  const img = createImage(16, 12);
+  for (let y = 4; y <= 10; y++) for (let x = 2; x <= 13; x++) img.set(x, y, (x + y) % 2 ? hex('#e6c15a') : hex('#a56b3c'));
+  silhouette(img, INK);
+  return img;
+}
+function drawTrough() {
+  const img = createImage(20, 12);
+  for (let y = 4; y <= 9; y++) for (let x = 2; x <= 17; x++) img.set(x, y, y === 4 || y === 9 ? hex('#6a6058') : hex('#3c86a2'));
+  silhouette(img, INK);
+  return img;
+}
+function drawStallpost() {
+  const img = createImage(10, 20);
+  for (let y = 2; y <= 18; y++) for (let x = 3; x <= 6; x++) img.set(x, y, hex('#8d5a38'));
+  for (let x = 1; x <= 8; x++) img.set(x, 4, hex('#5c3a28'));
+  silhouette(img, INK);
+  return img;
+}
+function drawShelf() {
+  const img = createImage(20, 16);
+  for (const y of [4, 9, 14]) for (let x = 2; x <= 17; x++) img.set(x, y, hex('#5c3a28'));
+  img.set(4, 3, hex('#c45a3a'));
+  img.set(8, 3, hex('#e6c15a'));
+  img.set(12, 8, hex('#3c86a2'));
+  img.set(6, 8, hex('#f4f0e6'));
+  silhouette(img, INK);
+  return img;
+}
+function drawAltar() {
+  const img = createImage(20, 16);
+  for (let y = 8; y <= 14; y++) for (let x = 3; x <= 16; x++) img.set(x, y, hex('#d5dbe8'));
+  for (let x = 6; x <= 13; x++) img.set(x, 6, hex('#e6c15a'));
+  img.set(9, 4, hex('#fff4c8'));
+  img.set(10, 5, hex('#fff4c8'));
+  silhouette(img, INK);
+  return img;
+}
+function drawCandle() {
+  const img = createImage(8, 14);
+  for (let y = 6; y <= 12; y++) img.set(3, y, hex('#f4f0e6'));
+  img.set(3, 4, hex('#e07030'));
+  img.set(3, 3, hex('#ffe08a'));
+  silhouette(img, INK);
+  return img;
+}
+function drawHorse(coat, mane, tack, barding, step) {
+  const img = createImage(32, 28);
+  const body = hex(coat);
+  const dark = hex(mane);
+  const gear = hex(tack);
+  const mark = hex(barding);
+  for (let y = 10; y <= 16; y++) for (let x = 8; x <= 22; x++) img.set(x, y, body);
+  for (let y = 6; y <= 12; y++) for (let x = 20; x <= 26; x++) img.set(x, y, body);
+  img.set(25, 8, dark);
+  img.set(26, 9, hex('#1c1418'));
+  for (let y = 4; y <= 10; y++) img.set(22, y, dark);
+  const leg = step ? 1 : 0;
+  for (const x of [10, 14 + leg, 18, 21 - leg]) for (let y = 16; y <= 24; y++) img.set(x, y, dark);
+  for (let x = 8; x <= 20; x++) img.set(x, 12, gear);
+  img.set(12, 11, mark);
+  img.set(16, 11, mark);
+  silhouette(img, INK);
+  return img;
+}
+
 function buildProps() {
   const frames = {
     tree: drawTree(0),
@@ -2280,6 +2469,36 @@ function buildProps() {
     pouch: drawPouch(),
     coins: drawCoins(),
     anvil: drawAnvil(),
+    cart: drawCart(),
+    stall: drawStall(),
+    bar: drawBar(),
+    stool: drawStool(),
+    table: drawTable(),
+    chair: drawChair(),
+    keg: drawKeg(),
+    forge: drawForge(),
+    quench: drawQuench(),
+    rack: drawRack(),
+    shield_prop: drawShieldProp(),
+    armor_stand: drawArmorStand(),
+    hay: drawHay(),
+    trough: drawTrough(),
+    stallpost: drawStallpost(),
+    shelf: drawShelf(),
+    altar: drawAltar(),
+    candle: drawCandle(),
+    horse_human: drawHorse('#8a5a32', '#3a2418', '#1d4e89', '#e6c15a', 0),
+    horse_human_b: drawHorse('#8a5a32', '#3a2418', '#1d4e89', '#e6c15a', 1),
+    horse_barb: drawHorse('#c4a574', '#4a3020', '#6a3030', '#e6c15a', 0),
+    horse_barb_b: drawHorse('#c4a574', '#4a3020', '#6a3030', '#e6c15a', 1),
+    horse_elf: drawHorse('#f4f1ea', '#d5dbe8', '#8aa0b4', '#f7fbff', 0),
+    horse_elf_b: drawHorse('#f4f1ea', '#d5dbe8', '#8aa0b4', '#f7fbff', 1),
+    horse_wood: drawHorse('#a07850', '#2e4a28', '#3e6b40', '#7aaa58', 0),
+    horse_wood_b: drawHorse('#a07850', '#2e4a28', '#3e6b40', '#7aaa58', 1),
+    horse_dwarf: drawHorse('#6a5040', '#3a2418', '#e0a050', '#8a6840', 0),
+    horse_dwarf_b: drawHorse('#6a5040', '#3a2418', '#e0a050', '#8a6840', 1),
+    horse_ogre: drawHorse('#5a5044', '#242820', '#6a4030', '#3e4a32', 0),
+    horse_ogre_b: drawHorse('#5a5044', '#242820', '#6a4030', '#3e4a32', 1),
   };
   // Pack left to right, wrapping at 128px. Record anchors at bottom center.
   const sheetW = 128;
@@ -2338,6 +2557,7 @@ function buildTmj(map, tileset) {
     if (o.toZone) properties.push({ name: 'toZone', type: 'string', value: o.toZone });
     if (o.toX !== undefined) properties.push({ name: 'toX', type: 'float', value: o.toX });
     if (o.toY !== undefined) properties.push({ name: 'toY', type: 'float', value: o.toY });
+    if (o.ambient) properties.push({ name: 'ambient', type: 'bool', value: true });
     return {
       id: oid++,
       name: o.name,
@@ -2904,6 +3124,11 @@ async function main() {
   Object.assign(world.charts, phase2.charts);
   linkPhase2(world.maps);
   clearCrossings(world.maps);
+  const backlog = linkPlaceholders(world.maps);
+  dressInteriors(world.maps, backlog);
+  clearCrossings(world.maps);
+  writeFileSync(join(root, 'src/content/placeholder-rooms.json'), `${JSON.stringify(backlog, null, 2)}\n`);
+  console.log(`placeholder rooms ${backlog.length}`);
   const map = world.maps.find((zone) => zone.id === 'hoffender');
   const atlas = { actors: actors.meta, props: props.meta, hero: hero.field.meta, portrait: hero.portrait.meta, people: people.meta };
   const itemIcons = drawItemIcons();

@@ -882,6 +882,11 @@ export function openDialogue(state: GameState, content: ContentDb, npc: Actor, _
     else if (quest.stage === 'active') nodeId = 'active';
   }   else if (npc.defId === 'ivar' && ivarIsBusy(state)) {
     nodeId = 'busy';
+  } else if (npc.defId === 'aldric') {
+    nodeId = steppedNode(state, content, [
+      { id: 'lane_hares', active: 'hares_active', ready: 'hares_ready', next: 'after_hares' },
+      { id: 'lane_wolves', active: 'wolves_active', ready: 'wolves_ready', next: 'after_hares' },
+    ], 'done');
   } else if (npc.defId === 'odda') {
     nodeId = steppedNode(state, content, [
       { id: 'graymoor_boars', active: 'boars_active', ready: 'boars_ready', next: 'after_boars' },
@@ -1347,7 +1352,7 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
     hoffender: 'You wake in the yard of the Frosthearth Inn.',
     frostfang: 'You wake at the fire in Hearthpass.',
     eldenmoor: 'You wake in the yard of the Silver Stair.',
-    thornhaven: 'You wake in the yard of Graymoor Hold.',
+    thornhaven: 'You wake in the yard of Thornhaven.',
     valdoria: 'You wake in the yard of Blackpine Tower.',
     brightforge: 'You wake in the yard of Brightforge.',
     wyrmrest: 'You wake in the court of Wyrmrest.',
@@ -1356,6 +1361,65 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
     spires: 'You wake on the Last Step.',
   };
   emit({ type: 'log', text: wakeText[home] ?? 'You wake where you last bound.' });
+}
+
+const DOOR_FACE = new Set([37, 38, 43, 44, 76, 77, 88, 89, 100, 101, 112, 113, 124, 125]);
+
+/** Townsfolk stroll the safe streets. They stay off doors and off the people who have jobs. */
+export function civilians(state: GameState, content: ContentDb, map: MapData, emit: Emit): void {
+  const player = getPlayer(state);
+  const speed = 26 * (TICK_MS / 1000);
+  let spoke = false;
+  const doorAt = (x: number, y: number) => {
+    const { tx, ty } = tileOf(map, x, y);
+    return DOOR_FACE.has(map.ground[ty * map.width + tx] ?? 0);
+  };
+  const crowded = (x: number, y: number) => {
+    if (Math.hypot(x - player.x, y - player.y) < 18) return true;
+    return state.actors.some((other) => other !== undefined && other.kind === 'npc' && !other.ambient && other.alive && Math.hypot(other.x - x, other.y - y) < 22);
+  };
+  for (const npc of state.actors) {
+    if (npc.kind !== 'npc' || !npc.ambient || !npc.alive) continue;
+    if (doorAt(npc.x, npc.y)) {
+      const away = tryMove(map, npc.x, npc.y, 0, 12, 4, 3, false);
+      npc.x = away.x;
+      npc.y = away.y;
+      npc.wander = null;
+    }
+    npc.wanderMs -= TICK_MS;
+    if (!npc.wander || Math.hypot(npc.x - npc.wander.x, npc.y - npc.wander.y) < 8) {
+      if (npc.wanderMs <= 0) {
+        npc.wanderMs = 2400 + Math.floor(roll(state) * 3200);
+        const goalX = npc.homeX + (roll(state) - 0.5) * 70;
+        const goalY = npc.homeY + (roll(state) - 0.5) * 46;
+        const far = Math.hypot(goalX - npc.homeX, goalY - npc.homeY) > 78;
+        if (!far && !bodyBlocked(map, goalX, goalY, 4, 3, false) && !doorAt(goalX, goalY) && !crowded(goalX, goalY)) {
+          npc.wander = { x: goalX, y: goalY };
+        } else npc.wander = null;
+      }
+    }
+    if (npc.wander) {
+      const dx = npc.wander.x - npc.x;
+      const dy = npc.wander.y - npc.y;
+      const gap = Math.hypot(dx, dy) || 1;
+      const step = Math.min(speed, gap);
+      const moved = tryMove(map, npc.x, npc.y, (dx / gap) * step, (dy / gap) * step, 4, 3, false);
+      if (doorAt(moved.x, moved.y) || crowded(moved.x, moved.y)) npc.wander = null;
+      else {
+        npc.facing = facingOf(moved.x - npc.x, moved.y - npc.y, npc.facing);
+        npc.x = moved.x;
+        npc.y = moved.y;
+      }
+    }
+    if (npc.barkMs > 0) npc.barkMs -= TICK_MS;
+    const barks = content.npcs[npc.defId]?.barks;
+    if (!spoke && barks && barks.length > 0 && npc.barkMs <= 0 && Math.hypot(npc.x - player.x, npc.y - player.y) < 140) {
+      const line = barks[Math.floor(roll(state) * barks.length)] ?? barks[0];
+      npc.barkMs = 16000 + Math.floor(roll(state) * 10000);
+      emit({ type: 'bark', actorId: npc.id, text: line });
+      spoke = true;
+    }
+  }
 }
 
 export function portals(state: GameState, content: ContentDb, map: MapData, emit: Emit): void {

@@ -1,7 +1,7 @@
 import type { ContentDb, GameState, MapData } from './types';
 import { TICK_MS } from './types';
 import { collect } from './events';
-import { ai, combat, movement, pickups, portals, regen, respawnMobs, respawnPlayer } from './systems';
+import { ai, civilians, combat, movement, pickups, portals, regen, respawnMobs, respawnPlayer } from './systems';
 
 /**
  * One fixed simulation tick.
@@ -35,6 +35,7 @@ export function step(state: GameState, content: ContentDb, map: MapData) {
       return;
     }
     ai(state, content, map, emit);
+    civilians(state, content, map, emit);
     combat(state, content, map, emit);
     pickups(state, content, emit);
     regen(state, content, map);

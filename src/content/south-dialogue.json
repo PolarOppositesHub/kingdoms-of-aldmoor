@@ -339,5 +339,64 @@
       "text": "You have the stair behind you and Kara ahead of you, if the vault is done. I keep the fire. That was the bargain I made with the cold.",
       "choices": [{ "label": "Keep it.", "action": "close" }]
     }
+  },
+  "aldric": {
+    "start": {
+      "text": "Aldric Valdor. This yard is the castle of Thornhaven, and Thornhaven is the capital. Graymoor Hold is the inland castle, not this one. If you are new, leave by the east gate. The south road is where you begin. Six lane hares. Then we talk about wolves.",
+      "choices": [
+        { "label": "I'll take the lane.", "action": "acceptQuest", "quest": "lane_hares" },
+        { "label": "Where do I train?", "next": "train" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    },
+    "train": {
+      "text": "Wren teaches the grove path, and Keel the bow, here in the yard. The other halls stand in Hoffender, Eldenmoor, Brightforge, and Canipure. Shaman, enchanter, and warden are not Valdorian paths.",
+      "choices": [{ "label": "I understand.", "action": "close" }]
+    },
+    "hares_active": {
+      "text": "Six lane hares, on the south road past the east gate. They are the start, not the end.",
+      "choices": [{ "label": "I'm on the lane.", "action": "close" }]
+    },
+    "hares_ready": {
+      "text": "The hares are counted. Young wolves use the same lane. Five of them, before you wander into the older fields.",
+      "choices": [{ "label": "The hares are down.", "action": "turnIn", "quest": "lane_hares" }]
+    },
+    "after_hares": {
+      "text": "Five lane wolves. They stay near the road. The boars and bandits further out are Odda's count, not yours, until you are ready.",
+      "choices": [
+        { "label": "I'll thin the wolves.", "action": "acceptQuest", "quest": "lane_wolves" },
+        { "label": "Not yet.", "action": "close" }
+      ]
+    },
+    "wolves_active": {
+      "text": "Five wolves. Keep to the lane.",
+      "choices": [{ "label": "Still walking.", "action": "close" }]
+    },
+    "wolves_ready": {
+      "text": "That is a start worthy of the capital. The kingdom is larger than this yard. Odda can use you when you want harder work.",
+      "choices": [{ "label": "The wolves are down.", "action": "turnIn", "quest": "lane_wolves" }]
+    },
+    "done": {
+      "text": "Thornhaven stands. Bind in the yard if you mean to fall here. The south lane still has work, and the roads beyond it climb.",
+      "choices": [{ "label": "For the kingdom.", "action": "close" }]
+    }
+  },
+  "wren": {
+    "start": {
+      "text": "Wren Holt. I teach the grove path to Valdorians. The boughs in Canipure keep their own rule. My list is the same work, sold here.",
+      "choices": [
+        { "label": "Show me the drills.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
+  },
+  "keel": {
+    "start": {
+      "text": "Keel Marsh. Bows, for those of the kingdom who want them. I do not teach the halls in the trees. I teach this yard.",
+      "choices": [
+        { "label": "Show me the drills.", "action": "merchant" },
+        { "label": "Another time.", "action": "close" }
+      ]
+    }
   }
 }

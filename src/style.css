@@ -50,7 +50,13 @@ button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
 #app { position: fixed; inset: 0; }
 #map-slot { position: absolute; top: 0; left: 0; right: 0; bottom: calc(var(--hud) + env(safe-area-inset-bottom)); }
-#map-slot canvas { image-rendering: pixelated; image-rendering: crisp-edges; }
+#map-slot canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
 #hud {
   position: absolute;
   left: 0;
@@ -416,6 +422,19 @@ html[data-hud-density="regular"] .util-row.is-fit:not(.is-sized) {
 .util-row button { font-size: 11px; line-height: 1.1; min-height: 32px; padding: 2px 4px; flex: 1; }
 .actions[data-spells="5"] .util-row button { min-height: 30px; font-size: 11px; }
 .trade button { white-space: nowrap; }
+.trade button.book-row,
+.book-row,
+.book-row span,
+.book-row small,
+.book-row strong {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+.book-row { height: auto; max-width: 100%; }
+.sheet, .vitals, .target-box, .pet-panel, .hotbar, .menu-row, .pad, #log, .corner-btn {
+  background-image: var(--ui-texture, none);
+}
+#hud, #panel, .corner-tools, .pet-panel, .sit-dock { zoom: var(--ui-scale, 1); }
 .trade li.is-locked { opacity: 0.5; }
 .trade li.is-locked button {
   opacity: 1;
@@ -853,6 +872,9 @@ html[data-hud-density="regular"] .util-row.is-fit:not(.is-sized) {
 }
 
 .settings { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 12px; }
+.slider { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+.slider input[type="range"] { width: 100%; min-height: 44px; }
+.slider input[type="color"] { width: 100%; min-height: 44px; padding: 4px; }
 .settings button[aria-pressed="true"] { border-color: var(--gold); background: #3a3020; }
 #ability-tip {
   position: fixed;

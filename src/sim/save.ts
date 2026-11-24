@@ -3,6 +3,7 @@ import { emptyQuests, refreshGear, syncCompanion } from './state';
 import { bodySprite, raceScale } from './appearance';
 import { bagsFromLegacy, normalizeBags } from './bags';
 import { bodyBlocked, nearestStand } from './map';
+import { normalizeUi, type UiPrefs } from '../ui/theme';
 
 export const SAVE_VERSION = 3;
 
@@ -43,6 +44,8 @@ export interface CharacterSave {
   bindZone?: string;
   bindX?: number;
   bindY?: number;
+  /** Absent on saves from before window themes. Those heroes get their race default. */
+  ui?: UiPrefs;
 }
 
 export function captureSave(state: GameState, savedAt = 0): CharacterSave {
@@ -77,6 +80,7 @@ export function captureSave(state: GameState, savedAt = 0): CharacterSave {
     bindZone: state.bindZone,
     bindX: state.bind.x,
     bindY: state.bind.y,
+    ui: state.uiPrefs,
   };
 }
 
@@ -132,6 +136,7 @@ export function migrateSave(raw: unknown): CharacterSave | null {
     bindZone: typeof row.bindZone === 'string' ? row.bindZone : undefined,
     bindX: typeof row.bindX === 'number' ? row.bindX : undefined,
     bindY: typeof row.bindY === 'number' ? row.bindY : undefined,
+    ui: normalizeUi(row.ui, row.raceId),
   };
   if (save.raceId === 'barbarian' && save.classId === 'wizard') {
     save.classId = 'warrior';
@@ -198,6 +203,7 @@ export function applySave(state: GameState, content: ContentDb, map: MapData, ra
   state.petOrder = save.petOrder;
   state.petAway = save.petAway === true;
   state.factions = { ...save.factions };
+  state.uiPrefs = normalizeUi(save.ui, save.raceId);
   if (save.bindZone && typeof save.bindX === 'number' && typeof save.bindY === 'number') {
     state.bindZone = save.bindZone;
     state.bind = { x: save.bindX, y: save.bindY };

@@ -20,8 +20,11 @@
     {
       "id": "human",
       "name": "Human",
-      "playable": false,
-      "blurb": "The plain measure the other peoples are seen against.",
+      "playable": true,
+      "blurb": "Valdorians of the Kingdom of Valdoria. Thornhaven is their capital, a coastal trade city, and King Aldric Valdor rules from its castle.",
+      "homeZone": "thornhaven",
+      "homeX": 872,
+      "homeY": 2382,
       "mods": {
         "str": 0,
         "sta": 0,
@@ -166,7 +169,8 @@
       "races": [
         "barbarian",
         "dwarf",
-        "ogre"
+        "ogre",
+        "human"
       ],
       "blurb": "An axe, a kick, and a heavy swing."
     },
@@ -187,7 +191,8 @@
       "races": [
         "barbarian",
         "dwarf",
-        "wood_elf"
+        "wood_elf",
+        "human"
       ],
       "blurb": "Guile. Sneak, a knife in the back, and a step aside."
     },
@@ -198,7 +203,8 @@
       "races": [
         "barbarian",
         "dwarf",
-        "ogre"
+        "ogre",
+        "human"
       ],
       "blurb": "Rage from the blows you land. Two hatchets. A kill feeds you."
     },
@@ -217,7 +223,8 @@
       "name": "Wizard",
       "playable": true,
       "races": [
-        "high_elf"
+        "high_elf",
+        "human"
       ],
       "blurb": "A staff and a pool of mana. The path taught in Eldenmoor."
     },
@@ -227,7 +234,8 @@
       "playable": true,
       "races": [
         "high_elf",
-        "dwarf"
+        "dwarf",
+        "human"
       ],
       "blurb": "Plate and a quiet mend. The dead take it worse."
     },
@@ -246,7 +254,8 @@
       "playable": true,
       "races": [
         "high_elf",
-        "dwarf"
+        "dwarf",
+        "human"
       ],
       "blurb": "A shield, a small grace, and a place in front."
     },
@@ -255,7 +264,8 @@
       "name": "Magician",
       "playable": true,
       "races": [
-        "high_elf"
+        "high_elf",
+        "human"
       ],
       "blurb": "A cinder bolt, and an ember that comes when called."
     },
@@ -264,7 +274,8 @@
       "name": "Druid",
       "playable": true,
       "races": [
-        "wood_elf"
+        "wood_elf",
+        "human"
       ],
       "blurb": "A mend, a root, a rot, and bark you wear."
     },
@@ -273,7 +284,8 @@
       "name": "Ranger",
       "playable": true,
       "races": [
-        "wood_elf"
+        "wood_elf",
+        "human"
       ],
       "blurb": "A bow, a light knife, and a kindness toward beasts."
     }

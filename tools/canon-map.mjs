@@ -5,6 +5,8 @@
  */
 import { T, TILE } from './frostmere-map.mjs';
 import { frameGate, layGround, stampBuilding } from './buildings.mjs';
+import { dressTown, dropProps } from './town-fill.mjs';
+import { placeTownFolk } from './town-place.mjs';
 
 export const W = 256;
 export const H = 256;
@@ -336,6 +338,27 @@ function buildBrightforge() {
   stampBuilding(g, solid, scenery, 155, 80, 8, 7, 'dwarf', { enter: true, doorX: 158 });
   stampBuilding(g, solid, scenery, 125, 94, 8, 7, 'dwarf', { enter: true, doorX: 128 });
   stampBuilding(g, solid, scenery, 145, 94, 8, 7, 'dwarf', { enter: true, doorX: 148 });
+  dressTown(g, solid, road, scenery, {
+    name: 'Brightforge',
+    style: 'dwarf',
+    min: 2,
+    reserved: [
+      [128, 64], [128, 104], [112, 108], [144, 108], [116, 68], [140, 46], [120, 70], [116, 74],
+      [96, 56], [158, 56], [96, 86], [158, 86], [128, 100], [148, 100],
+    ],
+    houses: [
+      { x: 82, y: 64, w: 8, h: 7 },
+      { x: 166, y: 64, w: 8, h: 7 },
+      { x: 82, y: 88, w: 8, h: 7 },
+      { x: 166, y: 88, w: 8, h: 7 },
+    ],
+    streets: [
+      [84, 60, 172, 61],
+      [84, 78, 172, 79],
+    ],
+    lamps: [[90, 62], [160, 62], [90, 80], [160, 80]],
+    gardens: [{ x: 84, y: 98, w: 6, h: 4, floor: T.ROCK_GROUND }],
+  });
   const m = maker('brightforge', 'Brightforge', 'Lightbrune Slopes');
   const back = (tx, ty) => feet(tx, ty);
   m.add('door', 'To Graymoor', 128, 10, { toZone: 'thornhaven', toX: feet(236, 48).x, toY: feet(236, 48).y, sprite: 'sign_wilds' });
@@ -375,6 +398,14 @@ function buildBrightforge() {
   });
   m.add('label', 'Brightforge', 128, 30);
   m.add('label', 'Lightbrune Slopes', 128, 160);
+  dropProps(m, g, solid, [
+    { name: 'anvil', sprite: 'anvil', x: 108, y: 76, block: true },
+    { name: 'crate', sprite: 'crate', x: 150, y: 76, block: true },
+    { name: 'cart', sprite: 'cart', x: 100, y: 90, block: true },
+    { name: 'stall', sprite: 'stall', x: 160, y: 78, block: true },
+    { name: 'barrel', sprite: 'barrel', x: 86, y: 100, block: true },
+  ]);
+  placeTownFolk(m, g, solid, 'brightforge');
   const mobs = placeMobs(m, g, solid, safe, road, scenery, [
     ['slope_hare', 'hare', 40, 140],
     ['slope_hare', 'hare', 70, 150],
@@ -456,6 +487,31 @@ function buildWyrmrest() {
   stampBuilding(g, solid, scenery, 150, 74, 6, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 88, 150, 8, 7, 'human', { enter: false });
   stampBuilding(g, solid, scenery, 152, 148, 8, 7, 'human', { enter: false });
+  dressTown(g, solid, road, scenery, {
+    name: 'Wyrmrest',
+    style: 'human',
+    min: 4,
+    reserved: [
+      [110, 120], [104, 124], [128, 110], [150, 128], [96, 100], [112, 100], [160, 100], [176, 100],
+      [96, 140], [112, 140], [160, 140], [176, 140], [120, 160], [148, 168], [104, 168], [168, 176],
+      [84, 140], [84, 148], [128, 86], [104, 118],
+    ],
+    houses: [
+      { x: 74, y: 78, w: 8, h: 7 },
+      { x: 160, y: 78, w: 8, h: 7 },
+      { x: 74, y: 108, w: 8, h: 7 },
+      { x: 168, y: 112, w: 8, h: 7 },
+      { x: 74, y: 160, w: 8, h: 7 },
+      { x: 100, y: 172, w: 8, h: 7 },
+    ],
+    streets: [
+      [74, 96, 182, 97],
+      [74, 154, 182, 155],
+      [98, 74, 99, 186],
+    ],
+    lamps: [[80, 98], [150, 98], [80, 156], [160, 156]],
+    gardens: [{ x: 74, y: 174, w: 6, h: 4, floor: T.GRASS }],
+  });
   const m = maker('wyrmrest', 'Wyrmrest', 'Wyrmrest');
   m.add('door', 'To the Frostmere Wilds', 12, 140, { toZone: 'hoffender', toX: feet(240, 152).x, toY: feet(240, 152).y, sprite: 'sign_wilds' });
   m.add('door', 'To the Ashfall Moors', 128, 10, { toZone: 'ashfall', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
@@ -492,6 +548,14 @@ function buildWyrmrest() {
     text: 'The Ashfall Moors, then the Scalded Vale, then the Wyrmrest Spires. Levels climb with the peaks. Emberwatch keeps a yard at the foot of the moors. The deeper lair under the spires is sealed.',
   });
   m.add('label', 'Wyrmrest', 128, 150);
+  dropProps(m, g, solid, [
+    { name: 'well', sprite: 'well', x: 90, y: 120, block: true },
+    { name: 'cart', sprite: 'cart', x: 170, y: 128, block: true },
+    { name: 'stall', sprite: 'stall', x: 140, y: 156, block: true },
+    { name: 'crate', sprite: 'crate', x: 80, y: 150, block: true },
+    { name: 'banner', sprite: 'banner', x: 166, y: 84, block: false },
+  ]);
+  placeTownFolk(m, g, solid, 'wyrmrest');
   border(g, solid);
   const map = m.finish(g, solid, safe, scenery);
   if (safe[120][110] !== 1) throw new Error('Wyrmrest court is not safe');
@@ -523,6 +587,7 @@ function buildAshfall() {
   m.add('spawn', 'south', 128, 230);
   m.add('npc', 'ember_keel', 128, 210, { defId: 'ember_keel', sprite: 'ember_keel' });
   m.add('npc', 'ember_scout', 140, 214, { defId: 'ember_scout', sprite: 'ember_scout' });
+  placeTownFolk(m, g, solid, 'ashfall');
   m.add('bind', 'emberwatch', 116, 216);
   m.add('prop', 'fire', 116, 208, { sprite: 'firepit' });
   m.add('sign', 'Emberwatch', 108, 228, {
@@ -594,6 +659,7 @@ function buildScalded() {
   m.add('door', 'To the Wyrmrest Spires', 128, 8, { toZone: 'spires', toX: feet(128, 240).x, toY: feet(128, 240).y, sprite: 'sign_wilds' });
   m.add('spawn', 'south', 128, 220);
   m.add('npc', 'thane_rest', 128, 200, { defId: 'thane_rest', sprite: 'thane_rest' });
+  placeTownFolk(m, g, solid, 'scalded');
   m.add('bind', 'thanes-rest', 140, 206);
   m.add('prop', 'fire', 116, 204, { sprite: 'firepit' });
   m.add('sign', "Thane's Rest", 108, 220, {
@@ -654,6 +720,7 @@ function buildSpires() {
   const m = maker('spires', 'The Last Step', 'Wyrmrest Spires');
   m.add('door', 'To the Scalded Vale', 128, 248, { toZone: 'scalded', toX: feet(128, 16).x, toY: feet(128, 16).y, sprite: 'sign_wilds' });
   m.add('spawn', 'south', 128, 232);
+  placeTownFolk(m, g, solid, 'spires');
   m.add('seam', 'Deeper Lair', 128, 18, {
     sprite: 'sign_wilds',
     text: 'A door in the rock, sealed. The deeper lair under the spires is not open. Vyrmathax the Elder keeps the roost in front of it. Whatever sleeps past the seal can wait.',

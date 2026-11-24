@@ -160,7 +160,19 @@ onGameReady((api) => {
 
 enter.disabled = true;
 const game = createGame(mapSlot);
-window.addEventListener('resize', () => game.scale.refresh());
+
+function fitMap(): void {
+  if (!game.canvas) return;
+  const rect = mapSlot!.getBoundingClientRect();
+  const width = Math.max(2, Math.round(rect.width));
+  const height = Math.max(2, Math.round(rect.height));
+  if (game.scale.width === width && game.scale.height === height) return;
+  game.scale.setParentSize(width, height);
+}
+
+new ResizeObserver(() => fitMap()).observe(mapSlot);
+window.addEventListener('resize', () => requestAnimationFrame(fitMap));
+requestAnimationFrame(fitMap);
 
 if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
