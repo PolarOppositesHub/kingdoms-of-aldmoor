@@ -1619,6 +1619,33 @@ describe('Brightforge, Wyrmrest, and the cap at 50', () => {
   }
   const bonus = { str: 0, sta: 0, agi: 0, dex: 0, wis: 0, int: 0, cha: 0 };
 
+  it('starts humans in Thornhaven, and keeps Graymoor Hold as its own castle', () => {
+    const map = maps.get('thornhaven')!;
+    expect(map.townName).toBe('Thornhaven');
+    const human = content.roster.races.find((entry) => entry.id === 'human')!;
+    expect(human.homeZone).toBe('thornhaven');
+    expect(placeName(map, human.homeX!, human.homeY!)).toBe('Thornhaven');
+    expect(bodyBlocked(map, human.homeX!, human.homeY!, 5, 3, false)).toBe(false);
+    const aldric = map.spawns.find((spawn) => spawn.defId === 'aldric')!;
+    const wren = map.spawns.find((spawn) => spawn.defId === 'wren')!;
+    const odda = map.spawns.find((spawn) => spawn.defId === 'odda')!;
+    expect(placeName(map, aldric.x, aldric.y)).toBe('Thornhaven');
+    expect(placeName(map, wren.x, wren.y)).toBe('Thornhaven');
+    expect(placeName(map, odda.x, odda.y)).toBe('Graymoor Hold');
+    expect(Math.hypot(aldric.x - human.homeX!, aldric.y - human.homeY!)).toBeLessThan(200);
+    const born = createWorld(content, maps.get('hoffender')!, 21);
+    applyIntent(born, { type: 'createHero', raceId: 'human', classId: 'warrior', bonus }, content, maps.get('hoffender')!);
+    expect(born.bindZone).toBe('thornhaven');
+    expect(born.bind.x).toBe(human.homeX);
+    expect(born.log.join(' ')).toMatch(/Thornhaven/);
+    expect(born.log.join(' ')).not.toMatch(/Graymoor|Frostmere/);
+    const hares = content.quests.find((quest) => quest.id === 'lane_hares');
+    expect(hares?.description).toMatch(/Thornhaven/);
+    expect(hares?.description).not.toMatch(/Graymoor/);
+    expect(content.dialogue.aldric.start.text).toMatch(/east gate/);
+    expect(content.dialogue.aldric.start.text).not.toMatch(/Frostmere/);
+  });
+
   it('opens Brightforge to dwarves and keeps the other race rules', () => {
     const race = content.roster.races.find((entry) => entry.id === 'dwarf');
     expect(race?.playable).toBe(true);
@@ -2106,6 +2133,26 @@ describe('town doors, wanderers, and stable horses', () => {
       }
     }
     expect(doors).toBeGreaterThan(20);
+  });
+
+  it('names each interior for the town its door belongs to', () => {
+    for (const id of towns) {
+      const map = maps.get(id)!;
+      for (const door of map.spawns) {
+        if (door.kind !== 'door' || !door.toZone?.startsWith('room_')) continue;
+        const room = maps.get(door.toZone);
+        expect(room, door.toZone).toBeTruthy();
+        expect(room!.townName, door.name).not.toMatch(/room \d+$/);
+        const tx = Math.floor(door.x / 16);
+        const ty = Math.floor(door.y / 16);
+        const inGraymoor = id === 'thornhaven' && tx >= 88 && tx <= 184 && ty >= 16 && ty <= 92;
+        expect(room!.townName, `${id} ${tx},${ty}`).toBe(inGraymoor ? 'Graymoor Hold' : map.townName);
+      }
+    }
+    const haven = [...maps.values()].find((map) => map.townName === 'Thornhaven' && map.zoneId.startsWith('room_'));
+    const forge = [...maps.values()].find((map) => map.townName === 'Brightforge' && map.zoneId.startsWith('room_'));
+    expect(haven?.townName).toBe('Thornhaven');
+    expect(forge?.townName).toBe('Brightforge');
   });
 
   it('gives every town at least four named wanderers', () => {

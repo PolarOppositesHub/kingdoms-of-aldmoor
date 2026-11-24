@@ -377,8 +377,45 @@ function buildThornhaven() {
     lamps: [[96, 34], [160, 34], [96, 52], [174, 52], [120, 76]],
     gardens: [{ x: 92, y: 82, w: 7, h: 5, floor: T.FARM }],
   });
+  // Thornhaven itself: the coastal castle, separate from Graymoor Hold inland.
+  wallBox(g, solid, safe, 30, 108, 78, 168, T.STONE, T.PATH, [
+    [46, 108, 14, 1],
+    [46, 168, 14, 1],
+    [30, 128, 1, 12],
+    [78, 128, 1, 12],
+  ]);
+  clearPatch(scenery, solid, 31, 109, 77, 167);
+  frameGate(g, solid, 46, 108, 14, 1);
+  frameGate(g, solid, 46, 168, 14, 1);
+  frameGate(g, solid, 30, 128, 1, 12);
+  frameGate(g, solid, 78, 128, 1, 12);
+  layGround(g, solid, 32, 110, 76, 166, T.COBBLE);
+  dressTown(g, solid, road, scenery, {
+    name: 'Thornhaven castle',
+    style: 'human',
+    min: 4,
+    reserved: [
+      [54, 136], [42, 144], [66, 144], [54, 148], [54, 152],
+      [36, 128], [40, 142], [48, 124], [40, 132],
+    ],
+    houses: [
+      { x: 34, y: 112, w: 8, h: 7 },
+      { x: 64, y: 112, w: 8, h: 7 },
+      { x: 34, y: 152, w: 8, h: 7 },
+      { x: 64, y: 152, w: 8, h: 7 },
+    ],
+    streets: [
+      [32, 124, 76, 125],
+      [32, 146, 76, 147],
+      [52, 110, 55, 166],
+    ],
+    lamps: [[36, 126], [70, 126], [36, 148], [70, 148]],
+    gardens: [{ x: 36, y: 134, w: 6, h: 4, floor: T.FARM }],
+  });
+  stroke(g, solid, road, scenery.grid, [[18, 132], [29, 132]], 0);
+  stroke(g, solid, road, scenery.grid, [[79, 132], [128, 132]], 1);
   stroke(g, solid, road, scenery.grid, [[184, 48], [220, 48], [250, 48]], 1);
-  const m = maker('thornhaven', 'Graymoor Hold', 'Thornhaven');
+  const m = maker('thornhaven', 'Thornhaven', 'Thornhaven');
   m.add('door', 'To Hoffender', 128, 8, { toZone: 'hoffender', toX: feet(140, 244).x, toY: feet(140, 244).y, sprite: 'sign_wilds' });
   m.add('spawn', 'north', 128, 16);
   m.add('door', 'From the grass track', 248, 108, { toZone: 'hoffender', toX: feet(240, 228).x, toY: feet(240, 228).y, sprite: 'sign_wilds' });
@@ -418,11 +455,15 @@ function buildThornhaven() {
     sprite: 'sign_wilds',
     text: 'Valdoria, and Blackpine Tower, lie south. The mud thins. The pines do not. Eldenmoor is not this road. It is across the water.',
   });
-  m.add('label', 'Thornhaven', 80, 180);
+  m.add('label', 'Thornhaven', 54, 118);
   m.add('label', 'Graymoor Hold', 128, 24);
-  m.add('npc', 'aldric', 136, 42, { defId: 'aldric', sprite: 'aldric' });
-  m.add('npc', 'wren', 108, 48, { defId: 'wren', sprite: 'wren' });
-  m.add('npc', 'keel', 154, 48, { defId: 'keel', sprite: 'keel' });
+  m.add('npc', 'aldric', 54, 136, { defId: 'aldric', sprite: 'aldric' });
+  m.add('npc', 'wren', 42, 144, { defId: 'wren', sprite: 'wren' });
+  m.add('npc', 'keel', 66, 144, { defId: 'keel', sprite: 'keel' });
+  m.add('sign', 'Thornhaven castle', 48, 120, {
+    sprite: 'sign_hall',
+    text: 'Thornhaven, capital of the Kingdom of Valdoria. King Aldric Valdor rules from this castle. The east gate opens onto the south lane, levels 1 to 10. Graymoor Hold is the inland castle, north of that lane.',
+  });
   dropProps(m, g, solid, [
     { name: 'well', sprite: 'well', x: 96, y: 46, block: true },
     { name: 'cart', sprite: 'cart', x: 172, y: 56, block: true },
@@ -437,17 +478,17 @@ function buildThornhaven() {
     ['field_boar', 'boar', 48, 88],
     ['field_boar', 'boar', 70, 96],
     ['field_boar', 'boar', 90, 110],
-    ['field_boar', 'boar', 40, 120],
+    ['field_boar', 'boar', 44, 96],
     ['field_boar', 'boar', 168, 86],
     ['field_boar', 'boar', 190, 78],
     ['field_boar', 'boar', 210, 130],
-    ['field_boar', 'boar', 60, 140],
+    ['field_boar', 'boar', 90, 120],
     ['mud_wolf', 'wolf', 44, 78],
     ['mud_wolf', 'wolf', 78, 74],
     ['mud_wolf', 'wolf', 96, 130],
     ['mud_wolf', 'wolf', 176, 124],
     ['mud_wolf', 'wolf', 200, 140],
-    ['mud_wolf', 'wolf', 52, 150],
+    ['mud_wolf', 'wolf', 96, 156],
     ['slush_bandit', 'bandit', 70, 188],
     ['slush_bandit', 'bandit', 96, 200],
     ['slush_bandit', 'bandit', 160, 176],

@@ -44,13 +44,13 @@ export const TOWN_FOLK = [
   ]),
   ...pack('thornhaven', 'human', [
     ['tamsin_quay', 'Tamsin Quay', 'dock hand', 36, 128, 'Tamsin Quay. This is Thornhaven harbor, not the golden route. That ship leaves Valdoria. I only tie the small boats.', 'The quay holds.', 'Tova counts the ropes.'],
-    ['pell_net', 'Pell Net', 'fisher', 40, 142, 'Pell Net. The mud flats feed us. The south lane, just outside the hold, is where the young learn to swing. Hares first.', 'Nets are mended.', 'Stay off the south lane if you are not ready for a hare.'],
-    ['oda_salt', 'Oda Salt', 'net mender', 28, 150, 'Oda Salt. I mend nets and listen to the tide. King Aldric is up in the Graymoor yard, not down here in the mud.', 'Salt in the thread.', 'The king does not fish.'],
+    ['pell_net', 'Pell Net', 'fisher', 40, 142, 'Pell Net. The mud flats feed us. The south lane, east of this castle, is where the young learn to swing. Hares first.', 'Nets are mended.', 'Stay off the south lane if you are not ready for a hare.'],
+    ['oda_salt', 'Oda Salt', 'net mender', 28, 150, 'Oda Salt. I mend nets and listen to the tide. King Aldric is in the Thornhaven castle yard, not out on the quay.', 'Salt in the thread.', 'The king does not fish.'],
     ['ned_cooper', 'Ned Cooper', 'cooper', 48, 124, 'Ned Cooper. Barrels for the harbor and the hold. If a door is shut to you, it is only because nobody has named the room yet.', 'Staves are straight.', 'A barrel is not a chair.'],
-    ['cira_venn', 'Cira Venn', 'court guard', 100, 40, 'Cira Venn. I keep the Graymoor yard for King Aldric. Odda counts the boars. I count the people who should not be in a doorway.', 'The yard is safe.', 'The south lane is the young road.'],
-    ['martin_ash', 'Martin Ash', 'banner bearer', 148, 36, 'Martin Ash. The blue and gold is Valdoria. Thornhaven is the capital, and this hold is the king\'s court until he says otherwise.', 'Hold the banner high.', 'Gold thread frays in the mud.'],
+    ['cira_venn', 'Cira Venn', 'court guard', 100, 40, 'Cira Venn. I keep the Graymoor yard for Odda. King Aldric rules from Thornhaven, the coastal castle west of here.', 'The yard is safe.', 'The south lane is the young road.'],
+    ['martin_ash', 'Martin Ash', 'banner bearer', 148, 36, 'Martin Ash. The blue and gold is Valdoria. Thornhaven is the capital, and the king rules from that castle. This hold is Graymoor.', 'Hold the banner high.', 'Gold thread frays in the mud.'],
     ['lise_gold', 'Lise Gold', 'cloth seller', 112, 78, 'Lise Gold. Cloth, thread, and a rumor. The real vendors are the ones with counters. I only walk and talk.', 'Blue sells.', 'Do not stand in the stall.'],
-    ['ena_page', 'Ena Page', 'king\'s page', 160, 58, 'Ena Page. If you are new to the kingdom, speak to King Aldric in the yard. He will point you at the south lane. It is hares, then wolves, then the harder fields.', 'The king is in the yard.', 'I run messages, not errands for bandits.'],
+    ['ena_page', 'Ena Page', 'king\'s page', 160, 58, 'Ena Page. If you are new to the kingdom, King Aldric is in Thornhaven, west of Graymoor. The south lane is hares, then wolves, then the harder fields.', 'The king is in Thornhaven.', 'I run messages, not errands for bandits.'],
   ]),
   ...pack('valdoria', 'human', [
     ['aden_pine', 'Aden Pine', 'tower guard', 184, 100, 'Aden Pine. Blackpine Tower answers to King Aldric, and Osric answers for the tower. I answer for this stretch of cobble.', 'The pines are close.', 'Brigands like the road.'],

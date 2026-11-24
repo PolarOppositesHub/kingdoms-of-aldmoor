@@ -122,7 +122,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
             high_elf: 'The tiers of Eldenmoor are at your back. The Eldenweald, and whatever keeps to the grass, waits past the north gate.',
             wood_elf: 'Canipure is at your back. The Greenreach, and whatever keeps to the trees, waits past the west boughs.',
             ogre: 'Grokthul Hold is at your back. The valley is young. The peaks, and the dragons, are north.',
-            human: 'Thornhaven is at your back. King Aldric is in the Graymoor yard. The south lane, outside the hold, is where the young start.',
+            human: 'Thornhaven is at your back. King Aldric is in the castle yard. The east gate leads to the south lane, where the young start.',
           };
           state.uiPrefs = defaultUi(race.id);
           state.log = [arrived[race.id] ?? 'You wake at home.'];
@@ -217,7 +217,7 @@ export function applyIntent(state: GameState, intent: Intent, content: ContentDb
           const bindText: Record<string, string> = {
             frostfang: 'You bind at the Hearthpass fire. If you fall, you wake here.',
             eldenmoor: 'You bind at the Silver Stair. If you fall, you wake in the yard.',
-            thornhaven: 'You bind at Graymoor Hold. If you fall, you wake in the yard.',
+            thornhaven: 'You bind at Thornhaven. If you fall, you wake in the castle yard.',
             valdoria: 'You bind at Blackpine Tower. If you fall, you wake in the yard.',
             brightforge: 'You bind at Brightforge. If you fall, you wake in the yard.',
             wyrmrest: 'You bind at Wyrmrest. If you fall, you wake in the court.',

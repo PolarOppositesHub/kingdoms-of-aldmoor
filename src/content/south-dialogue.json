@@ -342,7 +342,7 @@
   },
   "aldric": {
     "start": {
-      "text": "Aldric Valdor. This yard is Thornhaven's court, and Thornhaven is the capital. If you are new to the kingdom, the south lane outside the hold is where you begin. Six lane hares. Then we talk about wolves.",
+      "text": "Aldric Valdor. This yard is the castle of Thornhaven, and Thornhaven is the capital. Graymoor Hold is the inland castle, not this one. If you are new, leave by the east gate. The south road is where you begin. Six lane hares. Then we talk about wolves.",
       "choices": [
         { "label": "I'll take the lane.", "action": "acceptQuest", "quest": "lane_hares" },
         { "label": "Where do I train?", "next": "train" },
@@ -354,7 +354,7 @@
       "choices": [{ "label": "I understand.", "action": "close" }]
     },
     "hares_active": {
-      "text": "Six lane hares, on the road south of the gate. They are the start, not the end.",
+      "text": "Six lane hares, on the south road past the east gate. They are the start, not the end.",
       "choices": [{ "label": "I'm on the lane.", "action": "close" }]
     },
     "hares_ready": {

@@ -2,7 +2,7 @@
   {
     "town": "Hoffender",
     "zone": "hoffender",
-    "building": "Hoffender room 1",
+    "building": "Hoffender Tavern",
     "purpose": "a tavern",
     "interior": "room_hoffender_1",
     "style": "timber"
@@ -10,7 +10,7 @@
   {
     "town": "Hoffender",
     "zone": "hoffender",
-    "building": "Hoffender room 2",
+    "building": "Hoffender Smith shed",
     "purpose": "a smith shed",
     "interior": "room_hoffender_2",
     "style": "timber"
@@ -18,7 +18,7 @@
   {
     "town": "Hoffender",
     "zone": "hoffender",
-    "building": "Hoffender room 3",
+    "building": "Hoffender Stable",
     "purpose": "a stable",
     "interior": "room_hoffender_3",
     "style": "timber"
@@ -26,7 +26,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 1",
+    "building": "Graymoor Hold Tavern",
     "purpose": "a tavern",
     "interior": "room_thornhaven_1",
     "style": "human"
@@ -34,7 +34,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 2",
+    "building": "Graymoor Hold Smith annex",
     "purpose": "a smith annex",
     "interior": "room_thornhaven_2",
     "style": "human"
@@ -42,7 +42,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 3",
+    "building": "Graymoor Hold Stable",
     "purpose": "a stable",
     "interior": "room_thornhaven_3",
     "style": "human"
@@ -50,7 +50,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 4",
+    "building": "Graymoor Hold Cloth store",
     "purpose": "a cloth store",
     "interior": "room_thornhaven_4",
     "style": "human"
@@ -58,7 +58,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 5",
+    "building": "Graymoor Hold Chapel closet",
     "purpose": "a chapel closet",
     "interior": "room_thornhaven_5",
     "style": "human"
@@ -66,7 +66,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 6",
+    "building": "Graymoor Hold Guild loft",
     "purpose": "a guild loft",
     "interior": "room_thornhaven_6",
     "style": "human"
@@ -74,7 +74,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 7",
+    "building": "Graymoor Hold Rented room",
     "purpose": "a rented room",
     "interior": "room_thornhaven_7",
     "style": "human"
@@ -82,7 +82,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 8",
+    "building": "Graymoor Hold Tavern",
     "purpose": "a tavern",
     "interior": "room_thornhaven_8",
     "style": "human"
@@ -90,7 +90,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 9",
+    "building": "Graymoor Hold Smith annex",
     "purpose": "a smith annex",
     "interior": "room_thornhaven_9",
     "style": "human"
@@ -98,7 +98,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 10",
+    "building": "Graymoor Hold Stable",
     "purpose": "a stable",
     "interior": "room_thornhaven_10",
     "style": "human"
@@ -106,7 +106,7 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 11",
+    "building": "Graymoor Hold Cloth store",
     "purpose": "a cloth store",
     "interior": "room_thornhaven_11",
     "style": "human"
@@ -114,15 +114,47 @@
   {
     "town": "Graymoor Hold",
     "zone": "thornhaven",
-    "building": "Graymoor Hold room 12",
+    "building": "Graymoor Hold Chapel closet",
     "purpose": "a chapel closet",
     "interior": "room_thornhaven_12",
     "style": "human"
   },
   {
+    "town": "Thornhaven",
+    "zone": "thornhaven",
+    "building": "Thornhaven Guild loft",
+    "purpose": "a guild loft",
+    "interior": "room_thornhaven_13",
+    "style": "human"
+  },
+  {
+    "town": "Thornhaven",
+    "zone": "thornhaven",
+    "building": "Thornhaven Rented room",
+    "purpose": "a rented room",
+    "interior": "room_thornhaven_14",
+    "style": "human"
+  },
+  {
+    "town": "Thornhaven",
+    "zone": "thornhaven",
+    "building": "Thornhaven Tavern",
+    "purpose": "a tavern",
+    "interior": "room_thornhaven_15",
+    "style": "human"
+  },
+  {
+    "town": "Thornhaven",
+    "zone": "thornhaven",
+    "building": "Thornhaven Smith annex",
+    "purpose": "a smith annex",
+    "interior": "room_thornhaven_16",
+    "style": "human"
+  },
+  {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 1",
+    "building": "Blackpine Tower Tavern",
     "purpose": "a tavern",
     "interior": "room_valdoria_1",
     "style": "human"
@@ -130,7 +162,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 2",
+    "building": "Blackpine Tower Smith annex",
     "purpose": "a smith annex",
     "interior": "room_valdoria_2",
     "style": "human"
@@ -138,7 +170,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 3",
+    "building": "Blackpine Tower Stable",
     "purpose": "a stable",
     "interior": "room_valdoria_3",
     "style": "human"
@@ -146,7 +178,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 4",
+    "building": "Blackpine Tower Cloth store",
     "purpose": "a cloth store",
     "interior": "room_valdoria_4",
     "style": "human"
@@ -154,7 +186,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 5",
+    "building": "Blackpine Tower Chapel closet",
     "purpose": "a chapel closet",
     "interior": "room_valdoria_5",
     "style": "human"
@@ -162,7 +194,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 6",
+    "building": "Blackpine Tower Guild loft",
     "purpose": "a guild loft",
     "interior": "room_valdoria_6",
     "style": "human"
@@ -170,7 +202,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 7",
+    "building": "Blackpine Tower Rented room",
     "purpose": "a rented room",
     "interior": "room_valdoria_7",
     "style": "human"
@@ -178,7 +210,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 8",
+    "building": "Blackpine Tower Tavern",
     "purpose": "a tavern",
     "interior": "room_valdoria_8",
     "style": "human"
@@ -186,7 +218,7 @@
   {
     "town": "Blackpine Tower",
     "zone": "valdoria",
-    "building": "Blackpine Tower room 9",
+    "building": "Blackpine Tower Smith annex",
     "purpose": "a smith annex",
     "interior": "room_valdoria_9",
     "style": "human"
@@ -194,7 +226,7 @@
   {
     "town": "Eldenmoor",
     "zone": "eldenmoor",
-    "building": "Eldenmoor room 1",
+    "building": "Eldenmoor Tavern",
     "purpose": "a tavern",
     "interior": "room_eldenmoor_1",
     "style": "elf"
@@ -202,7 +234,7 @@
   {
     "town": "Eldenmoor",
     "zone": "eldenmoor",
-    "building": "Eldenmoor room 2",
+    "building": "Eldenmoor Pearl smith",
     "purpose": "a pearl smith",
     "interior": "room_eldenmoor_2",
     "style": "elf"
@@ -210,7 +242,7 @@
   {
     "town": "Eldenmoor",
     "zone": "eldenmoor",
-    "building": "Eldenmoor room 3",
+    "building": "Eldenmoor Stable",
     "purpose": "a stable",
     "interior": "room_eldenmoor_3",
     "style": "elf"
@@ -218,7 +250,7 @@
   {
     "town": "Eldenmoor",
     "zone": "eldenmoor",
-    "building": "Eldenmoor room 4",
+    "building": "Eldenmoor Silk store",
     "purpose": "a silk store",
     "interior": "room_eldenmoor_4",
     "style": "elf"
@@ -226,7 +258,7 @@
   {
     "town": "Eldenmoor",
     "zone": "eldenmoor",
-    "building": "Eldenmoor room 5",
+    "building": "Eldenmoor Shrine",
     "purpose": "a shrine",
     "interior": "room_eldenmoor_5",
     "style": "elf"
@@ -234,7 +266,7 @@
   {
     "town": "Eldenmoor",
     "zone": "eldenmoor",
-    "building": "Eldenmoor room 6",
+    "building": "Eldenmoor Guild solar",
     "purpose": "a guild solar",
     "interior": "room_eldenmoor_6",
     "style": "elf"
@@ -242,7 +274,7 @@
   {
     "town": "Brightforge",
     "zone": "brightforge",
-    "building": "Brightforge room 1",
+    "building": "Brightforge Tavern",
     "purpose": "a tavern",
     "interior": "room_brightforge_1",
     "style": "dwarf"
@@ -250,7 +282,7 @@
   {
     "town": "Brightforge",
     "zone": "brightforge",
-    "building": "Brightforge room 2",
+    "building": "Brightforge Smith annex",
     "purpose": "a smith annex",
     "interior": "room_brightforge_2",
     "style": "dwarf"
@@ -258,7 +290,7 @@
   {
     "town": "Brightforge",
     "zone": "brightforge",
-    "building": "Brightforge room 3",
+    "building": "Brightforge Stable",
     "purpose": "a stable",
     "interior": "room_brightforge_3",
     "style": "dwarf"
@@ -266,7 +298,7 @@
   {
     "town": "Brightforge",
     "zone": "brightforge",
-    "building": "Brightforge room 4",
+    "building": "Brightforge Lamp store",
     "purpose": "a lamp store",
     "interior": "room_brightforge_4",
     "style": "dwarf"
@@ -274,7 +306,7 @@
   {
     "town": "Brightforge",
     "zone": "brightforge",
-    "building": "Brightforge room 5",
+    "building": "Brightforge Shrine",
     "purpose": "a shrine",
     "interior": "room_brightforge_5",
     "style": "dwarf"
@@ -282,7 +314,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 1",
+    "building": "Wyrmrest Tavern",
     "purpose": "a tavern",
     "interior": "room_wyrmrest_1",
     "style": "human"
@@ -290,7 +322,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 2",
+    "building": "Wyrmrest Smith annex",
     "purpose": "a smith annex",
     "interior": "room_wyrmrest_2",
     "style": "human"
@@ -298,7 +330,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 3",
+    "building": "Wyrmrest Stable",
     "purpose": "a stable",
     "interior": "room_wyrmrest_3",
     "style": "human"
@@ -306,7 +338,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 4",
+    "building": "Wyrmrest Cloth store",
     "purpose": "a cloth store",
     "interior": "room_wyrmrest_4",
     "style": "human"
@@ -314,7 +346,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 5",
+    "building": "Wyrmrest Chapel closet",
     "purpose": "a chapel closet",
     "interior": "room_wyrmrest_5",
     "style": "human"
@@ -322,7 +354,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 6",
+    "building": "Wyrmrest Guild loft",
     "purpose": "a guild loft",
     "interior": "room_wyrmrest_6",
     "style": "human"
@@ -330,7 +362,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 7",
+    "building": "Wyrmrest Rented room",
     "purpose": "a rented room",
     "interior": "room_wyrmrest_7",
     "style": "human"
@@ -338,7 +370,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 8",
+    "building": "Wyrmrest Tavern",
     "purpose": "a tavern",
     "interior": "room_wyrmrest_8",
     "style": "human"
@@ -346,7 +378,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 9",
+    "building": "Wyrmrest Smith annex",
     "purpose": "a smith annex",
     "interior": "room_wyrmrest_9",
     "style": "human"
@@ -354,7 +386,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 10",
+    "building": "Wyrmrest Stable",
     "purpose": "a stable",
     "interior": "room_wyrmrest_10",
     "style": "human"
@@ -362,7 +394,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 11",
+    "building": "Wyrmrest Cloth store",
     "purpose": "a cloth store",
     "interior": "room_wyrmrest_11",
     "style": "human"
@@ -370,7 +402,7 @@
   {
     "town": "Wyrmrest",
     "zone": "wyrmrest",
-    "building": "Wyrmrest room 12",
+    "building": "Wyrmrest Chapel closet",
     "purpose": "a chapel closet",
     "interior": "room_wyrmrest_12",
     "style": "human"
@@ -378,7 +410,7 @@
   {
     "town": "Thane's Rest",
     "zone": "scalded",
-    "building": "Thane's Rest room 1",
+    "building": "Thane's Rest Tavern",
     "purpose": "a tavern",
     "interior": "room_scalded_1",
     "style": "dwarf"
@@ -386,7 +418,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 1",
+    "building": "Ironhollow Keep Tavern",
     "purpose": "a tavern",
     "interior": "room_ironhollow_1",
     "style": "human"
@@ -394,7 +426,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 2",
+    "building": "Ironhollow Keep Smith annex",
     "purpose": "a smith annex",
     "interior": "room_ironhollow_2",
     "style": "human"
@@ -402,7 +434,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 3",
+    "building": "Ironhollow Keep Stable",
     "purpose": "a stable",
     "interior": "room_ironhollow_3",
     "style": "human"
@@ -410,7 +442,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 4",
+    "building": "Ironhollow Keep Cloth store",
     "purpose": "a cloth store",
     "interior": "room_ironhollow_4",
     "style": "human"
@@ -418,7 +450,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 5",
+    "building": "Ironhollow Keep Chapel closet",
     "purpose": "a chapel closet",
     "interior": "room_ironhollow_5",
     "style": "human"
@@ -426,7 +458,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 6",
+    "building": "Ironhollow Keep Guild loft",
     "purpose": "a guild loft",
     "interior": "room_ironhollow_6",
     "style": "human"
@@ -434,7 +466,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 7",
+    "building": "Ironhollow Keep Rented room",
     "purpose": "a rented room",
     "interior": "room_ironhollow_7",
     "style": "human"
@@ -442,7 +474,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 8",
+    "building": "Ironhollow Keep Tavern",
     "purpose": "a tavern",
     "interior": "room_ironhollow_8",
     "style": "human"
@@ -450,7 +482,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 9",
+    "building": "Ironhollow Keep Smith annex",
     "purpose": "a smith annex",
     "interior": "room_ironhollow_9",
     "style": "human"
@@ -458,7 +490,7 @@
   {
     "town": "Ironhollow Keep",
     "zone": "ironhollow",
-    "building": "Ironhollow Keep room 10",
+    "building": "Ironhollow Keep Stable",
     "purpose": "a stable",
     "interior": "room_ironhollow_10",
     "style": "human"
@@ -466,7 +498,7 @@
   {
     "town": "Canipure",
     "zone": "canipure",
-    "building": "Canipure room 1",
+    "building": "Canipure Tavern",
     "purpose": "a tavern",
     "interior": "room_canipure_1",
     "style": "wood"
@@ -474,7 +506,7 @@
   {
     "town": "Canipure",
     "zone": "canipure",
-    "building": "Canipure room 2",
+    "building": "Canipure Seed store",
     "purpose": "a seed store",
     "interior": "room_canipure_2",
     "style": "wood"
@@ -482,7 +514,7 @@
   {
     "town": "Canipure",
     "zone": "canipure",
-    "building": "Canipure room 3",
+    "building": "Canipure Stable",
     "purpose": "a stable",
     "interior": "room_canipure_3",
     "style": "wood"
@@ -490,7 +522,7 @@
   {
     "town": "Canipure",
     "zone": "canipure",
-    "building": "Canipure room 4",
+    "building": "Canipure Shrine",
     "purpose": "a shrine",
     "interior": "room_canipure_4",
     "style": "wood"
@@ -498,7 +530,7 @@
   {
     "town": "Grokthul Hold",
     "zone": "grokthul",
-    "building": "Grokthul Hold room 1",
+    "building": "Grokthul Hold Tavern",
     "purpose": "a tavern",
     "interior": "room_grokthul_1",
     "style": "ogre"
@@ -506,7 +538,7 @@
   {
     "town": "Grokthul Hold",
     "zone": "grokthul",
-    "building": "Grokthul Hold room 2",
+    "building": "Grokthul Hold Smith pit",
     "purpose": "a smith pit",
     "interior": "room_grokthul_2",
     "style": "ogre"
@@ -514,7 +546,7 @@
   {
     "town": "Grokthul Hold",
     "zone": "grokthul",
-    "building": "Grokthul Hold room 3",
+    "building": "Grokthul Hold Stable",
     "purpose": "a stable",
     "interior": "room_grokthul_3",
     "style": "ogre"
@@ -522,7 +554,7 @@
   {
     "town": "Grokthul Hold",
     "zone": "grokthul",
-    "building": "Grokthul Hold room 4",
+    "building": "Grokthul Hold Meat store",
     "purpose": "a meat store",
     "interior": "room_grokthul_4",
     "style": "ogre"

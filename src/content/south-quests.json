@@ -134,7 +134,7 @@
     "id": "lane_hares",
     "name": "The South Lane",
     "giver": "Aldric Valdor",
-    "description": "King Aldric wants six lane hares from the road just south of Graymoor Hold. It is the young path of Thornhaven.",
+    "description": "King Aldric wants six lane hares from the south road east of Thornhaven. It is the young path, levels 1 to 10.",
     "objective": "Lane hares",
     "itemId": "",
     "need": 6,

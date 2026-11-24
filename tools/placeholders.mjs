@@ -131,6 +131,17 @@ function furnish(style, w, h) {
   return { g, solid, safe, doorX };
 }
 
+function townAt(map, tx, ty) {
+  const named = map.props?.find((prop) => prop.name === 'townName')?.value ?? map.id;
+  if (map.id === 'thornhaven' && tx >= 88 && tx <= 184 && ty >= 16 && ty <= 92) return 'Graymoor Hold';
+  return named;
+}
+
+function buildingName(town, purpose) {
+  const kind = purpose.replace(/^(a|an) /, '');
+  return `${town} ${kind.charAt(0).toUpperCase()}${kind.slice(1)}`;
+}
+
 function makeRoom(id, title, town, style, exit) {
   const w = 14;
   const h = 11;
@@ -167,8 +178,8 @@ function makeRoom(id, title, town, style, exit) {
     objects,
     props: [
       { name: 'zoneId', type: 'string', value: id },
-      { name: 'townName', type: 'string', value: title },
-      { name: 'wildsName', type: 'string', value: title },
+      { name: 'townName', type: 'string', value: town },
+      { name: 'wildsName', type: 'string', value: town },
     ],
     scenery: null,
   };
@@ -184,7 +195,6 @@ export function linkPlaceholders(maps) {
   const counts = {};
   for (const map of maps) {
     if (!map.ground || String(map.id).startsWith('room_')) continue;
-    const town = map.props?.find((prop) => prop.name === 'townName')?.value ?? map.id;
     for (let y = 1; y < map.ground.length - 1; y++) {
       for (let x = 1; x < map.ground[0].length - 1; x++) {
         const pair = LEFT.get(map.ground[y][x]);
@@ -196,8 +206,9 @@ export function linkPlaceholders(maps) {
         counts[map.id] = n;
         const purposes = PURPOSE[pair.style] ?? PURPOSE.stone;
         const purpose = purposes[(n - 1) % purposes.length];
+        const town = townAt(map, x, y);
         const id = `room_${map.id}_${n}`;
-        const title = `${town} room ${n}`;
+        const title = buildingName(town, purpose);
         const [lx, ly] = landing(map, x, y);
         const back = feet(lx, ly);
         const room = makeRoom(id, title, town, pair.style, { zone: map.id, x: back.x, y: back.y });

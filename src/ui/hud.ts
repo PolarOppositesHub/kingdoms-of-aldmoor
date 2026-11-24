@@ -428,7 +428,9 @@ export function mountHud(api: GameApi): void {
       showToast(
         state.raceId === 'high_elf'
           ? 'Tap the ground to walk, or use the pad. North of the wall is the Eldenweald.'
-          : 'Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.',
+          : state.raceId === 'human'
+            ? 'Tap the ground to walk, or use the pad. You are in Thornhaven. The east gate leads to the south lane, levels 1 to 10.'
+            : 'Tap the ground to walk, or use the pad. North of the gate is the Frostmere Wilds.',
       );
     }
     paintVitals(root, state, api);

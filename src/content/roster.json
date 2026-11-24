@@ -21,10 +21,10 @@
       "id": "human",
       "name": "Human",
       "playable": true,
-      "blurb": "Valdorians of the Kingdom of Valdoria. Thornhaven is their capital, and King Aldric Valdor rules from the Graymoor yard.",
+      "blurb": "Valdorians of the Kingdom of Valdoria. Thornhaven is their capital, a coastal trade city, and King Aldric Valdor rules from its castle.",
       "homeZone": "thornhaven",
-      "homeX": 1960,
-      "homeY": 782,
+      "homeX": 872,
+      "homeY": 2382,
       "mods": {
         "str": 0,
         "sta": 0,

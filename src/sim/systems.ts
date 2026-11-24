@@ -1352,7 +1352,7 @@ export function respawnPlayer(state: GameState, content: ContentDb, emit: Emit):
     hoffender: 'You wake in the yard of the Frosthearth Inn.',
     frostfang: 'You wake at the fire in Hearthpass.',
     eldenmoor: 'You wake in the yard of the Silver Stair.',
-    thornhaven: 'You wake in the yard of Graymoor Hold.',
+    thornhaven: 'You wake in the yard of Thornhaven.',
     valdoria: 'You wake in the yard of Blackpine Tower.',
     brightforge: 'You wake in the yard of Brightforge.',
     wyrmrest: 'You wake in the court of Wyrmrest.',
